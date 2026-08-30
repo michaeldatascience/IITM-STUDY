@@ -159,7 +159,7 @@ This board tracks deliverables and learning separately. “Artifact exists” mu
 | LLM Quiz 2 (W5–8) | Complete | Strong master pack | W5 and W7 interactive complete; W6 N/A; W8 pending | Previously studied; mastery unassessed | GA5/7/8 solutions + PYQs available | Test W5/W7; build W8 |
 | LLM End-Term extension (W9–12) | Complete | Limited beyond Quiz 2 pack | Pending | Not recorded | Bonus/GA11/GA12 captured; later keys incomplete | First-pass modules needed |
 | DLCV Quiz 1 (W1–4) | Complete | Strong full pack integrated; Week 3 cross-linked with Shared Volume 0 | Volume 2 verified locally; dedicated CNN mechanics playground complete | Previously studied; mastery unassessed | Historical GA weakness at W4; embedded closed-book test pending | Study Volume 2 in order, then run every Week 4 preset and record the delayed retest |
-| DLCV Quiz 2 (W5–8) | Complete | RNN foundation integrated; course-specific application material pending | Shared Volume 0 complete; W5–8 application volumes pending | Previously studied; mastery unassessed | Historical weakness at W7; W8 strong | Test RNN foundation, then build W5–8 with W7 remediation |
+| DLCV Quiz 2 (W5–8) | Complete | Quiz 2 pack integrated for W5–6; RNN foundation integrated for W7 | W5–6 Volume 6 and detection playground complete; Shared Volume 0 complete; W7–8 application volume pending | Previously studied; mastery unassessed | W5/6 GA/PA and verified PYQ patterns embedded; historical weakness at W7; W8 strong | Study Volume 6 and record test errors; then build W7–8 with W7 remediation |
 | DLCV End-Term extension (W9–12) | Complete | No dedicated personal pack identified | Pending | Not recorded | Historical weakness W9; later GA keys incomplete | First-pass modules W9–12 |
 
 ## Progress-log fields
@@ -199,8 +199,8 @@ The local `study-hub/index.html` is the permanent entry point. Artifacts are gen
 3. **Complete:** DLCV Quiz 1 Recovery - Weeks 1–4, with the shared Week 3 foundation linked and a dedicated CNN mechanics playground.
 4. **Complete:** Language Models and Decoding - LLM Weeks 3–4, with a dedicated Decoding & Objective Playground.
 5. **Complete:** LLM Week 8 companion for the existing Week 7 module, with a dedicated Data Pipeline Playground.
-6. **Next:** Modern CNNs and Detection - DLCV Weeks 5–6.
-7. Sequence and Attention in Vision - DLCV Weeks 7–8.
+6. **Complete:** Modern CNNs, Detection, and Segmentation - DLCV Weeks 5–6, with a dedicated Detection Metrics Playground.
+7. **Next:** Sequence and Attention in Vision - DLCV Weeks 7–8.
 8. Efficient and Vision Transformers - LLM Weeks 11–12 plus DLCV Week 9.
 9. Generative Vision Models - DLCV Weeks 10–11.
 10. Contrastive Learning and VLMs - DLCV Week 12 with LLM pretraining/data bridges.
@@ -208,7 +208,7 @@ The local `study-hub/index.html` is the permanent entry point. Artifacts are gen
 
 # Immediate next study checkpoint
 
-Open `../llm/week-08-data-scaling-pipelines-interactive.html`. Reproduce the scaling-law numeric before using its calculator, study the pipeline families in order, then use `../llm/data-pipeline-playground.html` to test ordering, filtering, survival arithmetic, dataset identity, and mixtures. Finish the 25-item closed-book test.
+Open `../dlcv/volume-06-modern-cnns-detection-interactive.html`. Complete the six-item diagnostic before study, derive convolution cost and detector-metric formulas before using controls, then use `../dlcv/detection-metrics-playground.html` for IoU, NMS, anchors, foreground gating, AP/mAP, and Dice. Finish the objective test and written questions 21–30.
 
 No mastery has been inferred from the existence of old notes or from generating the new artifacts.
 
@@ -220,3 +220,4 @@ No mastery has been inferred from the existence of old notes or from generating 
 - **2026-08-30:** Generated Shared Volume 1 - Transformer Foundations from official LLM Weeks 1-2, GA1/GA2, four End-Term PYQs, and reviewed Quiz 1 notes; common mechanics are explicitly reused by DLCV Weeks 8-9.
 - **2026-08-30:** Completed DLCV Volume 2 for Weeks 1–4 and the CNN shape/parameter/receptive-field playground; learning status remains unassessed until the embedded tests are taken.
 - **2026-08-30:** Generated the LLM Week 8 Data Scaling and Pre-training Pipelines module from all 69 official slide pages, GA8, four supplied PYQs, and the personal Quiz 2 reference; added a dedicated scaling, RefinedWeb, filtering, survival, dataset, and mixture playground.
+- **2026-08-30:** Generated DLCV Volume 6 from all 361 official Week 5–6 slide pages, GA5/PA5, GA6/PA6, four supplied PYQs, and the personal Quiz 2 pack; added a dedicated IoU, NMS, anchor, foreground-loss, AP/mAP, and Dice playground and explicitly corrected the DeepLab slide’s atrous/transposed-convolution error.

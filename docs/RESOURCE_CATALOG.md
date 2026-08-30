@@ -207,6 +207,9 @@ Folder: `study-hub/`
 - `llm/week-08-data-scaling-pipelines.md` - paired runtime source for the Week 8 module; intentionally not linked from the hub.
 - `llm/week-08-data-scaling-pipelines-interactive.html` - canonical Week 8 module covering scaling laws, Common Crawl, cleaning pipelines, deduplication, named datasets, GA8, and repeated PYQ patterns.
 - `llm/data-pipeline-playground.html` - dedicated Week 8 visual practice for scaling, RefinedWeb ordering, survivor arithmetic, C4 filtering, dataset ordering, and mixture allocation.
+- `dlcv/volume-06-modern-cnns-detection.md` - paired runtime source for the DLCV Weeks 5–6 canonical volume; intentionally not linked from the hub.
+- `dlcv/volume-06-modern-cnns-detection-interactive.html` - canonical DLCV Weeks 5–6 module covering architecture evolution, efficient convolution, transfer learning, CNN visualization, two-/single-stage detection, evaluation, and semantic/instance/panoptic segmentation.
+- `dlcv/detection-metrics-playground.html` - dedicated visual practice for box IoU, NMS, pyramid anchors, foreground-only box regression, 11-point AP/mAP, and Dice versus IoU.
 - `archive/llm/` and `archive/dlcv/` - reviewed prior artifacts retained as references until incorporated into canonical volumes.
 - `docs/` - publication snapshots of this catalog and the study map.
 
@@ -338,3 +341,4 @@ When new material is added:
 - **2026-08-30:** Added the source-grounded DLCV Quiz 1 Recovery Volume for Weeks 1–4 and the dedicated CNN Shape, Parameters, and Receptive Field Playground. The paired Markdown is a runtime source for the interactive HTML and is intentionally not linked from the hub.
 - **2026-08-30:** Added LLM Volume 3 for Weeks 3–4 and the Decoding & Objective Playground. The volume integrates the 143 official slide pages, GA3/GA4, four supplied PYQs, and personal Quiz 1 notes; the paired Markdown remains an unlinked runtime source.
 - **2026-08-30:** Added the source-grounded LLM Week 8 Data Scaling and Pre-training Pipelines module plus the Data Pipeline Playground. The module integrates all 69 official Week 8 slide pages, GA8, four supplied PYQs, and the master Quiz 2 note; its paired Markdown remains an unlinked runtime source.
+- **2026-08-30:** Added the source-grounded DLCV Weeks 5–6 Modern CNNs, Detection, and Segmentation volume plus the Detection Metrics Playground. The volume integrates all 361 official slide pages, GA5/PA5, GA6/PA6, four supplied PYQs, and the personal Quiz 2 pack; its paired Markdown remains an unlinked runtime source.
