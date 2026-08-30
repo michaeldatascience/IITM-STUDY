@@ -1,6 +1,6 @@
 # IITM LLM + DLCV Syllabus, Concept Map, and Progress Tracker
 
-Last updated: 2026-08-30  
+Last updated: 2026-08-31
 Companion index: [Resource catalog](RESOURCE_CATALOG.md)
 
 ## Non-negotiable study rules
@@ -111,8 +111,8 @@ Do not teach Week 7 as a list of model names. It depends on the architecture, ma
 | Week | Official lectures | Core concepts and exam skills | Tier | Material status | Study/practice status | Next evidence-based action |
 |---|---|---|:---:|---|---|---|
 | 9 | From Transformers to Vision Transformers; Transformers for Detection; Transformers for Segmentation | Patch/token construction; ViT architecture/order; isotropic blocks; Swin windows/relative bias; DETR/Hungarian loss; Deformable DETR; SAM task/model/data engine | A | **Shared Volume 8 + Efficient Attention and ViT Playground complete**; all three alternate official decks, GA9/PA9, and four PYQs integrated; Shared Volume 1 linked | Not recorded; **needs practice** from historical GA9 score 44. | Derive the GA9 token/attention counts, rebuild the recurring ViT order, solve DETR matching globally, and retrieve SAM's task/components before using the playground. |
-| 10 | Deep Generative Models; GAN Parts 1–2; GAN Hacks and Improvements; Variational Autoencoders; VAEs and Disentanglement | Generative vs discriminative modelling; minimax GAN objective and training; instability/improvements; latent variables; VAE encoder/reparameterization/decoder; reconstruction vs KL; disentanglement | A | Official five-part deck; no personal week module | Not recorded; historical GA10 score 69 indicates review needed. | Build first-pass comparison module with one GAN objective and one VAE loss walk-through. |
-| 11 | Introduction to Diffusion Models and DDPMs Parts 1–2; Classifier and Classifier-Free Diffusion Guidance | Forward noising; reverse denoising; schedules; DDPM training/sampling intuition; classifier guidance; classifier-free guidance | B | Official three-part diffusion deck; GA11/PA11 questions | Not recorded. GA11 has no usable embedded key. | Build a time-step visualization and solve questions only after validating notation against official slides. |
+| 10 | Deep Generative Models; GAN Parts 1–2; GAN Hacks and Improvements; Variational Autoencoders; VAEs and Disentanglement | Generative vs discriminative modelling; explicit/implicit density; GAN minimax/equilibrium, instability, DCGAN and improvements; IS/FID; VAE ELBO/reparameterization; β-VAE, β-TCVAE, MIG, and DCI | A | **Volume 9 + Generative Models Playground complete**; all five official decks, GA10/PA10, and seven PYQs integrated | Not recorded; **needs practice** from historical GA10 score 69. | Derive the optimal discriminator and ELBO, reproduce the GA10 reparameterization vector, then use the GAN/VAE labs and finish the closed-book test. |
+| 11 | Introduction to Diffusion Models and DDPMs Parts 1–2; Classifier and Classifier-Free Diffusion Guidance; Text-Conditioned and Latent Diffusion Models | Forward noising; α/β schedules; reverse denoising; DDPM noise objective and score connection; classifier/CFG guidance; text/CLIP guidance; VQ-VAE and latent diffusion | A | **Volume 9 + Generative Models Playground complete**; all three official decks, GA11/PA11, and seven PYQs integrated | Not recorded. GA11 is unsubmitted and its notebook outputs remain explicitly unverified; repeated PYQs strongly prioritize guidance and VQ-VAE. | Reconstruct direct noising and CFG equations, solve schedule numerics, quantize a VQ code, and explain the fidelity–diversity trade-off before the test. |
 | 12 | Contrastive Learning and History in Face Understanding; SimCLR; VLM Introduction/History; CLIP; BLIP/BLIP-2/CoCA; multimodal LLMs; conclusion | Contrastive representation learning; positive/negative pairs; SimCLR pipeline; image-text alignment; CLIP encoders/objective/retrieval; later VLM architectures and multimodal-LLM bridge | A | Official seven-part deck + four-part alternate VLM deck; GA12/PA12 questions | Not recorded. GA12 lacks usable key; PA12 has embedded choice scoring. | Build official-term comparison map from contrastive learning → CLIP → later VLMs, then test architecture/objective/task matching. |
 
 ## DLCV dependency chain
@@ -202,18 +202,19 @@ The local `study-hub/index.html` is the permanent entry point. Artifacts are gen
 6. **Complete:** Modern CNNs, Detection, and Segmentation - DLCV Weeks 5–6, with a dedicated Detection Metrics Playground.
 7. **Complete:** Sequence and Attention in Vision - DLCV Weeks 7–8, with the exact GA7/PA7 gate calculations and a dedicated Visual Attention Playground.
 8. **Complete:** Efficient Attention and Vision Transformers - LLM Weeks 11–12 plus DLCV Week 9, with a dedicated attention/position/cache/ViT/DETR playground.
-9. Generative Vision Models - DLCV Weeks 10–11.
+9. **Complete:** Generative Vision Models - DLCV Weeks 10–11, with GAN/VAE/DDPM derivations and a dedicated distribution, latent, diffusion, guidance, and VQ-VAE playground.
 10. Contrastive Learning and VLMs - DLCV Week 12 with LLM pretraining/data bridges.
 11. End-Term Exam Pack - bonus weeks, mixed mocks, error-led retests, and final cheat sheets.
 
 # Immediate next study checkpoint
 
-Open `../shared/volume-08-efficient-attention-vision-transformers-interactive.html`. Do the 90-second pulse before reading; write tensor shapes and active pair counts before every complexity result; then derive the GA11 cache and GA9 patch calculations. Use `../shared/efficient-attention-vit-playground.html` only after committing predictions, and finish with DETR's global matching plus SAM task/model/data-engine retrieval.
+Open `../dlcv/volume-09-generative-vision-models-interactive.html`. Do the diagnostic and derive the GAN optimum, VAE ELBO, direct DDPM equation, and CFG endpoints before opening `../dlcv/generative-models-playground.html`. Prioritize the historical GA10 weakness, then finish the objective and written mastery gates.
 
 No mastery has been inferred from the existence of old notes or from generating the new artifacts.
 
 ## Change log
 
+- **2026-08-31:** Generated DLCV Volume 9 from all 342 official Week 10–11 slide pages, GA10/PA10, GA11/PA11, and seven supplied PYQs; added a dedicated GAN, VAE, diffusion, guidance, and VQ-VAE playground, while marking notebook-dependent GA11 outputs unverified.
 - **2026-08-30:** Initial syllabus/concept map and progress tracker created from the official lecture lists, PDFs, personal notes/HTML, all currently stored GAs/PAs, and four PYQs per course.
 - **2026-08-30:** Generated LLM Volume 3 - Language Models, Decoding, and BERT from all 143 Week 3-4 official slide pages, GA3/GA4, four supplied PYQs, and the personal Quiz 1 packs; added a dedicated search, sampling, path-validity, and MLM playground.
 - **2026-08-30:** Generated Shared Volume 8 - Efficient Attention and Vision Transformers from 288 official slide pages, LLM GA11/GA12, DLCV GA9/PA9, and eight supplied PYQs; added the attention graph, position, KV-cache, ViT/Swin, and DETR matching playground.

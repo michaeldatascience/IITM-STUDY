@@ -1,6 +1,6 @@
 # IITM LLM + DLCV Resource Catalog
 
-Last verified: 2026-08-30  
+Last verified: 2026-08-31
 Workspace: `E:\CODE\LLMDLCV`
 
 ## Quick navigation
@@ -216,6 +216,9 @@ Folder: `study-hub/`
 - `dlcv/volume-07-sequence-attention-vision.md` - paired runtime source for the DLCV Weeks 7–8 canonical volume; intentionally not linked from the hub.
 - `dlcv/volume-07-sequence-attention-vision-interactive.html` - canonical DLCV Weeks 7–8 module covering RNN/BPTT, course-convention LSTM/GRU calculations, video understanding, alignment and attention, captioning, VQA/dialog, and the Transformer bridge.
 - `dlcv/visual-attention-playground.html` - dedicated visual practice reproducing PA8/GA8 spatial contexts, score-softmax-context numerics, caption-step attention, soft/hard mechanisms, and self-attention complexity.
+- `dlcv/volume-09-generative-vision-models.md` - paired runtime source for the DLCV Weeks 10–11 canonical volume; intentionally not linked from the hub.
+- `dlcv/volume-09-generative-vision-models-interactive.html` - canonical DLCV Weeks 10–11 module covering density estimation, GANs, VAEs and disentanglement, DDPMs, guidance, VQ-VAE, and latent diffusion.
+- `dlcv/generative-models-playground.html` - dedicated visual practice for GAN density equilibrium, VAE sampling/KL, cumulative diffusion signal, classifier-free guidance, and VQ-VAE code selection.
 - `archive/llm/` and `archive/dlcv/` - reviewed prior artifacts retained as references until incorporated into canonical volumes.
 - `docs/` - publication snapshots of this catalog and the study map.
 
@@ -341,6 +344,7 @@ When new material is added:
 
 ## Change log
 
+- **2026-08-31:** Added the source-grounded DLCV Weeks 10–11 Generative Vision Models volume plus the Generative Models Playground. The volume integrates all 342 official slide pages, GA10/PA10, GA11/PA11, and seven supplied PYQs; its paired Markdown remains an unlinked runtime source, and missing-notebook outputs are explicitly marked unverified.
 - **2026-08-30:** Initial full catalog created after reviewing the updated official slides, lecture lists, personal Markdown/HTML notes, assignments, PYQs, generated previews, and the LLM publication repository.
 - **2026-08-30:** Added the unified `study-hub`, curated reviewed artifacts, and registered Shared Volume 0 as the first canonical cross-course module.
 - **2026-08-30:** Published the hub to `michaeldatascience/IITM-STUDY` and added Shared Volume 1 - Transformer Foundations as the second canonical cross-course module.
