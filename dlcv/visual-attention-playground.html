@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Interactive IITM DLCV visual-attention playground for spatial attention, score-softmax-context, hard versus soft attention, captioning, and self-attention complexity.">
+  <title>Visual Attention Playground — IITM DLCV</title>
+  <style>
+    :root{--paper:#f4f0e7;--surface:#fffefa;--surface2:#e9e4d8;--ink:#1c2933;--muted:#69757f;--line:#d5cec0;--blue:#176b8c;--blue2:#dceff6;--orange:#a95819;--orange2:#f7e2cc;--green:#23704e;--green2:#dcefe5;--violet:#5940a4;--violet2:#e8e2fa;--red:#a13c49;--red2:#f6dfe2;--shadow:0 16px 44px rgba(35,31,51,.1);--r:18px}
+    [data-theme=dark]{--paper:#12161b;--surface:#1b2028;--surface2:#272d35;--ink:#f1f3f6;--muted:#adb5bf;--line:#3a424d;--blue:#72c7e7;--blue2:#183844;--orange:#f0aa66;--orange2:#442f20;--green:#78d1a5;--green2:#1c392c;--violet:#bbb0ff;--violet2:#302b56;--red:#f08c99;--red2:#40242a;--shadow:0 16px 44px rgba(0,0,0,.28)}
+    *{box-sizing:border-box}[hidden]{display:none!important}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:var(--paper);font:16px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select{font:inherit}button{cursor:pointer}code,.mono{font-family:"Cascadia Code",Consolas,monospace}code{padding:.12rem .34rem;border-radius:6px;background:var(--surface2)}
+    .top{position:sticky;z-index:20;top:0;display:flex;align-items:center;gap:10px;min-height:58px;padding:9px 20px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(15px)}.top a{color:var(--blue);font-weight:850;text-decoration:none}.brand{font-weight:950}.spacer{flex:1}.btn{border:1px solid var(--line);border-radius:10px;padding:.58rem .86rem;color:var(--ink);background:var(--surface);font-weight:850}.btn.primary{border-color:#176b8c;color:#fff;background:#176b8c}.btn.active{border-color:var(--blue);color:var(--blue);background:var(--blue2)}.btn:hover{transform:translateY(-1px);box-shadow:0 5px 15px rgba(0,0,0,.08)}
+    .shell{max-width:1180px;margin:auto;padding:38px 24px 90px}.hero{padding:38px;border:1px solid var(--line);border-radius:26px;background:radial-gradient(circle at 90% 0,var(--orange2),transparent 32%),radial-gradient(circle at 5% 100%,var(--blue2),transparent 30%),var(--surface);box-shadow:var(--shadow)}.eyebrow{color:var(--orange);font-size:.76rem;font-weight:950;letter-spacing:.12em;text-transform:uppercase}h1,h2,h3{font-family:Georgia,"Times New Roman",serif;line-height:1.17;letter-spacing:-.02em}h1{margin:8px 0 14px;font-size:clamp(2.35rem,6vw,4.5rem)}h2{margin:0 0 .6rem;font-size:clamp(1.65rem,4vw,2.4rem)}h3{margin:.2rem 0 .6rem}.lede{max-width:820px;color:var(--muted);font-size:1.1rem}.badges,.tabs,.controls{display:flex;flex-wrap:wrap;gap:8px}.badges{margin-top:18px}.badge{padding:5px 9px;border-radius:99px;color:var(--blue);background:var(--blue2);font-size:.78rem;font-weight:900}.badge.exam{color:var(--violet);background:var(--violet2)}.tabs{margin:24px 0 18px}.panel{display:none}.panel.active{display:block}.card{padding:24px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);box-shadow:0 8px 26px rgba(30,30,45,.05)}.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.output{margin-top:15px;padding:17px;border:1px dashed var(--blue);border-radius:13px;background:color-mix(in srgb,var(--blue2) 50%,var(--surface))}.callout{padding:15px 17px;border-left:4px solid var(--orange);border-radius:0 12px 12px 0;background:var(--orange2)}.muted{color:var(--muted)}.formula{margin:12px 0;padding:13px;overflow:auto;border-radius:10px;background:var(--surface2);text-align:center;font-family:"Cascadia Code",Consolas,monospace}.field{display:grid;grid-template-columns:160px 1fr 72px;gap:10px;align-items:center;margin:11px 0}input[type=range]{width:100%}select,input[type=number]{min-height:42px;padding:8px;border:1px solid var(--line);border-radius:9px;color:var(--ink);background:var(--surface)}
+    .spatial{display:grid;grid-template-columns:minmax(300px,.9fr) minmax(340px,1.1fr);gap:22px;align-items:start}.vision-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;aspect-ratio:1;max-width:520px}.region{position:relative;display:flex;min-height:82px;align-items:center;justify-content:center;overflow:hidden;border:1px solid var(--line);border-radius:12px;background:var(--surface2);transition:.2s}.region::after{position:absolute;inset:0;content:"";pointer-events:none;background:var(--heat,var(--blue));opacity:var(--alpha,0)}.region.hard{box-shadow:0 0 0 4px var(--orange)}.region-inner{position:relative;z-index:1;display:grid;gap:2px;text-align:center}.region b{font-size:1.06rem}.region small{font-weight:850}.weight-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.weight-box{padding:8px;border:1px solid var(--line);border-radius:9px;background:var(--surface)}.weight-box label{display:block;color:var(--muted);font-size:.78rem;font-weight:850}.weight-box input{width:100%;min-width:0}.bar-row{display:grid;grid-template-columns:42px 1fr 65px;gap:8px;align-items:center;margin:7px 0}.bar{height:14px;overflow:hidden;border-radius:99px;background:var(--surface2)}.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--violet));transition:.2s}.math-line{overflow-wrap:anywhere;font-family:"Cascadia Code",Consolas,monospace;font-size:.9rem}.challenge select{max-width:100%;margin-right:8px}
+    .pipeline{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:stretch;margin:18px 0}.stage{padding:17px;border:1px solid var(--line);border-radius:14px;background:var(--surface);text-align:center}.stage b{display:block;margin-bottom:7px}.arrow{align-self:center;color:var(--muted);font-size:1.5rem;font-weight:950}.mini-bars{display:grid;gap:7px}.caption-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:15px 0}.caption-region{display:flex;aspect-ratio:1.15;align-items:center;justify-content:center;border-radius:12px;background:var(--surface2);font-weight:900;transition:.2s}.words{display:flex;flex-wrap:wrap;gap:7px}.word{border:1px solid var(--line);border-radius:99px;padding:7px 11px;color:var(--ink);background:var(--surface);font-weight:850}.word.active{border-color:var(--violet);color:var(--violet);background:var(--violet2)}
+    .comparison{display:grid;grid-template-columns:1fr 1fr;gap:18px}.side-card{padding:20px;border-top:5px solid var(--blue);border-radius:14px;background:var(--surface2)}.side-card.hard-side{border-color:var(--orange)}.check{display:grid;grid-template-columns:1fr auto;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}.complexity-grid{display:grid;grid-template-columns:repeat(var(--m,4),minmax(10px,1fr));gap:3px;max-width:520px;aspect-ratio:1}.pair{border-radius:3px;background:var(--blue2)}.pair.diag{background:var(--violet)}.pair.query{background:var(--orange)}
+    .challenge{margin-top:20px;border:2px solid var(--red)}.challenge-result{margin-top:12px;padding:13px;border-radius:10px;background:var(--red2)}footer{padding:28px;border-top:1px solid var(--line);color:var(--muted);text-align:center}
+    @media(max-width:850px){.spatial,.grid2,.grid3,.comparison{grid-template-columns:1fr}.pipeline{grid-template-columns:1fr}.arrow{transform:rotate(90deg);justify-self:center}.field{grid-template-columns:1fr}.shell{padding:22px 14px 70px}.hero{padding:27px 21px}.weight-list{grid-template-columns:repeat(3,1fr)}}@media(max-width:520px){.brand{display:none}.weight-list{grid-template-columns:repeat(2,1fr)}.vision-grid{min-width:0}.top{padding:8px 10px}.caption-grid{grid-template-columns:repeat(2,1fr)}}
+  </style>
+</head>
+<body>
+  <header class="top"><a href="../index.html">← Hub</a><a href="volume-07-sequence-attention-vision-interactive.html">← Volume 7</a><div class="brand">Visual Attention Playground</div><div class="spacer"></div><button class="btn" id="theme" aria-label="Toggle dark mode">◐</button></header>
+  <main class="shell">
+    <section class="hero">
+      <div class="eyebrow">DLCV Week 8 · Dedicated concept instrument</div>
+      <h1>See what attention retrieves</h1>
+      <p class="lede">Manipulate the complete course pipeline—compatibility score → normalized alignment → context—and make the soft/hard distinction visible. Exact PA8 and GA8 spatial questions are built in.</p>
+      <div class="badges"><span class="badge">Course-bounded</span><span class="badge exam">GA8 + PA8 presets</span><span class="badge exam">PYQ convention traps</span><span class="badge">No hidden arithmetic</span></div>
+    </section>
+
+    <nav class="tabs" aria-label="Playground sections">
+      <button class="btn active" data-tab="spatial">Spatial attention</button>
+      <button class="btn" data-tab="pipeline">Score pipeline</button>
+      <button class="btn" data-tab="caption">Caption steps</button>
+      <button class="btn" data-tab="contrast">Soft vs hard</button>
+      <button class="btn" data-tab="complexity">Self-attention cost</button>
+    </nav>
+
+    <section class="panel active" id="spatial">
+      <div class="spatial">
+        <div class="card">
+          <div class="eyebrow">Feature map H × W</div><h2>Where is the evidence?</h2>
+          <div class="vision-grid" id="visionGrid" role="img" aria-label="Three by three visual feature map colored by normalized attention weight"></div>
+          <p class="muted">Opacity is normalized attention α. The orange outline is the hard-attention argmax.</p>
+        </div>
+        <div class="card">
+          <div class="eyebrow">Commit before computation</div><h2>Weighted context</h2>
+          <div class="controls"><button class="btn active" data-preset="pa8">PA8 · 3×3</button><button class="btn" data-preset="ga8">GA8 · 2×2</button><button class="btn" data-preset="uniform">Uniform</button><button class="btn" data-preset="focus">Sharp focus</button></div>
+          <p>Each location contains a scalar stand-in <code>vᵢ</code>. Edit raw weights or feature values. We normalize raw weights before forming the context.</p>
+          <div class="weight-list" id="weightList"></div>
+          <div class="output" aria-live="polite">
+            <div class="math-line" id="softSymbolic"></div>
+            <p><b>Soft context:</b> <span id="softContext" class="mono"></span></p>
+            <p><b>Hard context:</b> <span id="hardContext" class="mono"></span> <span class="muted" id="hardWhy"></span></p>
+            <div id="alphaBars"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card challenge"><div class="eyebrow">Resistance check</div><h3>Why can the soft context differ from every individual vᵢ?</h3><select id="spatialQ"><option value="">Commit an answer…</option><option value="a">Soft attention creates a normalized weighted average</option><option value="b">Softmax changes feature-vector dimensions</option><option value="c">Hard attention averages all locations</option></select><button class="btn" id="spatialCheck">Check</button><div id="spatialResult" class="challenge-result" hidden></div></div>
+    </section>
+
+    <section class="panel" id="pipeline">
+      <div class="card">
+        <div class="eyebrow">Personal-pack linked numerical block</div><h2>Score → softmax → context</h2>
+        <p>Query <code>s=[1,0]</code>; candidates <code>h₁=[1,2]</code>, <code>h₂=[0,1]</code>, <code>h₃=[2,3]</code>. The default reproduces the reported weights and context.</p>
+        <div class="field"><label for="tau">Temperature τ</label><input id="tau" type="range" min=".2" max="3" step=".05" value="1"><output id="tauOut">1.00</output></div>
+        <div class="pipeline">
+          <div class="stage"><b>1 · Compatibility</b><div class="mono" id="scores"></div><small class="muted">dot(s,hⱼ) / τ</small></div><div class="arrow">→</div>
+          <div class="stage"><b>2 · Alignment</b><div class="mini-bars" id="pipelineBars"></div><small class="muted">softmax across candidates</small></div><div class="arrow">→</div>
+          <div class="stage"><b>3 · Context</b><div class="mono" id="contextVector"></div><small class="muted">Σ αⱼhⱼ</small></div>
+        </div>
+        <div class="callout"><b>Invariant:</b> score is not attention weight. The scores may be any real numbers; the softmax weights are non-negative and sum to one.</div>
+      </div>
+      <div class="grid2" style="margin-top:18px">
+        <div class="card"><h3>Temperature prediction</h3><p>Before moving τ: smaller τ makes the distribution…</p><div class="controls"><button class="btn temp-answer" data-answer="sharper">sharper</button><button class="btn temp-answer" data-answer="flatter">flatter</button></div><div id="tempResult" class="output">Commit first.</div></div>
+        <div class="card"><h3>Alignment operator recognition</h3><p id="alignExpr" class="formula"></p><select id="alignPick"><option value="">Choose family…</option><option>Content-based</option><option>Additive</option><option>Location-based</option><option>General</option><option>Dot-product</option><option>Scaled dot-product</option></select><div class="controls" style="margin-top:10px"><button class="btn primary" id="alignCheck">Check</button><button class="btn" id="alignNext">New expression</button></div><div id="alignResult" class="output">Answer hidden.</div></div>
+      </div>
+    </section>
+
+    <section class="panel" id="caption">
+      <div class="card">
+        <div class="eyebrow">Show, Attend and Tell intuition</div><h2>Attention can move at every decoder step</h2>
+        <p>Select the next generated word. The decoder state changes the compatibility scores, so the spatial evidence distribution changes.</p>
+        <div class="caption-grid" id="captionGrid" role="img" aria-label="Synthetic image regions with word-conditioned attention"></div>
+        <div class="words" id="words"></div>
+        <div class="output" id="captionOutput" aria-live="polite"></div>
+      </div>
+      <div class="grid2" style="margin-top:18px">
+        <div class="card"><h3>Training</h3><p>Teacher forcing supplies the ground-truth previous word while maximizing caption likelihood. Soft attention remains differentiable end to end.</p></div>
+        <div class="card"><h3>Inference</h3><p>The model feeds back its generated token, attends again using the new state, and stops at the end token or decoding limit.</p></div>
+      </div>
+      <div class="card challenge"><div class="eyebrow">PYQ statement discipline</div><h3>Can a captioning network be trained end to end?</h3><p class="muted">Some older supplied PYQs negate the claim; later supplied PYQs mark it true. Judge the mechanism, then follow the exact question wording and official key.</p><button class="btn primary" id="captionReveal">Commit & reveal mechanism</button><div id="captionAnswer" class="challenge-result" hidden>Yes for differentiable soft-attention captioning: CNN features, attention, and decoder can receive gradients from the caption loss. Hard discrete selection needs a policy-gradient estimator such as REINFORCE.</div></div>
+    </section>
+
+    <section class="panel" id="contrast">
+      <div class="comparison">
+        <div class="side-card"><div class="eyebrow">Soft attention</div><h2>Blend all locations</h2><div class="check"><span>Selection</span><b>deterministic weights</b></div><div class="check"><span>Differentiable</span><b>yes</b></div><div class="check"><span>Training</span><b>ordinary backprop</b></div><div class="check"><span>Context</span><b>Σ αᵢvᵢ</b></div><div class="check"><span>Aggregation</span><b>all locations</b></div></div>
+        <div class="side-card hard-side"><div class="eyebrow">Hard attention</div><h2>Select a location</h2><div class="check"><span>Selection</span><b>sample / discrete choice</b></div><div class="check"><span>Differentiable</span><b>not through choice</b></div><div class="check"><span>Training</span><b>REINFORCE / policy gradient</b></div><div class="check"><span>Context</span><b>vᵢ at selected i</b></div><div class="check"><span>Aggregation</span><b>one location</b></div></div>
+      </div>
+      <div class="card" style="margin-top:18px"><div class="eyebrow">GA8 / PA8 option trap</div><h2>Match claims to the mechanism</h2><p id="claim"></p><div class="controls"><button class="btn claim-choice" data-choice="soft">Soft</button><button class="btn claim-choice" data-choice="hard">Hard</button><button class="btn" id="claimNext">New claim</button></div><div class="output" id="claimResult">Commit first.</div></div>
+    </section>
+
+    <section class="panel" id="complexity">
+      <div class="grid2">
+        <div class="card"><div class="eyebrow">Every query meets every key</div><h2>M × M interaction matrix</h2><div class="field"><label for="tokens">Tokens M</label><input id="tokens" type="range" min="2" max="16" value="6"><output id="tokensOut">6</output></div><div class="complexity-grid" id="pairGrid" role="img" aria-label="Self-attention query-key interaction grid"></div></div>
+        <div class="card"><div class="eyebrow">GA8 complexity</div><h2>Why the square?</h2><div class="formula">M queries × M keys × K value width = O(M²K)</div><p><b id="pairCount"></b> query–key scores are formed at the current M.</p><p class="muted">Self-attention removes recurrence and enables parallel position processing, but it does not make pairwise interaction linear in sequence length.</p><div class="callout"><b>Order still needs help:</b> positional information is added to token embeddings in the fixed-<code>d_model</code> Transformer representation.</div></div>
+      </div>
+      <div class="card challenge"><div class="eyebrow">Closed-book check</div><h3>If M doubles and K is fixed, the dominant attention work changes by:</h3><div class="controls"><button class="btn complexity-answer" data-factor="2">2×</button><button class="btn complexity-answer" data-factor="4">4×</button><button class="btn complexity-answer" data-factor="8">8×</button></div><div id="complexityResult" class="challenge-result" hidden></div></div>
+    </section>
+  </main>
+  <footer>Visual Attention Playground · DLCV Week 8 · Pair with Volume 7 for derivations and assessment solutions</footer>
+  <script>
+    const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)],fmt=(x,n=3)=>Number(x).toFixed(n),softmax=a=>{const m=Math.max(...a),e=a.map(x=>Math.exp(x-m)),z=e.reduce((p,c)=>p+c,0);return e.map(x=>x/z)};
+    const root=document.documentElement,store='hub-dlcv-visual-attention';root.dataset.theme=localStorage.getItem(store+'-theme')||'light';$('#theme').onclick=()=>{root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';localStorage.setItem(store+'-theme',root.dataset.theme)};
+    $$('[data-tab]').forEach(b=>b.onclick=()=>{$$('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));$$('.panel').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));scrollTo({top:$('.tabs').offsetTop-70,behavior:'smooth'})});
+
+    const presets={
+      pa8:{n:9,w:[.1,.2,.1,.2,.1,0,0,.3,0],v:[1,2,3,4,5,6,7,8,9],name:'PA8 3×3'},
+      ga8:{n:4,w:[0,.75,.25,0],v:[1,2,3,4],name:'GA8 2×2'},
+      uniform:{n:9,w:[1,1,1,1,1,1,1,1,1],v:[1,2,3,4,5,6,7,8,9],name:'uniform 3×3'},
+      focus:{n:9,w:[.02,.02,.03,.03,.05,.05,.1,.65,.05],v:[1,2,3,4,5,6,7,8,9],name:'sharp 3×3'}
+    };let spatialState={};
+    function setPreset(key){const p=presets[key];spatialState={n:p.n,w:[...p.w],v:[...p.v],name:p.name};$$('[data-preset]').forEach(b=>b.classList.toggle('active',b.dataset.preset===key));buildSpatial()}
+    function buildSpatial(){const n=spatialState.n,cols=Math.sqrt(n);$('#visionGrid').style.gridTemplateColumns=`repeat(${cols},1fr)`;$('#visionGrid').innerHTML=spatialState.v.map((v,i)=>`<div class="region" data-region="${i}"><div class="region-inner"><b>v${i+1}=${fmt(v,1)}</b><small data-alpha="${i}"></small></div></div>`).join('');$('#weightList').innerHTML=spatialState.w.map((w,i)=>`<div class="weight-box"><label for="w${i}">raw w${i+1}</label><input id="w${i}" data-w="${i}" type="number" min="0" step=".05" value="${w}"><label for="v${i}">feature v${i+1}</label><input id="v${i}" data-v="${i}" type="number" step=".5" value="${spatialState.v[i]}"></div>`).join('');$$('[data-w]').forEach(el=>el.oninput=()=>{spatialState.w[+el.dataset.w]=Math.max(0,+el.value||0);updateSpatial()});$$('[data-v]').forEach(el=>el.oninput=()=>{spatialState.v[+el.dataset.v]=+el.value||0;$(`[data-region="${el.dataset.v}"] b`).textContent=`v${+el.dataset.v+1}=${fmt(+el.value||0,1)}`;updateSpatial()});updateSpatial()}
+    function updateSpatial(){const sum=spatialState.w.reduce((a,b)=>a+b,0),a=sum?spatialState.w.map(w=>w/sum):spatialState.w.map(()=>1/spatialState.n),hard=a.indexOf(Math.max(...a)),soft=a.reduce((z,w,i)=>z+w*spatialState.v[i],0);$$('.region').forEach((el,i)=>{el.style.setProperty('--alpha',(.08+.82*a[i]).toFixed(3));el.classList.toggle('hard',i===hard);$(`[data-alpha="${i}"]`).textContent=`α=${fmt(a[i])}`});$('#softContext').textContent=fmt(soft);$('#hardContext').textContent=`v${hard+1} = ${fmt(spatialState.v[hard])}`;$('#hardWhy').textContent=`because α${hard+1} is largest`;const terms=a.map((w,i)=>w>0?`${fmt(w)}·v${i+1}`:null).filter(Boolean);$('#softSymbolic').textContent=`c = ${terms.join(' + ')}`;$('#alphaBars').innerHTML=a.map((w,i)=>`<div class="bar-row"><b>α${i+1}</b><div class="bar"><span style="width:${w*100}%"></span></div><span>${fmt(w)}</span></div>`).join('')}
+    $$('[data-preset]').forEach(b=>b.onclick=()=>setPreset(b.dataset.preset));setPreset('pa8');$('#spatialCheck').onclick=()=>{const ok=$('#spatialQ').value==='a';$('#spatialResult').hidden=false;$('#spatialResult').innerHTML=ok?'<b>Correct.</b> A convex weighted sum may lie between feature values.':'<b>Not yet.</b> Soft attention forms c=Σαᵢvᵢ with αᵢ≥0 and Σαᵢ=1.'};
+
+    function updatePipeline(){const tau=+$('#tau').value,hs=[[1,2],[0,1],[2,3]],scores=[1/tau,0,2/tau],a=softmax(scores),c=[a[0]+2*a[2],2*a[0]+a[1]+3*a[2]];$('#tauOut').textContent=fmt(tau,2);$('#scores').textContent='['+scores.map(x=>fmt(x)).join(', ')+']';$('#pipelineBars').innerHTML=a.map((w,i)=>`<div class="bar-row"><b>α${i+1}</b><div class="bar"><span style="width:${w*100}%"></span></div><span>${fmt(w)}</span></div>`).join('');$('#contextVector').textContent='['+c.map(x=>fmt(x)).join(', ')+']'}$('#tau').oninput=updatePipeline;updatePipeline();$$('.temp-answer').forEach(b=>b.onclick=()=>{$$('.temp-answer').forEach(x=>x.classList.toggle('active',x===b));$('#tempResult').innerHTML=b.dataset.answer==='sharper'?'<b>Correct.</b> Dividing by a smaller τ increases score gaps before softmax.':'<b>Reverse it.</b> Smaller τ magnifies score gaps and sharpens the distribution.'});
+    const alignQs=[['cosine(s,h)','Content-based'],['vᵀ tanh(W[s;h])','Additive'],['α = softmax(Ws); h does not enter','Location-based'],['sᵀWh','General'],['sᵀh','Dot-product'],['sᵀh / √n','Scaled dot-product']];let aq=0;function showAlign(){const q=alignQs[aq];$('#alignExpr').textContent=q[0];$('#alignPick').value='';$('#alignResult').textContent='Answer hidden.'}$('#alignCheck').onclick=()=>{$('#alignResult').innerHTML=$('#alignPick').value===alignQs[aq][1]?'<b>Correct.</b> Recognize the operator, not the name alone.':`<b>Not yet.</b> This is ${alignQs[aq][1]}.`};$('#alignNext').onclick=()=>{aq=(aq+1)%alignQs.length;showAlign()};showAlign();
+
+    const caption={a:[.25,.25,.25,.25],dog:[.04,.08,.83,.05],runs:[.08,.72,.15,.05],outside:[.1,.15,.15,.6],regions:['sky','motion','dog','ground']};let word='dog';function drawCaption(){const a=caption[word];$('#captionGrid').innerHTML=caption.regions.map((r,i)=>`<div class="caption-region" style="background:color-mix(in srgb,var(--violet2) ${Math.round(18+82*a[i])}%,var(--surface2))">${r}<br>α=${fmt(a[i],2)}</div>`).join('');$('#words').innerHTML=Object.keys(caption).filter(k=>k!=='regions').map(k=>`<button class="word ${k===word?'active':''}" data-word="${k}">${k}</button>`).join('');$$('[data-word]').forEach(b=>b.onclick=()=>{word=b.dataset.word;drawCaption()});const ix=a.indexOf(Math.max(...a));$('#captionOutput').innerHTML=`For <b>${word}</b>, the largest alignment weight is on <b>${caption.regions[ix]}</b>. Context still blends all four regions under soft attention.`}drawCaption();$('#captionReveal').onclick=()=>{$('#captionAnswer').hidden=false};
+
+    const claims=[['Uses deterministic continuous weights and ordinary backpropagation.','soft','Soft attention is differentiable.'],['A discrete choice motivates REINFORCE and variance reduction.','hard','Hard selection is not differentiable through the sampled choice.'],['At inference, can aggregate one selected location rather than every location.','hard','This is the course framing behind lower aggregation overhead for hard attention.'],['Computes c=Σᵢαᵢvᵢ over the full map.','soft','This is the soft weighted context.']];let claimIx=0;function showClaim(){const q=claims[claimIx];$('#claim').textContent=q[0];$('#claimResult').textContent='Commit first.';$$('.claim-choice').forEach(b=>b.classList.remove('active'))}$$('.claim-choice').forEach(b=>b.onclick=()=>{const q=claims[claimIx],ok=b.dataset.choice===q[1];$$('.claim-choice').forEach(x=>x.classList.toggle('active',x===b));$('#claimResult').innerHTML=(ok?'<b>Correct.</b> ':'<b>Not yet.</b> ')+q[2]});$('#claimNext').onclick=()=>{claimIx=(claimIx+1)%claims.length;showClaim()};showClaim();
+
+    function updateComplexity(){const m=+$('#tokens').value;$('#tokensOut').textContent=m;$('#pairCount').textContent=(m*m).toLocaleString();$('#pairGrid').style.setProperty('--m',m);$('#pairGrid').innerHTML=Array.from({length:m*m},(_,ix)=>{const r=Math.floor(ix/m),c=ix%m,cl=r===c?'diag':r===0?'query':'';return `<span class="pair ${cl}" aria-label="query ${r+1}, key ${c+1}"></span>`}).join('')}$('#tokens').oninput=updateComplexity;updateComplexity();$$('.complexity-answer').forEach(b=>b.onclick=()=>{const ok=b.dataset.factor==='4';$('#complexityResult').hidden=false;$('#complexityResult').innerHTML=ok?'<b>Correct.</b> (2M)²K = 4M²K.':'<b>Not yet.</b> The sequence-length term is squared: doubling M quadruples M².'});
+  </script>
+</body>
+</html>

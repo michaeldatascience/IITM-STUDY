@@ -210,6 +210,9 @@ Folder: `study-hub/`
 - `dlcv/volume-06-modern-cnns-detection.md` - paired runtime source for the DLCV Weeks 5–6 canonical volume; intentionally not linked from the hub.
 - `dlcv/volume-06-modern-cnns-detection-interactive.html` - canonical DLCV Weeks 5–6 module covering architecture evolution, efficient convolution, transfer learning, CNN visualization, two-/single-stage detection, evaluation, and semantic/instance/panoptic segmentation.
 - `dlcv/detection-metrics-playground.html` - dedicated visual practice for box IoU, NMS, pyramid anchors, foreground-only box regression, 11-point AP/mAP, and Dice versus IoU.
+- `dlcv/volume-07-sequence-attention-vision.md` - paired runtime source for the DLCV Weeks 7–8 canonical volume; intentionally not linked from the hub.
+- `dlcv/volume-07-sequence-attention-vision-interactive.html` - canonical DLCV Weeks 7–8 module covering RNN/BPTT, course-convention LSTM/GRU calculations, video understanding, alignment and attention, captioning, VQA/dialog, and the Transformer bridge.
+- `dlcv/visual-attention-playground.html` - dedicated visual practice reproducing PA8/GA8 spatial contexts, score-softmax-context numerics, caption-step attention, soft/hard mechanisms, and self-attention complexity.
 - `archive/llm/` and `archive/dlcv/` - reviewed prior artifacts retained as references until incorporated into canonical volumes.
 - `docs/` - publication snapshots of this catalog and the study map.
 
@@ -342,3 +345,4 @@ When new material is added:
 - **2026-08-30:** Added LLM Volume 3 for Weeks 3–4 and the Decoding & Objective Playground. The volume integrates the 143 official slide pages, GA3/GA4, four supplied PYQs, and personal Quiz 1 notes; the paired Markdown remains an unlinked runtime source.
 - **2026-08-30:** Added the source-grounded LLM Week 8 Data Scaling and Pre-training Pipelines module plus the Data Pipeline Playground. The module integrates all 69 official Week 8 slide pages, GA8, four supplied PYQs, and the master Quiz 2 note; its paired Markdown remains an unlinked runtime source.
 - **2026-08-30:** Added the source-grounded DLCV Weeks 5–6 Modern CNNs, Detection, and Segmentation volume plus the Detection Metrics Playground. The volume integrates all 361 official slide pages, GA5/PA5, GA6/PA6, four supplied PYQs, and the personal Quiz 2 pack; its paired Markdown remains an unlinked runtime source.
+- **2026-08-30:** Added the source-grounded DLCV Weeks 7–8 Sequence Models and Attention in Vision volume plus the Visual Attention Playground. The volume integrates all 523 official slide pages, GA7/PA7, GA8/PA8, four supplied PYQs, and the personal Quiz 2 pack; its paired Markdown remains an unlinked runtime source.
