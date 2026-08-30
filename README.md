@@ -19,6 +19,8 @@ Open the study hub at <https://michaeldatascience.github.io/IITM-STUDY/>. This r
 
 Source PDFs, raw assignments, and PYQ collections remain outside this folder. Only reviewed study outputs belong here.
 
+Current canonical endpoint: **Shared Volume 8 — Efficient Attention and Vision Transformers** (LLM Weeks 11–12 + DLCV Week 9), with its dedicated interactive playground.
+
 ## Update rule
 
 After a new volume is discussed and reviewed:

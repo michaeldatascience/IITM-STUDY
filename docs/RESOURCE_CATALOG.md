@@ -41,7 +41,7 @@ Use sources in this order whenever there is a disagreement:
 | `DLCV/` | 66 PDFs, 2 Markdown, 24 text/JSON, 3 HTML, 1 JPG, 3 PNG, 1 MP3, 1 MP4 | 3,132 PDF pages |
 | `Study Material Previews/` | 1 Markdown, 2 interactive HTML | Working/generated copies |
 | `IITM-LLM/` | 1 Markdown, 1 text, 10 HTML | GitHub publication repository |
-| `study-hub/` | 14 Markdown, 22 HTML, 1 text | Curated GitHub Pages publication unit and single-entry study interface |
+| `study-hub/` | 15 Markdown, 24 HTML, 1 text | Curated GitHub Pages publication unit and single-entry study interface |
 | **PDF total** | **90 PDFs / 3,801 pages** | All files opened successfully and yielded extractable text during the 2026-08-30 review |
 
 `tmp/` contains render/review intermediates and is deliberately excluded from the study-resource inventory.
@@ -203,6 +203,9 @@ Folder: `study-hub/`
 - `shared/volume-00-neural-foundations-interactive.html` - interactive Volume 0 with timed resistance pulses, activation/RNN/BPTT/backprop/GRU labs, final test, and saved progress.
 - `shared/volume-01-transformer-foundations.md` - canonical source/reference version for LLM Weeks 1-2, with the shared Q/K/V, self-attention, masking, position, normalization, and parameter foundation reused by DLCV Weeks 8-9.
 - `shared/volume-01-transformer-foundations-interactive.html` - interactive Volume 1 with attention, causal-mask, parameter-count, sinusoidal-PE, normalization, routing, resistance, and final-test labs.
+- `shared/volume-08-efficient-attention-vision-transformers.md` - paired runtime source for LLM Weeks 11–12 plus DLCV Week 9; intentionally not linked from the hub.
+- `shared/volume-08-efficient-attention-vision-transformers-interactive.html` - canonical Volume 8 covering attention cost/fast mechanisms, KV inference, relative position, ViT/Swin, DETR/Deformable DETR, and SAM.
+- `shared/efficient-attention-vit-playground.html` - dedicated practice for attention masks/pair counts, RoPE/ALiBi/RPE, MHA/GQA/MQA cache sizing, ViT/Swin patch grids, and DETR Hungarian matching.
 - `llm/week-05-tokenizers-interactive.html` and `llm/week-07-bart-gpt2-t5-interactive.html` - approved canonical copies.
 - `llm/week-08-data-scaling-pipelines.md` - paired runtime source for the Week 8 module; intentionally not linked from the hub.
 - `llm/week-08-data-scaling-pipelines-interactive.html` - canonical Week 8 module covering scaling laws, Common Crawl, cleaning pipelines, deduplication, named datasets, GA8, and repeated PYQ patterns.
