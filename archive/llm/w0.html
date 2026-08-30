@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Volume 0 — The Ground Floor: Text → Numbers → RNNs → Seq2Seq</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}]});"></script>
+<style>
+:root{
+  --paper:#F6F7F5; --card:#FFFFFF; --ink:#16202A; --muted:#5B6B78;
+  --blue:#1D4ED8;          /* definitions, structure */
+  --redpen:#C2402A;        /* exam traps, corrections */
+  --green:#147A4D;         /* worked examples, sanity checks */
+  --amber:#8A5A00; --amberbg:#FFF6E0;
+  --codebg:#101820; --codetext:#DDE7EE;
+  --rule:#D8DEE3;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+.wrap{max-width:880px;margin:0 auto;padding:0 18px 90px}
+header.hero{
+  background:
+    linear-gradient(rgba(246,247,245,.88),rgba(246,247,245,.96)),
+    repeating-linear-gradient(0deg,transparent,transparent 23px,#c9d4dc 24px),
+    repeating-linear-gradient(90deg,transparent,transparent 23px,#c9d4dc 24px);
+  border-bottom:3px solid var(--ink); padding:54px 18px 40px;}
+.hero-inner{max-width:880px;margin:0 auto}
+.eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);font-weight:700}
+h1{font-family:"STIX Two Text","Iowan Old Style",Georgia,serif;font-size:clamp(30px,5vw,44px);
+   line-height:1.12;margin:.35em 0 .3em;font-weight:600}
+.hero p.sub{max-width:640px;color:var(--muted);margin:0}
+h2{font-family:"STIX Two Text",Georgia,serif;font-size:28px;margin:2.2em 0 .4em;
+   border-bottom:2px solid var(--ink);padding-bottom:.25em}
+h2 .wk{display:inline-block;background:var(--ink);color:#fff;font-family:inherit;
+   font-size:14px;letter-spacing:.08em;padding:2px 10px;border-radius:3px;vertical-align:middle;margin-right:10px}
+h3{font-size:19px;margin:1.8em 0 .4em}
+h4{font-size:16px;margin:1.4em 0 .3em;color:var(--blue)}
+p{margin:.55em 0}
+code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.92em;
+  background:#E8ECEF;padding:1px 5px;border-radius:3px}
+pre{background:var(--codebg);color:var(--codetext);padding:16px 18px;border-radius:8px;
+  overflow-x:auto;font-size:13.5px;line-height:1.55;margin:.8em 0}
+pre code{background:none;color:inherit;padding:0}
+.box{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--blue);
+  border-radius:6px;padding:14px 18px;margin:1em 0}
+.box.def{border-left-color:var(--blue)}
+.box.worked{border-left-color:var(--green)}
+.box.worked .tag{color:var(--green)}
+.box.trap{border-left-color:var(--redpen);background:#FFF3EF}
+.box.trap .tag{color:var(--redpen)}
+.box.cheat{border-left-color:var(--amber);background:var(--amberbg)}
+.box.cheat .tag{color:var(--amber)}
+.tag{display:block;font-size:11px;font-weight:800;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--blue);margin-bottom:6px}
+details{background:var(--card);border:1px solid var(--rule);border-radius:6px;
+  margin:.7em 0;padding:0}
+details>summary{cursor:pointer;padding:11px 16px;font-weight:600;list-style:none;
+  display:flex;align-items:center;gap:8px}
+details>summary::before{content:"▸";color:var(--blue);transition:transform .15s;font-size:13px}
+details[open]>summary::before{transform:rotate(90deg)}
+details>.d-body{padding:2px 18px 14px;border-top:1px dashed var(--rule)}
+details.bg>summary{color:var(--muted)}
+details.qa{border-left:3px solid var(--blue)}
+details.ans{background:#F2F6F2;border-left:3px solid var(--green)}
+details.ans>summary{color:var(--green)}
+table{border-collapse:collapse;width:100%;margin:.8em 0;font-size:14.5px;background:var(--card)}
+th,td{border:1px solid var(--rule);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#EDF1F4}
+.flashdeck{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin:1em 0}
+.flash{perspective:900px;min-height:130px;cursor:pointer}
+.flash .inner{position:relative;width:100%;height:100%;min-height:130px;
+  transition:transform .45s;transform-style:preserve-3d}
+.flash.flipped .inner{transform:rotateY(180deg)}
+.flash .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:8px;
+  padding:14px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:14px}
+.flash .front{background:var(--ink);color:#fff}
+.flash .back{background:var(--card);border:2px solid var(--ink);transform:rotateY(180deg)}
+.marginnote{color:var(--redpen);font-style:italic;font-size:14px}
+nav.toc{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:14px 20px;margin:26px 0}
+nav.toc a{color:var(--blue);text-decoration:none}
+nav.toc a:hover{text-decoration:underline}
+nav.toc ol{margin:.3em 0 .3em 1.1em;padding:0}
+.pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  border:1px solid var(--rule);border-radius:99px;padding:2px 10px;margin:2px 4px 2px 0;background:#fff}
+.todo{color:#F6C244;font-weight:700}
+a{color:var(--blue)}
+@media (prefers-reduced-motion:reduce){.flash .inner{transition:none}}
+.where{background:#F0F4FA;border:1px dashed #9DB4D0;border-radius:6px;padding:10px 16px;margin:.5em 0;font-size:14.5px}
+.where .tag{color:var(--blue)}
+.where dl{margin:.2em 0;display:grid;grid-template-columns:auto 1fr;gap:2px 14px}
+.where dt{font-weight:600;font-family:ui-monospace,Menlo,monospace;font-size:13.5px}
+.where dd{margin:0;color:#37474F}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Volume 0 · Prerequisites · Read Before Weeks 1–4</div>
+    <h1>The Ground Floor: Text → Numbers → RNNs → Seq2Seq</h1>
+    <p class="sub">Zero lectures assumed. Every formula comes with a "where:" block defining every symbol. By the last section you will stand exactly at the sentence where the Weeks 1–4 guide begins — and it will feel obvious.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+<nav class="toc">
+  <strong>Contents — read strictly in order; each section is the next one's prerequisite</strong>
+  <ol>
+    <li><a href="#g1">§1 What is a language model? (probability over sentences)</a></li>
+    <li><a href="#g2">§2 N-grams — the pre-neural LM, and why it dies</a></li>
+    <li><a href="#g3">§3 Text → numbers: tokens, one-hot, and embeddings</a></li>
+    <li><a href="#g4">§4 A neural network refresher scaled to exactly what we need</a></li>
+    <li><a href="#g5">§5 RNNs — a network that reads</a></li>
+    <li><a href="#g6">§6 Training RNNs: BPTT and the vanishing-gradient disease</a></li>
+    <li><a href="#g7">§7 LSTM &amp; GRU — gated memory</a></li>
+    <li><a href="#g8">§8 Seq2Seq encoder–decoder — and the exact cliff-edge where Week 1 begins</a></li>
+    <li><a href="#g9">§9 Flashcards</a></li>
+  </ol>
+</nav>
+
+<div class="box cheat"><span class="tag">The notation contract (applies to every guide from now on)</span>
+<p>Every displayed formula is followed by a <strong>where:</strong> box listing each symbol, its type/shape, and its meaning. If you ever meet an undefined symbol in my material again, flag it — that's a bug in the guide, not in you. Standing conventions: lowercase bold-ish letters (x, h, s) are <em>vectors</em>; capitals (W, U, X) are <em>matrices</em>; plain italics (t, T, d, V) are integers/scalars; subscript t or j indexes <em>time/position</em>; superscripts in parentheses index layers or examples.</p>
+</div>
+
+<!-- ==================== 1 ==================== -->
+<h2 id="g1">§1 · What is a language model?</h2>
+<h3>1.1 Motivation</h3>
+<p>Your phone's keyboard suggests the next word. Autocomplete finishes your search. ChatGPT writes essays. All of these are the <em>same object</em>: a machine that answers one question — <strong>"given the words so far, what probably comes next?"</strong> Formally, a language model assigns a probability to every possible sentence, such that natural sentences ("the cat sat on the mat") score high and word-salad ("mat the on sat cat the") scores low. Everything in this course — RNNs, attention, Transformers, GPT — is just increasingly good machinery for computing these probabilities.</p>
+
+<h3>1.2 The chain rule of probability — the single foundation stone</h3>
+<p>A sentence is a sequence of words \(w_1, w_2, \dots, w_T\). Its joint probability factorises <em>exactly</em> (no approximation) as:</p>
+<p>$$P(w_1, w_2, \dots, w_T) \;=\; \prod_{t=1}^{T} P(w_t \mid w_1, \dots, w_{t-1})$$</p>
+<div class="where"><span class="tag">where:</span><dl>
+<dt>w_t</dt><dd>the word (later: token) at position t in the sentence</dd>
+<dt>T</dt><dd>sentence length, in words</dd>
+<dt>P(w_t | w_1..w_{t−1})</dt><dd>probability of word w_t given all the words before it — "the next-word distribution". For t=1 the condition is empty: just P(w_1)</dd>
+<dt>∏</dt><dd>product over t = 1 … T (multiply all the conditional probabilities together)</dd>
+</dl></div>
+<p><strong>Why it's exact:</strong> it's just repeated application of the definition of conditional probability, \(P(A,B) = P(A)\,P(B\mid A)\). Peel words off the front one at a time:</p>
+<p>$$P(w_1,w_2,w_3) = P(w_1)\cdot P(w_2\mid w_1)\cdot P(w_3\mid w_1,w_2)$$</p>
+<p><strong>The punchline of the whole course:</strong> modelling a sentence ⟺ modelling next-word prediction. Build a good next-word machine and you've built a language model. GPT is <em>literally nothing else</em>.</p>
+
+<div class="box worked"><span class="tag">Worked example — a 3-word "language"</span>
+<p>Suppose our world contains sentences over words {I, like, cats}. A model gives: P(I as first word) = 0.8; P(like | I) = 0.6; P(cats | I like) = 0.7. Then:</p>
+<p>$$P(\text{"I like cats"}) = 0.8 \times 0.6 \times 0.7 = 0.336$$</p>
+<p>Notice probabilities <em>shrink multiplicatively</em> with length — every factor ≤ 1. That's why implementations work with <strong>log-probabilities</strong>: \(\log 0.336 = \log 0.8 + \log 0.6 + \log 0.7 \approx -1.09\). Sums instead of products: no numerical underflow, and addition is nicer than multiplication. Burn this in: <em>whenever you see log-probs being added, it's this chain rule.</em></p>
+</div>
+
+<details class="qa"><summary>Drill: P("I like") with the numbers above? And why can't P("I like cats") ever exceed P("I like")?</summary><div class="d-body">
+<p>P("I like") = 0.8×0.6 = 0.48. Any extension multiplies by another factor ≤ 1, so a longer sequence can never be more probable than its own prefix. (This is exactly why beam search in Week 4 must length-normalise — now you know where that comes from.)</p>
+</div></details>
+
+<!-- ==================== 2 ==================== -->
+<h2 id="g2">§2 · N-grams — the pre-neural language model, and why it dies</h2>
+<h3>2.1 The idea</h3>
+<p>The chain rule needs \(P(w_t \mid w_1..w_{t-1})\) — conditioning on an <em>unbounded</em> past. The n-gram approximation: pretend only the last n−1 words matter (a <strong>Markov assumption</strong>):</p>
+<p>$$P(w_t \mid w_1, \dots, w_{t-1}) \;\approx\; P(w_t \mid w_{t-n+1}, \dots, w_{t-1})$$</p>
+<div class="where"><span class="tag">where:</span><dl>
+<dt>n</dt><dd>the window size: n=2 "bigram" (condition on 1 previous word), n=3 "trigram" (on 2), …</dd>
+<dt>w_{t−n+1}..w_{t−1}</dt><dd>the last n−1 words — the only context the model is allowed to see</dd>
+</dl></div>
+<p>Estimate these by <em>counting</em> in a huge corpus:</p>
+<p>$$P(w_t \mid w_{t-1}) = \frac{\mathrm{count}(w_{t-1}, w_t)}{\mathrm{count}(w_{t-1})}$$</p>
+<div class="where"><span class="tag">where:</span><dl>
+<dt>count(w_{t−1}, w_t)</dt><dd>how many times the two-word sequence appears in the training corpus</dd>
+<dt>count(w_{t−1})</dt><dd>how many times the first word appears at all</dd>
+</dl></div>
+
+<div class="box worked"><span class="tag">Worked example — bigram model from a toy corpus</span>
+<p>Corpus (3 sentences): "I like cats", "I like dogs", "cats like fish".</p>
+<p>count(I)=2, count(like)=3, count(cats)=2. count(I, like)=2, count(like, cats)=1, count(like, dogs)=1, count(like, fish)=1, count(cats, like)=1.</p>
+<p>So: P(like | I) = 2/2 = 1.0; P(cats | like) = 1/3; P(dogs | like) = 1/3; P(fish | like) = 1/3.</p>
+<p>P("I like cats") ≈ P(I)·P(like|I)·P(cats|like) = (2/3)·(1.0)·(1/3) ≈ 0.222 (taking P(I) = 2 of 3 sentence-starts).</p>
+<p><strong>Now the disease:</strong> P("I like birds") = 0 — "birds" was never seen after "like". A single unseen pair zeroes the whole sentence. This is <strong>sparsity</strong>.</p>
+</div>
+
+<h3>2.2 Why n-grams die (three ways) — and the wishlist they leave behind</h3>
+<ol>
+<li><strong>Sparsity.</strong> Most valid word pairs never occur even in billions of words; counts of 0 poison products. (Band-aids exist — "smoothing", e.g. add-1 to every count — but they're patches, not cures.)</li>
+<li><strong>No sharing.</strong> Seeing "I like cats" teaches the model nothing about "I like dogs" — "cats" and "dogs" are unrelated symbols. Humans generalise because the words are <em>similar</em>; n-grams have no notion of similarity at all.</li>
+<li><strong>Exponential table size.</strong> Vocab V, window n ⇒ up to \(V^n\) entries. V=50,000, n=5: \(3\times10^{23}\) — more 5-grams than you can store or ever observe.</li>
+</ol>
+<p>The wishlist: (a) represent words so similar words are <em>near</em> each other; (b) a model that <em>computes</em> probabilities from those representations rather than looking them up; (c) unlimited context. Item (a) is §3 (embeddings), (b) is §4–5 (neural nets, RNNs), and (c) is what RNNs promise and attention finally delivers. The whole course plot, in one paragraph.</p>
+
+<details class="qa"><summary>Drill: your phone's swipe-keyboard suggests words using roughly a trigram model. Predict two concrete failure modes you have personally seen.</summary><div class="d-body">
+<p>(1) It suggests a fluent-looking but contextually absurd word — because only the last 2 words are visible ("I left my phone in the … fridge/car/meeting" all equally plausible to it, while the sentence's start settled it). (2) It can't complete rare/novel phrases you've never typed — zero counts. You've experienced the Markov assumption and sparsity first-hand for years.</p>
+</div></details>
+
+<div class="box cheat"><span class="tag">Cheat-code — §1–2</span>
+<ul>
+<li>LM = machine for P(next word | history). Chain rule makes this exact, not a trick.</li>
+<li>Log-probs add; longer ⇒ never more probable than prefix.</li>
+<li>N-gram: Markov window + counting. Dies of sparsity, no similarity-sharing, V^n blow-up.</li>
+</ul>
+</div>
+
+<!-- ==================== 3 ==================== -->
+<h2 id="g3">§3 · Text → numbers: tokens, one-hot, embeddings</h2>
+<h3>3.1 Motivation</h3>
+<p>Neural networks eat vectors of numbers, not strings. So before any model, we must decide: <em>what number-object is a word?</em> This choice turns out to matter enormously — it's where "similar words should be near each other" gets solved.</p>
+
+<h3>3.2 Tokens and the vocabulary</h3>
+<p>Chop text into pieces called <strong>tokens</strong>, collect the set of all distinct tokens into a <strong>vocabulary</strong> of size V, and assign each token an integer ID: cat→17, dog→42, …. For now think token = word; real LLMs use sub-word pieces ("unhappiness" → "un", "happi", "ness") so that no word is ever out-of-vocabulary — the details (BPE) come later in the course; the ID-mapping picture is identical.</p>
+
+<h3>3.3 One-hot vectors — the honest starting point, and its failure</h3>
+<p>Token with ID i becomes a vector of V numbers: all zeros except a 1 in position i.</p>
+<p>$$\mathrm{onehot}(i) = [0, \dots, 0, \underbrace{1}_{\text{position } i}, 0, \dots, 0] \in \mathbb{R}^{V}$$</p>
+<div class="where"><span class="tag">where:</span><dl>
+<dt>i</dt><dd>the token's integer ID, 0 ≤ i &lt; V</dd>
+<dt>V</dt><dd>vocabulary size (e.g. 50,000)</dd>
+<dt>ℝ^V</dt><dd>"a vector of V real numbers"</dd>
+</dl></div>
+<p><strong>Failure 1 — geometry is blind.</strong> The dot product of any two different one-hots is 0; every pair of words is equally unrelated. cat·dog = cat·carburetor = 0. The similarity structure we wished for in §2 is impossible here <em>by construction</em>.
+<strong>Failure 2 — size.</strong> 50,000-dim vectors that are 99.998% zeros.</p>
+
+<h3>3.4 Embeddings — the fix, and secretly just a matrix row</h3>
+<p>Give every token a <em>dense, learned</em> vector of modest size d (e.g. 64–1024). Stack all V of them as rows of one matrix — the <strong>embedding matrix</strong> E. "Looking up a word" is selecting a row:</p>
+<p>$$x_i = E^\top \,\mathrm{onehot}(i) = E[i,:] \in \mathbb{R}^{d}$$</p>
+<div class="where"><span class="tag">where:</span><dl>
+<dt>E</dt><dd>embedding matrix, shape V × d — one row per vocabulary token; a <em>trainable parameter</em>, initialised randomly</dd>
+<dt>E[i,:]</dt><dd>row i of E — "the embedding of token i"</dd>
+<dt>x_i</dt><dd>the resulting word vector, d numbers</dd>
+<dt>d</dt><dd>embedding dimension (called d_model later) — chosen by the designer</dd>
+</dl></div>
+<p>Read the equation twice: multiplying a one-hot by a matrix <em>selects a row</em>. So an embedding layer isn't a new concept — it's a fully-connected layer applied to one-hot input, implemented efficiently as row-lookup. And its parameter count is just the matrix size: <strong>V × d</strong>. (V=1000, d=64 ⇒ 64,000 — the number from your standing corrections list. Now you know exactly which matrix those parameters live in.)</p>
+<p><strong>Where does similarity come from?</strong> E starts random. During training (predicting next words, §5), gradients push words that appear in similar contexts toward similar rows — because giving them similar vectors lets the model reuse what it learned about one for the other. "cats" and "dogs" end up near each other <em>because that reduces prediction loss</em>. Nobody hand-codes it. Classic evidence this really happens: in trained embeddings, vector arithmetic like king − man + woman ≈ queen.</p>
+
+<div class="box worked"><span class="tag">Worked example — tiny embedding lookup, by hand</span>
+<p>V = 4 (vocab: I=0, like=1, cats=2, dogs=3), d = 2. Suppose after some training:</p>
+<p>$$E = \begin{bmatrix} 0.1 & 0.9 \\ 0.8 & 0.2 \\ 0.7 & 0.6 \\ 0.6 & 0.7 \end{bmatrix}$$</p>
+<p>Sentence "I like cats" → IDs [0, 1, 2] → vectors x₁=[0.1,0.9], x₂=[0.8,0.2], x₃=[0.7,0.6]. Similarity via dot product: cats·dogs = 0.7·0.6+0.6·0.7 = 0.84 (high); cats·I = 0.07+0.54 = 0.61; the geometry now <em>says something</em>. Parameter count: 4×2 = 8. In code: <code>E[np.array([0,1,2])]</code> — fancy-indexing rows, no matmul needed.</p>
+</div>
+
+<details class="qa"><summary>Drill: why is d ≪ V not just a compression convenience but the very thing that forces generalisation?</summary><div class="d-body">
+<p>With only d dimensions for V words, the model <em>cannot</em> give every word an independent direction (that would need V dims, i.e. one-hot). It's forced to spend dimensions on <em>shared features</em> (roughly: animacy-ish, verb-ish, sentiment-ish directions) — and shared features are what transfer between "cats" and "dogs". The bottleneck is the mechanism. Same deep principle as low-rank ideas you'll meet much later (LoRA).</p>
+</div></details>
+
+<!-- ==================== 4 ==================== -->
+<h2 id="g4">§4 · Neural network refresher — exactly what we need, no more</h2>
+<p>You've done DL, so this is a targeted re-arm, not a course. Four facts carry everything downstream:</p>
+<div class="box def"><span class="tag">Fact 1 — a layer</span>
+<p>$$h = f(Wx + b)$$</p>
+<div class="where"><span class="tag">where:</span><dl>
+<dt>x</dt><dd>input vector, ℝ^{d_in}</dd>
+<dt>W</dt><dd>weight matrix, d_out × d_in — trainable</dd>
+<dt>b</dt><dd>bias vector, ℝ^{d_out} — trainable</dd>
+<dt>f</dt><dd>elementwise nonlinearity (tanh, ReLU, …)</dd>
+<dt>h</dt><dd>output ("hidden") vector, ℝ^{d_out}</dd>
+</dl></div>
+<p>Params of the layer: d_out·d_in + d_out. Without f, stacked layers collapse to one matrix — nonlinearity is what buys depth.</p>
+</div>
+<div class="box def"><span class="tag">Fact 2 — turning scores into a next-word distribution</span>
+<p>$$p = \mathrm{softmax}(z),\qquad \mathrm{softmax}(z)_j = \frac{e^{z_j}}{\sum_{k=1}^{V} e^{z_k}}$$</p>
+<div class="where"><span class="tag">where:</span><dl>
+<dt>z</dt><dd>"logits": a vector of V raw scores, one per vocabulary token (any real numbers)</dd>
+<dt>z_j</dt><dd>the score for token j</dd>
+<dt>p_j</dt><dd>resulting probability of token j: positive, and all p_j sum to 1</dd>
+</dl></div>
+<p>Softmax = exponentiate (make positive, amplify gaps) then normalise (make it a distribution). It is <em>the</em> bridge from network outputs to the P(w_t | history) that §1 demands.</p>
+</div>
+<div class="box def"><span class="tag">Fact 3 — the loss</span>
+<p>$$L = -\log p_{c}$$</p>
+<div class="where"><span class="tag">where:</span><dl>
+<dt>c</dt><dd>the index of the <em>correct</em> next token (from the training text itself — free labels!)</dd>
+<dt>p_c</dt><dd>the probability the model assigned to that correct token</dd>
+</dl></div>
+<p>Cross-entropy = "negative log of the probability you gave the truth". Truth got p=1 → loss 0; truth got p→0 → loss →∞. Minimising it maximises the chain-rule product from §1 (log turns the product into a sum). Its gradient w.r.t. logits is the beautiful ŷ − y (derived fully in the coding guide §5).</p>
+</div>
+<div class="box def"><span class="tag">Fact 4 — training</span>
+<p>Compute L on data → backprop (chain rule in reverse) gives ∂L/∂θ for every parameter θ → nudge θ ← θ − η·∂L/∂θ (η = learning rate) → repeat. That's it; everything else is architecture.</p>
+</div>
+
+<h3>4.1 The first neural LM (Bengio 2003) — n-gram with embeddings, and the bridge to RNNs</h3>
+<p>Concatenate the embeddings of the last n−1 words, push through one hidden layer, softmax over V:</p>
+<p>$$z = U\, f(W\,[x_{t-n+1}; \dots; x_{t-1}] + b) + b',\qquad p = \mathrm{softmax}(z)$$</p>
+<div class="where"><span class="tag">where:</span><dl>
+<dt>[a; b; c]</dt><dd>vector concatenation, length (n−1)·d</dd>
+<dt>x_{t−k}</dt><dd>embedding of the word k positions back, ℝ^d</dd>
+<dt>W, b</dt><dd>hidden layer: W is d_h × (n−1)d</dd>
+<dt>U, b′</dt><dd>output layer: U is V × d_h — one score-row per vocab word</dd>
+<dt>p</dt><dd>next-word distribution, ℝ^V</dd>
+</dl></div>
+<p>This already fixes n-grams' sparsity and sharing problems (embeddings generalise; unseen combinations still compute a probability). Its one remaining sin: the window is still <strong>fixed at n−1 words</strong> — context beyond it is invisible, and each position has its own slice of W (position 3 learns separately from position 7). Wish: a machine with <em>unbounded, order-aware</em> memory that reuses the same weights at every position. That machine is the RNN.</p>
+
+<!-- ==================== 5 ==================== -->
+<h2 id="g5">§5 · RNNs — a network that reads</h2>
+<h3>5.1 Motivation &amp; the core idea</h3>
+<p>Read a sentence like a human: one word at a time, maintaining a running summary in your head. The Recurrent Neural Network does exactly this — it keeps a <strong>hidden state</strong> vector h (its "mental summary so far") and updates it with each incoming word <em>using the same weights every time</em>:</p>
+<p>$$h_t = \tanh(W_{hh}\, h_{t-1} + W_{xh}\, x_t + b_h)$$</p>
+<div class="where"><span class="tag">where:</span><dl>
+<dt>x_t</dt><dd>embedding of the t-th input word, ℝ^d (from §3's E)</dd>
+<dt>h_t</dt><dd>hidden state after reading word t, ℝ^{d_h} — the running summary of words 1..t</dd>
+<dt>h_{t−1}</dt><dd>previous summary; h_0 is initialised to zeros</dd>
+<dt>W_hh</dt><dd>recurrent weights, d_h × d_h — "how does the old summary carry forward"; trainable, <em>shared across all t</em></dd>
+<dt>W_xh</dt><dd>input weights, d_h × d — "how does the new word update the summary"; trainable, shared</dd>
+<dt>b_h</dt><dd>bias, ℝ^{d_h}</dd>
+<dt>tanh</dt><dd>elementwise squash to (−1,1), keeping the state bounded</dd>
+</dl></div>
+<p>To predict the next word at each step, bolt Fact 2 on top of the state:</p>
+<p>$$z_t = W_{hy}\,h_t + b_y,\qquad p_t = \mathrm{softmax}(z_t)$$</p>
+<div class="where"><span class="tag">where:</span><dl>
+<dt>W_hy</dt><dd>output weights, V × d_h — turns the summary into V vocabulary scores</dd>
+<dt>p_t</dt><dd>the model's P(w_{t+1} | w_1..w_t): §1's conditional, finally computed by a machine with unbounded context</dd>
+</dl></div>
+<p><strong>Weight sharing is the magic:</strong> the same (W_hh, W_xh) process word 1 and word 401 — so the parameter count doesn't grow with sentence length, and "how to update a summary given a word" is learned once, applied everywhere. Contrast with §4.1's fixed window. Total params: \(d_h d_h + d_h d + d_h\) (cell) \(+ V d_h + V\) (output head).</p>
+
+<div class="box worked"><span class="tag">Worked example — hand-run an RNN for 2 steps (do it on paper)</span>
+<p>Sizes: d = 2, d_h = 2. Weights:
+$$W_{hh}=\begin{bmatrix}0.5&0\\0&0.5\end{bmatrix},\;
+W_{xh}=\begin{bmatrix}1&0\\0&1\end{bmatrix},\; b_h=\begin{bmatrix}0\\0\end{bmatrix},\; h_0=\begin{bmatrix}0\\0\end{bmatrix}$$
+Inputs: x₁ = [1, 0] ("I"), x₂ = [0, 1] ("like").</p>
+<p><strong>Step 1:</strong> \(W_{hh}h_0 = [0,0]\); \(W_{xh}x_1 = [1,0]\); sum = [1,0]; h₁ = tanh([1,0]) = <strong>[0.762, 0]</strong>.</p>
+<p><strong>Step 2:</strong> \(W_{hh}h_1 = [0.381, 0]\); \(W_{xh}x_2 = [0,1]\); sum = [0.381, 1]; h₂ = [tanh(0.381), tanh(1)] = <strong>[0.363, 0.762]</strong>.</p>
+<p>Read h₂: its first coordinate still carries a decayed trace of word 1 (0.762 → 0.363 after passing through W_hh's 0.5 and tanh), its second carries fresh word 2. The state <em>is</em> memory — and you just watched old information fade as it passes repeatedly through W_hh. Hold that thought; it becomes §6's disease.</p>
+</div>
+
+<h3>5.2 Build it — an RNN LM forward pass in 15 lines</h3>
+<pre><code>import numpy as np
+rng = np.random.default_rng(0)
+
+V, d, dh = 5, 4, 8
+E   = rng.normal(0, 0.1, (V, d))       # §3: embedding matrix
+Whh = rng.normal(0, 0.1, (dh, dh))
+Wxh = rng.normal(0, 0.1, (dh, d))
+Why = rng.normal(0, 0.1, (V, dh))
+bh, by = np.zeros(dh), np.zeros(V)
+
+def softmax(z): z = z - z.max(); e = np.exp(z); return e / e.sum()
+
+def rnn_lm_forward(token_ids):
+    h = np.zeros(dh); loss = 0.0; H = [h]
+    for t in range(len(token_ids) - 1):
+        x = E[token_ids[t]]                        # embed current token (row lookup!)
+        h = np.tanh(Whh @ h + Wxh @ x + bh)        # update the summary
+        p = softmax(Why @ h + by)                  # distribution over next token
+        loss += -np.log(p[token_ids[t + 1]])       # §4 Fact 3: -log p(truth)
+        H.append(h)
+    return loss / (len(token_ids) - 1), H          # mean loss; H cached for backprop
+
+# TODO(you): generation. Write sample(prompt_id, n): repeatedly feed the last
+# sampled token back in, sampling from p each step. ~6 lines. This IS "an LLM
+# generating text" — same loop, bigger machine.</code></pre>
+<details class="ans"><summary>Solution + what to notice</summary><div class="d-body">
+<pre><code>def sample(start_id, n):
+    h, out = np.zeros(dh), [start_id]
+    for _ in range(n):
+        x = E[out[-1]]
+        h = np.tanh(Whh @ h + Wxh @ x + bh)
+        p = softmax(Why @ h + by)
+        out.append(int(rng.choice(V, p=p)))
+    return out</code></pre>
+<p>Notice: <em>training</em> consumed the true text; <em>generation</em> feeds the model's own output back in (autoregression). The gap between those two modes has a name — exposure bias — and Week 4's decoding strategies (greedy/beam/top-p) are all different policies for the <code>rng.choice</code> line. You have now written the skeleton of GPT's generation loop.</p>
+</div></details>
+
+<!-- ==================== 6 ==================== -->
+<h2 id="g6">§6 · Training RNNs: BPTT and the vanishing-gradient disease</h2>
+<h3>6.1 Backpropagation Through Time = unroll, then ordinary backprop</h3>
+<p>An RNN over T steps is just a T-layer-deep feedforward net where every "layer" shares the same weights (draw it: h₀→h₁→h₂→…, an x entering at each step, a loss exiting at each step). Backprop through this unrolled graph is called BPTT; the only novelty is that gradients for the <em>shared</em> W_hh <strong>sum over all timesteps</strong> — same "used many times ⇒ accumulate with +=" law as your Value class.</p>
+<h3>6.2 The disease, derived honestly</h3>
+<p>How does the loss at time T feel a word at time k ≪ T? Chain rule through every intermediate state:</p>
+<p>$$\frac{\partial h_T}{\partial h_k} = \prod_{t=k+1}^{T} \frac{\partial h_t}{\partial h_{t-1}} = \prod_{t=k+1}^{T} \mathrm{diag}\!\left(\tanh'(a_t)\right) W_{hh}$$</p>
+<div class="where"><span class="tag">where:</span><dl>
+<dt>∂h_T/∂h_k</dt><dd>a d_h × d_h Jacobian matrix: how the late state responds to wiggling the early state</dd>
+<dt>a_t</dt><dd>the pre-activation at step t, i.e. \(W_{hh}h_{t-1}+W_{xh}x_t+b_h\)</dd>
+<dt>diag(tanh′(a_t))</dt><dd>diagonal matrix of elementwise derivatives 1−tanh²(a_t), each entry ≤ 1</dd>
+<dt>∏</dt><dd>a product of T−k <em>matrices</em> — this repetition is the whole problem</dd>
+</dl></div>
+<p>A product of T−k copies of (something ≤ 1) × W_hh behaves like \(\sigma_{max}(W_{hh})^{T-k}\) (σ_max = largest singular value, refresher below). If σ_max &lt; 1: gradient shrinks <em>geometrically</em> — 0.9⁵⁰ ≈ 0.005 — long-range influences become invisible to training: <strong>vanishing gradients</strong>. If σ_max &gt; 1: 1.1⁵⁰ ≈ 117 — <strong>exploding gradients</strong> (the standard fix: gradient clipping — rescale the gradient when its norm exceeds a threshold). Note the exact same repeated-multiplication logic as the saturated-activation example in the coding guide §4 — one idea, two costumes.</p>
+<details class="bg"><summary>Refresher: singular values in 60 seconds</summary><div class="d-body">
+<p>For any matrix M, σ_max(M) is the largest factor by which M can stretch any vector: \(\sigma_{max} = \max_{\|v\|=1}\|Mv\|\). Repeatedly applying M scales vectors roughly like σ_maxᵏ (exactly, along the top singular direction). So "will a long matrix product explode or vanish" reads off one number. For the identity matrix σ_max = 1 — foreshadowing: residual connections (Week 3) put an identity into the product, which is why deep Transformers train at all.</p>
+</div></details>
+<p><strong>Consequence for language:</strong> "The cat, which chased the dog that stole the sausage from the …, <em>was</em> hungry" — agreeing "was" with "cat" needs a 15-word reach. Vanilla RNNs empirically fail beyond ~10–20 steps. Two escape routes were invented: <em>engineer a better cell</em> (§7), and — more radically — <em>stop forcing information through every intermediate step</em> (that's attention, Week 1–2).</p>
+
+<!-- ==================== 7 ==================== -->
+<h2 id="g7">§7 · LSTM &amp; GRU — gated memory</h2>
+<h3>7.1 The idea in one sentence</h3>
+<p>Vanishing happens because information must survive multiplication by W_hh and tanh at <em>every</em> step; so give the network a protected <strong>conveyor belt</strong> (cell state) where information rides along mostly <em>additively</em>, with learned <strong>gates</strong> — small sigmoid-valves in [0,1] — deciding at each step what to erase, write, and read.</p>
+<div class="box def"><span class="tag">LSTM equations — read as: three valves + one belt</span>
+<p>$$f_t = \sigma(W_f[h_{t-1};x_t]+b_f)\quad
+i_t = \sigma(W_i[h_{t-1};x_t]+b_i)\quad
+o_t = \sigma(W_o[h_{t-1};x_t]+b_o)$$
+$$\tilde c_t = \tanh(W_c[h_{t-1};x_t]+b_c)\qquad
+c_t = f_t \odot c_{t-1} + i_t \odot \tilde c_t\qquad
+h_t = o_t \odot \tanh(c_t)$$</p>
+<div class="where"><span class="tag">where:</span><dl>
+<dt>[h_{t−1}; x_t]</dt><dd>concatenation of previous hidden state and current input, ℝ^{d_h+d}</dd>
+<dt>σ</dt><dd>sigmoid — outputs in (0,1), i.e. a valve setting per coordinate</dd>
+<dt>f_t</dt><dd><strong>forget gate</strong>: per-coordinate, how much of the old belt content to keep (1 = keep, 0 = erase)</dd>
+<dt>i_t</dt><dd><strong>input gate</strong>: how much of the new candidate to write onto the belt</dd>
+<dt>o_t</dt><dd><strong>output gate</strong>: how much of the belt to reveal into h_t</dd>
+<dt>c̃_t</dt><dd>candidate content — what the current word proposes writing, in (−1,1)</dd>
+<dt>c_t</dt><dd>the <strong>cell state</strong> (conveyor belt), ℝ^{d_h}</dd>
+<dt>⊙</dt><dd>elementwise (Hadamard) product — valves act per coordinate</dd>
+<dt>W_f, W_i, W_o, W_c</dt><dd>each d_h × (d_h + d), trainable; plus biases ℝ^{d_h}</dd>
+</dl></div>
+</div>
+<p><strong>Why this cures vanishing:</strong> differentiate the belt: \(\partial c_t/\partial c_{t-1} = \mathrm{diag}(f_t)\). No W_hh in the path, no mandatory tanh — if the network learns f_t ≈ 1 for some coordinate, gradient flows back along it essentially undamped for dozens of steps. The gate <em>learns</em> what to remember; the additive belt is the mechanism. (Recognise the shape: an additive highway with learned modulation is the ancestor of Week 3's residual connections.)</p>
+<p><strong>Parameter count</strong> (memorise the recipe): 4 gates/candidates × [d_h(d_h + d) + d_h] = <strong>4(d_h² + d_h·d + d_h)</strong>. E.g. d=100, d_h=200: 4(40,000+20,000+200) = 240,800.</p>
+<p><strong>GRU</strong> = LSTM's budget cousin: merges cell and hidden state, two gates (reset r_t, update z_t), update \(h_t = (1-z_t)\odot h_{t-1} + z_t \odot \tilde h_t\) — same additive-highway trick, ¾ the parameters (3 blocks instead of 4). Bahdanau's original model uses GRUs — so when Week 1's paper says "the decoder GRU", you now know exactly what machine sits there.</p>
+<details class="qa"><summary>Drill: an LSTM coordinate has f_t = 0.99 constantly. After 100 steps, what fraction of its original content survives on the belt? Same question for a vanilla RNN coordinate whose effective multiplier is 0.9.</summary><div class="d-body">
+<p>0.99¹⁰⁰ ≈ 0.366 — a third survives, usable. 0.9¹⁰⁰ ≈ 0.0000266 — gone. Same exponential law, but the LSTM gets to <em>learn</em> a multiplier ≈ 1, and crucially can set different multipliers per coordinate per timestep. That flexibility is the entire product.</p>
+</div></details>
+
+<!-- ==================== 8 ==================== -->
+<h2 id="g8">§8 · Seq2Seq encoder–decoder — the cliff-edge where Week 1 begins</h2>
+<h3>8.1 The task shape changes</h3>
+<p>A language model continues text. But translation, summarisation, and question-answering map <em>one whole sequence to another</em> — lengths differ, word orders differ ("ich liebe dich" → "I love you", but German verbs often go last). Architecture answer (Sutskever et al. 2014): <strong>two RNNs</strong>.</p>
+<div class="box def"><span class="tag">The encoder–decoder</span>
+<p><strong>Encoder</strong> (an RNN/LSTM from §5–7) reads the source x₁..x_T, producing states h₁..h_T; its final state h_T — one vector — is handed over as the <strong>context</strong> c = h_T.</p>
+<p><strong>Decoder</strong> (another RNN) is a conditional language model: initialised with s₀ = c, it generates the target y₁..y_{T′} one token at a time, each step's output fed back as the next input, until it emits a special &lt;eos&gt; (end-of-sequence) token.</p>
+<p>$$s_i = f(s_{i-1}, y_{i-1}, c) \qquad P(y_i \mid y_{&lt;i}, x) = \mathrm{softmax}(W_{hy} s_i + b)$$</p>
+<div class="where"><span class="tag">where:</span><dl>
+<dt>s_i</dt><dd>decoder hidden state at output step i (s to distinguish from encoder's h)</dd>
+<dt>y_{i−1}</dt><dd>the previously generated target token (embedded); y₀ is a special &lt;sos&gt; start token</dd>
+<dt>c</dt><dd>the context vector = encoder's final state — the <em>only</em> channel from source to target</dd>
+<dt>f</dt><dd>the decoder's RNN/GRU/LSTM cell</dd>
+<dt>T, T′</dt><dd>source and target lengths — allowed to differ; &lt;eos&gt; lets the model choose T′ itself</dd>
+</dl></div>
+</div>
+<p><strong>Training detail you must know — teacher forcing:</strong> during training we feed the decoder the <em>true</em> previous target token y_{i−1} (from the data), not its own possibly-wrong sample — otherwise one early mistake derails every later step and learning is glacial. At inference no truth exists, so it feeds itself. (Train/inference mismatch again — same exposure-bias gap you met in §5.2's TODO.)</p>
+
+<h3>8.2 Now stand on the cliff-edge</h3>
+<p>Look hard at the sentence: <em>"c = h_T is the only channel from source to target."</em> The entire German sentence — 5 words or 50 — must squeeze through one fixed-size vector. You have already seen, numerically, in §5's worked example, how information about early words <em>decays</em> in an RNN state; h_T is dominated by the end of the sentence. Predictions: (a) quality should collapse as source length grows; (b) the fix should let the decoder look back at <em>all</em> of h₁..h_T, choosing relevant ones per output step, differentiably.</p>
+<p>Both predictions are exactly right, and (b) has a name. <strong>Open the Weeks 1–4 guide, §1.1. Its first paragraph is this paragraph.</strong> The formula that begins it — \(e_{ij} = v_a^\top\tanh(W_a s_{i-1} + U_a h_j)\) — now parses symbol by symbol: s_{i−1} is §8's decoder state, h_j is §5's encoder state at position j, and the tanh(W·) is §4 Fact 1, a one-hidden-layer scorer. You have the base.</p>
+
+<div class="box cheat"><span class="tag">Cheat-code — §5–8 (the RNN era in six lines)</span>
+<ul>
+<li>RNN: \(h_t=\tanh(W_{hh}h_{t-1}+W_{xh}x_t+b)\); same weights every step; state = memory.</li>
+<li>RNN-LM params: d_h² + d_h·d + d_h + V·d_h + V (+ V·d embeddings).</li>
+<li>BPTT gradient ∝ ∏(diag(tanh′)W_hh): σ_max&lt;1 vanish, &gt;1 explode (clip).</li>
+<li>LSTM: belt c_t = f⊙c_{t−1} + i⊙c̃; ∂c_t/∂c_{t−1}=diag(f) ⇒ learnable memory. Params 4(d_h²+d_h d+d_h). GRU: 2 gates, ¾ cost, Bahdanau's cell.</li>
+<li>Seq2seq: encoder → c = h_T → decoder LM; teacher forcing in training.</li>
+<li>Bottleneck: everything through one vector ⇒ length-degradation ⇒ attention (Week 1).</li>
+</ul>
+</div>
+
+<!-- ==================== 9 ==================== -->
+<h2 id="g9">§9 · Flashcards</h2>
+<div class="flashdeck">
+  <div class="flash"><div class="inner"><div class="face front">Chain rule of probability for a sentence?</div><div class="face back">P(w₁..w_T) = ∏ P(w_t | w₁..w_{t−1}) — exact, and it means LM ⟺ next-word prediction</div></div></div>
+  <div class="flash"><div class="inner"><div class="face front">Why work in log-probabilities?</div><div class="face back">Products of many p ≤ 1 underflow; logs turn products into sums</div></div></div>
+  <div class="flash"><div class="inner"><div class="face front">Three deaths of n-gram models?</div><div class="face back">Sparsity (zero counts), no similarity sharing, Vⁿ table blow-up</div></div></div>
+  <div class="flash"><div class="inner"><div class="face front">Embedding lookup = what operation, secretly?</div><div class="face back">onehot(i)·E = selecting row i of a V×d matrix; a linear layer on one-hot input</div></div></div>
+  <div class="flash"><div class="inner"><div class="face front">Embedding parameter count?</div><div class="face back">V × d (1000 × 64 = 64,000)</div></div></div>
+  <div class="flash"><div class="inner"><div class="face front">Why does d ≪ V force generalisation?</div><div class="face back">Too few dims for independent directions ⇒ words must share feature axes ⇒ transfer</div></div></div>
+  <div class="flash"><div class="inner"><div class="face front">RNN update equation (all symbols)?</div><div class="face back">h_t = tanh(W_hh h_{t−1} + W_xh x_t + b); shared weights every step</div></div></div>
+  <div class="flash"><div class="inner"><div class="face front">What single property lets RNNs handle any length with fixed params?</div><div class="face back">Weight sharing across time</div></div></div>
+  <div class="flash"><div class="inner"><div class="face front">Vanishing-gradient culprit expression?</div><div class="face back">∏ diag(tanh′)·W_hh over T−k steps ≈ σ_maxᵀ⁻ᵏ → 0 if σ_max&lt;1</div></div></div>
+  <div class="flash"><div class="inner"><div class="face front">Exploding-gradient standard fix?</div><div class="face back">Gradient clipping (rescale when norm exceeds threshold)</div></div></div>
+  <div class="flash"><div class="inner"><div class="face front">LSTM belt equation + its Jacobian?</div><div class="face back">c_t = f⊙c_{t−1} + i⊙c̃; ∂c_t/∂c_{t−1} = diag(f_t) — learnable ≈1 ⇒ gradient survives</div></div></div>
+  <div class="flash"><div class="inner"><div class="face front">LSTM parameter recipe?</div><div class="face back">4 × [d_h(d_h + d) + d_h]</div></div></div>
+  <div class="flash"><div class="inner"><div class="face front">Which cell does Bahdanau's model use?</div><div class="face back">GRU (2 gates: reset + update; no separate cell state)</div></div></div>
+  <div class="flash"><div class="inner"><div class="face front">Teacher forcing?</div><div class="face back">Train decoder on TRUE previous tokens; at inference it feeds itself (exposure-bias gap)</div></div></div>
+  <div class="flash"><div class="inner"><div class="face front">The seq2seq bottleneck, in one sentence?</div><div class="face back">The whole source must pass through the single fixed vector c = h_T — and RNN states decay early info</div></div></div>
+  <div class="flash"><div class="inner"><div class="face front">What are s_{i−1} and h_j inside Bahdanau's score formula?</div><div class="face back">s_{i−1}: decoder state (what am I trying to say); h_j: encoder state at source position j (what does word j offer)</div></div></div>
+</div>
+
+<div class="box"><span class="tag">Reading order, restated</span>
+<p>Volume 0 (this) → Weeks 1–4 theory guide → coding foundations alongside it (its §4–8 pair with everything here: you can now hand-derive the RNN's backward pass using the linear-layer gradients + tanh′ from that volume). When Weeks 1–4 feel solid, we do 5–8. Bring questions from <em>this</em> volume to the next session's resistance check.</p>
+</div>
+
+</div><!-- /wrap -->
+<script>
+document.querySelectorAll('.flash').forEach(function(c){
+  c.addEventListener('click', function(){ c.classList.toggle('flipped'); });
+});
+</script>
+</body>
+</html>

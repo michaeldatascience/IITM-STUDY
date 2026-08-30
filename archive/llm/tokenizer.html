@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Tokenization From Scratch — BPE / WordPiece / Unigram / SentencePiece</title>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --panel2:#1c2330; --border:#2a3444;
+    --text:#e6edf3; --muted:#8b98a9; --accent:#58a6ff; --accent2:#7ee787;
+    --warn:#f0883e; --danger:#ff7b72; --code:#0a0e14;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--bg); color:var(--text); font-family:-apple-system,Segoe UI,Roboto,sans-serif; line-height:1.55; margin:0; padding:0 0 80px 0;}
+  header{padding:28px 20px 18px; border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--bg); z-index:10;}
+  h1{font-size:1.4rem; margin:0 0 4px;}
+  .sub{color:var(--muted); font-size:0.9rem;}
+  nav{display:flex; flex-wrap:wrap; gap:8px; padding:14px 20px; border-bottom:1px solid var(--border);}
+  nav a{color:var(--accent); text-decoration:none; font-size:0.85rem; padding:5px 10px; border:1px solid var(--border); border-radius:6px;}
+  main{max-width:820px; margin:0 auto; padding:0 18px;}
+  section{margin-top:36px; padding-top:8px;}
+  h2{color:var(--accent); border-bottom:1px solid var(--border); padding-bottom:8px; font-size:1.2rem;}
+  h3{color:var(--accent2); font-size:1.02rem; margin-top:26px;}
+  .box{background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:16px 18px; margin:14px 0;}
+  .motivation{background:linear-gradient(135deg,#1c2333,#161b22); border-left:3px solid var(--warn);}
+  .analogy{background:#152029; border-left:3px solid var(--accent); font-style:italic;}
+  .math{background:var(--code); border:1px solid var(--border); font-family:"SF Mono",Consolas,monospace; font-size:0.9rem; overflow-x:auto;}
+  .example{border-left:3px solid var(--accent2);}
+  .warn{border-left:3px solid var(--danger); background:#2a1616;}
+  table{width:100%; border-collapse:collapse; font-size:0.85rem; margin:10px 0;}
+  th,td{border:1px solid var(--border); padding:6px 8px; text-align:left;}
+  th{background:var(--panel2); color:var(--accent2);}
+  code, pre{font-family:"SF Mono",Consolas,monospace; font-size:0.85rem;}
+  pre{background:var(--code); padding:12px; border-radius:8px; overflow-x:auto; border:1px solid var(--border);}
+  .where{font-size:0.85rem; color:var(--muted); margin-top:6px; padding-left:10px; border-left:2px solid var(--border);}
+  details{background:var(--panel2); border:1px solid var(--border); border-radius:8px; margin:10px 0; padding:8px 12px;}
+  summary{cursor:pointer; color:var(--warn); font-weight:600; font-size:0.88rem;}
+  .flash{background:#1a2233; border:1px dashed var(--accent); border-radius:8px; padding:12px; margin:8px 0;}
+  .flash .q{color:var(--accent2); font-weight:600;}
+  .resist{background:#241a16; border:1px solid var(--warn); border-radius:8px; padding:14px; margin:10px 0;}
+  .resist .q{color:var(--warn); font-weight:600;}
+  .token{display:inline-block; padding:2px 6px; margin:2px; border-radius:4px; font-family:monospace; font-size:0.85rem;}
+  .t1{background:#1f3a5f} .t2{background:#3a1f5f} .t3{background:#1f5f3a} .t4{background:#5f3a1f} .t5{background:#5f1f3a}
+  .toc-note{color:var(--muted); font-size:0.82rem;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Tokenization From Scratch</h1>
+  <div class="sub">BPE → WordPiece → Unigram/SentencePiece → Byte-level BPE, one consistent toy corpus throughout</div>
+</header>
+
+<nav>
+  <a href="#motivation">0. Motivation</a>
+  <a href="#bpe">1. BPE</a>
+  <a href="#wordpiece">2. WordPiece</a>
+  <a href="#unigram">3. Unigram LM</a>
+  <a href="#sentencepiece">4. SentencePiece</a>
+  <a href="#bytebpe">5. Byte-level BPE</a>
+  <a href="#compare">6. Comparison</a>
+  <a href="#resist">7. Resistance Qs</a>
+  <a href="#flash">8. Flashcards</a>
+</nav>
+
+<main>
+
+<section id="motivation">
+<h2>0. Why does tokenization even exist?</h2>
+<div class="box motivation">
+<b>The naive options both fail:</b><br><br>
+<b>Word-level tokenization</b> ("split on spaces"): vocabulary explodes. English alone has hundreds of thousands of word forms once you count plurals, tenses, typos, proper nouns. Any word not seen during training → <code>&lt;UNK&gt;</code>. Model sees "run", "running", "runs" as three *completely unrelated* IDs — no shared structure.<br><br>
+<b>Character-level tokenization</b>: vocabulary is tiny (~100 symbols), zero OOV problem. But now a sentence that was 10 words becomes 50 characters. Since a Transformer's self-attention cost grows quadratically with sequence length, and each token carries very little meaning, the model has to work far harder to reconstruct "this is a word" from scratch every time.
+</div>
+
+<div class="box analogy">
+Think of it like packing a suitcase. Word-level tokenization is packing every possible outfit combination pre-assembled — you need infinite suitcases. Character-level is packing individual threads — you need almost no suitcases, but now you have to reassemble every shirt by hand each time you want to wear one. Subword tokenization packs <i>reusable pieces</i>: collars, sleeves, buttons — common enough to reuse across outfits, big enough that you're not stitching from thread.
+</div>
+
+<div class="box">
+<b>The subword insight (the thing every method below is chasing):</b> frequent chunks of text should get their own token ("ing", "the", "##ed"), rare chunks should decompose into smaller frequent pieces, and in the worst case you always fall back to characters/bytes — so <b>OOV becomes mathematically impossible</b>. Every method below is really just a different answer to one question: <i>which chunks deserve to be a single token, and how do I decide?</i>
+</div>
+
+<div class="resist">
+<div class="q">Resistance Q0.1:</div>
+If vocabulary size is a free hyperparameter, why not just set it to 1,000,000 and include every common word AND every subword? What breaks?
+</div>
+<div class="resist">
+<div class="q">Resistance Q0.2:</div>
+The embedding matrix is V × d. If V is huge, where exactly does that cost show up — training time, inference time, memory, or all three? Be specific about which matrices grow.
+</div>
+</section>
+
+<!-- ============ CONSISTENT CORPUS ============ -->
+<section id="corpus">
+<h2>The one corpus we'll reuse everywhere</h2>
+<div class="box example">
+This is (a slight simplification of) the toy corpus from the original BPE-for-NLP paper (Sennrich et al. 2016). Same four words, same counts, used in every section below — so when methods diverge, you can see <i>exactly</i> where and why.
+<table>
+<tr><th>Word</th><th>Count</th><th>Character sequence (with end-of-word marker <code>_</code>)</th></tr>
+<tr><td>low</td><td>5</td><td>l o w _</td></tr>
+<tr><td>lower</td><td>2</td><td>l o w e r _</td></tr>
+<tr><td>newest</td><td>6</td><td>n e w e s t _</td></tr>
+<tr><td>widest</td><td>3</td><td>w i d e s t _</td></tr>
+</table>
+<div class="where">The <code>_</code> marks end-of-word so the tokenizer never merges across a word boundary (e.g. it must not fuse the "t" at the end of "newest" with the "w" that starts a following word).</div>
+</div>
+</section>
+
+<!-- ============ BPE ============ -->
+<section id="bpe">
+<h2>1. Byte-Pair Encoding (BPE)</h2>
+
+<div class="box motivation">
+<b>Motivation:</b> BPE was originally a 1994 data-compression algorithm (repeatedly replace the most frequent byte pair with a new byte). Sennrich et al. (2016) repurposed it for NLP: instead of compressing bytes, repeatedly <b>merge the most frequent adjacent symbol pair</b> in your corpus into a new symbol. Do this enough times and you've built a vocabulary that's exactly tuned to the statistics of your training data — frequent words survive whole, rare words get chopped into meaningful pieces.
+</div>
+
+<h3>Algorithm (rigorous)</h3>
+<div class="box math">
+1. Initialize vocabulary = every individual character/byte in the corpus.<br>
+2. Represent each word as a sequence of symbols (start = characters), track word frequencies.<br>
+3. Count frequency of every <b>adjacent symbol pair</b> across the whole corpus (weighted by word frequency).<br>
+4. Merge = pick the pair (a, b) with <b>max count</b>. Replace every occurrence of "a b" with new symbol "ab". Add "ab" to vocabulary.<br>
+5. Repeat steps 3–4 for a fixed number of merges (a hyperparameter — this + base alphabet size determines final vocab size).
+</div>
+<div class="where">
+where: <b>pair count(a,b)</b> = Σ over words containing "a" immediately followed by "b" of (word frequency). Purely frequency-driven — no probability model, no likelihood, just counting.
+</div>
+
+<h3>Worked example, step by step, on our corpus</h3>
+<div class="box example">
+Start: <code>l o w _</code>(5) &nbsp; <code>l o w e r _</code>(2) &nbsp; <code>n e w e s t _</code>(6) &nbsp; <code>w i d e s t _</code>(3)
+
+<b>Merge 1 — count all adjacent pairs:</b>
+<table>
+<tr><th>Pair</th><th>Where it appears</th><th>Count</th></tr>
+<tr><td>(e,s)</td><td>newest(6), widest(3)</td><td>9</td></tr>
+<tr><td>(s,t)</td><td>newest(6), widest(3)</td><td>9</td></tr>
+<tr><td>(l,o)</td><td>low(5), lower(2)</td><td>7</td></tr>
+<tr><td>(o,w)</td><td>low(5), lower(2)</td><td>7</td></tr>
+<tr><td>(w,e)</td><td>lower(2), newest(6)</td><td>8</td></tr>
+<tr><td>… others</td><td>…</td><td>&lt;8</td></tr>
+</table>
+Tie between (e,s) and (s,t) at 9 — implementation breaks ties deterministically (commonly: first encountered, or alphabetical). Say we pick <b>(e,s) → "es"</b>.
+New corpus: <code>l o w _</code>(5) &nbsp; <code>l o w e r _</code>(2) &nbsp; <code>n e w <b>es</b> t _</code>(6) &nbsp; <code>w i d <b>es</b> t _</code>(3)
+
+<b>Merge 2:</b> now (es,t) has count 9 (6+3) — clear winner. Merge → <b>"est"</b>.
+<code>n e w <b>est</b> _</code>(6) &nbsp; <code>w i d <b>est</b> _</code>(3)
+
+<b>Merge 3:</b> (est,_) count = 9. Merge → <b>"est_"</b>.
+
+<b>Merge 4:</b> (l,o) count = 7. Merge → <b>"lo"</b>.
+<code><b>lo</b> w _</code>(5) &nbsp; <code><b>lo</b> w e r _</code>(2)
+
+<b>Merge 5:</b> (lo,w) count = 7. Merge → <b>"low"</b>.
+
+After 5 merges, "low" and "est_" are single tokens. Notice: <b>"newest" and "widest" now share the token "est_"</b> even though they share zero prefix — BPE found that shared *suffix* purely from frequency, with no notion of morphology (it doesn't "know" -est is a superlative suffix, it just counted).
+</div>
+
+<div class="box warn">
+<b>Key property to internalize:</b> BPE is <b>greedy and frequency-only</b>. It never looks ahead, never asks "does this merge improve my language model," it just asks "what pair is most common right now." This greediness is both its strength (cheap, deterministic, fast) and its weakness (can lock in a merge early that isn't globally optimal) — this is exactly the gap WordPiece tries to close.
+</div>
+
+<h3>Code — build it yourself</h3>
+<pre>
+from collections import Counter, defaultdict
+
+def get_pair_counts(word_freqs):
+    """word_freqs: dict[tuple[str,...], int] e.g. {('l','o','w','_'): 5, ...}
+    Returns: Counter of adjacent symbol pairs -> weighted count"""
+    pairs = Counter()
+    # TODO: for each word (tuple of symbols) and its freq,
+    # count every adjacent (symbol[i], symbol[i+1]) pair, weighted by freq
+    ...
+    return pairs
+
+def merge_pair(pair, word_freqs):
+    """Given the pair to merge, return a NEW word_freqs dict where every
+    occurrence of pair=(a,b) in each word tuple is replaced by the single symbol a+b"""
+    new_word_freqs = {}
+    # TODO: for each word tuple, scan left to right, whenever you see
+    # word[i]==pair[0] and word[i+1]==pair[1], splice them into one symbol
+    ...
+    return new_word_freqs
+
+def train_bpe(word_freqs, num_merges):
+    merges = []  # ordered list of merges learned (needed at inference time!)
+    vocab = set(sym for word in word_freqs for sym in word)
+    for i in range(num_merges):
+        pairs = get_pair_counts(word_freqs)
+        if not pairs:
+            break
+        best = max(pairs, key=pairs.get)   # TODO-check: tie-breaking?
+        word_freqs = merge_pair(best, word_freqs)
+        merges.append(best)
+        vocab.add(best[0] + best[1])
+    return merges, vocab
+
+corpus = {('l','o','w','_'):5, ('l','o','w','e','r','_'):2,
+          ('n','e','w','e','s','t','_'):6, ('w','i','d','e','s','t','_'):3}
+merges, vocab = train_bpe(corpus, num_merges=5)
+print(merges)  # expect: [('e','s'), ('es','t'), ('est','_'), ('l','o'), ('lo','w')]
+</pre>
+
+<details>
+<summary>Show reference solution</summary>
+<pre>
+def get_pair_counts(word_freqs):
+    pairs = Counter()
+    for word, freq in word_freqs.items():
+        for i in range(len(word) - 1):
+            pairs[(word[i], word[i+1])] += freq
+    return pairs
+
+def merge_pair(pair, word_freqs):
+    a, b = pair
+    merged = a + b
+    new_word_freqs = {}
+    for word, freq in word_freqs.items():
+        new_word = []
+        i = 0
+        while i < len(word):
+            if i < len(word)-1 and word[i]==a and word[i+1]==b:
+                new_word.append(merged)
+                i += 2
+            else:
+                new_word.append(word[i])
+                i += 1
+        new_word_freqs[tuple(new_word)] = new_word_freqs.get(tuple(new_word),0) + freq
+    return new_word_freqs
+</pre>
+</details>
+
+<div class="resist">
+<div class="q">Resistance Q1.1:</div>
+At inference time, you're given a brand-new word never seen in training. You DON'T re-run the frequency-counting algorithm. What information from training must you have saved, and in what order must you apply it, to tokenize that new word correctly?
+</div>
+<div class="resist">
+<div class="q">Resistance Q1.2:</div>
+Suppose two pairs are tied for max count on some merge step. Does the *order* you pick between them change the final vocabulary after all merges are done, or does it wash out? Justify with the corpus above — is there a tie you could force and trace through?
+</div>
+</section>
+
+<!-- ============ WORDPIECE ============ -->
+<section id="wordpiece">
+<h2>2. WordPiece</h2>
+
+<div class="box motivation">
+<b>Motivation:</b> WordPiece (Google, used in BERT) asks: what if raw frequency isn't the right merge criterion? Two symbols "t" and "h" might co-occur a lot simply because "t" and "h" are both extremely common individually (in "the", "that", "this"...) — not because "th" as a unit is special. WordPiece instead merges the pair that gives the <b>biggest boost in language-model likelihood</b> — i.e. the pair that co-occurs *more than you'd expect from chance* given how common each symbol is on its own.
+</div>
+
+<h3>Math — the scoring function</h3>
+<div class="box math">
+score(a, b) = freq(a, b) / ( freq(a) × freq(b) )
+</div>
+<div class="where">
+where:<br>
+• freq(a,b) = count of symbol pair (a,b) occurring adjacently (same as BPE's pair count)<br>
+• freq(a) = total count of symbol "a" appearing anywhere in the corpus (not just in this pair)<br>
+• freq(b) = total count of symbol "b" appearing anywhere<br>
+This is literally <b>pointwise mutual information</b> (unnormalized) — it rewards pairs that appear together far more than their individual frequencies alone would predict.
+</div>
+
+<div class="box analogy">
+BPE asks "how often do 'peanut' and 'butter' appear next to each other, in absolute terms?" WordPiece asks "given how common the words 'peanut' and 'butter' individually are, is their co-occurrence surprising?" Two very rare words that ALWAYS appear together (high mutual info, low raw frequency) get prioritized by WordPiece but might lose to a merge like "the a" under raw-frequency BPE simply because "the" and "a" are both extremely common words individually.
+</div>
+
+<h3>Worked example — same corpus, watch it diverge from BPE</h3>
+<div class="box example">
+Individual symbol counts (from the corpus): l:7, o:7, w:16, _:16, e:17, r:2, n:6, s:9, t:9, i:3, d:3
+<div class="where">(e.g. freq(w) = 16 because 'w' appears in low(5)+lower(2)+newest(6)+widest(3) = 16)</div>
+
+Compare candidate merges using the score formula:
+
+<table>
+<tr><th>Pair</th><th>freq(a,b)</th><th>freq(a)</th><th>freq(b)</th><th>score = freq(a,b)/(freq(a)·freq(b))</th></tr>
+<tr><td>(e,s)</td><td>9</td><td>17</td><td>9</td><td>9/(17×9) = 0.0588</td></tr>
+<tr><td>(l,o)</td><td>7</td><td>7</td><td>7</td><td>7/(7×7) = 0.1429</td></tr>
+<tr><td>(o,w)</td><td>7</td><td>7</td><td>16</td><td>7/(7×16) = 0.0625</td></tr>
+<tr><td>(s,t)</td><td>9</td><td>9</td><td>9</td><td>9/(9×9) = 0.1111</td></tr>
+</table>
+
+Under raw BPE, (e,s) and (s,t) were tied leaders at count 9. Under WordPiece scoring, <b>(l,o) wins outright</b> at 0.1429 — because "l" and "o" are individually rare (only appear together, essentially), so their co-occurrence is maximally "surprising." BPE would never have picked (l,o) first since its raw count (7) is lower than (e,s) or (s,t)'s count (9).
+</div>
+
+<div class="box warn">
+This is the single most important distinguishing fact between BPE and WordPiece — memorize the formula, not just the vibe. <b>BPE merge rule: argmax freq(a,b). WordPiece merge rule: argmax freq(a,b)/(freq(a)·freq(b)).</b> Everything else (build vocab from chars, merge repeatedly, save merge history) is identical.
+</div>
+
+<h3>Inference-time difference: WordPiece uses greedy longest-match, not merge-replay</h3>
+<div class="box">
+BPE applies its saved merges in learned order at inference. WordPiece instead does <b>greedy longest-suffix matching</b>: for a new word, find the longest prefix that's in the vocabulary, split it off, then repeat on the remainder. Continuation subwords are marked with <code>##</code> (BERT's convention) to indicate "this piece is NOT a word start."
+Example: tokenizing "widest" with vocab {"wi","##dest","##d","##est","w"} → greedy match finds "wi" (longest prefix in vocab) then "##dest" → <code>["wi", "##dest"]</code>.
+</div>
+
+<h3>Code — build it yourself</h3>
+<pre>
+def wordpiece_score(pair, pair_counts, symbol_counts):
+    a, b = pair
+    # TODO: implement freq(a,b) / (freq(a) * freq(b))
+    ...
+
+def train_wordpiece(word_freqs, num_merges):
+    merges = []
+    for i in range(num_merges):
+        pair_counts = get_pair_counts(word_freqs)          # reuse from BPE
+        symbol_counts = get_symbol_counts(word_freqs)       # TODO: implement
+        if not pair_counts:
+            break
+        best = max(pair_counts, key=lambda p: wordpiece_score(p, pair_counts, symbol_counts))
+        word_freqs = merge_pair(best, word_freqs)           # reuse from BPE
+        merges.append(best)
+    return merges
+
+def get_symbol_counts(word_freqs):
+    """Total count of each individual symbol across corpus (not pairs)"""
+    counts = Counter()
+    # TODO: for each word, each symbol in it contributes `freq` to counts[symbol]
+    ...
+    return counts
+</pre>
+<details>
+<summary>Show reference solution</summary>
+<pre>
+def wordpiece_score(pair, pair_counts, symbol_counts):
+    a, b = pair
+    return pair_counts[pair] / (symbol_counts[a] * symbol_counts[b])
+
+def get_symbol_counts(word_freqs):
+    counts = Counter()
+    for word, freq in word_freqs.items():
+        for sym in word:
+            counts[sym] += freq
+    return counts
+</pre>
+</details>
+
+<div class="resist">
+<div class="q">Resistance Q2.1:</div>
+Why does dividing by freq(a)·freq(b) instead of just freq(a)+freq(b) matter? What would using a sum instead of a product do to the ranking of extremely common pairs like ("t","h")?
+</div>
+<div class="resist">
+<div class="q">Resistance Q2.2:</div>
+freq(a) in the WordPiece formula — is that the count of symbol "a" only when followed by "b", or the count of "a" everywhere in the corpus regardless of what follows it? Get this wrong and your whole score is wrong. Recheck against the worked table above.
+</div>
+</section>
+
+<!-- ============ UNIGRAM ============ -->
+<section id="unigram">
+<h2>3. Unigram Language Model Tokenization</h2>
+
+<div class="box motivation">
+<b>Motivation:</b> BPE and WordPiece both build UP from characters, merging greedily — once a merge happens, it's permanent, never revisited. Unigram LM flips the whole strategy: start with a <b>huge</b> candidate vocabulary (e.g. all substrings up to some length, or a BPE-trained large vocab), then <b>iteratively prune</b> down to the target size by removing whichever tokens hurt the corpus likelihood the least. It's top-down instead of bottom-up, and probabilistic instead of greedy-count-based.
+</div>
+
+<div class="box analogy">
+BPE/WordPiece are like building a Lego tower by snapping bricks together one pair at a time and never taking any back off. Unigram LM is like starting with a giant pile of every possible brick combination, building the tower, then removing whichever bricks you can pull out without the tower losing structural integrity — repeat until you hit your target brick count.
+</div>
+
+<h3>Math</h3>
+<div class="box math">
+P(x) = Π P(x_i) &nbsp;&nbsp;&nbsp; for a segmentation x = (x_1, ..., x_n) of a word/sentence into subword units, assuming each token is generated independently ("unigram" = no context between tokens, hence the name).
+
+Best segmentation: x* = argmax over all possible segmentations Σ, of Π P(x_i)
+
+Training objective (given fixed vocab V with token probabilities P(x_i)):
+maximize &nbsp; L = Σ over all words w in corpus, log P(w) &nbsp;=&nbsp; Σ_w log( Σ_{x∈segmentations(w)} Π P(x_i) )
+</div>
+<div class="where">
+where:<br>
+• P(x_i) = probability assigned to subword token x_i, estimated via EM (Expectation-Maximization)<br>
+• segmentations(w) = every possible way to split word w into pieces from vocabulary V<br>
+• the inner sum over segmentations is efficiently computed with the <b>forward-backward algorithm</b>; the argmax best single segmentation is computed with the <b>Viterbi algorithm</b> — same dynamic programming tools you'll meet again in HMMs/CRFs
+</div>
+
+<h3>Pruning loop (training)</h3>
+<div class="box math">
+1. Seed a large vocabulary (e.g. 10× target size) — commonly via a suffix-array frequency scan or a BPE pre-pass.<br>
+2. E-step: run Viterbi/forward-backward to get expected usage of each token given current probabilities.<br>
+3. Compute, for each token, "loss if removed" = how much the corpus log-likelihood would DROP without it (its pieces would have to be covered by smaller sub-tokens instead).<br>
+4. Remove the bottom X% of tokens by that loss score (i.e. remove tokens whose absence barely hurts likelihood).<br>
+5. Re-estimate probabilities (M-step), repeat from step 2 until vocab hits target size.
+</div>
+
+<h3>Worked intuition on our corpus</h3>
+<div class="box example">
+Suppose our seed vocabulary already contains: {l, o, w, e, r, n, s, t, i, d, _, lo, low, es, est, wi, ne, new}.
+For the word "lower", two candidate segmentations exist: <code>["low","e","r","_"]</code> vs <code>["l","o","w","e","r","_"]</code>.
+Since "low" is a high-probability token (it covers "low"(5) + is a prefix of "lower"(2) = strong evidence in the corpus), P(["low","e","r","_"]) ≫ P(["l","o","w","e","r","_"]) — the model's own probabilities pick the more "chunked" segmentation automatically, via Viterbi, no hand-written rule needed.
+
+Now ask: does the token "ne" (from "newest") pay for itself? If removing "ne" only costs a tiny likelihood drop (because "n" and "e" individually already do a fine job, or "new" already covers it), Unigram prunes "ne" away — even though a greedy bottom-up method might never have proposed removing something it already built.
+</div>
+
+<div class="box warn">
+Crucial property: because Unigram is <b>probabilistic</b>, tokenization at inference time isn't deterministic-by-rule the way BPE's merge-replay is. The SAME word can (in principle, with sampling) be segmented multiple valid ways — this is exploited deliberately for <b>subword regularization</b>: during training, randomly sample a few different valid segmentations of the same word as a form of data augmentation, making the downstream model robust to tokenization noise.
+</div>
+
+<h3>Code — the core piece you should be able to build: Viterbi segmentation</h3>
+<pre>
+import math
+
+def viterbi_segment(word, vocab_logprob):
+    """word: str, vocab_logprob: dict[str,float] log P(token)
+    Returns best segmentation as list of tokens, using DP."""
+    n = len(word)
+    best_score = [-math.inf]*(n+1)
+    best_score[0] = 0.0
+    backptr = [None]*(n+1)
+    for end in range(1, n+1):
+        for start in range(0, end):
+            piece = word[start:end]
+            if piece in vocab_logprob:
+                # TODO: score of segmenting word[:end] via this last piece
+                # = best_score[start] + logprob(piece)
+                # if better than current best_score[end], update best_score[end]
+                # and set backptr[end] = start
+                ...
+    # TODO: walk backptr from n back to 0 to reconstruct token list
+    ...
+    return tokens
+</pre>
+<details>
+<summary>Show reference solution</summary>
+<pre>
+def viterbi_segment(word, vocab_logprob):
+    n = len(word)
+    best_score = [-math.inf]*(n+1)
+    best_score[0] = 0.0
+    backptr = [None]*(n+1)
+    for end in range(1, n+1):
+        for start in range(0, end):
+            piece = word[start:end]
+            if piece in vocab_logprob:
+                score = best_score[start] + vocab_logprob[piece]
+                if score > best_score[end]:
+                    best_score[end] = score
+                    backptr[end] = start
+    tokens = []
+    pos = n
+    while pos > 0:
+        start = backptr[pos]
+        tokens.append(word[start:pos])
+        pos = start
+    return tokens[::-1]
+</pre>
+</details>
+
+<div class="resist">
+<div class="q">Resistance Q3.1:</div>
+Why does Unigram need Viterbi (a DP over ALL segmentations) at inference, while BPE just replays a fixed merge list? What's the actual computational trade-off — time complexity per word for each?
+</div>
+<div class="resist">
+<div class="q">Resistance Q3.2:</div>
+Subword regularization samples different segmentations at training time as augmentation. Would this ever apply at test/inference time on the SAME trained model? Why or why not — think about what "deterministic inference" requires for a production system.
+</div>
+</section>
+
+<!-- ============ SENTENCEPIECE ============ -->
+<section id="sentencepiece">
+<h2>4. SentencePiece — not a 4th algorithm, a framework</h2>
+
+<div class="box motivation">
+<b>Common confusion to kill right now:</b> SentencePiece is NOT a competing algorithm alongside BPE/WordPiece/Unigram. It's a <b>language-agnostic implementation/framework</b> that can run EITHER the BPE algorithm OR the Unigram LM algorithm underneath (you pick via a flag: <code>--model_type=bpe</code> or <code>--model_type=unigram</code>). What makes it its own named "thing" is a set of engineering decisions about the preprocessing layer, not the merge/scoring math.
+</div>
+
+<h3>What SentencePiece actually changes</h3>
+<div class="box">
+<b>1. No language-specific pre-tokenization.</b> Classic BPE/WordPiece assume you already split on whitespace before running the algorithm (that's how "word boundary" was defined in our worked examples above). This silently assumes whitespace = word boundary — true for English, false for Japanese/Chinese/Thai which don't use spaces between words. SentencePiece treats the raw input string directly, spaces included, as just another sequence of Unicode characters.<br><br>
+<b>2. Whitespace becomes a visible symbol.</b> SentencePiece replaces every space with a special meta-symbol, conventionally <code>▁</code> (U+2581), BEFORE running BPE/Unigram on the raw string. So "low er" (with an explicit space) tokenizes completely differently from "lower" (no space) — and critically, <b>detokenization becomes lossless and reversible</b>: you can always tell where spaces were, because they're literal tokens in the vocabulary, not implicit boundaries you have to guess at.<br><br>
+<b>3. Fully reversible / lossless normalization.</b> Because nothing is thrown away (no whitespace-splitting assumption baked in), <code>decode(encode(x)) == x</code> exactly, for any input, in any script.
+</div>
+
+<div class="box example">
+Same corpus concept, SentencePiece style: instead of pre-splitting into the word "lower", SentencePiece would see a raw stream like <code>▁l▁o▁w▁e▁r</code> — wait, more precisely, it converts <code>"the lower box"</code> into <code>"▁the▁lower▁box"</code> treating the leading/internal spaces as the symbol ▁, THEN runs BPE or Unigram merges on THAT character stream, so ▁ can merge with adjacent letters just like any other symbol (e.g. "▁l" + "ow" → "▁low" becomes a plausible learned token, meaning "start-of-word low").
+</div>
+
+<div class="box warn">
+Exam-relevant distinction: our worked BPE/WordPiece examples above used the <code>_</code> marker for END-of-word. Real SentencePiece uses <code>▁</code> for what's effectively START-of-word (attached to the following token) — this asymmetry (end-marker vs start-marker convention) trips people up. Different tokenizer implementations pick different conventions; always check which one a given paper/library uses rather than assuming.
+</div>
+
+<div class="resist">
+<div class="q">Resistance Q4.1:</div>
+Given SentencePiece can run BPE internally, what's actually different between "BPE" and "SentencePiece with model_type=bpe"? Is there ANY algorithmic difference in the merge rule itself, or purely in preprocessing?
+</div>
+<div class="resist">
+<div class="q">Resistance Q4.2:</div>
+Why does lossless detokenization matter enough to engineer around? Think of a concrete downstream failure mode if your tokenizer could NOT perfectly reconstruct original whitespace (hint: think code generation, or languages where spacing is semantically meaningful).
+</div>
+</section>
+
+<!-- ============ BYTE-LEVEL BPE ============ -->
+<section id="bytebpe">
+<h2>5. Byte-level BPE (GPT-2 / GPT-3 / GPT-4's tiktoken)</h2>
+
+<div class="box motivation">
+<b>Motivation:</b> Even with subword tokenization, if your base vocabulary is Unicode characters, you still have an OOV problem — Unicode has 149,000+ characters (emoji, rare scripts, etc.), and however comprehensive your training corpus, some character combos will be unseen at inference. Byte-level BPE closes this gap completely by using a base alphabet of exactly <b>256 possible byte values</b> (every possible byte, 0x00–0xFF) instead of "every possible character." Since ANY Unicode string can be encoded as UTF-8 bytes, and there are only 256 possible byte values, <b>the base vocabulary is complete by construction — zero OOV is mathematically guaranteed</b>, not just empirically likely.
+</div>
+
+<div class="box analogy">
+Character-level BPE's base alphabet is like keeping every language's alphabet in your toolbox — you need a new tool the moment you meet a script you didn't stock. Byte-level BPE's base alphabet is like keeping a box of exactly 256 LEGO unit-bricks — genuinely ANY shape, in any language, in any emoji, can be built from combinations of those same 256 bricks. Nothing new is ever needed.
+</div>
+
+<h3>Mechanism</h3>
+<div class="box math">
+1. Encode input text as UTF-8 bytes: text → bytes (each byte is an integer 0–255).<br>
+2. Base vocabulary = all 256 byte values, each treated as its own initial "character" for BPE purposes.<br>
+3. Run standard BPE merges (exactly the algorithm from Section 1) directly on the byte sequence, not on Unicode characters.
+</div>
+<div class="where">
+where: a single Unicode character can be MULTIPLE bytes (e.g. "€" is 3 bytes in UTF-8: <code>E2 82 AC</code>) — so byte-level BPE might initially represent one emoji as 4 separate "characters" (bytes) before merges recombine them into a single learned token, if that emoji appears often enough in training.
+</div>
+</section>
+
+<!-- ============ COMPARISON ============ -->
+<section id="compare">
+<h2>6. Side-by-side comparison</h2>
+<table>
+<tr><th>Method</th><th>Direction</th><th>Merge/split criterion</th><th>Inference procedure</th><th>Used by</th></tr>
+<tr><td>BPE</td><td>Bottom-up</td><td>argmax raw pair frequency</td><td>Replay saved merges in order</td><td>GPT-2 (char), RoBERTa</td></tr>
+<tr><td>WordPiece</td><td>Bottom-up</td><td>argmax freq(a,b)/(freq(a)·freq(b))</td><td>Greedy longest-match with ## prefix</td><td>BERT, DistilBERT</td></tr>
+<tr><td>Unigram LM</td><td>Top-down (prune)</td><td>min likelihood loss if token removed</td><td>Viterbi (probabilistic, best-path)</td><td>ALBERT, T5, mBART</td></tr>
+<tr><td>SentencePiece</td><td>Framework (wraps BPE or Unigram)</td><td>whichever inner algo you choose</td><td>Depends on inner algo</td><td>T5, Llama, Gemini</td></tr>
+<tr><td>Byte-level BPE</td><td>Bottom-up</td><td>same as BPE, base alphabet=256 bytes</td><td>Replay saved merges on bytes</td><td>GPT-2/3/4 (tiktoken)</td></tr>
+</table>
+</section>
+
+<!-- ============ RESISTANCE SUMMARY ============ -->
+<section id="resist">
+<h2>7. Cross-cutting cross-questions</h2>
+<div class="resist"><div class="q">Q7.1:</div>Vocabulary size V directly sets the size of which matrix in a Transformer, and how does that matrix connect to the model's FINAL output layer? (Hint: think about weight tying.)</div>
+<div class="resist"><div class="q">Q7.2:</div>You're told a model's tokenizer has V=50,257 (GPT-2's actual vocab size). Someone claims larger V is strictly better because it means "fewer tokens per sentence, faster inference." What's the hidden cost they're ignoring on the embedding + output projection side?</div>
+<div class="resist"><div class="q">Q7.3:</div>A word gets split into 3 subword tokens by BPE. Does the model "know" these three tokens were originally one word? What information, if any, signals that to the Transformer — and is this different between BPE's suffix convention and WordPiece's ## prefix convention?</div>
+<div class="resist"><div class="q">Q7.4:</div>Why can't you swap tokenizers on a model after it's already pretrained (i.e. why is the tokenizer part of the "model," not a preprocessing detail you can change independently)?</div>
+</section>
+
+<!-- ============ FLASHCARDS ============ -->
+<section id="flash">
+<h2>8. Flashcards for spaced repetition (add to your boxes)</h2>
+<div class="flash"><div class="q">Q:</div> BPE merge rule?<br><b>A:</b> argmax over pairs of raw adjacent-pair frequency, freq(a,b).</div>
+<div class="flash"><div class="q">Q:</div> WordPiece merge rule?<br><b>A:</b> argmax of freq(a,b) / (freq(a)·freq(b)) — mutual-information-like score, not raw count.</div>
+<div class="flash"><div class="q">Q:</div> What direction does Unigram LM tokenization build — bottom-up or top-down?<br><b>A:</b> Top-down: start with a large candidate vocab, prune tokens whose removal costs the least corpus likelihood.</div>
+<div class="flash"><div class="q">Q:</div> What decoding algorithm does Unigram use to segment a word given trained token probabilities?<br><b>A:</b> Viterbi (dynamic programming over all possible segmentations).</div>
+<div class="flash"><div class="q">Q:</div> Is SentencePiece a 4th algorithm alongside BPE/WordPiece/Unigram?<br><b>A:</b> No — it's a framework/implementation that can run BPE or Unigram internally; its distinguishing feature is treating whitespace as an explicit symbol (▁) with no language-specific pre-splitting, giving lossless detokenization.</div>
+<div class="flash"><div class="q">Q:</div> What guarantees byte-level BPE has zero OOV, mathematically (not just empirically)?<br><b>A:</b> Base vocabulary = all 256 possible byte values; any Unicode string is representable as UTF-8 bytes, so every input decomposes into known symbols.</div>
+<div class="flash"><div class="q">Q:</div> WordPiece inference-time tokenization procedure?<br><b>A:</b> Greedy longest-prefix-match against the vocab, marking continuation pieces with ## (not a merge-replay like BPE).</div>
+<div class="flash"><div class="q">Q:</div> In our worked example, which merge did WordPiece prioritize FIRST that BPE did NOT prioritize first, and why?<br><b>A:</b> (l,o) — WordPiece scored it 0.1429 (highest) because l and o are individually rare, so their co-occurrence is "surprising"; BPE ranked (e,s) and (s,t) higher first since their raw count (9) exceeded (l,o)'s raw count (7).</div>
+</section>
+
+<div class="box toc-note" style="margin-top:40px;">Next natural step once you've cleared the resistance questions: implement all four training loops end-to-end on a real corpus (e.g. a few paragraphs of Wikipedia text) and compare actual vocab overlap/size — this is also a common assignment/exam pattern (see your GA2/GA4 pattern of "compute X by hand on a toy example, then verify against a real implementation").</div>
+
+</main>
+</body>
+</html>

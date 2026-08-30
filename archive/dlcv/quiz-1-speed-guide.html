@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DLCV Quiz 1 — Speed Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script>
+window.MathJax = {
+  tex: {inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']]},
+  svg: {fontCache: 'global'}
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+<style>
+:root{
+  --ink:#0d1220; --ink2:#141b2e; --ink3:#1c2540; --line:#2b3554;
+  --fg:#e8ecf7; --fg2:#9aa5c4; --fg3:#6b779b;
+  --amber:#f2b03d;      /* traps */
+  --sage:#5fd0a8;       /* verified / answer */
+  --violet:#8f7bef;     /* formula */
+  --rose:#ef6f8b;       /* key conflict */
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --disp:'Space Grotesk',system-ui,sans-serif;
+  --body:'Source Serif 4',Georgia,serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ink);color:var(--fg);font-family:var(--body);
+  font-size:16.5px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px 120px}
+
+/* ---------- masthead ---------- */
+header.top{padding:52px 0 30px;border-bottom:1px solid var(--line);margin-bottom:8px}
+header.top h1{font-family:var(--disp);font-size:clamp(30px,5vw,46px);font-weight:700;
+  letter-spacing:-.02em;margin:0 0 10px;line-height:1.05}
+header.top p{color:var(--fg2);margin:0;max-width:62ch}
+.meta{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--fg3);margin-bottom:14px}
+
+/* ---------- nav ---------- */
+nav.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:28px 0 44px}
+nav.toc a{display:block;padding:12px 14px;background:var(--ink2);border:1px solid var(--line);
+  border-radius:7px;text-decoration:none;color:var(--fg);font-family:var(--disp);font-size:14px;
+  font-weight:500;transition:.15s}
+nav.toc a:hover{background:var(--ink3);border-color:var(--violet)}
+nav.toc a span{display:block;font-family:var(--mono);font-size:10px;color:var(--fg3);
+  letter-spacing:.1em;margin-bottom:3px}
+
+/* ---------- block headers ---------- */
+section.block{margin:0 0 30px;scroll-margin-top:16px}
+.bhead{display:flex;align-items:baseline;gap:14px;padding:34px 0 6px;border-top:2px solid var(--violet);margin-top:56px}
+.bhead .num{font-family:var(--mono);font-size:12px;color:var(--violet);font-weight:700;letter-spacing:.12em}
+.bhead h2{font-family:var(--disp);font-size:27px;font-weight:700;margin:0;letter-spacing:-.015em}
+.bsub{color:var(--fg2);font-size:14.5px;margin:0 0 22px}
+
+/* ---------- template card ---------- */
+.t{background:var(--ink2);border:1px solid var(--line);border-radius:10px;margin:16px 0;overflow:hidden}
+.t>summary{cursor:pointer;padding:15px 18px;list-style:none;display:flex;align-items:center;
+  gap:12px;font-family:var(--disp);font-weight:500;font-size:16px;user-select:none}
+.t>summary::-webkit-details-marker{display:none}
+.t>summary::after{content:'+';margin-left:auto;font-family:var(--mono);color:var(--fg3);font-size:19px;line-height:1}
+.t[open]>summary::after{content:'\2212'}
+.t[open]>summary{border-bottom:1px solid var(--line);background:var(--ink3)}
+.t>summary:hover{background:var(--ink3)}
+.t .body{padding:6px 18px 20px}
+
+/* frequency badge — encodes how many of the 3 papers used this template */
+.f{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;
+  padding:3px 7px;border-radius:4px;white-space:nowrap;flex-shrink:0}
+.f4{background:rgba(239,111,139,.16);color:var(--rose);border:1px solid rgba(239,111,139,.35)}
+.f3{background:rgba(242,176,61,.14);color:var(--amber);border:1px solid rgba(242,176,61,.3)}
+.f2{background:rgba(143,123,239,.14);color:var(--violet);border:1px solid rgba(143,123,239,.3)}
+.f1{background:var(--ink3);color:var(--fg3);border:1px solid var(--line)}
+
+/* ---------- callouts ---------- */
+.box{border-left:3px solid;padding:11px 15px;margin:14px 0;border-radius:0 7px 7px 0;font-size:15px}
+.box b:first-child{font-family:var(--disp);font-size:11px;letter-spacing:.13em;text-transform:uppercase;
+  display:block;margin-bottom:5px}
+.trap{border-color:var(--amber);background:rgba(242,176,61,.07)}
+.trap b:first-child{color:var(--amber)}
+.conflict{border-color:var(--rose);background:rgba(239,111,139,.07)}
+.conflict b:first-child{color:var(--rose)}
+.ans{border-color:var(--sage);background:rgba(95,208,168,.07)}
+.ans b:first-child{color:var(--sage)}
+.note{border-color:var(--violet);background:rgba(143,123,239,.07)}
+.note b:first-child{color:var(--violet)}
+
+/* ---------- formula ---------- */
+.fm{background:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 16px;margin:14px 0;
+  overflow-x:auto}
+.fm.hero{border-color:var(--violet);background:rgba(143,123,239,.06)}
+
+/* ---------- tables ---------- */
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14.5px;font-family:var(--disp)}
+th{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--fg3);border-bottom:1px solid var(--line);padding:8px 10px 8px 0;font-weight:400}
+td{padding:8px 10px 8px 0;border-bottom:1px solid rgba(43,53,84,.5);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td.k{color:var(--sage);font-family:var(--mono);font-size:13px}
+td.x{color:var(--rose)}
+
+/* ---------- misc ---------- */
+h3{font-family:var(--disp);font-size:16px;font-weight:700;margin:22px 0 6px;color:var(--fg)}
+h3:first-child{margin-top:8px}
+code{font-family:var(--mono);font-size:.87em;background:var(--ink3);padding:1.5px 5px;border-radius:4px;color:var(--sage)}
+pre{background:var(--ink);border:1px solid var(--line);border-radius:8px;padding:13px 15px;overflow-x:auto;
+  font-family:var(--mono);font-size:13px;line-height:1.55;color:var(--fg)}
+pre code{background:none;padding:0;color:inherit}
+ul,ol{padding-left:20px;margin:10px 0}
+li{margin:5px 0}
+strong{color:#fff;font-weight:600}
+em.q{color:var(--fg2);font-style:italic;display:block;margin:12px 0 8px;padding-left:12px;
+  border-left:2px solid var(--line);font-size:15px}
+.src{font-family:var(--mono);font-size:10.5px;color:var(--fg3);letter-spacing:.05em}
+hr{border:none;border-top:1px solid var(--line);margin:22px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}.t>summary{font-size:14.5px}body{font-size:16px}}
+
+/* ---------- NEW: background / prerequisite (nested, collapsed by default) ---------- */
+details.bg{background:rgba(143,123,239,.05);border:1px dashed rgba(143,123,239,.4);
+  border-radius:8px;margin:14px 0}
+details.bg>summary{cursor:pointer;list-style:none;padding:9px 14px;font-family:var(--disp);
+  font-size:13px;font-weight:500;color:var(--violet);display:flex;align-items:center;gap:8px;user-select:none}
+details.bg>summary::-webkit-details-marker{display:none}
+details.bg>summary::before{content:'\25B8';font-size:10px;transition:.15s;display:inline-block}
+details.bg[open]>summary::before{transform:rotate(90deg)}
+details.bg>summary::after{content:'BACKGROUND';margin-left:auto;font-family:var(--mono);
+  font-size:9px;letter-spacing:.12em;color:var(--fg3);opacity:.7}
+details.bg>summary:hover{color:#a897f5}
+details.bg .bgbody{padding:2px 16px 14px;font-size:14.5px;color:var(--fg2);border-top:1px dashed rgba(143,123,239,.25);margin-top:2px;padding-top:12px}
+details.bg .bgbody strong{color:var(--fg)}
+details.bg .bgbody .fm{background:rgba(0,0,0,.25)}
+
+/* ---------- NEW: exam cheat code ---------- */
+.cheat{background:#080c16;border:1px solid var(--sage);border-radius:9px;margin:20px 0 6px;overflow:hidden}
+.cheat .ch{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:#04140e;
+  background:var(--sage);padding:4px 14px;font-weight:700}
+.cheat .cb{padding:12px 16px;font-family:var(--mono);font-size:12.5px;line-height:1.85;color:var(--fg)}
+.cheat .cb .fm{background:none;border:none;padding:0;margin:4px 0}
+.cheat .cb span.lbl{color:var(--fg3)}
+.cheat .cb b{color:var(--sage);font-weight:700}
+.cheat .cb i{color:var(--amber);font-style:normal}
+.cheat .cb hr{border-top:1px dashed rgba(43,53,84,.9);margin:9px 0}
+
+/* ---------- NEW: practice question ---------- */
+.prac{border:1px solid var(--amber);border-radius:9px;margin:18px 0;overflow:hidden;
+  background:rgba(242,176,61,.04)}
+.prac .ph{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:#1a1204;
+  background:var(--amber);padding:4px 14px;font-weight:700}
+.prac .pb{padding:13px 16px 4px;font-size:15.5px}
+.prac details{margin:4px 0 12px}
+.prac details>summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:7px;
+  font-family:var(--disp);font-size:12.5px;font-weight:500;color:var(--sage);padding:5px 12px;
+  border:1px solid rgba(95,208,168,.4);border-radius:20px;background:rgba(95,208,168,.07);
+  margin:0 16px 0;user-select:none}
+.prac details>summary::-webkit-details-marker{display:none}
+.prac details>summary::before{content:'\25B8';font-size:9px;transition:.15s}
+.prac details[open]>summary::before{transform:rotate(90deg)}
+.prac details>summary:hover{background:rgba(95,208,168,.16)}
+.prac details .pa{padding:10px 16px 4px;font-size:15px;border-left:3px solid var(--sage);
+  margin:10px 16px 0;background:rgba(95,208,168,.05);border-radius:0 6px 6px 0}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 0;font-size:12px;color:var(--fg2);align-items:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="meta">BSDA5006 &middot; Deep Learning for Computer Vision &middot; Quiz 1 &middot; Weeks 1&ndash;4</div>
+  <h1>Speed Study: the 40 templates</h1>
+  <p>Built from three past papers, four graded assignments and four practice assignments. Every formula, symbol and phrasing below is taken from the course's own wording so nothing on the paper reads unfamiliar. Badges show how many of the three past papers used each template &mdash; that is your revision order.</p>
+  <div class="legend">
+    <span class="f f4">4&times;</span><span class="f f3">3&times;</span><span class="f f2">2&times;</span><span class="f f1">1&times;</span>
+    <span style="margin-left:6px">appearances across the source papers</span><span style="width:100%;margin-top:6px;color:var(--fg3);font-size:11.5px">Each card carries a folded <b style="color:var(--violet)">Background</b> block (prerequisites, on demand), a <b style="color:var(--amber)">Practice</b> question with a folded answer, and an <b style="color:var(--sage)">Exam cheat code</b> strip. Press <code style="font-size:11px">e</code> to expand every card.</span>
+  </div>
+</header>
+
+<nav class="toc">
+  <a href="#b0"><span>BLOCK 0 &middot; 45 min</span>Free marks</a>
+  <a href="#b1"><span>BLOCK 1 &middot; 3 h</span>Filtering algebra</a>
+  <a href="#b2"><span>BLOCK 2 &middot; 2 h</span>CNN arithmetic</a>
+  <a href="#b3"><span>BLOCK 3 &middot; 2.5 h</span>Edges &amp; corners</a>
+  <a href="#b4"><span>BLOCK 4 &middot; 2 h</span>Nets &amp; optimizers</a>
+</nav>
+<section class="block" id="b0">
+<div class="bhead"><span class="num">BLOCK 0</span><h2>Free marks</h2></div>
+<p class="bsub">Pure recall. No derivation, no arithmetic. Roughly 12&ndash;15 marks on a typical paper for 45 minutes of work. Do this block first and do it cold.</p>
+
+<details class="t" open>
+<summary><span class="f f4">4&times;</span>NumPy: alias vs. view vs. copy vs. ravel</summary>
+<div class="body">
+<details class="bg"><summary>What "view" actually means in NumPy</summary><div class="bgbody"><p>A NumPy array is <strong>two things</strong>: a small header object (shape, strides, dtype, and a pointer) and a flat <strong>data buffer</strong> of raw bytes. Indexing arithmetic lives in the header; the numbers live in the buffer.</p><p>A <strong>view</strong> is a new header pointing at the <em>same</em> buffer. That is why <code>a.reshape()</code>, <code>a.T</code>, <code>a[::2]</code> and <code>a.ravel()</code> are all free — they allocate a header, not data. It is also why writing through them is visible from the original.</p><p><strong>Contiguity</strong> is the catch. <code>ravel()</code> must hand back a flat buffer. If the array is already laid out contiguously in memory it can just reinterpret the strides &rarr; view. If it is not (e.g. after a transpose), there is no way to describe the flattening with strides, so NumPy is forced to copy. Hence "view <em>when possible</em>".</p></div></details>
+<p>One question of this shape is on every paper. It is worth 3 marks and takes 5 seconds if you know the rule.</p>
+<table>
+<tr><th>Operation</th><th>New object?</th><th>New data buffer?</th><th>Writes propagate to original?</th></tr>
+<tr><td><code>b = a</code> (alias)</td><td class="x">No</td><td class="x">No</td><td class="k">Yes</td></tr>
+<tr><td><code>b = a.view()</code></td><td class="k">Yes</td><td class="x">No &mdash; shared</td><td class="k">Yes</td></tr>
+<tr><td><code>b = a.ravel()</code></td><td class="k">Yes</td><td class="x">No, if contiguous</td><td class="k">Yes</td></tr>
+<tr><td><code>b = a.copy()</code></td><td class="k">Yes</td><td class="k">Yes</td><td class="x">No</td></tr>
+<tr><td><code>b = a.flatten()</code></td><td class="k">Yes</td><td class="k">Yes &mdash; always</td><td class="x">No</td></tr>
+</table>
+<div class="box trap"><b>The trap</b><code>ravel()</code> returns a <em>view</em> when the array is contiguous; <code>flatten()</code> <em>always</em> copies. Both papers test <code>ravel</code>, never <code>flatten</code> &mdash; because <code>ravel</code> is the one that surprises you.</div>
+
+<h3>The three exact instances asked</h3>
+<em class="q">arr = [[9,8],[7,6]]; alias = arr; alias[1,1] = 0. Value of arr[1,1]?</em>
+<p>Alias &rarr; same object. <span class="src">Answer <b style="color:var(--sage)">0</b></span></p>
+<em class="q">arr = [[1,2],[3,4]]; viewed_arr = arr.view(); viewed_arr[0,1] = 99. Value of arr[0,1]?</em>
+<p>View shares the buffer. <span class="src">Answer <b style="color:var(--sage)">99</b></span></p>
+<em class="q">arr = [[5,6],[7,8]]; copied_arr = arr.copy(); copied_arr[0,0] = 100. Value of arr[0,0]?</em>
+<p>Copy owns its data. Original untouched. <span class="src">Answer <b style="color:var(--sage)">5</b></span></p>
+<em class="q">arr = reshape([0,1,2,3,4,5],(2,3)); v = arr.ravel(); v[3] = 99. Value of arr[1,0]?</em>
+<pre><code>arr = [[0, 1, 2],
+       [3, 4, 5]]     flat index:  0 1 2 | 3 4 5
+                                          ^
+                      flat[3] is arr[1,0]</code></pre>
+<p>Ravel is a view &rarr; the write lands in <code>arr</code>. <span class="src">Answer <b style="color:var(--sage)">99</b></span></p>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb"><code>arr = np.arange(6).reshape(2,3)</code><br><code>f = arr.flatten()</code><br><code>f[4] = 77</code><br><br>What is the value of <code>arr[1,1]</code>?</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage);font-size:19px">4</b><br><br><code>flatten()</code> <em>always</em> copies, so <code>f</code> owns its own buffer and the write never reaches <code>arr</code>. The original value at flat index 4 is 4, and <code>arr[1,1]</code> is flat index 4.<br><br>Swap <code>flatten()</code> for <code>ravel()</code> and the answer becomes <b style="color:var(--amber)">77</b>. That single word is the whole question.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><span class="lbl">shares data (writes propagate):</span> <b>= (alias) &nbsp; .view() &nbsp; .ravel()* &nbsp; slicing</b><hr><span class="lbl">owns data (writes do NOT):</span> <b>.copy() &nbsp; .flatten()</b><hr><i>* ravel = view only if contiguous, else copy. flatten = ALWAYS copy.</i><hr><span class="lbl">flat index &rarr; 2D:</span> <b>arr[i,j] = flat[i*ncols + j]</b></div></div>
+</div>
+</details>
+
+<details class="t">
+<summary><span class="f f3">3&times;</span>The four sequences you must be able to write from memory</summary>
+<div class="body">
+
+<h3>1. Canny edge detector</h3>
+<div class="fm hero">$$\text{Gaussian smoothing} \rightarrow \text{gradient magnitude \& direction} \rightarrow \text{non-maximum suppression} \rightarrow \text{double thresholding} \rightarrow \text{hysteresis}$$</div>
+<p>Some papers compress steps 4&ndash;5 into "hysteresis thresholding", giving a 4-step version. The order never changes. <strong>Smoothing is always first</strong> &mdash; every wrong option puts it somewhere else.</p>
+
+<h3>2. SIFT</h3>
+<div class="fm hero">$$\text{Scale-space Extrema Detection} \rightarrow \text{Keypoint Localization} \rightarrow \text{Orientation Assignment} \rightarrow \text{Keypoint Descriptor}$$</div>
+<p>Mnemonic for the course's own numbering: find it, pin it, point it, describe it.</p>
+
+<h3>3. PyTorch training loop</h3>
+<pre><code>4.  inputs, labels = data
+3.  optimizer.zero_grad()
+2.  outputs = net(inputs)
+6.  loss = criterion(outputs, labels)
+1.  loss.backward()
+5.  optimizer.step()</code></pre>
+<p><span class="src">Answer as numbered in the paper: <b style="color:var(--sage)">4, 3, 2, 6, 1, 5</b></span></p>
+<div class="box trap"><b>The trap</b>The distractor is <code>3,4,2,6,1,5</code> &mdash; <code>zero_grad()</code> before you even have the data. Both orders "work", but the paper wants data first. Also note <code>zero_grad()</code> must come before <code>backward()</code>, never after.</div>
+
+<h3>4. The three fill-in-the-blank stems</h3>
+<p>These are printed almost word-for-word each time. Learn the sentence, not the concept.</p>
+<table>
+<tr><th>Stem</th><th>(a)</th><th>(b)</th></tr>
+<tr><td>Taking image derivatives accentuates ___ frequencies and amplifies noise, since the proportion of noise to signal is larger at ___ frequencies.</td><td class="k">high</td><td class="k">high</td></tr>
+<tr><td>In Canny, a large &sigma; leads to ___ edges, while a small &sigma; leads to ___ edges.</td><td class="k">thick / coarse</td><td class="k">fine / thin</td></tr>
+<tr><td>During NMS, comparisons are made along the gradient ___ to keep only local ___.</td><td class="k">direction</td><td class="k">maxima</td></tr>
+<tr><td>In Canny, increasing the high threshold tends to ___ false positives and ___ false negatives.</td><td class="k">decrease</td><td class="k">increase</td></tr>
+</table>
+<div class="box note"><b>Grading note</b>These are string-matched, case-insensitive, and the paper warns about leading/trailing spaces. Type one word. Both "high" answers are accepted as <code>high | higher | large | largest</code>.</div>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">Put the Canny stages in order:<br><br>(i) double thresholding &nbsp; (ii) non-maximum suppression &nbsp; (iii) hysteresis / edge tracking &nbsp; (iv) Gaussian smoothing &nbsp; (v) gradient magnitude and direction</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage);font-size:19px">iv &rarr; v &rarr; ii &rarr; i &rarr; iii</b><br><br>Reconstruct it from dependencies rather than memory: you cannot differentiate before you denoise (iv before v); you cannot suppress non-maxima before you know the gradient direction (v before ii); you should not threshold a thick ridge (ii before i); and hysteresis needs the strong/weak labels to propagate from (i before iii).</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><span class="lbl">Canny:</span> <b>smooth &rarr; gradient &rarr; NMS &rarr; double-thresh &rarr; hysteresis</b><hr><span class="lbl">SIFT:</span> <b>extrema &rarr; localize &rarr; orient &rarr; describe</b><hr><span class="lbl">PyTorch loop:</span> <b>4, 3, 2, 6, 1, 5</b> &nbsp;<span class="lbl">(data, zero_grad, forward, loss, backward, step)</span><hr><span class="lbl">blanks:</span> derivatives &rarr; <b>high</b>/<b>high</b> &middot; large &sigma; &rarr; <b>thick</b>, small &sigma; &rarr; <b>fine</b><br>NMS &rarr; along <b>direction</b>, keep <b>maxima</b> &middot; T<sub>high</sub>&uarr; &rarr; FP <b>down</b>, FN <b>up</b></div></div>
+</div>
+</details>
+
+<details class="t">
+<summary><span class="f f1">1&times;</span>Degrees of freedom of 2D and 3D transformations</summary>
+<div class="body">
+<p>Straight out of the Szeliski transform hierarchy table. Memorize the column.</p>
+<table>
+<tr><th>Transformation</th><th>2D DoF</th><th>3D DoF</th><th>Preserves</th></tr>
+<tr><td>Translation</td><td class="k">2</td><td class="k">3</td><td>orientation, lengths</td></tr>
+<tr><td>Rigid / Euclidean</td><td class="k">3</td><td class="k">6</td><td>lengths, angles</td></tr>
+<tr><td>Similarity</td><td class="k">4</td><td class="k">7</td><td>angles</td></tr>
+<tr><td>Affine</td><td class="k">6</td><td class="k">12</td><td>parallelism</td></tr>
+<tr><td>Projective</td><td class="k">8</td><td class="k">15</td><td>straight lines</td></tr>
+</table>
+<em class="q">The sum of the degrees of freedom for translation and affine transformations in 3D is ___</em>
+<p>Read it as a <em>decomposition</em>, not an addition of two table rows. A 3D affine map is $\mathbf{x}' = A\mathbf{x} + \mathbf{t}$: the linear part $A$ is $3\times3 = 9$ free parameters, the translation $\mathbf{t}$ is 3. Together $9 + 3 = 12$, which is exactly the affine row.</p>
+<p><span class="src">Answer <b style="color:var(--sage)">12</b></span></p>
+<div class="box trap"><b>The trap</b>If you add the rows naively &mdash; translation (3) + affine (12) &mdash; you get 15, which is the projective row and is a plausible-looking wrong answer. The key wants 12.</div>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">The sum of the degrees of freedom for translation and rigid (Euclidean) transformations in 3D is ___</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage);font-size:19px">6</b><br><br>Same decomposition logic as the affine version. A 3D rigid motion is $\mathbf{x}' = R\mathbf{x} + \mathbf{t}$: the rotation $R$ has 3 DoF (three Euler angles — <em>not</em> 9, because $R$ is constrained orthonormal), plus 3 for translation. Total 6, which is exactly the rigid row of the table.<br><br>The lesson: the question is asking you to <em>decompose the named row into its translation part and its linear part</em>, and the answer is always just that row.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><span class="lbl">DoF &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2D &nbsp; 3D</span><br>translation &nbsp;&nbsp; <b>2</b> &nbsp;&nbsp; <b>3</b><br>rigid &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>3</b> &nbsp;&nbsp; <b>6</b><br>similarity &nbsp;&nbsp;&nbsp; <b>4</b> &nbsp;&nbsp; <b>7</b><br>affine &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>6</b> &nbsp; <b>12</b><br>projective &nbsp;&nbsp;&nbsp; <b>8</b> &nbsp; <b>15</b><hr><i>"translation + X in nD" = the X row itself.</i></div></div>
+</div>
+</details>
+</section>
+<section class="block" id="b1">
+<div class="bhead"><span class="num">BLOCK 1</span><h2>Filtering algebra</h2></div>
+<p class="bsub">The single biggest cluster &mdash; roughly a third of every paper. Almost all of it reduces to four ideas: the kernel is a set of weights; convolution flips it; separability is rank&nbsp;1; and the sum of the weights tells you the filter's character.</p>
+
+<details class="t" open>
+<summary><span class="f f3">3&times;</span>Correlation vs. convolution &mdash; the definitions the course uses</summary>
+<div class="body">
+<details class="bg"><summary>Why convolution flips, and why anyone tolerates it</summary><div class="bgbody"><p>Take a <strong>linear, shift-invariant (LSI)</strong> system — the only kind a fixed kernel can be. "Linear" means the response to a sum of inputs is the sum of responses. "Shift-invariant" means moving the input moves the output identically, with no change of shape.</p><p>Decompose the image into impulses: $I = \sum_{u,v} I(u,v)\,\delta(x-u,\, y-v)$. Call the system's response to a single impulse at the origin $h$ — the <strong>impulse response</strong>. Linearity plus shift-invariance then <em>force</em> the output to be</p><div class="fm">$$\text{out}(x,y) = \sum_{u,v} I(u,v)\, h(x-u,\, y-v)$$</div><p>which is exactly convolution — the minus signs are not a choice, they fall out of the algebra. Correlation has no such derivation; it is just "slide a template and take the dot product". That is why <strong>convolution is the operation with the nice properties</strong> (commutative, associative, and it diagonalizes under the Fourier transform) and correlation is not.</p><p>The irony the course points at: every kernel you actually use — Gaussian, box, Laplacian — is symmetric, so the flip does nothing and the distinction is invisible. Deep learning frameworks exploit this and implement <code>Conv2d</code> as correlation. It does not matter there, because the weights are <em>learned</em>: the network simply learns the flipped kernel.</p></div></details>
+<p>Both slide the same kernel with the same weights over the image. The only difference is a sign.</p>
+<div class="fm hero">$$\text{Cross-correlation:}\quad (I \oplus h)(x,y) = \sum_{u,v} h(u,v)\, I(x+u,\, y+v)$$</div>
+<div class="fm hero">$$\text{Convolution:}\quad (I * h)(x,y) = \sum_{u,v} h(u,v)\, I(x-u,\, y-v)$$</div>
+<p>The minus signs mean convolution reads the kernel backwards &mdash; equivalently, <strong>flip the kernel by 180&deg; and then correlate</strong>. Note the course writes correlation as $\oplus$ and convolution as $*$; that notation appears verbatim in the backprop questions.</p>
+
+<div class="box trap"><b>The trap, stated three ways</b>
+<ul style="margin:6px 0 0">
+<li>"Correlation flips the kernel before sliding over the image." &rarr; <strong style="color:var(--rose)">False.</strong> Convolution flips.</li>
+<li>Both use the kernel weights. Neither is "unweighted".</li>
+<li>Output <em>size</em> is identical for both. The flip changes values only, never shape.</li>
+</ul></div>
+
+<div class="box ans"><b>Consequence you will be asked</b>"Correlation and convolution are the same if one of the signals/images is symmetric." &rarr; <strong>True.</strong> A 180&deg;-symmetric kernel is unchanged by the flip. This is why practitioners are sloppy about the distinction &mdash; Gaussian, box and Laplacian kernels are all symmetric.</div>
+
+<h3>Properties table</h3>
+<table>
+<tr><th>Property</th><th>Convolution</th><th>Correlation</th></tr>
+<tr><td>Commutative</td><td class="k">Yes</td><td class="x">No</td></tr>
+<tr><td>Associative</td><td class="k">Yes</td><td class="x">No</td></tr>
+<tr><td>Distributive over $+$</td><td class="k">Yes</td><td class="k">Yes</td></tr>
+<tr><td>Linear &amp; shift-invariant</td><td class="k">Yes</td><td class="k">Yes</td></tr>
+</table>
+<p><span class="src">"Correlation is associative" is a marked-false distractor in GA1 Q1. "Convolution operator is both commutative and associative" is marked true in both papers.</span></p>
+
+<h3>Convolution and the Fourier transform</h3>
+<div class="fm hero">$$\mathcal{F}\{a * b\} = \mathcal{F}\{a\} \cdot \mathcal{F}\{b\}$$</div>
+<ul>
+<li><strong>Convolution in the spatial domain = multiplication in the frequency domain.</strong> True, and asked as both a true-statement and a false-statement.</li>
+<li>The Fourier transform is a <strong>linear operator</strong>. True.</li>
+<li>Spatial <em>correlation</em> &harr; elementwise multiplication <strong>with complex conjugation</strong> in frequency. True.</li>
+<li>Zero-padding before the DFT lets circular convolution approximate <strong>linear</strong> convolution in a larger domain. True.</li>
+<li>"The FT of a convolution equals the product of the individual FTs <em>only for linear, time-invariant systems</em>." &rarr; <strong style="color:var(--rose)">False</strong> &mdash; it's a property of the transform itself, not a system condition.</li>
+</ul>
+
+<h3>Derivative property</h3>
+<div class="fm">$$(f * g)' = f' * g = f * g'$$</div>
+<p>You may differentiate either operand. This is why the derivative-of-Gaussian trick works (Block 3). GA1 Q5 asks which property is <em>not</em> satisfied and the answer is the option asserting $(f*g)' \neq f' * g$.</p>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">Given the image patch $I=\begin{pmatrix}1&2&3\\4&5&6\\7&8&9\end{pmatrix}$ and kernel $h=\begin{pmatrix}1&0&0\\0&0&0\\0&0&2\end{pmatrix}$, compute the output at the centre pixel for (a) cross-correlation $I \oplus h$ and (b) convolution $I * h$.</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage)">(a) Correlation = 19</b> &nbsp;&nbsp; <b style="color:var(--sage)">(b) Convolution = 11</b><br><br><u>Correlation</u> — overlay as printed: $1(1) + 2(9) = 1 + 18 = \mathbf{19}$<br><br><u>Convolution</u> — flip $h$ by 180&deg; first: $\begin{pmatrix}1&0&0\\0&0&0\\0&0&2\end{pmatrix} \rightarrow \begin{pmatrix}2&0&0\\0&0&0\\0&0&1\end{pmatrix}$, then overlay: $2(1) + 1(9) = \mathbf{11}$<br><br>This kernel is deliberately <em>asymmetric</em>, which is why the two differ. Replace it with any symmetric kernel and both answers collapse to the same number — that is the "correlation = convolution if symmetric" fact, demonstrated.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><span class="lbl">corr:</span> <b>(I &oplus; h)(x,y) = &Sigma; h(u,v)&middot;I(x<i>+</i>u, y<i>+</i>v)</b> &nbsp;<span class="lbl">no flip</span><br><span class="lbl">conv:</span> <b>(I * h)(x,y) = &Sigma; h(u,v)&middot;I(x<i>&minus;</i>u, y<i>&minus;</i>v)</b> &nbsp;<span class="lbl">flip 180&deg;</span><hr><b>same weights &middot; same output SHAPE &middot; different values</b><br><b>h symmetric &rArr; corr = conv</b><hr><span class="lbl">conv:</span> commutative <b>&check;</b> associative <b>&check;</b> distributive <b>&check;</b><br><span class="lbl">corr:</span> commutative <b>&cross;</b> associative <b>&cross;</b> distributive <b>&check;</b><hr><b>F{a*b} = F{a}&middot;F{b}</b> &nbsp;&middot;&nbsp; <b>(f*g)&prime; = f&prime;*g = f*g&prime;</b></div></div>
+</div>
+</details>
+
+<details class="t">
+<summary><span class="f f1">1&times;</span>Reading a kernel out of a summation expression</summary>
+<div class="body">
+<em class="q">Which convolution filter corresponds to $\dfrac{20f(x-1,y-1)+30f(x,y)+4f(x+1,y)-10f(x-1,y+1)}{2}$ ?</em>
+<p>Two things to fix before you start, both of which the course assumes silently:</p>
+<ol>
+<li><strong>$x$ is the column, $y$ is the row.</strong> So $f(x+a, y+b)$ sits at grid offset (row $b$, column $a$).</li>
+<li><strong>Place the coefficients directly &mdash; do not flip.</strong> The expression already <em>is</em> the flipped sum, so writing $h$ by direct placement recovers the kernel.</li>
+</ol>
+<h3>Worked</h3>
+<p>Divide every coefficient by 2 first: $10, 15, 2, -5$.</p>
+<table>
+<tr><th>Term</th><th>$a$ (col offset)</th><th>$b$ (row offset)</th><th>Weight</th><th>Cell</th></tr>
+<tr><td>$f(x-1,y-1)$</td><td>&minus;1</td><td>&minus;1</td><td class="k">10</td><td>top-left</td></tr>
+<tr><td>$f(x,y)$</td><td>0</td><td>0</td><td class="k">15</td><td>centre</td></tr>
+<tr><td>$f(x+1,y)$</td><td>+1</td><td>0</td><td class="k">2</td><td>middle-right</td></tr>
+<tr><td>$f(x-1,y+1)$</td><td>&minus;1</td><td>+1</td><td class="k">&minus;5</td><td>bottom-left</td></tr>
+</table>
+<div class="fm">$$h = \begin{bmatrix}10&0&0\\0&15&2\\-5&0&0\end{bmatrix}$$</div>
+<div class="box trap"><b>The trap</b>Every distractor keeps the un-divided coefficients (20, 30, 4, &minus;10) or transposes the row/column roles. Do the division first, then place.</div>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">Which convolution filter corresponds to $\dfrac{6f(x,y-1) + 12f(x,y) - 3f(x+1,y+1)}{3}$ ?</div><details><summary>Show answer</summary><div class="pa"><div class="fm">$$h = \begin{bmatrix}0&2&0\\0&4&0\\0&0&-1\end{bmatrix}$$</div>Divide by 3 first: coefficients become $2,\, 4,\, -1$.<br><br><table><tr><th>Term</th><th>$a$ (col)</th><th>$b$ (row)</th><th>Cell</th><th>Weight</th></tr><tr><td>$f(x,y-1)$</td><td>0</td><td>&minus;1</td><td>top-middle</td><td class="k">2</td></tr><tr><td>$f(x,y)$</td><td>0</td><td>0</td><td>centre</td><td class="k">4</td></tr><tr><td>$f(x+1,y+1)$</td><td>+1</td><td>+1</td><td>bottom-right</td><td class="k">&minus;1</td></tr></table>Remember $x$ is the <em>column</em> and $y$ is the <em>row</em>, so $f(x+1,y+1)$ goes down-and-right.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><span class="lbl">1.</span> <b>divide by the denominator FIRST</b><br><span class="lbl">2.</span> <b>x = column, y = row</b><br><span class="lbl">3.</span> <b>place coefficient of f(x+a, y+b) at cell (row b, col a)</b><br><span class="lbl">4.</span> <b>do NOT flip</b> <span class="lbl">— the summation is already the flipped form</span><hr><i>centre coefficient = the f(x,y) term. Always check it first.</i></div></div>
+</div>
+</details>
+
+<details class="t" open>
+<summary><span class="f f3">3&times;</span>Separable kernels &mdash; the rank-1 test</summary>
+<div class="body">
+<details class="bg"><summary>Rank, and why separable means rank 1</summary><div class="bgbody"><p>The <strong>rank</strong> of a matrix is the number of linearly independent rows (equivalently, columns). It counts how many genuinely different directions the matrix contains.</p><p>An <strong>outer product</strong> $v h^{\mathsf T}$ has entries $(vh^{\mathsf T})_{ij} = v_i h_j$. Look at row $i$: it is $v_i \cdot [h_1, h_2, \ldots]$ — the <em>same vector</em> $h$, scaled by $v_i$. So every row is a multiple of $h$, and the rank is 1 (or 0 if $v = \mathbf{0}$).</p><p>The converse also holds: if every row of $K$ is a multiple of some $h$, write the multipliers as $v$ and you have $K = vh^{\mathsf T}$. So <strong>separable $\iff$ rank 1</strong>, exactly — not an approximation.</p><div class="fm">$$\begin{bmatrix}1\\2\\1\end{bmatrix}\begin{bmatrix}1&2&1\end{bmatrix} = \begin{bmatrix}1&2&1\\2&4&2\\1&2&1\end{bmatrix}$$</div><p><strong>Why a $2\times2$ minor detects it:</strong> if rows $i$ and $j$ are proportional, then for any two columns $p, q$ the sub-block $\begin{bmatrix}K_{ip}&K_{iq}\\K_{jp}&K_{jq}\end{bmatrix}$ has proportional rows too, so its determinant is zero. Rank $\le 1$ $\iff$ every $2\times2$ minor vanishes.</p><p><strong>Why the Gaussian is separable</strong> — the honest reason, which the course's "because it is linear" option does not give you: the exponent splits.</p><div class="fm">$$e^{-\frac{x^2+y^2}{2\sigma^2}} = e^{-\frac{x^2}{2\sigma^2}} \cdot e^{-\frac{y^2}{2\sigma^2}}$$</div><p>A product of a function of $x$ alone and a function of $y$ alone <em>is</em> an outer product. The Laplacian $x^2+y^2-2\sigma^2$ does not factor like that, which is why LoG is not separable.</p></div></details>
+<p>The course's own definition: a 2D kernel $K$ is <strong>separable</strong> if it decomposes into two 1D kernels,</p>
+<div class="fm hero">$$K = v\,h^{\mathsf T}$$</div>
+<p>An outer product of two vectors always has <strong>rank 1</strong>. So the test is:</p>
+<div class="box ans"><b>The 10-second test</b>Every row must be a scalar multiple of every other row. Pick the first non-zero row as your reference and check the others. Equivalently: every $2\times2$ minor is zero, i.e. $\det\begin{bmatrix}a&b\\c&d\end{bmatrix} = ad-bc = 0$ for all sub-blocks.</div>
+
+<h3>Run it on every kernel the papers have used</h3>
+<table>
+<tr><th>Kernel</th><th>Row check</th><th>Verdict</th></tr>
+<tr><td>$\frac{1}{16}\begin{bmatrix}1&2&1\\2&4&2\\1&2&1\end{bmatrix}$ Gaussian</td><td>$[2,4,2]=2r_1$, $[1,2,1]=1r_1$</td><td class="k">Separable</td></tr>
+<tr><td>$\begin{bmatrix}1&0&-1\\2&0&-2\\1&0&-1\end{bmatrix}$ Sobel</td><td>$=[1,2,1]^{\mathsf T}[1,0,-1]$</td><td class="k">Separable</td></tr>
+<tr><td>$\begin{bmatrix}0&-1&0\\-1&4&-1\\0&-1&0\end{bmatrix}$ Laplacian</td><td>$[-1,4,-1]$ not a multiple of $[0,-1,0]$</td><td class="x">Not separable</td></tr>
+<tr><td>$\begin{bmatrix}1&0&-1\\2&0&-2\\1&-50&-2\end{bmatrix}$</td><td>the &minus;50 breaks row 3</td><td class="x">Not separable</td></tr>
+<tr><td>$\begin{bmatrix}2&4&6\\3&6&9\\1&2&3\end{bmatrix}$</td><td>$1.5r_1$, $0.5r_1$</td><td class="k">Separable</td></tr>
+<tr><td>$\begin{bmatrix}2&4&6\\3&6&9\\2&3&4\end{bmatrix}$</td><td>$[2,3,4]$ breaks it</td><td class="x">Not separable</td></tr>
+<tr><td>$\begin{bmatrix}5&0&5\\10&0&10\\-5&0&5\end{bmatrix}$</td><td>needs $-1$ then $+1$ &mdash; inconsistent</td><td class="x">Not separable</td></tr>
+<tr><td>$\begin{bmatrix}5&0&5\\10&0&10\\-5&0&-5\end{bmatrix}$</td><td>$2r_1$, $-1r_1$</td><td class="k">Separable</td></tr>
+<tr><td>$\begin{bmatrix}1&2&3\\2&4&6\\3&6&9\end{bmatrix}$</td><td>$2r_1$, $3r_1$</td><td class="k">Separable</td></tr>
+<tr><td>$\begin{bmatrix}1&0&1\\0&0&0\\1&0&1\end{bmatrix}$</td><td>$0\cdot r_1$, $1\cdot r_1$</td><td class="k">Separable</td></tr>
+<tr><td>$\begin{bmatrix}1&2&1\\0&0&0\\1&2&2\end{bmatrix}$</td><td>$[1,2,2]$ breaks it</td><td class="x">Not separable</td></tr>
+<tr><td>$\begin{bmatrix}2&0&-2\\4&0&-4\\6&0&-6\end{bmatrix}$</td><td>$2r_1$, $3r_1$</td><td class="k">Separable</td></tr>
+</table>
+<div class="box trap"><b>The trap</b>A zero row is <em>fine</em> &mdash; the zero vector is $0\times r_1$, which is still a valid scalar multiple. Candidates like $\begin{bmatrix}1&0&1\\0&0&0\\1&0&1\end{bmatrix}$ look non-separable and are not.</div>
+
+<h3>Why anyone cares: the cost argument</h3>
+<div class="fm hero">$$\text{2D pass: } O(k^2) \text{ per pixel} \qquad\longrightarrow\qquad \text{two 1D passes: } O(2k) \text{ per pixel}$$</div>
+<p>Marked-true statement, near-verbatim: <em>"A separable $k\times k$ filter can be implemented as two 1D passes with per-pixel cost $O(2k)$ instead of $O(k^2)$."</em></p>
+<div class="box conflict"><b>Key inconsistency &mdash; read this</b>The papers disagree about the <em>reason</em> Gaussian is separable. The marked-correct option in T2 Q77 is <em>"Gaussian filter is a separable filter because it is linear"</em>, which is bad reasoning (median is non-linear <em>and</em> non-separable; mean is linear <em>and</em> separable &mdash; linearity does not imply separability; rank 1 does). In the same question <em>"Median filter is a non-separable filter"</em> is marked <strong>false</strong>, while in Practice Assignment 1 the identical sentence is marked <strong>true</strong>.<br><br><strong>Decision rule:</strong> answer by elimination, not by the reason clause. In a "which is True" set, if the Gaussian-separable option is present and the other three are clearly wrong (Gaussian high-pass, mean non-linear), pick the Gaussian one. If the Gaussian option is absent, "median is non-separable" is the true statement.</div>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">Is $K = \begin{pmatrix}3&6&9\\1&2&3\\-2&-4&-6\end{pmatrix}$ separable? If so, give $v$ and $h$ with $K = vh^{\mathsf T}$.</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage);font-size:19px">Separable.</b><br><br>Row check against $r_1 = [3,6,9]$: &nbsp; $r_2 = [1,2,3] = \tfrac13 r_1$ &check; &nbsp; $r_3 = [-2,-4,-6] = -\tfrac23 r_1$ &check;. Rank 1.<br><br>To decompose, pull the common pattern out. The simplest column vector is $h = [1,2,3]$ (row 2 as printed), and then the multipliers are $v = [3, 1, -2]$:<div class="fm">$$\begin{bmatrix}3\\1\\-2\end{bmatrix}\begin{bmatrix}1&2&3\end{bmatrix} = \begin{bmatrix}3&6&9\\1&2&3\\-2&-4&-6\end{bmatrix}\;\checkmark$$</div>The decomposition is not unique — $v = [6,2,-4]$ with $h = [0.5,1,1.5]$ works equally well. Only the product is pinned down.<br><br>Cost: the 2D pass is $9$ multiplies per pixel; the separable pass is $3 + 3 = 6$. For a $9\times9$ kernel it would be 81 vs 18.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>separable &hArr; rank 1 &hArr; K = v h<sup>T</sup></b><hr><span class="lbl">test:</span> <b>every row = scalar &times; first non-zero row</b><br><span class="lbl">or:</span> <b>every 2&times;2 minor: ad &minus; bc = 0</b><hr><i>a ZERO row is fine (0 &times; r&#8321;).</i><hr><span class="lbl">cost:</span> <b>2D O(k&sup2;)/px &rarr; two 1D O(2k)/px</b><hr><span class="lbl">separable:</span> <b>Gaussian, box/mean, Sobel, Prewitt</b><br><span class="lbl">NOT:</span> <b>Laplacian, LoG, median, bilateral</b></div></div>
+</div>
+</details>
+
+<details class="t">
+<summary><span class="f f2">2&times;</span>Low-pass vs. high-pass &mdash; use the coefficient sum</summary>
+<div class="body">
+<div class="box ans"><b>The whole test</b>Sum the kernel coefficients. Sum $= 0$ &rarr; the filter kills the DC (constant) component &rarr; <strong>high-pass</strong>. Sum $\neq 0$ with all coefficients the same sign &rarr; <strong>low-pass</strong>.</div>
+<p>Intuition: apply the kernel to a flat, constant image. A low-pass filter must return that constant (it is an average). A high-pass filter must return zero, because a constant image has no detail. Returning zero on a constant is exactly "the weights sum to zero".</p>
+<em class="q">Which of the following is an example of a high-pass filter?</em>
+<table>
+<tr><th>Option</th><th>Sum</th><th>Verdict</th></tr>
+<tr><td>$\begin{bmatrix}-1&-1&-1\\-1&-1&-1\\-1&-1&-1\end{bmatrix}$</td><td>&minus;9</td><td class="x">Low-pass (negated box)</td></tr>
+<tr><td>$\begin{bmatrix}1&1&1\\1&1&1\\1&1&1\end{bmatrix}$</td><td>9</td><td class="x">Low-pass (box)</td></tr>
+<tr><td>$\begin{bmatrix}1&2&1\\2&1&2\\1&2&1\end{bmatrix}$</td><td>13</td><td class="x">Low-pass</td></tr>
+<tr><td>$\begin{bmatrix}-1&-1&0\\-1&0&1\\0&1&1\end{bmatrix}$</td><td class="k">0</td><td class="k">High-pass (an emboss / diagonal derivative)</td></tr>
+</table>
+<p>Every high-pass kernel in the course &mdash; Laplacian, Sobel, emboss &mdash; sums to zero. Every low-pass kernel &mdash; box, Gaussian &mdash; sums to a positive number and gets normalized to 1.</p>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">Classify each and, where it is low-pass, give its normalizing factor.<br><br>(a) $\begin{pmatrix}0&1&0\\1&-4&1\\0&1&0\end{pmatrix}$ &nbsp;&nbsp;&nbsp; (b) $\begin{pmatrix}1&1&1\\1&2&1\\1&1&1\end{pmatrix}$</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage)">(a) High-pass.</b> Sum $= 1+1-4+1+1 = 0$. It is the negated 4-neighbour Laplacian (centre $-4$, neighbours $+1$) — the sign flip does not change its character.<br><br><b style="color:var(--sage)">(b) Low-pass, normalizing factor 10.</b> Sum $= 8(1) + 2 = 10$, non-zero and all coefficients positive. It is a weighted average with a slight preference for the centre — a crude Gaussian.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>&Sigma; coefficients = 0 &rArr; HIGH-pass</b> <span class="lbl">(kills DC / constant regions &rarr; 0)</span><br><b>&Sigma; &ne; 0, all same sign &rArr; LOW-pass</b> <span class="lbl">(returns the constant)</span><hr><span class="lbl">normalizing factor for a low-pass kernel =</span> <b>&Sigma; of raw weights</b><hr><span class="lbl">low:</span> box, Gaussian &nbsp;|&nbsp; <span class="lbl">high:</span> Laplacian, LoG, Sobel, emboss<hr><i>test on a constant image: low-pass returns it, high-pass returns 0.</i></div></div>
+</div>
+</details>
+
+<details class="t">
+<summary><span class="f f1">1&times;</span>Normalizing factor of an average filter</summary>
+<div class="body">
+<em class="q">For the $3\times3$ average filter $\frac{1}{?}\begin{pmatrix}2&2&2\\2&4&2\\2&2&2\end{pmatrix}$, the correct normalizing factor is:</em>
+<p>An averaging (low-pass) filter must leave a constant image unchanged, so its weights must sum to 1 after normalization. Therefore the divisor is the sum of the raw weights.</p>
+<div class="fm">$$8 \times 2 + 4 = \mathbf{20}$$</div>
+<p><span class="src">Answer <b style="color:var(--sage)">20</b></span> &mdash; note this generalizes: for $\frac{1}{16}\begin{bmatrix}1&2&1\\2&4&2\\1&2&1\end{bmatrix}$ the sum is $1+2+1+2+4+2+1+2+1=16$. That is where the 16 comes from.</p>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">For the $3\times3$ average filter $\dfrac{1}{?}\begin{pmatrix}1&3&1\\3&5&3\\1&3&1\end{pmatrix}$, the correct normalizing factor is ___</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage);font-size:19px">21</b><br><br>$4(1) + 4(3) + 5 = 4 + 12 + 5 = 21$.<br><br>Check the reasoning rather than the arithmetic: apply this kernel to a constant image of value $c$. The weighted sum is $21c$. For an <em>averaging</em> filter the answer must be $c$, so you must divide by 21. Equivalently: the normalized weights have to sum to 1.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>divisor = sum of the raw weights</b><hr><span class="lbl">box:</span> <b>1/9 &times; ones(3,3)</b><br><span class="lbl">Gaussian 3&times;3:</span> <b>1/16 &times; [1 2 1; 2 4 2; 1 2 1]</b> &nbsp;<span class="lbl">(1+2+1+2+4+2+1+2+1 = 16)</span><br><span class="lbl">Gaussian 5&times;5:</span> <b>1/273</b><hr><i>normalized weights must sum to 1 &mdash; that IS the definition of an average.</i></div></div>
+</div>
+</details>
+
+<details class="t">
+<summary><span class="f f3">3&times;</span>Which filter leaves the centre pixel unchanged?</summary>
+<div class="body">
+<p>This template comes in two flavours and they have different answers. Read the question stem carefully.</p>
+
+<h3>Flavour A &mdash; "for <u>any</u> image"</h3>
+<p>Only one kernel can do this for every image: the identity, i.e. the discrete delta.</p>
+<div class="fm hero">$$\delta = \begin{bmatrix}0&0&0\\0&1&0\\0&0&0\end{bmatrix}, \qquad I * \delta = I$$</div>
+<p>Convolving with $\delta$ picks out the centre pixel and multiplies it by 1. <span class="src">T3 Q185 &rarr; this option.</span></p>
+
+<h3>Flavour B &mdash; a specific image is printed</h3>
+<p>Now you must compute. The kernel need not be the identity &mdash; it only needs its weighted sum over <em>this</em> neighbourhood to equal the centre value.</p>
+<em class="q">Which linear filter leaves the central value of $\begin{pmatrix}10&20&10\\20&10&20\\10&20&10\end{pmatrix}$ unchanged?</em>
+<p>Centre is 10. Test each (all three candidates are 180&deg;-symmetric, so convolution = correlation and you can just overlay):</p>
+<ul>
+<li>$\delta$: picks the centre &rarr; 10 &check;</li>
+<li>$\frac{1}{13}\times$ all-ones: total of the image $= 130$, and $130/13 = 10$ &check;</li>
+<li>$\frac{1}{5}\begin{pmatrix}1&0&1\\0&1&0\\1&0&1\end{pmatrix}$: four corners $(10\times4) +$ centre $(10) = 50$, and $50/5 = 10$ &check;</li>
+</ul>
+<p><span class="src">Answer <b style="color:var(--sage)">All of the above</b> &mdash; the image was constructed so all three work.</span></p>
+
+<div class="box conflict"><b>Key inconsistency &mdash; do not over-fit to T2 Q78</b>T2 Q78 prints $\begin{pmatrix}12&15&14\\9&8&7\\5&6&4\end{pmatrix}$ (centre 8) and marks $\frac{1}{7}\begin{pmatrix}0&1&0\\1&3&1\\0&1&0\end{pmatrix}$ correct. Compute it: $15+9+3(8)+7+6 = 61$, and $61/7 = 8.71 \neq 8$. None of the four options actually returns 8 exactly ($\frac{1}{9}$ box gives 8.89, the diagonal one gives 8.6). The key is wrong.<br><br><strong>Decision rule:</strong> if the stem says "any image", answer $\delta$ &mdash; always safe. If a specific image is given, compute all four and take the exact match; if nothing matches exactly, take the <em>normalized</em> kernel (weights summing to 1) whose centre weight is largest.</div>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">Which linear filter leaves the central value of $\begin{pmatrix}7&14&7\\14&7&14\\7&14&7\end{pmatrix}$ unchanged after convolution?<br><br>(a) $\begin{pmatrix}0&0&0\\0&1&0\\0&0&0\end{pmatrix}$ &nbsp; (b) $\frac{1}{13}\begin{pmatrix}1&1&1\\1&1&1\\1&1&1\end{pmatrix}$ &nbsp; (c) $\frac{1}{5}\begin{pmatrix}1&0&1\\0&1&0\\1&0&1\end{pmatrix}$ &nbsp; (d) All of the above</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage);font-size:19px">(d) All of the above</b> &mdash; centre is 7.<br><br>All three kernels are 180&deg;-symmetric, so convolution = correlation; just overlay.<br><br><b>(a)</b> $\delta$ picks the centre &rarr; <b>7</b> &check;<br><b>(b)</b> image total $= 5(7) + 4(14) = 35 + 56 = 91$, and $91/13 = $ <b>7</b> &check;<br><b>(c)</b> four corners $4(7) = 28$, plus centre $7$, $= 35$, and $35/5 = $ <b>7</b> &check;<br><br><u>How the image was built</u> — and how you will recognize the rigged ones: let corners be $a$ and edges $b$. For (b) you need $\frac{5a+4b}{13} = a \Rightarrow 4b = 8a \Rightarrow b = 2a$. With $a=7$: $b=14$. The original paper used $a=10, b=20$. Same construction, different numbers.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><span class="lbl">stem says "for ANY image":</span> <b>&delta; = [0 0 0; 0 1 0; 0 0 0]</b> &nbsp;<span class="lbl">— always, no computing</span><hr><span class="lbl">stem prints a SPECIFIC image:</span> <b>compute all options, take the exact match</b><br><i>if none is exact &rarr; the normalized kernel with the largest centre weight</i><hr><span class="lbl">shortcut:</span> all candidates are 180&deg;-symmetric &rArr; <b>conv = corr &rArr; just overlay</b><hr><i>T2 Q78 key is WRONG (computes 8.71, not 8). Do not learn from it.</i></div></div>
+</div>
+</details>
+
+<details class="t">
+<summary><span class="f f3">3&times;</span>Median filter &mdash; the numeric one</summary>
+<div class="body">
+<p>Median filter: sort the $3\times3$ window's nine values, take the 5th. Non-linear, so it cannot be written as a convolution. Best filter for salt-and-pepper noise.</p>
+<em class="q">After a median filter with a $3\times3$ window, stride 1, no padding, the value at position (3,3) of the output is ___</em>
+<div class="box conflict"><b>The papers disagree on what "(3,3)" means. Read this carefully &mdash; it is the highest-risk item on the paper.</b>
+No padding on a $5\times5$ input with a $3\times3$ window gives a $3\times3$ output. So "(3,3)" is either
+<ul style="margin:6px 0 0">
+<li><strong>Output-indexed</strong> &mdash; the last cell of the $3\times3$ output, i.e. the window centred on input $(4,4)$. Used by the T3 / Mar-2026 key.</li>
+<li><strong>Input-indexed</strong> &mdash; the window centred on input $(3,3)$, i.e. the middle cell of the output. Used by the T2 key &mdash; even though T2's own stem says "the top-left pixel coordinate of the output image is addressed as (1,1)", which contradicts its key.</li>
+</ul></div>
+
+<h3>Worked &mdash; T3 image (output-indexed, centre at input (4,4))</h3>
+<pre><code>14 18 22 25 31
+19 16 20 23 24
+27 21 [19 26 28]
+29 23 [22 17 18]
+33 26 [24 20 27]
+
+window = 19 26 28 22 17 18 24 20 27
+sorted = 17 18 19 20 <b>22</b> 24 26 27 28
+median = 22</code></pre>
+<p><span class="src">T3 key: <b style="color:var(--sage)">22</b> &check;</span></p>
+
+<h3>Worked &mdash; T2 image (input-indexed, centre at input (3,3))</h3>
+<pre><code>12 18 22 25 30
+20 [15 17 21] 23
+25 [19 20 24] 28
+27 [22 23 18] 20
+30 24 21 19 25
+
+window = 15 17 21 19 20 24 22 23 18
+sorted = 15 17 18 19 <b>20</b> 21 22 23 24
+median = 20</code></pre>
+<p><span class="src">T2 key: <b style="color:var(--sage)">20</b> &check;</span></p>
+
+<div class="box ans"><b>Decision rule for the exam</b>Default to <strong>output-indexing</strong> &mdash; window centred on input (4,4). It is what "no padding" logically means, and it is what the most recent key (Mar 2026) does. Then sanity-check: if your answer is not among the options (it's a short-answer, so instead: if the number feels wrong), compute the input-indexed one too and note both take ~20 seconds each. On a 3-mark question, spend the 40 seconds.</div>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">Using the same $5\times5$ image, a $3\times3$ median filter, stride 1, no padding — what is the value at position <b>(1,1)</b> of the output?<pre><code>14 18 22 25 31
+19 16 20 23 24
+27 21 19 26 28
+29 23 22 17 18
+33 26 24 20 27</code></pre></div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage);font-size:19px">19</b><br><br>Here both conventions <em>agree</em>, which is exactly why this variant is worth doing. Output (1,1) is the first output cell, and the first valid window is the one centred at input (2,2) — there is nowhere else it could be with no padding.<pre><code>[14 18 22] 25 31
+[19 16 20] 23 24
+[27 21 19] 26 28
+ 29 23 22  17 18
+ 33 26 24  20 27
+
+window = 14 18 22 19 16 20 27 21 19
+sorted = 14 16 18 19 <b>19</b> 20 21 22 27
+median = 19</code></pre>Use this as your calibration: the corners of the output are unambiguous. It is only the interior label "(3,3)" that the two papers read differently.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>median = sort the 9 values, take the 5th</b> &nbsp;<span class="lbl">(non-linear &rArr; NOT a convolution)</span><hr><span class="lbl">5&times;5 input, 3&times;3 window, no pad &rarr;</span> <b>3&times;3 output</b><hr><span class="lbl">output (r,c) &rarr; window centred at input</span> <b>(r+1, c+1)</b> &nbsp;<i>&larr; DEFAULT</i><br><span class="lbl">so output (3,3) &rarr; centre input (4,4) &rarr;</span> <b>22</b> <span class="lbl">[T3 key]</span><br><span class="lbl">alt reading: centre input (3,3) &rarr;</span> <b>20</b> <span class="lbl">[T2 key]</span><hr><i>~20s each. On 3 marks, compute BOTH.</i><hr><span class="lbl">median is best for</span> <b>salt-and-pepper</b></div></div>
+</div>
+</details>
+
+<details class="t">
+<summary><span class="f f3">3&times;</span>Linear contrast stretching</summary>
+<div class="body">
+<details class="bg"><summary>Why you may transform the mean instead of the pixels</summary><div class="bgbody"><p>Contrast stretching is an <strong>affine</strong> map: $T(I) = mI + c$ with $m = \frac{255}{I_{max}-I_{min}}$ and $c = -m\,I_{min}$.</p><p>Averaging is a linear operation, and affine maps pass straight through it:</p><div class="fm">$$\overline{T(I)} = \frac{1}{N}\sum_i (mI_i + c) = m\left(\frac{1}{N}\sum_i I_i\right) + c = m\overline{I} + c = T(\overline{I})$$</div><p>The $c$ survives because you add it $N$ times and divide by $N$. That is the whole justification, and it turns nine transformations into one.</p><p><strong>Where it breaks:</strong> this works for the <em>mean</em> because the mean is linear. It does <strong>not</strong> work for the <em>median</em> in general — though it happens to, here, because an affine map with $m > 0$ is monotonic and monotonic maps preserve order, hence preserve which element is the median. It fails outright for the variance ($\text{Var}(T(I)) = m^2\text{Var}(I)$ — the $m$ squares, the $c$ disappears) and for anything non-linear like a gamma correction $I^{\gamma}$.</p></div></details>
+<p>Map the observed range $[I_{min}, I_{max}]$ onto the full 8-bit range $[0,255]$:</p>
+<div class="fm hero">$$I' = \frac{I - I_{min}}{I_{max} - I_{min}} \times 255$$</div>
+<div class="box ans"><b>The shortcut that saves you two minutes</b>This map is <strong>affine</strong> in $I$. Affine maps commute with averaging, so if the question asks for the <em>mean of the transformed pixels</em>, transform the mean &mdash; do not transform nine pixels and then average.
+$$\overline{I'} = \frac{\overline{I} - I_{min}}{I_{max}-I_{min}} \times 255$$</div>
+
+<h3>Worked &mdash; mean after stretching</h3>
+<em class="q">Image $=\begin{bmatrix}52&55&61\\59&79&61\\76&61&64\end{bmatrix}$. Mean of transformed pixels?</em>
+<p>$I_{min}=52$, $I_{max}=79$, range $=27$. Sum $= 568$, so $\overline{I} = 568/9 = 63.11$.</p>
+<div class="fm">$$\overline{I'} = \frac{63.11 - 52}{27}\times 255 = \frac{11.11}{27}\times 255 = 0.4115 \times 255 = \mathbf{104.94}$$</div>
+
+<h3>Worked &mdash; the clean version</h3>
+<em class="q">Image $=\begin{bmatrix}10&20&30\\40&50&60\\70&80&90\end{bmatrix}$</em>
+<p>$I_{min}=10$, $I_{max}=90$, range 80, $\overline{I}=50$. $\;\frac{50-10}{80}\times255 = 0.5\times255 = \mathbf{127.50}$</p>
+
+<h3>Worked &mdash; central element after stretching</h3>
+<em class="q">Image $=\begin{bmatrix}12&40&210\\75&95&160\\30&120&240\end{bmatrix}$. Central element after stretching?</em>
+<p>$I_{min}=12$, $I_{max}=240$, range 228. Centre $=95$.</p>
+<div class="fm">$$\frac{95-12}{228}\times 255 = \frac{83}{228}\times255 = \mathbf{92.83} \approx 93$$</div>
+<p><span class="src">Key accepts 92 to 94.</span></p>
+<div class="box trap"><b>The trap</b>$I_{min}$ and $I_{max}$ come from the <em>image</em>, not from $[0,255]$. People reflexively divide by 255. Also: never round intermediate values &mdash; the accepted ranges are tight.</div>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">Apply linear contrast stretching to $\begin{pmatrix}30&45&60\\75&90&105\\20&120&55\end{pmatrix}$.<br><br>(a) What is the mean of the transformed image?<br>(b) What is the transformed value of the central element?</div><details><summary>Show answer</summary><div class="pa">$I_{min} = 20$, $I_{max} = 120$, range $= 100$.<br><br><b>(a) 119.0</b><br>Sum $= 30+45+60+75+90+105+20+120+55 = 600$, so $\overline{I} = 600/9 = 66.67$.<div class="fm">$$\overline{I'} = \frac{66.67 - 20}{100}\times 255 = 0.4667 \times 255 = \mathbf{119.0}$$</div><b>(b) 178.5</b><br>Central element is 90.<div class="fm">$$\frac{90 - 20}{100}\times 255 = 0.7 \times 255 = \mathbf{178.5}$$</div>Sanity checks worth 3 seconds: the min (20) must map to 0 and the max (120) must map to 255. And the mean output (119.0) is below the midpoint 127.5 — correct, because the original mean 66.67 sits below the range midpoint 70.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>I&prime; = (I &minus; I<sub>min</sub>) / (I<sub>max</sub> &minus; I<sub>min</sub>) &times; 255</b><hr><span class="lbl">asked for the MEAN? &rarr;</span> <b>transform the mean directly</b> <span class="lbl">(map is affine)</span><br><i>never transform 9 pixels then average &mdash; wastes 2 min</i><hr><span class="lbl">check:</span> <b>I<sub>min</sub> &rarr; 0 &nbsp; I<sub>max</sub> &rarr; 255</b><hr><i>I<sub>min</sub>/I<sub>max</sub> come from the IMAGE, not from [0,255].<br>do NOT round intermediates &mdash; accepted ranges are tight.</i></div></div>
+</div>
+</details>
+
+<details class="t">
+<summary><span class="f f3">3&times;</span>The discrete Laplacian and LoG kernels</summary>
+<div class="body">
+<details class="bg"><summary>Where the finite-difference coefficients come from</summary><div class="bgbody"><p>Start with the central difference for a first derivative on a unit grid:</p><div class="fm">$$f'(x) \approx \frac{f(x+1) - f(x-1)}{2}$$</div><p>Apply the (forward-then-backward) difference twice to get the second derivative:</p><div class="fm">$$f''(x) \approx \big[f(x+1) - f(x)\big] - \big[f(x) - f(x-1)\big] = f(x+1) - 2f(x) + f(x-1)$$</div><p>which as a 1D kernel is $[1, -2, 1]$. Note the course writes it with the opposite sign — $-f(x+1) - f(x-1) + 2f(x)$, i.e. $[-1, 2, -1]$ — so its Laplacian has a <em>positive</em> centre. Both conventions are in circulation; the course's gives $+4$ and $+8$ centres. <strong>Use the sign the question prints.</strong></p><p>Now the 2D Laplacian is just the sum of two 1D second derivatives, one along each axis:</p><div class="fm">$$\Delta f = \frac{\partial^2 f}{\partial x^2} + \frac{\partial^2 f}{\partial y^2} \;\Rightarrow\; \begin{bmatrix}0&0&0\\-1&2&-1\\0&0&0\end{bmatrix} + \begin{bmatrix}0&-1&0\\0&2&0\\0&-1&0\end{bmatrix} = \begin{bmatrix}0&-1&0\\-1&4&-1\\0&-1&0\end{bmatrix}$$</div><p>The $+4$ is $2+2$ — <strong>the centre is counted once per axis</strong>. That is the entire trap, seen structurally. The 8-neighbour version adds the two diagonal axes, contributing $2+2$ more, giving $+8$.</p><p><strong>Why "LoG" and "Laplacian" are used interchangeably here:</strong> the Laplacian is a second derivative, so it doubles down on noise. In practice you always smooth first: $\Delta(G * I) = (\Delta G) * I$ by the derivative property. So the LoG is one pre-computed kernel doing both jobs, and at $3\times3$ its discrete form is exactly the Laplacian stencil.</p></div></details>
+<p>The Laplacian is the sum of unmixed second derivatives, $\Delta f = \frac{\partial^2 f}{\partial x^2} + \frac{\partial^2 f}{\partial y^2}$. It is isotropic, linear and high-pass. Edges show up as <strong>zero crossings</strong>, not maxima.</p>
+
+<h3>8-neighbour version</h3>
+<div class="fm hero">$$\Delta f(x,y) = -\!\!\!\sum_{\substack{(u,v)\in\{-1,0,1\}^2\\(u,v)\neq(0,0)}}\!\!\! f(x+u,y+v)\; +\; 8f(x,y)$$</div>
+<p>Read the coefficients straight off: every one of the 8 neighbours gets $-1$, the centre gets $+8$.</p>
+<div class="fm">$$\begin{bmatrix}-1&-1&-1\\-1&8&-1\\-1&-1&-1\end{bmatrix} \qquad \text{middle element} = \mathbf{8}$$</div>
+<p>Sanity check: the coefficients sum to $-8+8=0$ &check; &mdash; it must, because it is high-pass.</p>
+
+<h3>4-neighbour version</h3>
+<div class="fm">$$\begin{bmatrix}0&-1&0\\-1&4&-1\\0&-1&0\end{bmatrix}$$</div>
+
+<h3>The LoG question, worked</h3>
+<em class="q">Given $\frac{\partial^2 f}{\partial x^2} = -f(x+1,y)-f(x-1,y)+2f(x,y)$ and $\frac{\partial^2 f}{\partial y^2} = -f(x,y+1)-f(x,y-1)+2f(x,y)$, the middle element of the Laplacian of the Gaussian filter is ___</em>
+<p>Add them. The centre coefficient appears in both: $2 + 2 = 4$. Each of the four 4-neighbours gets $-1$.</p>
+<div class="fm">$$\Delta = \begin{bmatrix}0&-1&0\\-1&4&-1\\0&-1&0\end{bmatrix} \qquad \text{middle element} = \mathbf{4}$$</div>
+<div class="box trap"><b>The trap</b>The centre coefficient is <em>double-counted</em> &mdash; once from $\partial^2/\partial x^2$ and once from $\partial^2/\partial y^2$. If you write 2 you have added only one of them. And note the general pattern: <strong>the middle element equals the number of neighbours involved</strong> (4 for the 4-neighbour form, 8 for the 8-neighbour form), because the weights must sum to zero.</div>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">Apply the 4-neighbour Laplacian $\begin{pmatrix}0&-1&0\\-1&4&-1\\0&-1&0\end{pmatrix}$ to the patch $\begin{pmatrix}1&2&1\\3&10&3\\1&2&1\end{pmatrix}$. What is the response at the centre?</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage);font-size:19px">30</b><br><br>The kernel is 180&deg;-symmetric, so overlay directly:<div class="fm">$$-(2) - (3) + 4(10) - (3) - (2) = -10 + 40 = \mathbf{30}$$</div>(The corners are multiplied by 0 and never enter.)<br><br><u>What the number means.</u> A large positive response says the centre is much brighter than its neighbourhood — a bright spot or a ridge. Check the high-pass property while you are here: on a <em>constant</em> patch of value $c$ you would get $-4c + 4c = 0$ &check;, which is what "coefficients sum to zero" buys you.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>4-nbr:</b> [0 &minus;1 0; &minus;1 <b>4</b> &minus;1; 0 &minus;1 0] &nbsp;&nbsp; <b>8-nbr:</b> all &minus;1, centre <b>8</b><hr><b>middle element = number of neighbours used (4 or 8)</b><br><i>because &Sigma; coefficients MUST = 0 (high-pass)</i><hr><span class="lbl">why 4 and not 2:</span> <b>the centre is counted once per axis</b> (2 + 2)<hr><span class="lbl">Laplacian / LoG:</span> <b>edges at ZERO CROSSINGS</b>, not maxima<br><span class="lbl">isotropic</span> <b>&check;</b> &nbsp; <span class="lbl">linear</span> <b>&check;</b> &nbsp; <span class="lbl">separable</span> <b>&cross;</b> &nbsp; <span class="lbl">noise-sensitive</span> <b>&check;&check;</b></div></div>
+</div>
+</details>
+
+<details class="t">
+<summary><span class="f f1">1&times;</span>Integral image (summed-area table)</summary>
+<div class="body">
+<details class="bg"><summary>Prefix sums and inclusion-exclusion</summary><div class="bgbody"><p>In 1D: build $S(i) = \sum_{j \le i} a_j$ once, in one pass. Then <em>any</em> range sum is $a_p + \cdots + a_q = S(q) - S(p-1)$ — two lookups, no loop. You paid $O(n)$ once to make every query $O(1)$.</p><p>The integral image is the 2D version. The subtlety is that you now overlap in two directions, so you need <strong>inclusion&ndash;exclusion</strong>. Picture the rectangle you want, $D$:</p><pre><code>      c&#8321;-1   c&#8322;
+         |    |
+r&#8321;-1 ---+----+----
+      A |  B |
+     ---+----+----
+      C |  D |
+r&#8322;   ---+----+----</code></pre><p>$II(r_2,c_2)$ is everything above-and-left of the bottom-right corner, which is $A+B+C+D$. Subtract the strip above ($II(r_1{-}1,c_2) = A+B$) and the strip to the left ($II(r_2,c_1{-}1) = A+C$). You have now removed $A$ <em>twice</em>, so add it back once ($II(r_1{-}1,c_1{-}1) = A$):</p><div class="fm">$$(A{+}B{+}C{+}D) - (A{+}B) - (A{+}C) + A = D \;\checkmark$$</div><p><strong>Why it matters:</strong> a box filter of <em>any</em> size costs 4 lookups instead of $k^2$ multiply-adds. This is what makes Viola&ndash;Jones face detection run in real time on 2001 hardware, and it is the same trick behind SURF's box approximation of the Gaussian.</p></div></details>
+<p>Definition &mdash; every entry stores the sum of everything above-and-left of it, inclusive:</p>
+<div class="fm hero">$$II(x,y) = \sum_{i \le x}\sum_{j \le y} f(i,j)$$</div>
+<p>The point of it: <strong>any rectangle sum in $O(1)$, four lookups, regardless of rectangle size.</strong> This is what makes Viola-Jones and box filters cheap.</p>
+<div class="fm hero">$$S(r_1{:}r_2,\; c_1{:}c_2) = II(r_2,c_2) - II(r_1{-}1,c_2) - II(r_2,c_1{-}1) + II(r_1{-}1,c_1{-}1)$$</div>
+<p>Inclusion&ndash;exclusion: take the big block, subtract the strip above, subtract the strip to the left, then add back the top-left corner you just subtracted twice.</p>
+<h3>Worked</h3>
+<em class="q">$II = \begin{bmatrix}4&9&12\\10&20&30\\15&33&50\end{bmatrix}$ (1-indexed). Sum of the original image over rows 2:3, cols 2:3?</em>
+<p>$r_1=2, r_2=3, c_1=2, c_2=3$:</p>
+<div class="fm">$$II(3,3) - II(1,3) - II(3,1) + II(1,1) = 50 - 12 - 15 + 4 = \mathbf{27}$$</div>
+<div class="box trap"><b>The trap</b>1-indexed means $II(r_1{-}1, \cdot) = II(1, \cdot)$, a real row of the table. If the rectangle started at row 1 you would need $II(0,\cdot) = 0$, i.e. treat out-of-bounds as zero. Also: the $+II(r_1-1,c_1-1)$ term is the one people drop.</div>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">Given $II = \begin{pmatrix}2&5&9\\7&15&24\\13&27&42\end{pmatrix}$ (1-indexed), find the sum of the original image over rows 2 to 3 and columns 1 to 2.</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage);font-size:19px">22</b><br><br>$r_1 = 2,\, r_2 = 3,\, c_1 = 1,\, c_2 = 2$.<div class="fm">$$II(3,2) - II(1,2) - II(3,0) + II(1,0)$$</div>Here $c_1 - 1 = 0$, which is <strong>outside the table</strong> — treat it as 0, because "the sum of everything to the left of column 1" is the sum of nothing.<div class="fm">$$27 - 5 - 0 + 0 = \mathbf{22}$$</div><u>Verify by recovering the image.</u> Differencing $II$ back out gives $f = \begin{pmatrix}2&3&4\\5&5&5\\6&6&6\end{pmatrix}$, so the block is $5 + 5 + 6 + 6 = \mathbf{22}$ &check;. Recovering nine values took nine subtractions; the four-lookup formula got there in one line. That gap is the entire point of the data structure.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>II(x,y) = &Sigma;<sub>i&le;x</sub> &Sigma;<sub>j&le;y</sub> f(i,j)</b><hr><b>S = II(r&#8322;,c&#8322;) &minus; II(r&#8321;&minus;1,c&#8322;) &minus; II(r&#8322;,c&#8321;&minus;1) + II(r&#8321;&minus;1,c&#8321;&minus;1)</b><hr><span class="lbl">order:</span> <b>big &minus; above &minus; left + corner</b><br><i>the +corner is the term everyone drops</i><hr><b>index 0 or out of bounds &rarr; 0</b><hr><span class="lbl">payoff:</span> <b>any rectangle in O(1), 4 lookups, any size</b></div></div>
+</div>
+</details>
+
+<details class="t">
+<summary><span class="f f1">1&times;</span>Counting convolution operations</summary>
+<div class="body">
+<em class="q">A $5\times5$ kernel generates an output image of dimension $10\times10$ after convolution. The approximate number of computations is:</em>
+<p>Each output pixel costs one multiply-add per kernel cell, i.e. $k^2$. There are $10\times10$ output pixels.</p>
+<div class="fm">$$10 \times 10 \times 5 \times 5 = \mathbf{2500}$$</div>
+<div class="box trap"><b>The trap</b>The distractors are 25 ($k^2$ alone), 100 (output pixels alone) and 250. And GA1 Q1 has a related false statement: <em>"Convolution requires $k$ operations per pixel where the kernel is $k\times k$"</em> &mdash; it is $k^2$, unless the kernel is separable, in which case it is $2k$.</div>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">A $7\times7$ kernel produces an output of dimension $12\times12$.<br><br>(a) Approximately how many computations does the 2D convolution take?<br>(b) If the kernel is separable, how many?</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage)">(a) 7056</b> &nbsp;&nbsp; <b style="color:var(--sage)">(b) 2016</b><br><br><b>(a)</b> One multiply-add per kernel cell per output pixel:<div class="fm">$$12 \times 12 \times 7 \times 7 = 144 \times 49 = \mathbf{7056}$$</div><b>(b)</b> Two 1D passes, $k$ operations each:<div class="fm">$$12 \times 12 \times 2 \times 7 = 144 \times 14 = \mathbf{2016}$$</div>A $3.5\times$ saving, $= k^2 / 2k = k/2$. The bigger the kernel, the bigger the win — which is exactly why separability is worth a whole exam template.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>ops = (output pixels) &times; k&sup2;</b> &nbsp;<span class="lbl">2D</span><br><b>ops = (output pixels) &times; 2k</b> &nbsp;<span class="lbl">separable</span><hr><span class="lbl">speed-up ratio =</span> <b>k&sup2; / 2k = k/2</b><hr><i>per pixel it is k&sup2;, NOT k. "k operations per pixel for a k&times;k kernel" is a marked-FALSE distractor.</i></div></div>
+</div>
+</details>
+
+<details class="t" open>
+<summary><span class="f f4">4&times;</span>The filter taxonomy true/false bank</summary>
+<div class="body">
+<p>Every paper has at least one "which of the following is <em>false</em>" over these. Learn the grid, then read the question stem twice to see whether it wants true or false.</p>
+<table>
+<tr><th>Filter</th><th>Linear?</th><th>Separable?</th><th>Local / global</th><th>Character</th><th>Good for</th></tr>
+<tr><td>Mean / box</td><td class="k">Linear</td><td class="k">Separable</td><td>Local</td><td>Low-pass</td><td>smoothing, Gaussian noise</td></tr>
+<tr><td>Gaussian</td><td class="k">Linear</td><td class="k">Separable</td><td>Local</td><td>Low-pass</td><td>smoothing; <span style="color:var(--rose)">bad at salt-and-pepper</span></td></tr>
+<tr><td>Median</td><td class="x">Non-linear</td><td class="x">Non-separable</td><td>Local</td><td>&mdash;</td><td>salt-and-pepper</td></tr>
+<tr><td>Bilateral</td><td class="x">Non-linear</td><td class="x">Non-separable</td><td>Local</td><td>edge-preserving</td><td>denoise, keep edges</td></tr>
+<tr><td>Sobel</td><td class="k">Linear</td><td class="k">Separable</td><td>Local</td><td>High-pass</td><td>gradient edges</td></tr>
+<tr><td>Laplacian</td><td class="k">Linear</td><td class="x">Non-separable</td><td>Local</td><td>High-pass</td><td>zero-crossing edges</td></tr>
+<tr><td>Histogram equalization</td><td>&mdash;</td><td>&mdash;</td><td class="k">Global</td><td>&mdash;</td><td>contrast</td></tr>
+</table>
+
+<h3>The exact statements, with verdicts</h3>
+<table>
+<tr><th>Statement</th><th></th></tr>
+<tr><td>Mean filter is linear and median filter is non-linear.</td><td class="k">True</td></tr>
+<tr><td>Gaussian filter is particularly effective at removing salt-and-pepper noise.</td><td class="x">False &mdash; median is</td></tr>
+<tr><td>Effect of a linear filter can be achieved through convolution; a non-linear filter cannot.</td><td class="k">True</td></tr>
+<tr><td>Median filter is a non-separable filter.</td><td class="k">True<span style="color:var(--rose)">*</span></td></tr>
+<tr><td>Gaussian filter is a High Pass filter.</td><td class="x">False &mdash; low-pass</td></tr>
+<tr><td>Mean filter is non-separable because it is non-linear.</td><td class="x">False on both counts</td></tr>
+<tr><td>Gaussian filter is separable because it is linear.</td><td class="k">Keyed True<span style="color:var(--rose)">*</span></td></tr>
+<tr><td>Histogram equalization is a global operation.</td><td class="k">True</td></tr>
+<tr><td>Gaussian filtering is a local operation.</td><td class="k">True</td></tr>
+<tr><td>Median filtering is a global operation.</td><td class="x">False &mdash; local</td></tr>
+<tr><td>Median filtering is a linear filtering operation.</td><td class="x">False</td></tr>
+<tr><td>Bilateral filtering is a non-linear, edge-preserving local operation.</td><td class="k">True</td></tr>
+<tr><td>The kernel coefficients at every location of the bilateral filter are the same.</td><td class="x">False &mdash; they depend on the local intensities</td></tr>
+<tr><td>Histogram matching uses CDFs to map intensities between images.</td><td class="k">True</td></tr>
+<tr><td>Unsharp masking implements a high-boost (high-pass) effect.</td><td class="k">True</td></tr>
+<tr><td>The Gaussian filter is non-linear but shift-invariant.</td><td class="x">False &mdash; it is linear <em>and</em> shift-invariant</td></tr>
+<tr><td>The Sobel operator is perfectly isotropic.</td><td class="x">False &mdash; it is directional by construction</td></tr>
+<tr><td>Convolution in the spatial domain corresponds to multiplication in the frequency domain.</td><td class="k">True</td></tr>
+</table>
+<p><span class="src" style="color:var(--rose)">*</span> <span class="src">The two starred rows conflict across papers. See the key-inconsistency note under "Separable kernels".</span></p>
+
+<h3>Contrast vs. brightness</h3>
+<em class="q">Let $I$ be an image: $(I \times 2)$ preserves contrast more than $(I + 30)$.</em>
+<p><strong style="color:var(--sage)">True.</strong> Multiplication scales the whole dynamic range &mdash; the gap between the darkest and brightest pixel <em>grows</em>. Addition shifts every pixel equally, so the gap is unchanged in absolute terms but gets clipped at 255, compressing contrast. <span class="src">GA1 Q1.</span></p>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">Which of the following is <b>FALSE</b>?<br><br>(a) The median filter is effective against salt-and-pepper noise because it is non-linear.<br>(b) Histogram equalization is a global operation while bilateral filtering is local.<br>(c) The Gaussian filter is separable, and this reduces the per-pixel cost from $O(k^2)$ to $O(2k)$.<br>(d) The Laplacian filter is separable because it is linear.</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage);font-size:19px">(d)</b><br><br>It is false <em>twice over</em>, which is how you spot it: the Laplacian is <b>not</b> separable (rank 2 — $[-1,4,-1]$ is not a multiple of $[0,-1,0]$), and linearity would not imply separability even if it were. Sobel is linear <em>and</em> separable; Laplacian is linear and <em>not</em> separable — one counterexample kills the reasoning.<br><br>(a), (b) and (c) are all true as stated.<br><br><u>Note the shape of this question.</u> This is the same "because" clause that the real paper marks <em>correct</em> in the Gaussian version. That inconsistency is why the decision rule is <b>eliminate, do not evaluate the reason</b>.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><span class="lbl">LINEAR:</span> <b>mean, Gaussian, Sobel, Laplacian, LoG</b><br><span class="lbl">NON-LINEAR:</span> <b>median, bilateral</b><hr><span class="lbl">SEPARABLE:</span> <b>mean, Gaussian, Sobel, Prewitt</b><br><span class="lbl">NOT:</span> <b>Laplacian, LoG, median, bilateral</b><hr><span class="lbl">GLOBAL:</span> <b>histogram equalization</b> &nbsp;|&nbsp; <span class="lbl">LOCAL:</span> <b>everything else</b><hr><span class="lbl">salt-and-pepper &rarr;</span> <b>median</b> &nbsp;|&nbsp; <span class="lbl">Gaussian noise &rarr;</span> <b>Gaussian/mean</b><br><span class="lbl">edge-preserving &rarr;</span> <b>bilateral</b> <span class="lbl">(coefficients vary per location)</span><hr><b>I &times; 2 preserves contrast &gt; I + 30</b> <span class="lbl">(scale vs shift)</span><hr><i>"X is separable BECAUSE it is linear" is bad logic but is the keyed answer for Gaussian. Eliminate, don't reason.</i></div></div>
+</div>
+</details>
+</section>
+<section class="block" id="b2">
+<div class="bhead"><span class="num">BLOCK 2</span><h2>CNN arithmetic</h2></div>
+<p class="bsub">Week 4 material you have not touched, and it is worth more marks on the recent papers than Week 1 filtering. Four formulas cover almost all of it. Every mistake here is a floor-vs-round mistake or a forgotten channel dimension.</p>
+
+<details class="t" open>
+<summary><span class="f f3">3&times;</span>Output size &mdash; the floor formula</summary>
+<div class="body">
+<details class="bg"><summary>Deriving the output-size formula (so you never have to trust it)</summary><div class="bgbody"><p>Lay the kernel down at the far left. Its left edge sits at position 0 and it consumes $F$ pixels. Now slide it right in steps of $S$. The <em>last</em> legal position is the one where the kernel's right edge still touches the padded image, i.e. left edge at $W + 2P - F$.</p><p>So the left edge takes values $0,\, S,\, 2S,\, \ldots$ up to at most $W + 2P - F$. The number of steps you can take is $\left\lfloor \frac{W+2P-F}{S} \right\rfloor$, and you add 1 for the starting position at 0:</p><div class="fm">$$W_{\text{out}} = \left\lfloor \frac{W_{\text{in}} + 2P - F}{S} \right\rfloor + 1$$</div><p><strong>Why floor and not round:</strong> a partial step is not a step. If the kernel would hang off the edge you simply do not place it — those input pixels are silently dropped. Rounding up would mean reading memory that is not there.</p><p><strong>Sanity anchors</strong> worth burning in, because they catch almost every slip:</p><ul><li>$F=1, P=0, S=1$ &rarr; $W_{out} = W$. A $1\times1$ conv touches every pixel and nothing else.</li><li>$P=0, S=1$ &rarr; $W_{out} = W - F + 1$. "Valid" mode: you lose $F-1$ pixels, half off each side.</li><li>$S=1, P = \lfloor F/2 \rfloor$, $F$ odd &rarr; $W_{out} = W$. "Same" mode.</li><li>$S = 2$ &rarr; output roughly halves. If your answer is not near $W/2$, you have slipped.</li></ul></div></details>
+<p>Course notation: $F$ = filter size, $P$ = padding, $S$ = stride, $K$ = number of filters.</p>
+<div class="fm hero">$$W_{\text{out}} = \left\lfloor \frac{W_{\text{in}} - F + 2P}{S} \right\rfloor + 1$$</div>
+<p>Where it comes from: the kernel's first position needs $F$ pixels; $W_{in}+2P-F$ pixels remain to slide over; you can take $\lfloor (W_{in}+2P-F)/S \rfloor$ steps of size $S$; add 1 for the starting position.</p>
+<div class="box trap"><b>The trap</b><strong>Floor before the $+1$, never after.</strong> $\lfloor 99/2 \rfloor + 1 = 50$, but $\lfloor 99/2 + 1 \rfloor = 50$ too &mdash; they agree here, which lulls you. They disagree when the fraction pushes over: $\lfloor 29/4 \rfloor + 1 = 8$ vs $\lfloor 29/4+1\rfloor = 8$. The real killer is <em>rounding</em> instead of flooring: $\lceil 99/2 \rceil + 1 = 51$. The papers say explicitly "take $\lfloor x \rfloor$ whenever $x$ is non-integer".</div>
+
+<h3>Worked &mdash; the one on all three papers</h3>
+<em class="q">Two successive convolutions, each with kernel $7\times7$, padding 3, stride 2. Input is $100\times100$. The final feature-map side length $F$ is ___</em>
+<div class="fm">$$\text{Pass 1: } \left\lfloor \frac{100 - 7 + 6}{2} \right\rfloor + 1 = \left\lfloor \frac{99}{2} \right\rfloor + 1 = 49 + 1 = 50$$</div>
+<div class="fm">$$\text{Pass 2: } \left\lfloor \frac{50 - 7 + 6}{2} \right\rfloor + 1 = \left\lfloor \frac{49}{2} \right\rfloor + 1 = 24 + 1 = \mathbf{25}$$</div>
+
+<h3>Worked &mdash; the harder variant</h3>
+<em class="q">Input $128\times128$, kernel $5\times5$, padding 1, stride 4, twice.</em>
+<div class="fm">$$\text{Pass 1: } \left\lfloor \frac{128 - 5 + 2}{4} \right\rfloor + 1 = \left\lfloor 31.25 \right\rfloor + 1 = 32 \qquad \text{Pass 2: } \left\lfloor \frac{32 - 5 + 2}{4} \right\rfloor + 1 = \left\lfloor 7.25 \right\rfloor + 1 = \mathbf{8}$$</div>
+
+<h3>Same padding</h3>
+<div class="fm hero">$$\text{stride } 1,\ k \text{ odd},\ \text{output} = \text{input} \iff P = \left\lfloor \tfrac{k}{2} \right\rfloor$$</div>
+<p>Marked true, verbatim, on both recent papers. Check it: $W - k + 2\lfloor k/2\rfloor + 1 = W - k + (k-1) + 1 = W$ &check;</p>
+
+<div class="box ans"><b>"Number of features in the output"</b>GA4 Q1 gives input $256\times256\times3$ with $S{=}2, P{=}1, F{=}5, K{=}64$ and asks for the <em>number of features in the output</em>. Answer: <strong>64</strong>. It is asking for the <em>depth</em>, which equals $K$ &mdash; not $H\times W$, not $H\times W\times K$. The number of output feature maps <strong>equals the number of filters</strong> and is completely independent of the input depth.</div>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">AlexNet's first two layers. Input is $224 \times 224$.<br><br><b>Layer 1</b> — Conv: $F = 11$, $P = 2$, $S = 4$<br><b>Layer 2</b> — MaxPool: $F = 3$, $P = 0$, $S = 2$<br><br>Give the spatial size of the output of each layer.</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage);font-size:19px">Layer 1 &rarr; 55&times;55 &nbsp;&nbsp; Layer 2 &rarr; 27&times;27</b><br><br><b>Layer 1:</b><div class="fm">$$\left\lfloor \frac{224 - 11 + 2(2)}{4} \right\rfloor + 1 = \left\lfloor \frac{217}{4} \right\rfloor + 1 = \lfloor 54.25 \rfloor + 1 = 54 + 1 = \mathbf{55}$$</div><b>Layer 2:</b><div class="fm">$$\left\lfloor \frac{55 - 3 + 0}{2} \right\rfloor + 1 = \left\lfloor 26 \right\rfloor + 1 = \mathbf{27}$$</div><u>The trap fires here.</u> $54.25$ is where rounding would kill you: $\lceil 54.25 \rceil + 1 = 56$, and $\lfloor 54.25 + 1 \rfloor = 55$ — the second happens to survive, the first does not. Floor <em>the fraction</em>, then add 1. Note also that the pooling layer uses the identical formula; pooling is just a conv with a fixed, parameterless reduction.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>W<sub>out</sub> = &lfloor;(W<sub>in</sub> &minus; F + 2P) / S&rfloor; + 1</b><hr><b>FLOOR the fraction, THEN +1.</b> <i>never round.</i><hr><span class="lbl">valid</span> (P=0, S=1): <b>W &minus; F + 1</b><br><span class="lbl">same</span> (S=1, F odd): <b>P = &lfloor;F/2&rfloor; &rArr; W<sub>out</sub> = W<sub>in</sub></b><br><span class="lbl">S=2:</span> <b>output &asymp; half</b> <span class="lbl">&larr; sanity check</span><hr><span class="lbl">"number of features in the output" =</span> <b>K</b> <span class="lbl">(the filter count / depth)</span><br><i>NOT H&times;W. And it does not depend on the input depth M.</i><hr><span class="lbl">same formula applies to POOLING layers.</span></div></div>
+</div>
+</details>
+
+<details class="t" open>
+<summary><span class="f f4">4&times;</span>Parameter count and computational cost</summary>
+<div class="body">
+<details class="bg"><summary>Why one filter is $k \times k \times M$, and why stride never appears</summary><div class="bgbody"><p>A conv layer's input is a <strong>volume</strong>: $D_f \times D_f \times M$. A filter does not slide in depth — it spans the full depth at every position. So one filter is a $k \times k \times M$ block of weights, and it produces <em>one</em> scalar per spatial position, i.e. one 2D feature map. Want $N$ feature maps? Use $N$ filters. Hence $k^2MN$, plus one bias per filter.</p><div class="fm">$$\underbrace{k \times k}_{\text{spatial}} \times \underbrace{M}_{\text{full input depth}} \times \underbrace{N}_{\text{one per output map}} \; + \; \underbrace{N}_{\text{biases}}$$</div><p><strong>Now the key move — weight sharing.</strong> The same $k\times k\times M$ block is reused at every one of the $D_f^2$ spatial positions. The weights do not know <em>where</em> they are being applied. So:</p><ul><li><strong>Stride</strong> changes <em>how many places</em> you apply the filter &rarr; affects output size and FLOPs, not the weight count.</li><li><strong>Padding</strong> changes <em>where you are allowed</em> to apply it &rarr; same story.</li><li><strong>$D_f$</strong> (input spatial size) likewise never appears in the parameter count.</li></ul><p>This is the contrast with a fully-connected layer, where every input-output pair needs its own weight and the input size <em>is</em> the parameter count. It is the whole reason a CNN scales to images.</p><p><strong>The cost formula falls out for free:</strong> you do $k^2M$ multiply-adds per output pixel per filter, at $D_f^2$ positions, for $N$ filters:</p><div class="fm">$$\text{cost} = D_f^2 \cdot k^2 \cdot M \cdot N = D_f^2 \times \#\text{params}$$</div><p>So once you have the parameter count, the cost is one multiplication away.</p></div></details>
+<div class="fm hero">$$\#\text{params} = \underbrace{(k \times k \times M)}_{\text{one filter}} \times \underbrace{N}_{\text{filters}} \;+\; \underbrace{N}_{\text{biases}}$$</div>
+<p>Course notation: $M$ = input depth/channels, $N$ = output channels = number of filters $K$, $k$ = square kernel width.</p>
+<p>Intuition: one filter must span the <em>full depth</em> of the input volume &mdash; it is $k\times k\times M$, not $k \times k$. You have $N$ of them. Each contributes one bias.</p>
+
+<h3>Every instance the papers have asked</h3>
+<table>
+<tr><th>Question</th><th>Working</th><th>Answer</th></tr>
+<tr><td>Input $256\times256\times3$, $F{=}5$, $K{=}64$</td><td>$5\cdot5\cdot3\cdot64 = 4800$; $+64$ bias</td><td class="k">4800 or 4864</td></tr>
+<tr><td>$1\times1$ filter on $64\times64\times16$, incl. bias</td><td>$1\cdot1\cdot16 + 1$</td><td class="k">17</td></tr>
+<tr><td>$k{=}7$, $M{=}8$, $N{=}32$, ignore bias</td><td>$7\cdot7\cdot8\cdot32$</td><td class="k">12544</td></tr>
+<tr><td>$k{=}3$, $M{=}120$, $N{=}80$, ignore bias</td><td>$3\cdot3\cdot120\cdot80$</td><td class="k">86400</td></tr>
+<tr><td>$k{=}3$, $M{=}64$, $N{=}128$, ignore bias</td><td>$3\cdot3\cdot64\cdot128$</td><td class="k">73728</td></tr>
+</table>
+<div class="box trap"><b>The trap</b>Stride and padding <strong>never</strong> affect the parameter count. GA4 Q2 hands you $S{=}2, P{=}1$ purely as noise &mdash; they change the output <em>size</em>, not the number of weights. Weight sharing is exactly why: the same filter is reused at every spatial position.</div>
+
+<h3>Computational cost</h3>
+<div class="fm hero">$$\text{cost} = D_f \times D_f \times k \times k \times M \times N$$</div>
+<p>(One multiply-add per kernel cell per input channel per output channel per output pixel.)</p>
+<em class="q">$D_f = 100$, $M = 8$, $N = 32$, $k = 7$. Computational cost?</em>
+<div class="fm">$$100 \times 100 \times 7 \times 7 \times 8 \times 32 = \mathbf{125{,}440{,}000}$$</div>
+<p>Note the relationship: $\text{cost} = D_f^2 \times \#\text{params}$. Once you have 12544, just multiply by 10000.</p>
+
+<h3>Depthwise separable (EfficientNet / MobileNet)</h3>
+<div class="fm">$$\text{cost}_{\text{dw-sep}} = \underbrace{D_f^2 \cdot k^2 \cdot M}_{\text{depthwise}} + \underbrace{D_f^2 \cdot M \cdot N}_{\text{pointwise } 1\times1}$$</div>
+<p>Ratio to standard $= \frac{1}{N} + \frac{1}{k^2}$. For $k{=}3$ and large $N$ that is roughly a $9\times$ saving &mdash; the whole reason EfficientNet uses it.</p>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">A convolutional layer takes an input of size $28 \times 28 \times 32$ and applies 64 filters of size $5\times5$ with stride 2 and padding 2.<br><br>(a) How many learnable parameters, including biases?<br>(b) What is the computational cost (multiply-adds), taking $D_f = 28$?</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage)">(a) 51,264</b> &nbsp;&nbsp; <b style="color:var(--sage)">(b) 40,140,800</b><br><br><b>(a)</b> Here $k=5$, $M=32$, $N=64$:<div class="fm">$$5 \times 5 \times 32 \times 64 + 64 = 51200 + 64 = \mathbf{51{,}264}$$</div><b>(b)</b> Cost $= D_f^2 \times \#\text{params (without bias)}$:<div class="fm">$$28 \times 28 \times 5 \times 5 \times 32 \times 64 = 784 \times 51200 = \mathbf{40{,}140{,}800}$$</div><u>Both traps are planted.</u> <b>Stride 2 and padding 2 are noise</b> for part (a) — they change the output size to $14\times14$, not the weight count. And in (b) you use the $51{,}200$ <em>without</em> the biases, then multiply by $D_f^2$. Read whether the question says "including bias" before you answer either part.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>params = k &middot; k &middot; M &middot; N + N</b> &nbsp;<span class="lbl">(bias = N, one per filter)</span><hr><b>cost = D<sub>f</sub> &middot; D<sub>f</sub> &middot; k &middot; k &middot; M &middot; N = D<sub>f</sub>&sup2; &times; params</b><hr><i>STRIDE and PADDING never enter the param count. Neither does D<sub>f</sub>. Pure noise.</i><hr><span class="lbl">M = input depth &nbsp; N = output channels = num filters = K</span><hr><span class="lbl">depthwise-sep cost:</span> <b>D<sub>f</sub>&sup2;k&sup2;M + D<sub>f</sub>&sup2;MN</b><br><span class="lbl">ratio to standard:</span> <b>1/N + 1/k&sup2;</b> <span class="lbl">&asymp; 9&times; cheaper for k=3</span><hr><span class="lbl">pooling params:</span> <b>0</b></div></div>
+</div>
+</details>
+
+<details class="t">
+<summary><span class="f f3">3&times;</span>Backpropagation through a conv layer &mdash; gradient sizes</summary>
+<div class="body">
+<details class="bg"><summary>The shape rule, and why the backward pass is a full convolution</summary><div class="bgbody"><p><strong>The rule that answers the question without any calculus:</strong> a gradient always has the same shape as the thing it is taken with respect to. $\partial L/\partial X$ has the shape of $X$; $\partial L/\partial W$ has the shape of $W$. $L$ is a scalar, so it contributes no shape. That is it — the exam only asks for shapes, so this is the whole answer.</p><p><strong>Now the mechanism, so it is not a magic trick.</strong> In the forward pass each input pixel $X[i,j]$ contributes to several output pixels. By the chain rule its gradient is the sum over all outputs it touched:</p><div class="fm">$$\frac{\partial L}{\partial X[i,j]} = \sum_{(p,q)} \frac{\partial L}{\partial Y[p,q]} \cdot \frac{\partial Y[p,q]}{\partial X[i,j]}$$</div><p>Since $Y[p,q] = \sum_{u,v} W[u,v]\, X[p+u,\, q+v]$, the inner derivative is just $W[u,v]$ for the offsets that line up. Collecting terms turns the sum into a convolution of $\partial L/\partial Y$ with $W$.</p><p><strong>Why it must be "full" mode.</strong> A corner pixel of $X$ participated in exactly <em>one</em> output window. An interior pixel participated in $k^2$. To reach the corner pixels, the kernel has to hang off the edge of $\partial L/\partial Y$ — which means padding it by $k-1$ on each side before convolving. Padding by $k-1$ each side and using a $k$-tap kernel grows the map by exactly $k-1$:</p><div class="fm">$$|\partial L/\partial X| = |\partial L/\partial Y| + k - 1$$</div><p>which is precisely the inverse of the forward "valid" formula $Y = X - k + 1$. It <em>had</em> to be — the shape rule guaranteed it.</p></div></details>
+<p>Two gradients, two shapes. The exam only ever asks for the <em>spatial size</em> of $\partial L/\partial X$.</p>
+<div class="fm hero">$$\frac{\partial L}{\partial X} = \frac{\partial L}{\partial Y} \;\oplus\; W \quad\text{(full-mode)} \qquad\qquad \frac{\partial L}{\partial W} = X \;\oplus\; \frac{\partial L}{\partial Y}$$</div>
+<div class="box ans"><b>You don't need the operator to get the marks</b>$\partial L/\partial X$ must have <em>the same shape as $X$</em>. A gradient always has the shape of the thing it differentiates with respect to. So just <strong>invert the forward formula</strong>. Forward with stride 1, no padding: $Y = X - k + 1$. Therefore
+$$X = Y + k - 1$$
+That is the whole question.</div>
+
+<h3>Both instances</h3>
+<em class="q">$\partial L/\partial Y$ has dimensions $26\times26\times5$, $W$ is $3\times3$, stride 1, no padding. If $\partial L/\partial X$ is $F\times F\times d$, give $F$.</em>
+<div class="fm">$$F = 26 + 3 - 1 = \mathbf{28}$$</div>
+<em class="q">$5\times5$ filters, stride 1, no padding, $\partial L/\partial Y$ has spatial size $24\times24$. Spatial size of $\partial L/\partial X$ is $k\times k$ &mdash; give $k$.</em>
+<div class="fm">$$k = 24 + 5 - 1 = \mathbf{28}$$</div>
+<p>Sanity: a $28\times28$ input with a $5\times5$ valid conv gives $28-5+1 = 24$ &check;</p>
+<div class="box note"><b>Why "full" convolution</b>The gradient must flow back to <em>every</em> input pixel that touched the output &mdash; including the border pixels that only participated in one window. That requires padding $\partial L/\partial Y$ by $k-1$ on each side before convolving, which grows the map from $Y$ to $Y+k-1$. The papers mark both the $*$ and the $\oplus$ phrasings as true; don't fight it, the shape is what's scored.</div>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">In a convolutional layer with $7\times7$ filters, stride 1 and no padding, $\dfrac{\partial L}{\partial Y}$ has dimensions $30 \times 30 \times 16$. If $\dfrac{\partial L}{\partial X}$ has spatial size $F \times F$, what is $F$?</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage);font-size:19px">36</b><div class="fm">$$F = 30 + 7 - 1 = \mathbf{36}$$</div><u>Check it forwards.</u> A $36\times36$ input with a $7\times7$ valid conv gives $36 - 7 + 1 = 30$ &check;. Always do this — it takes 3 seconds and catches an off-by-one instantly.<br><br><u>The 16 is noise.</u> It is the number of output channels $N$. The <em>depth</em> of $\partial L/\partial X$ is $M$, the input depth, which the question never told you — which is exactly why it only asks for $F$.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>&part;L/&part;X has the SHAPE OF X. &part;L/&part;W has the shape of W.</b> <i>&larr; the whole trick</i><hr><span class="lbl">forward (valid, S=1):</span> <b>Y = X &minus; k + 1</b><br><span class="lbl">so backward:</span> <b>|&part;L/&part;X| = |&part;L/&part;Y| + k &minus; 1</b><hr><b>&part;L/&part;X = &part;L/&part;Y * W</b> &nbsp;<span class="lbl">FULL mode (pad &part;L/&part;Y by k&minus;1)</span><br><b>&part;L/&part;W = X &oplus; &part;L/&part;Y</b><hr><i>the papers mark both the * and &oplus; phrasings TRUE. Don't fight it &mdash; the SHAPE is what is scored.</i><hr><span class="lbl">always verify forwards:</span> <b>(answer) &minus; k + 1 =?= given</b><hr><span class="lbl">max-pool backward:</span> <b>the argmax unit gets ALL the gradient, others get 0</b></div></div>
+</div>
+</details>
+
+<details class="t">
+<summary><span class="f f2">2&times;</span>Receptive field &mdash; work backwards</summary>
+<div class="body">
+<details class="bg"><summary>What "receptive field" means, and why you walk backwards</summary><div class="bgbody"><p>The receptive field of a neuron is <strong>the set of input-image pixels that can change its activation</strong>. It is a statement about the input, not about any intermediate layer, so you have to trace all the way down.</p><p>Work <em>top-down</em>. Suppose a neuron already sees $r_{out}$ positions in the layer below it. Each of those positions was itself produced by a filter of size $F$ applied at a stride of $S$. Two adjacent positions in that layer have windows offset by exactly $S$ pixels. So $r_{out}$ positions span:</p><div class="fm">$$r_{\text{in}} = \underbrace{(r_{\text{out}} - 1) \times S}_{\text{the offsets between windows}} + \underbrace{F}_{\text{one full window}}$$</div><p><strong>Read the two terms.</strong> The $F$ is one window's footprint. The $(r_{out}-1)\times S$ is the distance you have to travel to reach the last window's start. Add them and you have the total span.</p><p><strong>The consequence people quote:</strong> stacking two $3\times3$ convs gives $(3-1)\cdot1 + 3 = 5$, the same receptive field as one $5\times5$ — but with $2 \times 9 = 18$ weights instead of $25$, and two non-linearities instead of one. Three stacked $3\times3$s give 7. That is the entire architectural argument of VGGNet, and it is this formula.</p></div></details>
+<p>The receptive field of a neuron is the size of the region <em>in the input image</em> that influences its activation. Compute it layer by layer, from the deepest layer backwards.</p>
+<div class="fm hero">$$r_{\text{in}} = (r_{\text{out}} - 1) \times S + F$$</div>
+<p>Read it as: to feed $r_{out}$ output positions you need $r_{out}-1$ strides of length $S$, plus one full filter footprint $F$.</p>
+
+<h3>Worked &mdash; T2</h3>
+<em class="q">128 kernels of spatial dimension $5\times5$ in the first layer, stride 1. Followed by max-pooling with stride 2 and kernel size $5\times5$. Receptive field of a single neuron in the pooling layer?</em>
+<ol>
+<li>Start at the pooling neuron: it sees $5\times5$ in the conv output. $r = 5$.</li>
+<li>Back through the conv ($F{=}5$, $S{=}1$): $r = (5-1)\times1 + 5 = \mathbf{9}$</li>
+</ol>
+<p><span class="src">Answer <b style="color:var(--sage)">9 &times; 9</b></span></p>
+
+<h3>Worked &mdash; T3</h3>
+<em class="q">RGB image &rarr; Conv: 64 kernels of size $7\times7$, stride 2 &rarr; MaxPool $3\times3$, stride 2. Receptive field of a pooling-layer neuron?</em>
+<ol>
+<li>Pool neuron sees $3\times3$ in the conv output. $r = 3$.</li>
+<li>Back through the conv ($F{=}7$, $S{=}2$): $r = (3-1)\times2 + 7 = 4 + 7 = \mathbf{11}$</li>
+</ol>
+<p><span class="src">Answer <b style="color:var(--sage)">11 &times; 11</b></span></p>
+<div class="box trap"><b>The trap</b><strong>The pooling layer's own stride is irrelevant</strong> &mdash; you are asking about one neuron, and its stride only tells you where the <em>next</em> neuron sits. What matters is the stride of the layers <em>below</em> it. In the T3 case the pool's stride-2 is noise; the conv's stride-2 is what multiplies. Also: 64 and 128 (the filter counts) are noise &mdash; receptive field is spatial only. The distractors $7\times7$ and $9\times9$ are what you get by dropping the stride or the pool respectively.</div>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">An input image passes through:<br><br><b>Layer 1</b> — Conv: 96 kernels, $5\times5$, stride 2<br><b>Layer 2</b> — MaxPool: $2\times2$, stride 2<br><br>What is the receptive field of a single neuron in the pooling layer?</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage);font-size:19px">7 &times; 7</b><br><br><b>Step 1</b> — the pooling neuron sees a $2\times2$ region of the conv output. So $r = 2$.<br><b>Step 2</b> — walk back through the conv ($F = 5$, $S = 2$):<div class="fm">$$r = (2 - 1)\times 2 + 5 = 2 + 5 = \mathbf{7}$$</div><u>Both traps are here.</u> The pooling layer's <b>own stride of 2 is irrelevant</b> — you are asking about <em>one</em> neuron, and a layer's stride only says where the <em>next</em> neuron sits. And the <b>96 is noise</b>; receptive field is purely spatial.<br><br>The plausible wrong answers: $5\times5$ (you forgot the pool entirely) and $6\times6$ (you used the pool's stride instead of the conv's).</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>r<sub>in</sub> = (r<sub>out</sub> &minus; 1) &times; S + F</b> &nbsp;<span class="lbl">apply per layer, TOP-DOWN</span><hr><span class="lbl">start:</span> <b>r = F of the top layer</b>, then walk down<hr><i>the TOP layer's own stride is NOISE. Only the strides BELOW it multiply.<br>filter COUNTS (64, 96, 128) are noise. Receptive field is spatial only.</i><hr><span class="lbl">memorize:</span> <b>two 3&times;3 = one 5&times;5</b> &nbsp;<b>three 3&times;3 = one 7&times;7</b><br><span class="lbl">&nbsp;&nbsp;but with</span> <b>18 vs 25 weights</b> <span class="lbl">and 2 non-linearities &rarr; VGG's whole argument</span></div></div>
+</div>
+</details>
+
+<details class="t" open>
+<summary><span class="f f3">3&times;</span>Layer facts &mdash; the true/false bank</summary>
+<div class="body">
+<table>
+<tr><th>Statement</th><th></th></tr>
+<tr><td>$1\times1$ convolutional layer can reduce $C$ but not $H$ and $W$.</td><td class="k">True</td></tr>
+<tr><td>$1\times1$ convolutional layer can reduce $H, W$ and $C$.</td><td class="x">False</td></tr>
+<tr><td>Pooling layer can reduce $H, W$ but not $C$.</td><td class="k">True</td></tr>
+<tr><td>Pooling layer can reduce $H, W$ and $C$.</td><td class="x">False</td></tr>
+<tr><td>The number of learnable parameters in a pooling layer is not zero.</td><td class="x">False &mdash; pooling has zero parameters</td></tr>
+<tr><td>Pooling layers have zero learnable parameters.</td><td class="k">True</td></tr>
+<tr><td>The number of output feature maps equals the number of filters.</td><td class="k">True</td></tr>
+<tr><td>The number of feature maps after convolution depends on the depth of the input but not on the number of filters.</td><td class="x">False &mdash; exactly backwards</td></tr>
+<tr><td>In max pooling, the unit that contributed the maximum in forward prop gets all the gradient in backprop.</td><td class="k">True</td></tr>
+<tr><td>Number of parameters in CNNs is usually less than in feed-forward nets.</td><td class="k">True</td></tr>
+<tr><td>CNNs are prone to overfitting because of the small number of parameters.</td><td class="x">False &mdash; fewer parameters means <em>less</em> overfitting</td></tr>
+</table>
+
+<h3>Weight sharing</h3>
+<em class="q">What is meant by weight sharing in CNNs?</em>
+<p>The keyed answer, near-verbatim: <em>"The weights in one layer are shared in such a way that when we forward propagate through this layer, it becomes equivalent to convolving a filter over the image to produce a new image. This is what makes a CNN 'convolutional'."</em></p>
+<div class="box ans"><b>The bias/variance question</b><em>"Weight sharing increases bias."</em> &rarr; <strong>True.</strong><br>Weight sharing is a hard constraint: you are <em>forcing</em> the model to use the same detector everywhere, which is an assumption (translation equivariance). Any assumption you impose restricts the hypothesis space &rarr; higher bias, lower variance. This is the standard "fewer parameters &rarr; more bias, less variance" trade-off, and it is why CNNs generalize from less data than an equivalent MLP.</div>
+
+<h3>Where the FLOPs and the storage live</h3>
+<em class="q">To reduce the number of FLOPs, reduce the number of ___ layers. To reduce storage requirements, reduce the number of ___ layers.</em>
+<div class="fm hero">$$\text{FLOPs} \rightarrow \textbf{convolutional} \qquad\qquad \text{storage} \rightarrow \textbf{fully-connected}$$</div>
+<p>A conv layer has few weights but applies them at every one of $D_f^2$ positions &rarr; compute-heavy. An FC layer applies each weight once but needs one weight per input-output pair &rarr; parameter-heavy. In VGG, the conv stack is ~90% of the FLOPs and the FC head is ~90% of the parameters.</p>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">Mark each True or False.<br><br>(a) A $1\times1$ convolution can change the number of channels but not the spatial dimensions.<br>(b) A pooling layer has no learnable parameters but does have hyperparameters.<br>(c) The number of output feature maps depends on the depth of the input volume.<br>(d) Weight sharing reduces variance and increases bias.</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage)">(a) True</b> — with $F=1$, $P=0$, $S=1$ the formula gives $W_{out} = W_{in}$. Depth is set by $N$, which is free.<br><br><b style="color:var(--sage)">(b) True</b> — pooling learns nothing, but $F$, $S$ and the pooling type (max / average) are all choices you make. "No parameters" $\neq$ "no hyperparameters".<br><br><b style="color:var(--rose)">(c) False</b> — it depends on the number of <em>filters</em> $N$, and on nothing else. The input depth $M$ is absorbed <em>inside</em> each filter. This is the single most common CNN confusion and the paper tests it directly.<br><br><b style="color:var(--sage)">(d) True</b> — sharing is a hard constraint (the same detector everywhere), which shrinks the hypothesis space. Smaller hypothesis space &rarr; more bias, less variance. Standard trade-off.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><span class="lbl">1&times;1 conv:</span> changes <b>C only</b>, never H,W<br><span class="lbl">pooling:</span> changes <b>H,W only</b>, never C &nbsp;&middot;&nbsp; <b>0 parameters</b><hr><b># output feature maps = # filters = N = K</b><br><i>independent of the input depth M. M lives INSIDE each filter.</i><hr><span class="lbl">weight sharing &rarr;</span> <b>fewer params &rarr; bias UP, variance DOWN</b><br><span class="lbl">CNN vs FC:</span> <b>fewer params &rarr; LESS overfitting</b> <span class="lbl">("prone to overfitting because of fewer params" = FALSE)</span><hr><b>FLOPs &rarr; CONV layers &nbsp;|&nbsp; storage/params &rarr; FC layers</b><hr><span class="lbl">max-pool backward:</span> <b>winner takes all the gradient</b></div></div>
+</div>
+</details>
+
+<details class="t">
+<summary><span class="f f2">2&times;</span>Architecture signatures</summary>
+<div class="body">
+<p>Pure matching. One distinguishing feature each.</p>
+<table>
+<tr><th>Network</th><th>Signature</th></tr>
+<tr><td>AlexNet</td><td>large early kernels ($11\times11$), ReLU, dropout</td></tr>
+<tr><td><strong>VGGNet</strong></td><td class="k">stacks of $3\times3$ convolutions</td></tr>
+<tr><td><strong>GoogleNet</strong> (Inception)</td><td class="k">$1\times1$ convolution bottlenecks, parallel branches</td></tr>
+<tr><td><strong>ResNet</strong></td><td class="k">identity mapping / skip connections</td></tr>
+<tr><td><strong>EfficientNet</strong></td><td class="k">depth-wise separable convolution + compound scaling</td></tr>
+<tr><td>DenseNet</td><td>dense connectivity &mdash; every layer feeds all later layers</td></tr>
+<tr><td>ResNeXt</td><td>grouped convolution; extension of GoogleNet + ResNet</td></tr>
+<tr><td>SENet</td><td>squeeze-and-excite &mdash; learns to re-weight feature maps</td></tr>
+</table>
+<p><span class="src">GA4 Q5 mapping: VGGNet &rarr; $3\times3$, EfficientNet &rarr; depth-wise separable, GoogleNet &rarr; $1\times1$, ResNet &rarr; identity mapping. In the paper's numbering: <b style="color:var(--sage)">1&rarr;iii, 2&rarr;v, 3&rarr;i, 4&rarr;ii</b></span></p>
+
+<h3>The false-statement bank</h3>
+<table>
+<tr><td>DenseNet has the problem of vanishing gradient.</td><td class="x">False &mdash; dense connections <em>alleviate</em> it</td></tr>
+<tr><td>ResNeXt is an extension of GoogleNet and ResNet.</td><td class="k">True</td></tr>
+<tr><td>SENet learns to re-weight feature maps.</td><td class="k">True</td></tr>
+<tr><td>Deeper networks always perform better than wider networks.</td><td class="x">False &mdash; "always" is the tell</td></tr>
+</table>
+<div class="box trap"><b>The trap</b>The DenseNet statement is the marked-false answer, and it is easy to talk yourself into because "deeper &rarr; vanishing gradient" is a real pattern. DenseNet's whole design purpose is to give every layer a short path to the loss. Same family of reasoning as ResNet.</div>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">Match each network to its distinguishing feature.<br><br><b>1)</b> ResNet &nbsp;&nbsp; <b>2)</b> GoogleNet &nbsp;&nbsp; <b>3)</b> EfficientNet &nbsp;&nbsp; <b>4)</b> VGGNet<br><br><b>i)</b> stacks of $3\times3$ convolutions &nbsp;&nbsp; <b>ii)</b> depth-wise separable convolution<br><b>iii)</b> identity mapping &nbsp;&nbsp; <b>iv)</b> $1\times1$ convolution</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage);font-size:19px">1&rarr;iii, &nbsp; 2&rarr;iv, &nbsp; 3&rarr;ii, &nbsp; 4&rarr;i</b><br><br>Note this is the <em>same four pairings</em> as GA4 Q5 with the labels shuffled — which is exactly what the exam does. Learn the <b>pairing</b>, never the roman numerals.<br><br>Each signature answers a distinct problem: ResNet's identity mapping fixes degradation in very deep nets; GoogleNet's $1\times1$ bottleneck makes wide parallel branches affordable; EfficientNet's depth-wise separable conv buys $\sim9\times$ cheaper convolutions; VGG's $3\times3$ stacks buy a large receptive field with fewer weights and more non-linearities.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>VGGNet &rarr; 3&times;3 stacks</b><br><b>GoogleNet &rarr; 1&times;1 bottleneck</b> <span class="lbl">(Inception, parallel branches)</span><br><b>ResNet &rarr; identity mapping / skip</b><br><b>EfficientNet &rarr; depth-wise separable + compound scaling</b><br><b>AlexNet &rarr; 11&times;11 early kernels, ReLU, dropout</b><br><b>DenseNet &rarr; dense connectivity</b><br><b>ResNeXt &rarr; grouped conv (GoogleNet + ResNet)</b><br><b>SENet &rarr; squeeze-excite, re-weights feature maps</b><hr><i>"DenseNet HAS the vanishing gradient problem" = FALSE &mdash; it alleviates it.<br>"Deeper ALWAYS beats wider" = FALSE. "always" is the tell.</i></div></div>
+</div>
+</details>
+</section>
+<section class="block" id="b3">
+<div class="bhead"><span class="num">BLOCK 3</span><h2>Edges, corners and features</h2></div>
+<p class="bsub">Mostly recall plus one recurring eigenvalue computation. Canny and the second-moment matrix are on every paper without exception.</p>
+
+<details class="t">
+<summary><span class="f f2">2&times;</span>Why edges exist, and why we care</summary>
+<div class="body">
+<em class="q">Which factor(s) is/are responsible for edges in images?</em>
+<p>All four, and the answer is always "All of the above":</p>
+<ul>
+<li><strong>Surface colour / reflectance discontinuity</strong> &mdash; a painted stripe</li>
+<li><strong>Depth discontinuity</strong> &mdash; object boundary against background</li>
+<li><strong>Surface normal discontinuity</strong> &mdash; the fold of a box</li>
+<li><strong>Illumination discontinuity</strong> &mdash; a cast shadow's edge</li>
+</ul>
+<p>The point the course is making: an edge in the <em>image</em> is a change in intensity, and intensity changes for four physically distinct reasons. That is precisely why edge detection alone can never segment objects.</p>
+<em class="q">Which statements are true for edge importance?</em>
+<p>Again all of them: edges group pixels into objects or parts; edges let us track important features; edges are cues for 3D shape. <span class="src">Answer: All of the above.</span></p>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">A photograph shows a red ball resting on a white table, lit by a lamp from the left. Trace the outline of the ball's <b>cast shadow</b> on the table. Which of the four physical causes produces <em>that</em> particular edge?</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage);font-size:19px">Illumination discontinuity</b><br><br>Inside and outside the shadow the table is the <em>same</em> material (no reflectance change), at the <em>same</em> depth (it is flat), with the <em>same</em> surface normal. Only the incident light changes.<br><br><u>Why this matters and why it is the whole point of the "all of the above" question.</u> The shadow edge is a strong intensity gradient, so Canny will find it, and it is <em>not an object boundary</em>. Meanwhile the ball's silhouette (a depth discontinuity) and the shadow's outline can be equally strong. An edge detector has no way to tell them apart, because it only sees intensity. That is precisely why edge detection alone can never segment objects — the four causes are physically distinct but produce identical evidence in the image.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><span class="lbl">edges caused by (&rarr; ALL OF THE ABOVE):</span><br><b>1. surface colour / reflectance discontinuity</b> <span class="lbl">(a painted stripe)</span><br><b>2. depth discontinuity</b> <span class="lbl">(object silhouette)</span><br><b>3. surface normal discontinuity</b> <span class="lbl">(a fold or crease)</span><br><b>4. illumination discontinuity</b> <span class="lbl">(a cast shadow)</span><hr><span class="lbl">edges matter because (&rarr; ALL OF THE ABOVE):</span><br><b>group pixels into objects &middot; track features &middot; cue 3D shape</b><hr><i>if "All of the above" is an option on an edges question, it is the answer.</i></div></div>
+</div>
+</details>
+
+<details class="t" open>
+<summary><span class="f f2">2&times;</span>Gradients, and why you must smooth first</summary>
+<div class="body">
+<details class="bg"><summary>Why differentiation amplifies noise — the frequency argument</summary><div class="bgbody"><p>Take the Fourier transform of a derivative. Integrating by parts (or just differentiating the inverse transform under the integral) gives:</p><div class="fm">$$\mathcal{F}\left\{\frac{df}{dx}\right\}(\omega) = i\omega\,\mathcal{F}\{f\}(\omega)$$</div><p>Read what that says: <strong>differentiation multiplies every frequency component by its own frequency.</strong> A component at $\omega = 100$ gets amplified 100&times;; a component at $\omega = 1$ barely moves. Differentiation <em>is</em> a high-pass filter, with gain growing without bound.</p><p>Now the second half of the argument, which is the part the blank actually tests. Natural images have most of their energy at <strong>low</strong> frequencies (smooth regions dominate). Sensor noise is roughly <strong>broadband</strong> — comparable energy at all frequencies. So the ratio</p><div class="fm">$$\frac{|N(\omega)|}{|S(\omega)|} \quad \text{grows with } \omega$$</div><p>i.e. <strong>the noise-to-signal ratio is largest at high frequencies</strong>. Differentiating amplifies exactly the band where the data is worst. Hence: low-pass first, then differentiate.</p><p><strong>And the fix is free.</strong> By the derivative property $(f*g)' = f * g'$, you can pre-differentiate the Gaussian once, offline, and convolve once — instead of smoothing then differentiating in two passes. That single kernel is the "first derivative of Gaussian" in the matching table.</p></div></details>
+<div class="fm hero">$$\nabla f = \left[\frac{\partial f}{\partial x},\; \frac{\partial f}{\partial y}\right] \qquad \|\nabla f\| = \sqrt{f_x^2 + f_y^2} \qquad \theta = \tan^{-1}\!\left(\frac{f_y}{f_x}\right)$$</div>
+<p>The gradient points in the direction of <strong>most rapid change in intensity</strong> &mdash; which is <em>perpendicular</em> to the edge, not along it. Hold on to that; it is the reason NMS compares along the gradient direction.</p>
+
+<div class="box note"><b>The argument the fill-in-the-blank is testing</b>Differentiation multiplies each frequency component by its frequency: $\mathcal{F}\{f'\} = i\omega\,\mathcal{F}\{f\}$. So a derivative <strong>accentuates high frequencies</strong>. Noise is broadband but signal energy in natural images concentrates at low frequencies, so the <strong>noise-to-signal ratio is largest at high frequencies</strong>. Differentiating therefore amplifies exactly the part of the spectrum that is mostly noise. The fix: low-pass first, then differentiate.</div>
+
+<h3>The derivative-of-Gaussian trick</h3>
+<div class="fm">$$\frac{d}{dx}(f * g) = f * \frac{dg}{dx}$$</div>
+<p>Instead of smoothing then differentiating (two passes over the image), pre-differentiate the Gaussian once and convolve once. This is the associativity/derivative property from Block 1 doing real work.</p>
+
+<h3>Sobel</h3>
+<div class="fm">$$S_x = \begin{bmatrix}1&0&-1\\2&0&-2\\1&0&-1\end{bmatrix} \qquad S_y = \begin{bmatrix}1&2&1\\0&0&0\\-1&-2&-1\end{bmatrix}$$</div>
+<p>$S_x$ differentiates <em>horizontally</em>, so it responds to <strong>vertical</strong> edges. Both are separable: $S_x = [1,2,1]^{\mathsf T}[1,0,-1]$ &mdash; a $[1,2,1]$ smoothing down the columns times a $[1,0,-1]$ central difference across the rows.</p>
+<em class="q">Which of the following filters detects vertical edges? (a) $\begin{pmatrix}1&0&-1\\2&0&-2\\1&0&-1\end{pmatrix}$ (b) $\begin{pmatrix}1&0&-1\\1&0&-1\\1&0&-1\end{pmatrix}$</em>
+<p><strong style="color:var(--sage)">Both a and b.</strong> Both take a horizontal central difference. They differ only in the vertical smoothing weights &mdash; (a) is Sobel with $[1,2,1]$, (b) is Prewitt with $[1,1,1]$. The smoothing does not change <em>which</em> orientation is detected.</p>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">Which of the following filters detects <b>horizontal</b> edges?<br><br>(a) $\begin{pmatrix}1&0&-1\\2&0&-2\\1&0&-1\end{pmatrix}$ &nbsp;&nbsp; (b) $\begin{pmatrix}1&2&1\\0&0&0\\-1&-2&-1\end{pmatrix}$ &nbsp;&nbsp; (c) $\begin{pmatrix}1&1&1\\0&0&0\\-1&-1&-1\end{pmatrix}$ &nbsp;&nbsp; (d) Both b and c</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage);font-size:19px">(d) Both b and c</b><br><br>(b) is $S_y$ (Sobel) and (c) is the Prewitt equivalent. Both take a <em>vertical</em> central difference ($[1,0,-1]^{\mathsf T}$ down the columns), which responds to intensity changing as you move <em>down</em> — i.e. a <b>horizontal</b> edge. They differ only in the horizontal smoothing weights, $[1,2,1]$ vs $[1,1,1]$, which does not change the orientation detected.<br><br>(a) is $S_x$ and finds vertical edges.<br><br><u>The naming, once and for all.</u> $S_x$ differentiates <em>along</em> $x$ &rarr; finds edges <em>perpendicular</em> to $x$ &rarr; <b>vertical</b> edges. The subscript names the direction of differentiation, not the orientation of the edge. If you get confused mid-exam, look at where the zeros are: the zero <em>column</em> means a horizontal difference means vertical edges.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>&nabla;f = [f<sub>x</sub>, f<sub>y</sub>]</b> &nbsp; <b>|&nabla;f| = &radic;(f<sub>x</sub>&sup2; + f<sub>y</sub>&sup2;)</b> &nbsp; <b>&theta; = tan<sup>&minus;1</sup>(f<sub>y</sub>/f<sub>x</sub>)</b><hr><b>gradient &perp; edge.</b> <span class="lbl">points along steepest intensity change</span><hr><b>S<sub>x</sub> = [1 0 &minus;1; 2 0 &minus;2; 1 0 &minus;1] &rarr; VERTICAL edges</b> <span class="lbl">(zero COLUMN)</span><br><b>S<sub>y</sub> = [1 2 1; 0 0 0; &minus;1 &minus;2 &minus;1] &rarr; HORIZONTAL edges</b> <span class="lbl">(zero ROW)</span><br><i>subscript = direction of DIFFERENTIATION, not of the edge.</i><hr><b>Sobel = [1 2 1]<sup>T</sup> &times; [1 0 &minus;1]</b> &nbsp;<span class="lbl">separable. Prewitt = [1 1 1]<sup>T</sup> &times; [1 0 &minus;1]</span><br><i>Sobel is NOT isotropic (marked-false distractor).</i><hr><b>F{f&prime;} = i&omega;F{f}</b> &rArr; <b>derivative = high-pass</b> &rArr; <b>smooth FIRST</b><br><b>(f*g)&prime; = f*g&prime;</b> &rArr; <span class="lbl">pre-differentiate the Gaussian, one pass instead of two</span></div></div>
+</div>
+</details>
+
+<details class="t" open>
+<summary><span class="f f4">4&times;</span>Canny &mdash; the whole pipeline</summary>
+<div class="body">
+<p>Guaranteed on the paper. Learn the order, then the internals.</p>
+<table>
+<tr><th>#</th><th>Step</th><th>What it does and why</th></tr>
+<tr><td>1</td><td><strong>Gaussian smoothing</strong></td><td>suppress high-frequency noise before differentiating. $\sigma$ sets the scale.</td></tr>
+<tr><td>2</td><td><strong>Gradient magnitude &amp; direction</strong></td><td>Sobel or derivative-of-Gaussian. Edges become thick ridges.</td></tr>
+<tr><td>3</td><td><strong>Non-maximum suppression</strong></td><td>compare each pixel to its two neighbours <em>along the gradient direction</em>; keep only local <em>maxima</em>. Thins ridges to 1&nbsp;px.</td></tr>
+<tr><td>4</td><td><strong>Double thresholding</strong></td><td>classify into strong / weak / non-edge using $T_{high}$, $T_{low}$.</td></tr>
+<tr><td>5</td><td><strong>Hysteresis / edge tracking</strong></td><td>keep a weak edge only if it connects to a strong edge. Rescues faint but real contours; drops isolated noise.</td></tr>
+</table>
+<div class="box trap"><b>The trap</b>Steps 4 and 5 are sometimes merged into "hysteresis thresholding", giving a four-step version. That is fine. What never changes: <strong>smoothing is first</strong> and <strong>NMS comes after the gradient, before thresholding</strong>. Every distractor violates one of those two. The classic bad option puts NMS first.</div>
+
+<h3>Double thresholding &mdash; the numeric drill</h3>
+<div class="fm hero">$$\|\nabla\| \ge T_{high} \Rightarrow \textbf{strong} \qquad T_{low} \le \|\nabla\| < T_{high} \Rightarrow \textbf{weak} \qquad \|\nabla\| < T_{low} \Rightarrow \textbf{non-edge}$$</div>
+<table>
+<tr><th>Given</th><th>Reasoning</th><th>Answer</th></tr>
+<tr><td>$T_{high}{=}100$, $T_{low}{=}40$, mag $= 65$</td><td>$40 \le 65 < 100$</td><td class="k">Weak edge</td></tr>
+<tr><td>$T_{high}{=}120$, $T_{low}{=}50$, mag $= 45$</td><td>$45 < 50$</td><td class="k">Non-edge</td></tr>
+</table>
+<p><span class="src">"Ambiguous edge" is always a distractor &mdash; it is not a Canny category.</span></p>
+
+<h3>The knobs, and which way they turn</h3>
+<table>
+<tr><th>Change</th><th>Effect</th><th>Why</th></tr>
+<tr><td>$\sigma$ large</td><td class="k">thick / coarse / large-scale edges</td><td>more smoothing &rarr; only big structures survive, and they blur wider</td></tr>
+<tr><td>$\sigma$ small</td><td class="k">fine / thin edges</td><td>little smoothing &rarr; fine detail and noise both survive</td></tr>
+<tr><td>$T_{high}$ &uarr;</td><td class="k">false positives <b>decrease</b>, false negatives <b>increase</b></td><td>fewer pixels qualify as strong &rarr; stricter &rarr; you miss more real edges</td></tr>
+</table>
+
+<h3>The Gaussian centre weight</h3>
+<div class="fm hero">$$G(0,0) = \frac{1}{2\pi\sigma^2}$$</div>
+<p>(Set $x = y = 0$ in $G(x,y) = \frac{1}{2\pi\sigma^2}e^{-(x^2+y^2)/2\sigma^2}$ &mdash; the exponential becomes 1.)</p>
+<table>
+<tr><th>$\sigma$</th><th>Working</th><th>Answer</th></tr>
+<tr><td>1.0</td><td>$\frac{1}{2\pi(1)} = \frac{1}{6.283}$</td><td class="k">0.159 &asymp; 0.16</td></tr>
+<tr><td>1.5</td><td>$\frac{1}{2\pi(2.25)} = \frac{1}{14.137}$</td><td class="k">0.0707 &asymp; 0.071</td></tr>
+</table>
+<div class="box trap"><b>The trap</b>The stated kernel size ($5\times5$) is <strong>irrelevant</strong> &mdash; the formula for the centre weight does not involve it. And $\sigma^2$, not $\sigma$: forgetting to square 1.5 gives $1/(3\pi) = 0.106$, which is close enough to a distractor to be dangerous.</div>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">A Canny detector uses $T_{high} = 90$ and $T_{low} = 30$. Classify each pixel after NMS:<br><br>(a) gradient magnitude $= 95$ &nbsp;&nbsp; (b) $= 30$ &nbsp;&nbsp; (c) $= 12$<br><br>Then: for the pixel in (b), what determines whether it survives into the final edge map?</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage)">(a) Strong edge</b> — $95 \ge 90$.<br><br><b style="color:var(--sage)">(b) Weak edge</b> — $30 \ge 30$, so it clears $T_{low}$ (the boundary is <em>inclusive</em>: $T_{low} \le \|\nabla\| < T_{high}$). A deliberate boundary case.<br><br><b style="color:var(--sage)">(c) Non-edge</b> — $12 < 30$, suppressed.<br><br><b>What decides (b)'s fate: hysteresis.</b> A weak edge survives <em>if and only if it is connected to a strong edge</em>. That is the entire reason double thresholding is not just "one threshold" — a single threshold forces you to choose between broken contours (too high) and noise speckle (too low). Hysteresis lets you have a strict threshold for <em>starting</em> an edge and a lenient one for <em>continuing</em> it.<br><br>Note that "ambiguous edge" is not a Canny category, and it appears as a distractor on every version of this question.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>smooth &rarr; gradient &rarr; NMS &rarr; double-threshold &rarr; hysteresis</b><hr><b>|&nabla;| &ge; T<sub>high</sub> &rarr; STRONG</b><br><b>T<sub>low</sub> &le; |&nabla;| &lt; T<sub>high</sub> &rarr; WEAK</b> &nbsp;<i>&larr; note &ge; on the low side</i><br><b>|&nabla;| &lt; T<sub>low</sub> &rarr; NON-EDGE</b><br><i>"ambiguous edge" is never a category. It is always a distractor.</i><hr><span class="lbl">NMS:</span> <b>compare along the gradient DIRECTION, keep local MAXIMA</b> &rarr; thins to 1px<br><span class="lbl">hysteresis:</span> <b>keep a weak edge iff connected to a strong one</b><hr><b>&sigma; large &rarr; thick/coarse &nbsp;|&nbsp; &sigma; small &rarr; fine/thin</b><br><b>T<sub>high</sub> &uarr; &rarr; FP down, FN up</b> <span class="lbl">(stricter &rarr; miss more real edges)</span><hr><b>G(0,0) = 1/(2&pi;&sigma;&sup2;)</b> &nbsp;&nbsp; <span class="lbl">&sigma;=1 &rarr;</span> <b>0.16</b> &nbsp; <span class="lbl">&sigma;=1.5 &rarr;</span> <b>0.071</b><br><i>kernel size is IRRELEVANT to the centre weight. And it is &sigma;&sup2;, not &sigma;.</i></div></div>
+</div>
+</details>
+
+<details class="t" open>
+<summary><span class="f f3">3&times;</span>The second moment matrix: flat, edge or corner</summary>
+<div class="body">
+<details class="bg"><summary>Where $M$ comes from, and why its eigenvalues mean what they mean</summary><div class="bgbody"><p>Ask: if I shift this window by a small amount $(u,v)$, how much does the patch change? Measure it with a sum of squared differences:</p><div class="fm">$$E(u,v) = \sum_{(x,y)\in W} w(x,y)\big[I(x+u,\, y+v) - I(x,y)\big]^2$$</div><p>For small shifts, Taylor-expand: $I(x+u, y+v) \approx I(x,y) + uI_x + vI_y$. The $I(x,y)$ cancels, leaving $E(u,v) \approx \sum w\,(uI_x + vI_y)^2$. Expand the square and collect:</p><div class="fm">$$E(u,v) \approx \begin{bmatrix}u&v\end{bmatrix} \underbrace{\sum_W w \begin{bmatrix} I_x^2 & I_xI_y \\ I_xI_y & I_y^2\end{bmatrix}}_{M} \begin{bmatrix}u\\v\end{bmatrix}$$</div><p>So $M$ <strong>is</strong> the change-under-shift, packaged as a quadratic form. It was never an arbitrary construction — it is the second-order Taylor expansion of "how distinctive is this patch".</p><p><strong>Now the eigenvalues.</strong> $M$ is symmetric and positive semi-definite, so it has real eigenvalues $\lambda_1, \lambda_2 \ge 0$ and orthogonal eigenvectors. The quadratic form $[u\;v]M[u\;v]^{\mathsf T}$ traces an <strong>ellipse</strong>, whose axes point along the eigenvectors and whose lengths go as $1/\sqrt{\lambda}$. In plain terms:</p><ul><li>$\lambda_i$ = <em>how much the patch changes</em> if you shift along eigenvector $i$.</li><li>Both small &rarr; shifting anywhere changes nothing &rarr; <strong>flat</strong>.</li><li>One large, one small &rarr; shifting one way changes a lot, the other way nothing &rarr; you can slide along the structure &rarr; <strong>edge</strong>. (This is the <em>aperture problem</em>.)</li><li>Both large &rarr; every shift changes the patch &rarr; the position is pinned down &rarr; <strong>corner</strong>.</li></ul><p><strong>Why Harris uses $\det - k\,\mathrm{tr}^2$ instead of the eigenvalues:</strong> because $\det M = \lambda_1\lambda_2$ and $\mathrm{tr}\,M = \lambda_1 + \lambda_2$ are readable straight off the matrix, with no square roots. You get the same decision without ever solving the characteristic polynomial.</p></div></details>
+<div class="fm hero">$$M = \sum_{(x,y)\in W} w(x,y) \begin{bmatrix} I_x^2 & I_xI_y \\ I_xI_y & I_y^2 \end{bmatrix}$$</div>
+<p>$M$ summarizes how intensity changes in every direction within a window. Its eigenvectors are the directions of most and least change; its eigenvalues $\lambda_1, \lambda_2$ are how much change there is in those directions.</p>
+<table>
+<tr><th>Eigenvalues</th><th>Structure</th><th>The course's phrasing</th></tr>
+<tr><td>both <strong>small</strong>, $\lambda_1 \sim \lambda_2$</td><td class="k">Flat region</td><td>"no change in any direction"</td></tr>
+<tr><td>$\lambda_1 \gg \lambda_2$ &nbsp;or&nbsp; $\lambda_2 \gg \lambda_1$</td><td class="k">Edge</td><td>"no change along the edge direction"</td></tr>
+<tr><td>both <strong>large</strong>, $\lambda_1 \sim \lambda_2$</td><td class="k">Corner</td><td>"significant change in all directions"</td></tr>
+</table>
+<p><span class="src">The matching question is identical on both papers: 1) Flat &rarr; no change in any direction; 2) Edge &rarr; no change along the edge direction; 3) Corner &rarr; significant change in all directions.</span></p>
+<div class="box trap"><b>The trap</b>Both "$\lambda_1 \gg \lambda_2$" and "$\lambda_2 \gg \lambda_1$" mean edge &mdash; GA2 Q8 is multi-select and marks <em>both</em> correct. Which eigenvalue is bigger just says which way the edge runs. Also note the mirror-image distractor: "both eigenvalues small &rarr; corner" is false; small means flat.</p>
+<h3>Harris response</h3>
+<div class="fm">$$R = \det(M) - k\,\big(\mathrm{trace}\,M\big)^2 = \lambda_1\lambda_2 - k(\lambda_1+\lambda_2)^2, \qquad k \approx 0.04\text{–}0.06$$</div>
+<p>Corner if $R$ is large and positive. The point of the formula is that it needs $\det$ and $\mathrm{trace}$ only &mdash; you never actually compute the eigenvalues.</p>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">For each second-moment matrix, classify the region as flat, edge or corner.<br><br>(a) $M = \begin{pmatrix}12&0\\0&0.1\end{pmatrix}$ &nbsp;&nbsp;&nbsp; (b) $M = \begin{pmatrix}0.02&0\\0&0.03\end{pmatrix}$ &nbsp;&nbsp;&nbsp; (c) $M = \begin{pmatrix}9&1\\1&9\end{pmatrix}$</div><details><summary>Show answer</summary><div class="pa">All three are easy because they are diagonal or equal-diagonal — read the eigenvalues off.<br><br><b style="color:var(--sage)">(a) Edge.</b> Diagonal, so $\lambda = 12,\; 0.1$. One large, one $\approx 0$: shifting along $x$ changes the patch a lot; shifting along $y$ changes almost nothing. You can slide along the structure &rarr; edge.<br><br><b style="color:var(--sage)">(b) Flat.</b> $\lambda = 0.02,\; 0.03$ — both tiny and roughly equal. No shift in any direction changes anything.<br><br><b style="color:var(--sage)">(c) Corner.</b> Equal diagonal, so use the shortcut: $\lambda = 9+1 = 10$ and $9-1 = 8$. Both large, roughly equal &rarr; every shift changes the patch.<br><br><u>Harris confirms it</u> with $k = 0.05$: (c) gives $R = \det - k\,\mathrm{tr}^2 = 80 - 0.05(324) = 63.8$, large and positive &rarr; corner. (a) gives $R = 1.2 - 0.05(146.4) = -6.1$, negative &rarr; edge. Negative $R$ is the signature of an edge; near-zero is flat.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>M = &Sigma;<sub>W</sub> w &middot; [I<sub>x</sub>&sup2; &nbsp; I<sub>x</sub>I<sub>y</sub> ; &nbsp; I<sub>x</sub>I<sub>y</sub> &nbsp; I<sub>y</sub>&sup2;]</b><hr><b>both SMALL, &lambda;&#8321;&asymp;&lambda;&#8322; &rarr; FLAT</b> <span class="lbl">"no change in any direction"</span><br><b>&lambda;&#8321; &Gg; &lambda;&#8322; &nbsp;OR&nbsp; &lambda;&#8322; &Gg; &lambda;&#8321; &rarr; EDGE</b> <span class="lbl">"no change ALONG the edge direction"</span><br><b>both LARGE, &lambda;&#8321;&asymp;&lambda;&#8322; &rarr; CORNER</b> <span class="lbl">"significant change in ALL directions"</span><hr><i>BOTH &lambda;&#8321;&Gg;&lambda;&#8322; and &lambda;&#8322;&Gg;&lambda;&#8321; mean edge &mdash; multi-select marks both.</i><hr><b>R = det(M) &minus; k&middot;(trace M)&sup2;</b>, &nbsp; <b>k &asymp; 0.04&ndash;0.06</b><br><b>det = &lambda;&#8321;&lambda;&#8322;</b> &nbsp; <b>trace = &lambda;&#8321;+&lambda;&#8322;</b> &nbsp;<span class="lbl">&rarr; never solve for &lambda; at all</span><br><span class="lbl">R large +ve &rarr; corner &nbsp;|&nbsp; R &minus;ve &rarr; edge &nbsp;|&nbsp; R &asymp; 0 &rarr; flat</span></div></div>
+</div>
+</details>
+
+<details class="t" open>
+<summary><span class="f f4">4&times;</span>Straightness &mdash; the most-repeated computation on the paper</summary>
+<div class="body">
+<details class="bg"><summary>Eigenvalues of a $2\times2$ matrix, from scratch</summary><div class="bgbody"><p>$\lambda$ is an eigenvalue of $M$ when $M\mathbf{v} = \lambda\mathbf{v}$ for some non-zero $\mathbf{v}$, i.e. $(M - \lambda I)\mathbf{v} = \mathbf{0}$ has a non-trivial solution. That happens exactly when $M - \lambda I$ is singular:</p><div class="fm">$$\det(M - \lambda I) = 0$$</div><p>For $M = \begin{bmatrix}a&b\\c&d\end{bmatrix}$ that expands to $(a-\lambda)(d-\lambda) - bc = 0$, i.e.</p><div class="fm">$$\lambda^2 - \underbrace{(a+d)}_{\mathrm{tr}\,M}\lambda + \underbrace{(ad-bc)}_{\det M} = 0 \qquad\Rightarrow\qquad \lambda = \frac{\mathrm{tr} \pm \sqrt{\mathrm{tr}^2 - 4\det}}{2}$$</div><p><strong>Two facts fall out immediately</strong>, and they are worth more than the formula:</p><ul><li>$\lambda_1 + \lambda_2 = \mathrm{tr}\,M$ &nbsp;(sum of roots $=$ $-b/a$ coefficient)</li><li>$\lambda_1 \lambda_2 = \det M$ &nbsp;(product of roots $=$ $c/a$ coefficient)</li></ul><p>The first one is why the straightness <em>denominator</em> is free: $\lambda_{\max} + \lambda_{\min}$ is just the diagonal sum. The second is why Harris never needs the eigenvalues.</p><p><strong>The equal-diagonal shortcut, derived.</strong> For $M = \begin{bmatrix}a&b\\b&a\end{bmatrix}$, try $\mathbf{v} = [1,1]^{\mathsf T}$: $M\mathbf{v} = [a+b,\, a+b]^{\mathsf T} = (a+b)\mathbf{v}$ &check;. Try $\mathbf{v} = [1,-1]^{\mathsf T}$: $M\mathbf{v} = [a-b,\, b-a]^{\mathsf T} = (a-b)\mathbf{v}$ &check;. So the eigenvalues are $a \pm b$ and the eigenvectors are the two diagonals — no polynomial, no square root. Every paper hands you one of these.</p><p><strong>What "straightness" is measuring.</strong> It is a normalized contrast between the two eigenvalues. On a perfect edge $\lambda_{\min} \approx 0$, so the ratio $\to \frac{0-\lambda_{\max}}{\lambda_{\max}} = -1$: maximally straight. On a perfect corner $\lambda_{\min} = \lambda_{\max}$, so it $\to 0$: not straight at all. The measure lives in $[-1, 0]$ for a genuine second-moment matrix — which is why it is <em>always negative</em>. The exam's $M = \begin{bmatrix}1&2\\2&1\end{bmatrix}$ giving $-2$ is outside that range because that matrix has a negative eigenvalue, so it is not a real second-moment matrix at all. It is a pure arithmetic exercise wearing a CV costume — do not try to interpret it.</p></div></details>
+<div class="fm hero">$$\text{Straightness} = \frac{\lambda_{\min} - \lambda_{\max}}{\lambda_{\max} + \lambda_{\min}}$$</div>
+<div class="box trap"><b>The trap, and it is deliberate</b>The numerator is <strong>$\lambda_{\min} - \lambda_{\max}$</strong>, which is always $\le 0$. Everyone writes max&minus;min from habit and gets the sign backwards. <strong>The answer is negative.</strong> If you produced a positive number, you have the classic error.</div>
+
+<h3>Two eigenvalue shortcuts worth 30 seconds each</h3>
+<div class="box ans"><b>Shortcut 1 &mdash; equal diagonal</b>For $\begin{bmatrix}a&b\\b&a\end{bmatrix}$ the eigenvalues are exactly $a+b$ and $a-b$. No characteristic polynomial needed.</div>
+<div class="box ans"><b>Shortcut 2 &mdash; the denominator is the trace</b>$\lambda_{\max} + \lambda_{\min} = \mathrm{trace}(M)$, always. Read it straight off the diagonal.</div>
+<p>General $2\times2$: $\lambda^2 - (\mathrm{tr}\,M)\lambda + \det M = 0 \;\Rightarrow\; \lambda = \frac{\mathrm{tr} \pm \sqrt{\mathrm{tr}^2 - 4\det}}{2}$.</p>
+
+<h3>Worked &mdash; $M = \begin{bmatrix}1&2\\2&1\end{bmatrix}$</h3>
+<p>Equal diagonal &rarr; $\lambda = 1+2 = 3$ and $1-2 = -1$. So $\lambda_{\max}=3$, $\lambda_{\min}=-1$.</p>
+<div class="fm">$$\text{Straightness} = \frac{-1 - 3}{3 + (-1)} = \frac{-4}{2} = \mathbf{-2}$$</div>
+
+<h3>Worked &mdash; $M = \begin{bmatrix}5&1\\1&2\end{bmatrix}$</h3>
+<p>Diagonal is unequal, so use the quadratic. $\mathrm{tr} = 7$, $\det = 10 - 1 = 9$.</p>
+<div class="fm">$$\lambda = \frac{7 \pm \sqrt{49 - 36}}{2} = \frac{7 \pm \sqrt{13}}{2} = \frac{7 \pm 3.6056}{2} \;\Rightarrow\; \lambda_{\max} = 5.303,\; \lambda_{\min} = 1.697$$</div>
+<div class="fm">$$\text{Straightness} = \frac{1.697 - 5.303}{5.303 + 1.697} = \frac{-3.606}{7} = \mathbf{-0.515}$$</div>
+<p>Notice the denominator is just $\mathrm{tr} = 7$ &mdash; you never needed to add the eigenvalues back up.</p>
+
+<div class="box conflict"><b>Key inconsistency &mdash; two different formulas exist</b>
+<ul style="margin:6px 0 0">
+<li><strong>The explicit fraction</strong> (above) is what T2 Q96 and T3 Q203 print. $M=\begin{bmatrix}1&2\\2&1\end{bmatrix} \Rightarrow -2$; $M=\begin{bmatrix}5&1\\1&2\end{bmatrix} \Rightarrow -0.515$. Both match their keys.</li>
+<li><strong>GA2 Q6</strong> uses the same $M=\begin{bmatrix}1&2\\2&1\end{bmatrix}$ but hints "the largest eigenvalue should be in the denominator" and keys $\mathbf{-1/3}$ &mdash; i.e. it is computing the <em>ratio</em> $\lambda_{\min}/\lambda_{\max} = -1/3$, a different definition entirely.</li>
+<li>T2 Q15 keys the $\begin{bmatrix}5&1\\1&2\end{bmatrix}$ case as the range "&minus;6 to &minus;5", which is simply broken &mdash; T3 keys the identical question as &minus;0.515.</li>
+</ul>
+<strong>Decision rule:</strong> use the formula <em>printed in the question</em>, literally, symbol for symbol. If none is printed and only a hint is given, follow the hint. Never import the formula from memory.</div>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">Compute the straightness for each, using $\text{Straightness} = \dfrac{\lambda_{\min} - \lambda_{\max}}{\lambda_{\max} + \lambda_{\min}}$.<br><br>(a) $M = \begin{pmatrix}3&1\\1&3\end{pmatrix}$ &nbsp;&nbsp;&nbsp; (b) $M = \begin{pmatrix}4&2\\2&3\end{pmatrix}$</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage)">(a) &minus;0.333</b> &nbsp;&nbsp; <b style="color:var(--sage)">(b) &minus;0.589</b><br><br><b>(a)</b> Equal diagonal &rarr; shortcut: $\lambda = 3+1 = 4$ and $3-1 = 2$.<div class="fm">$$\frac{2 - 4}{4 + 2} = \frac{-2}{6} = \mathbf{-0.333}$$</div><b>(b)</b> Diagonal is unequal &rarr; use the quadratic. $\mathrm{tr} = 7$, $\det = 12 - 4 = 8$.<div class="fm">$$\lambda = \frac{7 \pm \sqrt{49 - 32}}{2} = \frac{7 \pm \sqrt{17}}{2} = \frac{7 \pm 4.123}{2} \;\Rightarrow\; \lambda_{\max} = 5.562,\; \lambda_{\min} = 1.438$$</div><div class="fm">$$\frac{1.438 - 5.562}{7} = \frac{-4.123}{7} = \mathbf{-0.589}$$</div>Note the denominator in (b) is <em>just the trace</em>, 7 — you never added the eigenvalues back up. And observe: (a) has $\lambda$s that are close (4 and 2), so straightness is near 0 &rarr; corner-ish. (b) has more separated $\lambda$s, so it is further from 0 &rarr; more edge-like. The number does mean something.<br><br>Both answers are <b>negative</b>. If yours were positive, you wrote $\lambda_{\max} - \lambda_{\min}$.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>Straightness = (&lambda;<sub>min</sub> &minus; &lambda;<sub>max</sub>) / (&lambda;<sub>max</sub> + &lambda;<sub>min</sub>)</b><hr><b>THE ANSWER IS NEGATIVE.</b> <i>numerator is min &minus; max. positive &rArr; you flipped it.</i><hr><span class="lbl">denominator =</span> <b>trace(M) = a + d</b> &nbsp;<span class="lbl">read it off the diagonal</span><hr><span class="lbl">[a b; b a] &rarr;</span> <b>&lambda; = a+b, a&minus;b</b> &nbsp;<i>&larr; no polynomial needed</i><br><span class="lbl">general:</span> <b>&lambda; = (tr &plusmn; &radic;(tr&sup2; &minus; 4det)) / 2</b><br><span class="lbl">always:</span> <b>&lambda;&#8321;+&lambda;&#8322; = tr</b>, &nbsp; <b>&lambda;&#8321;&lambda;&#8322; = det</b><hr><span class="lbl">known answers:</span> <b>[1 2; 2 1] &rarr; &minus;2</b> &nbsp;&nbsp; <b>[5 1; 1 2] &rarr; &minus;0.515</b><hr><i>GA2 uses a DIFFERENT formula (&lambda;<sub>min</sub>/&lambda;<sub>max</sub> &rarr; &minus;1/3).<br>USE THE FORMULA PRINTED IN THE QUESTION. Never import from memory.</i></div></div>
+</div>
+</details>
+
+<details class="t">
+<summary><span class="f f3">3&times;</span>SIFT</summary>
+<div class="body">
+<details class="bg"><summary>Why the Hessian ratio rejects edges</summary><div class="bgbody"><p>The Hessian of the DoG response at a candidate keypoint is</p><div class="fm">$$H = \begin{bmatrix} D_{xx} & D_{xy} \\ D_{xy} & D_{yy} \end{bmatrix}$$</div><p>and its eigenvalues are the <strong>principal curvatures</strong> of the response surface. Same story as the second-moment matrix, one derivative order up: an edge is a ridge — strongly curved <em>across</em>, barely curved <em>along</em>. So an edge means $\lambda_1 \gg \lambda_2$.</p><p>Write $r = \lambda_1/\lambda_2$. Then</p><div class="fm">$$\frac{(\mathrm{tr}\,H)^2}{\det H} = \frac{(\lambda_1+\lambda_2)^2}{\lambda_1\lambda_2} = \frac{(r\lambda_2 + \lambda_2)^2}{r\lambda_2^2} = \frac{(r+1)^2}{r}$$</div><p>The $\lambda_2$ cancels — the ratio depends <strong>only on $r$</strong>, not on the absolute curvature. It is minimized at $r=1$ (value 4) and grows without bound as $r \to \infty$. So a large value <em>is</em> "this is an edge", and thresholding it thresholds $r$ — without ever computing an eigenvalue, and without a square root. Same design trick as Harris.</p><p><strong>Why reject edges at all?</strong> Because a keypoint on an edge can slide along it. Re-detect the same edge in a second image and you will localize it somewhere else along the ridge — the descriptor will not match. Edges are unstable, corners are pinned. SIFT throws edges away for the same reason Harris looks for them: the aperture problem.</p><p><strong>Note the course's threshold convention:</strong> the classic Lowe formulation rejects when $\frac{\mathrm{tr}^2}{\det} > \frac{(r_{th}+1)^2}{r_{th}}$. The course compares against $a$ directly  — $\frac{\mathrm{tr}^2}{\det} > a$. Use the course's.</p></div></details>
+<div class="fm hero">$$\text{Scale-space Extrema Detection} \rightarrow \text{Keypoint Localization} \rightarrow \text{Orientation Assignment} \rightarrow \text{Keypoint Descriptor}$$</div>
+<table>
+<tr><th>Stage</th><th>What happens</th><th>What invariance it buys</th></tr>
+<tr><td>Scale-space extrema detection</td><td>build a DoG pyramid; a candidate is a pixel that beats all <strong>26</strong> neighbours (8 same scale, 9 above, 9 below)</td><td class="k">scale</td></tr>
+<tr><td>Keypoint localization</td><td>sub-pixel fit; reject low-contrast points and edge responses via the Hessian</td><td class="k">stability</td></tr>
+<tr><td>Orientation assignment</td><td>histogram of local gradient orientations; assign the dominant one</td><td class="k">rotation</td></tr>
+<tr><td>Keypoint descriptor</td><td>$4\times4$ spatial grid $\times$ 8 orientation bins = <strong>128-dim</strong> vector, normalized</td><td class="k">illumination</td></tr>
+</table>
+<div class="box note"><b>The logic of the order</b>You cannot localize what you have not detected; you cannot assign an orientation to a point you have not localized; and the descriptor must be built <em>relative to</em> the orientation, so orientation must come first. That reasoning reconstructs the order if you blank.</div>
+
+<h3>Edge rejection during localization &mdash; worked</h3>
+<em class="q">During keypoint localization in SIFT we get the Hessian $H = \begin{bmatrix}4&2\\2&4\end{bmatrix}$. Should this keypoint be rejected if the threshold $a = 5$?</em>
+<p>The course's rule: reject when</p>
+<div class="fm hero">$$\frac{\big(\mathrm{trace}\,H\big)^2}{\det H} > a$$</div>
+<p>$\mathrm{tr}\,H = 8$, $\det H = 16 - 4 = 12$.</p>
+<div class="fm">$$\frac{8^2}{12} = \frac{64}{12} = 5.33 > 5 \;\Rightarrow\; \textbf{Reject}$$</div>
+<div class="box note"><b>Why this ratio</b>$\frac{\mathrm{tr}^2}{\det} = \frac{(\lambda_1+\lambda_2)^2}{\lambda_1\lambda_2}$ depends only on the <em>ratio</em> $r = \lambda_1/\lambda_2$, and it is minimized when $r=1$. A large value means the two curvatures are very unequal &mdash; which is what an <em>edge</em> looks like. Edges are unstable keypoints (they slide along themselves), so SIFT throws them away. Same intuition as the second-moment matrix.</div>
+
+<h3>Image stitching</h3>
+<em class="q">In image stitching using SIFT, what role does feature matching play?</em>
+<p>The keyed answer: <em>feature matching is essential for identifying corresponding keypoints across images and aligning them accurately.</em> The distractors attribute exposure correction, colour blending and lens-distortion removal to it &mdash; all real steps in a stitching pipeline, none of them feature matching's job.</p>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">During keypoint localization in SIFT we obtain the Hessian $H = \begin{pmatrix}6&3\\3&6\end{pmatrix}$. Should this keypoint be rejected if the threshold is $a = 6$?</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage);font-size:19px">No — keep it.</b><br><br>$\mathrm{tr}\,H = 12$, &nbsp; $\det H = 36 - 9 = 27$.<div class="fm">$$\frac{(\mathrm{tr}\,H)^2}{\det H} = \frac{144}{27} = 5.33 \;\not>\; 6 \;\Rightarrow\; \textbf{Keep}$$</div><u>Confirm it structurally.</u> Equal diagonal &rarr; $\lambda = 6+3 = 9$ and $6-3 = 3$, so $r = 3$. The two curvatures differ by only $3\times$ — that is a blob, not a ridge. Keeping it is right.<br><br><u>Compare with the paper's version</u>: $H = \begin{pmatrix}4&2\\2&4\end{pmatrix}$ with $a = 5$ gives $64/12 = 5.33 > 5$ &rarr; <b>Reject</b>. <b>Identical ratio, opposite verdict</b> — because the threshold moved, not the matrix. Do not memorize "5.33 means reject"; memorize the comparison.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>extrema &rarr; localize &rarr; orient &rarr; describe</b><hr><span class="lbl">extrema:</span> <b>DoG pyramid, beat all 26 neighbours</b> <span class="lbl">(8 same + 9 above + 9 below)</span> &rarr; <b>scale</b> invariance<br><span class="lbl">localize:</span> <b>sub-pixel fit; reject low-contrast + edges via Hessian</b><br><span class="lbl">orient:</span> <b>gradient-orientation histogram</b> &rarr; <b>rotation</b> invariance<br><span class="lbl">describe:</span> <b>4&times;4 grid &times; 8 bins = 128-dim</b>, normalized &rarr; <b>illumination</b><hr><b>reject if (trace H)&sup2; / det H &gt; a</b><br><span class="lbl">[4 2; 2 4], a=5 &rarr;</span> <b>64/12 = 5.33 &gt; 5 &rarr; REJECT</b><hr><i>ratio depends only on r = &lambda;&#8321;/&lambda;&#8322;, min value 4 at r=1. Large &rArr; ridge &rArr; edge.</i><hr><span class="lbl">stitching:</span> <b>feature matching = find corresponding keypoints ACROSS images and align them</b><br><i>NOT exposure correction, colour blending or lens distortion &mdash; all distractors.</i></div></div>
+</div>
+</details>
+
+<details class="t" open>
+<summary><span class="f f2">2&times;</span>The filter-to-role matching table</summary>
+<div class="body">
+<p>This appears identically on both papers. Memorize the four rows.</p>
+<table>
+<tr><th>Filter</th><th>Role</th><th>Why</th></tr>
+<tr><td>Gaussian Filter</td><td class="k">Edge smoothing</td><td>low-pass; it is the pre-processing step, not a detector</td></tr>
+<tr><td>Sobel Filter</td><td class="k">Edge detection / gradient-based edge detection</td><td>first derivative, discrete</td></tr>
+<tr><td>First derivative of Gaussian</td><td class="k">Edges found when the gradient is high</td><td>a first derivative peaks at an edge &rarr; look for <em>maxima</em></td></tr>
+<tr><td>Second derivative of Gaussian / Laplacian of Gaussian</td><td class="k">Edges found at zero crossing</td><td>the maximum of $f'$ is where $f''$ crosses zero</td></tr>
+</table>
+<div class="box note"><b>The one idea behind rows 3 and 4</b>Picture intensity as a ramp. The <em>first</em> derivative has a peak at the ramp. The <em>second</em> derivative is the slope of that peak, which is zero exactly at its top. So: first derivative &rarr; find maxima; second derivative &rarr; find zero crossings. Both find the same edge. This is also why the Laplacian is more noise-sensitive &mdash; you differentiated twice.</div>
+<p><span class="src">"Edges found when gradient is low" is a distractor with no referent &mdash; nothing in the course maps to it.</span></p>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">Match the filter to the role.<br><br><b>1)</b> Second derivative of Gaussian &nbsp;&nbsp; <b>2)</b> Gaussian filter &nbsp;&nbsp; <b>3)</b> First derivative of Gaussian &nbsp;&nbsp; <b>4)</b> Sobel filter<br><br><b>i)</b> edge detection &nbsp;&nbsp; <b>ii)</b> edges found at zero crossing &nbsp;&nbsp; <b>iii)</b> edges found when gradient is high &nbsp;&nbsp; <b>iv)</b> edge smoothing</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage);font-size:19px">1&rarr;ii, &nbsp; 2&rarr;iv, &nbsp; 3&rarr;iii, &nbsp; 4&rarr;i</b><br><br>Same four pairings as the paper, labels shuffled. Reconstruct rather than recall:<br><br>Picture an intensity ramp. $f$ steps up. $f'$ has a <b>peak</b> at the step &rarr; "gradient is high" &rarr; the first derivative of Gaussian. $f''$ is the slope of that peak, which is <b>zero at the peak's top</b> and flips sign across it &rarr; "zero crossing" &rarr; the second derivative / LoG.<br><br>The Gaussian itself is not a detector at all — it is the <em>preparation</em>. And Sobel is the plain discrete first derivative, so it gets the generic "edge detection" slot.<br><br><u>Why this ordering also tells you the noise story</u>: LoG differentiates twice, so it amplifies noise twice as aggressively — which is precisely why it is wrapped in a Gaussian and why zero-crossing detectors have a reputation for being finicky.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>Gaussian &rarr; edge SMOOTHING</b> <span class="lbl">(preparation, not detection)</span><br><b>Sobel &rarr; edge DETECTION</b> <span class="lbl">(discrete 1st derivative)</span><br><b>1st deriv of Gaussian &rarr; edges where GRADIENT IS HIGH</b> <span class="lbl">(find maxima)</span><br><b>2nd deriv of Gaussian / LoG &rarr; edges at ZERO CROSSING</b><hr><i>ramp picture: f&prime; PEAKS at the edge &rarr; look for maxima.<br>f&Prime; is the slope of that peak &rarr; ZERO at the top &rarr; look for zero crossings.<br>both find the same edge. f&Prime; is noisier (differentiated twice).</i><hr><i>"edges found when gradient is LOW" is a distractor with no referent.</i></div></div>
+</div>
+</details>
+</section>
+<section class="block" id="b4">
+<div class="bhead"><span class="num">BLOCK 4</span><h2>Nets and optimizers</h2></div>
+<p class="bsub">Highest marks-per-minute after Block 0. The activation table and the optimizer bank are pure recall; the two numeric templates are three lines of arithmetic each once you have the right convention.</p>
+
+<details class="t" open>
+<summary><span class="f f3">3&times;</span>The activation table &mdash; functions and derivatives</summary>
+<div class="body">
+<details class="bg"><summary>Why the derivative is the thing that matters</summary><div class="bgbody"><p>Backpropagation is the chain rule. The gradient reaching layer $\ell$ is a <em>product</em> of every activation derivative above it:</p><div class="fm">$$\frac{\partial L}{\partial z^{(\ell)}} = \frac{\partial L}{\partial z^{(L)}} \prod_{j=\ell+1}^{L} f'(z^{(j)}) \cdot W^{(j)}$$</div><p>A <em>product</em> of many terms. That single word explains the whole activation-function story.</p><p><strong>Sigmoid's problem, quantitatively.</strong> $\sigma' = \sigma(1-\sigma)$ is maximized at $\sigma = 0.5$, giving $\sigma'_{\max} = 0.25$. So every layer multiplies the gradient by <em>at most</em> $0.25$. Ten layers: $0.25^{10} \approx 10^{-6}$. The gradient does not decay — it evaporates. That is the <strong>vanishing gradient problem</strong>, and it is arithmetic, not bad luck.</p><p><strong>Why ReLU won.</strong> $f' = 1$ for all $x > 0$. Multiply by 1 as many times as you like and nothing shrinks. The cost is that $f' = 0$ for $x < 0$ — a unit that goes negative for every input is dead forever. Leaky ReLU's $\alpha = 0.01$ exists purely to make that derivative non-zero.</p><p><strong>Why $\sigma' = \sigma(1-\sigma)$ is worth deriving once.</strong> Write $\sigma = (1+e^{-x})^{-1}$ and apply the chain rule: $\sigma' = -(1+e^{-x})^{-2}\cdot(-e^{-x}) = \frac{e^{-x}}{(1+e^{-x})^2}$. Now split it: $= \frac{1}{1+e^{-x}} \cdot \frac{e^{-x}}{1+e^{-x}} = \sigma \cdot (1 - \sigma)$, since $\frac{e^{-x}}{1+e^{-x}} = 1 - \sigma$. The derivative is expressible in the <em>forward value</em> — so the backward pass is free if you cached it. Same for $\tanh' = 1 - \tanh^2$. That property, not their shape, is why these two dominated for thirty years.</p><p><strong>Why tanh is preferred over sigmoid</strong> when you must use a saturating unit: it is <em>zero-centred</em>. Sigmoid outputs are all positive, so every weight into a neuron receives a gradient of the same sign, and the updates zig-zag. Tanh outputs straddle zero and the problem goes away.</p></div></details>
+<table>
+<tr><th>Name</th><th>$f(x)$</th><th>$f'(x)$</th><th>Range</th></tr>
+<tr><td>Sigmoid $\sigma$</td><td>$\dfrac{1}{1+e^{-x}}$</td><td class="k">$\sigma(x)\big(1-\sigma(x)\big)$</td><td>$(0,1)$</td></tr>
+<tr><td>Tanh</td><td>$\dfrac{e^{x}-e^{-x}}{e^{x}+e^{-x}}$</td><td class="k">$1 - \tanh^2 x$</td><td>$(-1,1)$</td></tr>
+<tr><td>ReLU</td><td>$\max(0,x)$</td><td class="k">$0$ if $x<0$, $\;1$ if $x>0$</td><td>$[0,\infty)$</td></tr>
+<tr><td>Leaky ReLU</td><td>$x$ if $x>0$, else $\alpha x$ &nbsp;($\alpha = 0.01$)</td><td class="k">$\alpha$ if $x<0$, $\;1$ if $x>0$</td><td>$(-\infty,\infty)$</td></tr>
+<tr><td>Linear</td><td>$x$</td><td class="k">$1$</td><td>$(-\infty,\infty)$</td></tr>
+<tr><td>Indicator</td><td>$1$ if $x>0$, else $0$</td><td class="k">$0$</td><td>$\{0,1\}$</td></tr>
+<tr><td>Softplus</td><td>$\ln(1+e^{x})$</td><td class="k">$\sigma(x)$</td><td>$(0,\infty)$</td></tr>
+<tr><td>Swish</td><td>$x\,\sigma(x)$</td><td>&mdash;</td><td>non-monotonic</td></tr>
+</table>
+<div class="box ans"><b>The two derivatives worth memorizing as identities</b>Both sigmoid and tanh have derivatives expressible <em>in terms of the function itself</em> &mdash; that is why they were popular before ReLU: the backward pass is free once you cached the forward value.
+$$\sigma' = \sigma(1-\sigma) \qquad\qquad \tanh' = 1 - \tanh^2$$
+The matching questions are exactly this. In both papers: sigmoid &rarr; $f(1-f)$; tanh &rarr; $1-f^2$; ReLU &rarr; the 0/1 step; Leaky ReLU &rarr; the $\alpha$/1 step.</div>
+
+<h3>The tanh&ndash;sigmoid identity</h3>
+<div class="fm hero">$$\tanh(x) = 2\,\sigma(2x) - 1$$</div>
+<div class="box trap"><b>The trap</b>The distractor is $2\sigma(x) - 1$ &mdash; missing the inner factor of 2. Check it at $x = 1$: $\tanh 1 = 0.7616$, while $2\sigma(2)-1 = 2(0.8808)-1 = 0.7616$ &check; but $2\sigma(1)-1 = 2(0.7311)-1 = 0.4621$ &cross;. <strong>Both</strong> 2s are needed. Sanity check with any single number if you blank.</div>
+
+<h3>The activation-facts bank</h3>
+<table>
+<tr><th>Statement</th><th></th></tr>
+<tr><td>Sigmoid is centered around 0.5 while tanh is centered around 0.</td><td class="k">True</td></tr>
+<tr><td>The derivative of the sigmoid is symmetric around the origin.</td><td class="x">False &mdash; $\sigma'$ is <em>even</em> ($\sigma'(-x)=\sigma'(x)$), i.e. symmetric about the $y$-axis, not the origin. "Symmetric about the origin" means <em>odd</em>.</td></tr>
+<tr><td>For a saturated sigmoid unit the gradient explodes.</td><td class="x">False &mdash; it <em>vanishes</em>. $\sigma' = \sigma(1-\sigma) \to 0$ at both tails, max $0.25$ at $x{=}0$.</td></tr>
+<tr><td>ReLU is 1-Lipschitz.</td><td class="k">True &mdash; $|f(a)-f(b)| \le |a-b|$; its slope is never more than 1</td></tr>
+<tr><td>Swish is non-monotonic.</td><td class="k">True &mdash; it dips below zero for small negative $x$ before rising</td></tr>
+<tr><td>Tanh does not suffer from the vanishing gradient problem.</td><td class="x">False &mdash; it saturates at both tails just like sigmoid</td></tr>
+</table>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">(a) If $\tanh(x) = 0.6$, what is $\tanh'(x)$?<br>(b) What is the derivative of Softplus at $x = 0$?<br>(c) A network has 8 sigmoid layers. Roughly what is the <em>largest possible</em> factor by which the gradient can shrink passing through the activations alone?</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage)">(a) 0.64</b> — $\tanh' = 1 - \tanh^2 = 1 - 0.36 = \mathbf{0.64}$. You never needed $x$: the point of the identity is that the derivative is a function of the <em>output</em>.<br><br><b style="color:var(--sage)">(b) 0.5</b> — $\frac{d}{dx}\ln(1+e^x) = \frac{e^x}{1+e^x} = \sigma(x)$, and $\sigma(0) = \mathbf{0.5}$. Softplus is the smooth ReLU whose derivative <em>is</em> the sigmoid — a neat pairing the exam likes.<br><br><b style="color:var(--sage)">(c) $0.25^8 \approx 1.5 \times 10^{-5}$</b> — a shrink of roughly 65,000&times;, and that is the <em>best case</em>, at the sigmoid's steepest point. In practice units sit off-centre and it is far worse. This is the vanishing gradient problem in one line of arithmetic.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>&sigma;&prime; = &sigma;(1&minus;&sigma;)</b> &nbsp;&nbsp; <b>tanh&prime; = 1 &minus; tanh&sup2;</b> &nbsp;<span class="lbl">both in terms of the OUTPUT</span><br><b>ReLU&prime; = 0 / 1</b> &nbsp;&nbsp; <b>LeakyReLU&prime; = &alpha; / 1</b> <span class="lbl">(&alpha;=0.01)</span> &nbsp;&nbsp; <b>Linear&prime; = 1</b><br><b>Indicator&prime; = 0</b> &nbsp;&nbsp; <b>Softplus&prime; = &sigma;(x)</b><hr><b>tanh(x) = 2&sigma;(2x) &minus; 1</b> &nbsp;<i>&larr; BOTH 2s. 2&sigma;(x)&minus;1 is the distractor.</i><hr><b>&sigma;&prime;<sub>max</sub> = 0.25 at x=0</b> &rArr; <b>vanishing gradient</b> <span class="lbl">(0.25&#8319; per layer)</span><hr><span class="lbl">sigmoid centred</span> <b>0.5</b> &nbsp;|&nbsp; <span class="lbl">tanh centred</span> <b>0</b> <span class="lbl">(zero-centred &rarr; preferred)</span><br><b>&sigma;&prime; is EVEN</b> (symmetric about the y-axis) &mdash; <i>"symmetric about the ORIGIN" = FALSE (that means odd)</i><br><b>saturated sigmoid &rarr; gradient VANISHES</b>, not explodes<br><b>ReLU is 1-Lipschitz</b> <span class="lbl">&check;</span> &nbsp;&nbsp; <b>Swish is non-monotonic</b> <span class="lbl">&check;</span></div></div>
+</div>
+</details>
+
+<details class="t" open>
+<summary><span class="f f3">3&times;</span>Computing activation outputs &mdash; the six-in-a-row question</summary>
+<div class="body">
+<p>One pre-activation, six activations applied to it. Compute $z$ once, carefully, then read down the table. The entire question hinges on getting $z$ right.</p>
+<div class="fm hero">$$z = \mathbf{w}^{\mathsf T}\mathbf{x} + b$$</div>
+
+<h3>Worked &mdash; instance 1</h3>
+<em class="q">$\mathbf{x} = [2, -1, 0, 3]$, $\mathbf{w} = [0.4, -0.6, 0.3, 0.9]$, $b = -0.1$</em>
+<div class="fm">$$z = (2)(0.4) + (-1)(-0.6) + (0)(0.3) + (3)(0.9) - 0.1 = 0.8 + 0.6 + 0 + 2.7 - 0.1 = 4.0$$</div>
+<table>
+<tr><th>Activation</th><th>Working</th><th>Output</th></tr>
+<tr><td>Sigmoid</td><td>$1/(1+e^{-4})$</td><td class="k">0.9820</td></tr>
+<tr><td>Linear</td><td>$z$</td><td class="k">4.00</td></tr>
+<tr><td>Indicator</td><td>$4 > 0$</td><td class="k">1</td></tr>
+<tr><td>Softplus</td><td>$\ln(1+e^{4}) = \ln(55.598)$</td><td class="k">4.02</td></tr>
+<tr><td>ReLU</td><td>$\max(0,4)$</td><td class="k">4.00</td></tr>
+<tr><td>Leaky ReLU</td><td>$z > 0$ so unchanged</td><td class="k">4.00</td></tr>
+</table>
+
+<h3>Worked &mdash; instance 2</h3>
+<em class="q">$\mathbf{x} = [1, -2, 0.5, 4]$, $\mathbf{w} = [0.5, -0.25, 0.1, 0.8]$, $b = -0.2$</em>
+<div class="fm">$$z = 0.5 + 0.5 + 0.05 + 3.2 - 0.2 = 4.05$$</div>
+<p>Sigmoid <b style="color:var(--sage)">0.9829</b> &middot; Linear <b style="color:var(--sage)">4.05</b> &middot; Indicator <b style="color:var(--sage)">1</b> &middot; Softplus <b style="color:var(--sage)">4.0673</b> &middot; ReLU <b style="color:var(--sage)">4.05</b> &middot; Leaky ReLU <b style="color:var(--sage)">4.05</b></p>
+
+<div class="box ans"><b>The pattern that makes this fast</b>Both instances are rigged so $z > 0$ and reasonably large. When $z>0$: Linear, ReLU and Leaky ReLU are all <strong>identical to $z$</strong>; Indicator is <strong>1</strong>; Softplus is <strong>just above $z$</strong> (since $\ln(1+e^z) \approx z + e^{-z}$ for large $z$); Sigmoid is <strong>just below 1</strong>. Four of six answers need no calculator. Only sigmoid and softplus do.</div>
+<div class="box trap"><b>The trap</b>$(-1)(-0.6) = +0.6$, not $-0.6$. Both instances plant a negative-times-negative. A sign slip there gives $z = 2.8$, and then <em>all six</em> answers are wrong. Do the dot product twice.</div>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">Let $\mathbf{x} = [3, -2, 1, 0]$, $\mathbf{w} = [0.2, -0.5, 0.4, 0.7]$, $b = 0.3$.<br><br>Compute the output of the neuron under: Sigmoid, Linear, Indicator, Softplus, ReLU, Leaky ReLU ($\alpha = 0.01$).</div><details><summary>Show answer</summary><div class="pa">First, $z$ — carefully, because everything depends on it:<div class="fm">$$z = (3)(0.2) + (-2)(-0.5) + (1)(0.4) + (0)(0.7) + 0.3 = 0.6 + 1.0 + 0.4 + 0 + 0.3 = \mathbf{2.3}$$</div><table><tr><th>Activation</th><th>Working</th><th>Output</th></tr><tr><td>Sigmoid</td><td>$1/(1+e^{-2.3})$</td><td class="k">0.9089</td></tr><tr><td>Linear</td><td>$z$</td><td class="k">2.30</td></tr><tr><td>Indicator</td><td>$2.3 > 0$</td><td class="k">1</td></tr><tr><td>Softplus</td><td>$\ln(1+e^{2.3}) = \ln(10.974)$</td><td class="k">2.3955</td></tr><tr><td>ReLU</td><td>$\max(0, 2.3)$</td><td class="k">2.30</td></tr><tr><td>Leaky ReLU</td><td>$z > 0$, unchanged</td><td class="k">2.30</td></tr></table><u>The two planted traps.</u> $(-2)(-0.5) = +1.0$, not $-1.0$ — a sign slip there gives $z = 0.3$ and all six answers die. And $(0)(0.7) = 0$: the zero input kills a large weight, which people skip over and then mis-tally.<br><br><u>Notice the shape.</u> Four of the six needed no calculator: Linear = ReLU = LeakyReLU = $z$ whenever $z>0$, and Indicator = 1. Only sigmoid and softplus need real work — and softplus is always <em>just above</em> $z$ (here $2.3955$ vs $2.3$), sigmoid always <em>just below</em> 1.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>z = w<sup>T</sup>x + b</b> &nbsp;<i>&larr; compute ONCE, twice. everything hangs off it.</i><hr><span class="lbl">when z &gt; 0:</span> <b>Linear = ReLU = LeakyReLU = z</b> &nbsp;&nbsp; <b>Indicator = 1</b><br><span class="lbl">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <b>Softplus &asymp; z<sup>+</sup></b> <span class="lbl">(just above)</span> &nbsp;&nbsp; <b>Sigmoid &asymp; 1<sup>&minus;</sup></b> <span class="lbl">(just below)</span><br><i>4 of 6 need no calculator.</i><hr><span class="lbl">known:</span> <b>z=4.00 &rarr; 0.9820, 4.00, 1, 4.02, 4.00, 4.00</b><br><span class="lbl">known:</span> <b>z=4.05 &rarr; 0.9829, 4.05, 1, 4.0673, 4.05, 4.05</b><hr><i>every instance plants a negative &times; negative. DO THE DOT PRODUCT TWICE.</i></div></div>
+</div>
+</details>
+
+<details class="t">
+<summary><span class="f f1">1&times;</span>Softmax by hand</summary>
+<div class="body">
+<details class="bg"><summary>Why exponentials, and why the shift-invariance shortcut is legal</summary><div class="bgbody"><p>Softmax has to turn any real vector into a probability distribution: all entries positive, summing to 1. Exponentiating handles "positive" (since $e^t > 0$ always, even for negative $t$), and dividing by the sum handles "sums to 1". A plain $x_i / \sum x_j$ would fail on negative logits.</p><p><strong>Shift invariance.</strong> Add any constant $c$ to every logit:</p><div class="fm">$$\frac{e^{x_i + c}}{\sum_j e^{x_j + c}} = \frac{e^{c}\,e^{x_i}}{e^{c}\sum_j e^{x_j}} = \frac{e^{x_i}}{\sum_j e^{x_j}}$$</div><p>The $e^c$ factors out of both numerator and denominator and cancels. So softmax only sees <em>differences</em> between logits — which is exactly why $[1,2,3]$, $[4,5,6]$ and $[101,102,103]$ all give the same answer, and why the shortcut is not a trick but a theorem.</p><p>It is also why every real implementation subtracts $\max_j x_j$ first: mathematically a no-op, numerically the difference between working and overflowing to <code>inf</code>.</p><p><strong>Reading <code>dim</code>.</strong> <code>dim=k</code> means "normalize <em>along</em> axis $k$", i.e. the entries that vary as index $k$ changes are the ones that will sum to 1. For a 2D tensor <code>(rows, cols)</code>: <code>dim=1</code> is the column axis, so each <strong>row</strong> sums to 1 — which is what you want when rows are samples and columns are classes. <code>dim=0</code> would make each column sum to 1, which is almost never what you want.</p></div></details>
+<div class="fm hero">$$\text{softmax}(x_i) = \frac{e^{x_i}}{\sum_j e^{x_j}}$$</div>
+<em class="q">A row of the tensor is $[1, 2, 3]$ and <code>torch.softmax(t, dim=1)</code> is applied. Give the row of the output.</em>
+<p>$e^1 = 2.718$, $e^2 = 7.389$, $e^3 = 20.086$. Sum $= 30.193$.</p>
+<div class="fm">$$\left[\tfrac{2.718}{30.193},\; \tfrac{7.389}{30.193},\; \tfrac{20.086}{30.193}\right] = [\mathbf{0.09},\; \mathbf{0.24},\; \mathbf{0.67}]$$</div>
+<div class="box ans"><b>Shortcut</b>Softmax is shift-invariant, and for values spaced 1 apart the exponentials are in the fixed ratio $1 : e : e^2 = 1 : 2.718 : 7.389$, summing to $11.107$. So <em>any</em> row $[c, c+1, c+2]$ gives $[0.09, 0.245, 0.665]$ regardless of $c$. You can answer the $[1,2,3]$, $[4,5,6]$ and $[7,8,9]$ rows from one calculation.</div>
+<div class="box trap"><b>The trap</b><code>dim=1</code> normalizes across <em>columns within each row</em>. <code>dim=0</code> would normalize down the columns. Check which dimension before you sum.</div>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">A tensor row is $[1, 3]$ and <code>torch.softmax(t, dim=1)</code> is applied. Give the output row, to 3 decimals.</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage);font-size:19px">[0.119, 0.881]</b><br><br>$e^1 = 2.718$, &nbsp; $e^3 = 20.086$, &nbsp; sum $= 22.804$.<div class="fm">$$\left[\frac{2.718}{22.804},\; \frac{20.086}{22.804}\right] = [\mathbf{0.119},\; \mathbf{0.881}]$$</div><u>The shortcut in action.</u> Softmax only sees the <em>difference</em>, which is 2. So this is identical to softmax of $[0, 2]$, or $[-1, 1]$, or $[99, 101]$ — all give $[0.119, 0.881]$. For two classes softmax reduces exactly to the sigmoid of the difference: $\sigma(3-1) = \sigma(2) = 0.881$ &check;. That is a genuinely useful identity — binary softmax <em>is</em> logistic regression.<br><br>Check: the outputs are positive and sum to $1.000$ &check;.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>softmax(x<sub>i</sub>) = e<sup>x<sub>i</sub></sup> / &Sigma;<sub>j</sub> e<sup>x<sub>j</sub></sup></b><hr><span class="lbl">memorize:</span> <b>e&sup1;=2.718 &nbsp; e&sup2;=7.389 &nbsp; e&sup3;=20.086</b><hr><b>[c, c+1, c+2] &rarr; [0.09, 0.245, 0.665] for ANY c</b> <span class="lbl">(shift-invariant: e&#7580; cancels)</span><br><span class="lbl">ratios are always</span> <b>1 : e : e&sup2; = 1 : 2.718 : 7.389</b>, sum <b>11.107</b><hr><b>2 classes: softmax = sigmoid of the DIFFERENCE</b><hr><span class="lbl">dim=1 &rarr;</span> <b>each ROW sums to 1</b> <span class="lbl">(the usual case)</span><br><span class="lbl">dim=0 &rarr;</span> <b>each COLUMN sums to 1</b><hr><i>check: outputs positive, sum = 1.</i></div></div>
+</div>
+</details>
+
+<details class="t">
+<summary><span class="f f2">2&times;</span>The perceptron</summary>
+<div class="body">
+<details class="bg"><summary>Linear separability, and why XOR breaks it</summary><div class="bgbody"><p>A perceptron computes $\text{sign}(\mathbf{w}\cdot\mathbf{x})$. The set $\{\mathbf{x} : \mathbf{w}\cdot\mathbf{x} = 0\}$ is a <strong>hyperplane</strong> — a line in 2D. Everything the perceptron can ever express is: "which side of this line are you on?" No line, no solution. It is not a training problem; it is a representation problem.</p><p><strong>XOR, drawn.</strong> Plot the four points with their labels:</p><pre><code>  x&#8322;
+   |
+ 1 |  <b>1</b>       <b>0</b>      (0,1)&rarr;1   (1,1)&rarr;0
+   |
+ 0 |  <b>0</b>       <b>1</b>      (0,0)&rarr;0   (1,0)&rarr;1
+   +----------- x&#8321;
+      0       1</code></pre><p>The two 1s sit on one diagonal, the two 0s on the other. Any straight line splitting the plane leaves at least one point on the wrong side. You can see it in three seconds, which is faster than any algebra.</p><p><strong>The convergence theorem, precisely.</strong> Rosenblatt proved the perceptron converges in finitely many updates <em>if the data is linearly separable</em>. The bound is $\le (R/\gamma)^2$ updates, where $R$ is the largest input norm and $\gamma$ the margin. If the data is <em>not</em> separable the algorithm never halts — it cycles forever, and it does not even converge to a good approximate solution. There is no graceful degradation.</p><p><strong>Why the update is $\pm\mathbf{x}$.</strong> Misclassified a positive, so $\mathbf{w}\cdot\mathbf{x} < 0$ and you need it bigger. After $\mathbf{w}' = \mathbf{w} + \mathbf{x}$: $\mathbf{w}'\cdot\mathbf{x} = \mathbf{w}\cdot\mathbf{x} + \|\mathbf{x}\|^2$. Since $\|\mathbf{x}\|^2 > 0$, the score strictly increased. It is the crudest possible fix and it is guaranteed to move the right way on <em>this</em> point (possibly breaking others — hence "finitely many", not "one pass").</p><p>This is the wall that ended the first AI wave in 1969, and the reason your Week 0 capstone is XOR: it takes exactly one hidden layer to break it.</p></div></details>
+<p>Update rule, in the course's $P$/$N$ notation:</p>
+<div class="fm hero">$$\mathbf{x} \in P \text{ and } \mathbf{w}\cdot\mathbf{x} < 0 \;\Rightarrow\; \mathbf{w} \leftarrow \mathbf{w} + \mathbf{x}$$
+<div class="fm" style="border:none;background:none;padding:0">$$\mathbf{x} \in N \text{ and } \mathbf{w}\cdot\mathbf{x} \ge 0 \;\Rightarrow\; \mathbf{w} \leftarrow \mathbf{w} - \mathbf{x}$$</div></div>
+<div class="box note"><b>Why it's $\pm\mathbf{x}$ and nothing cleverer</b>You misclassified a positive point, so $\mathbf{w}\cdot\mathbf{x}$ is too small. Adding $\mathbf{x}$ to $\mathbf{w}$ changes the score by $\|\mathbf{x}\|^2 > 0$ &mdash; guaranteed to move in the right direction. Symmetrically for negatives. It is the crudest possible fix and it provably converges, but <em>only if the data are linearly separable</em>.</div>
+<table>
+<tr><th>Statement</th><th></th></tr>
+<tr><td>A single-layer perceptron will always converge on the boolean data $\{(0,0){\to}0,(0,1){\to}1,(1,0){\to}1,(1,1){\to}0\}$.</td><td class="x">False</td></tr>
+</table>
+<p>That table is <strong>XOR</strong>. It is not linearly separable, so no line exists and the perceptron cycles forever. Recognize XOR from the data, not from the word.</p>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">A perceptron has weights $\mathbf{w} = [1, -1]$. The point $\mathbf{x} = [2, 3]$ belongs to the positive class $P$.<br><br>(a) Is it correctly classified?<br>(b) If not, apply one update and give the new $\mathbf{w}$.<br>(c) Verify the update helped.</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage)">(a) No.</b> $\mathbf{w}\cdot\mathbf{x} = (1)(2) + (-1)(3) = 2 - 3 = -1 < 0$. It is in $P$ but scores negative &rarr; misclassified.<br><br><b style="color:var(--sage)">(b) $\mathbf{w} \leftarrow \mathbf{w} + \mathbf{x} = [1,-1] + [2,3] = [3, 2]$</b><br><br><b style="color:var(--sage)">(c)</b> New score: $(3)(2) + (2)(3) = 6 + 6 = 12 > 0$ &check;. Now correctly classified.<br><br>And the guarantee, checked: the score went from $-1$ to $12$, an increase of exactly $\|\mathbf{x}\|^2 = 2^2 + 3^2 = 13$. That is not a coincidence — it is the identity $\mathbf{w}'\cdot\mathbf{x} = \mathbf{w}\cdot\mathbf{x} + \|\mathbf{x}\|^2$. The update <em>always</em> increases the score on the offending point by its squared norm.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>x &isin; P and w&middot;x &lt; 0 &rarr; w &larr; w + x</b><br><b>x &isin; N and w&middot;x &ge; 0 &rarr; w &larr; w &minus; x</b><hr><span class="lbl">why:</span> <b>w&prime;&middot;x = w&middot;x + &#8214;x&#8214;&sup2;</b> &rarr; score strictly increases<hr><b>converges &hArr; linearly separable.</b> <i>otherwise cycles FOREVER.</i><hr><b>{(0,0)&rarr;0, (0,1)&rarr;1, (1,0)&rarr;1, (1,1)&rarr;0} = XOR &rarr; NEVER converges</b><br><i>recognize XOR from the DATA, not the word. 1s on one diagonal, 0s on the other.</i><hr><span class="lbl">"a single-layer perceptron will ALWAYS converge" &rarr;</span> <b>FALSE</b></div></div>
+</div>
+</details>
+
+<details class="t" open>
+<summary><span class="f f4">4&times;</span>The optimizer bank</summary>
+<div class="body">
+<details class="bg"><summary>Exponential moving averages, and what a "moment" is</summary><div class="bgbody"><p>Every optimizer past vanilla SGD is built from one primitive: the <strong>exponential moving average</strong>.</p><div class="fm">$$v_t = \gamma v_{t-1} + (1-\gamma) g_t$$</div><p>Unroll it: $v_t = (1-\gamma)\big(g_t + \gamma g_{t-1} + \gamma^2 g_{t-2} + \cdots\big)$. It is a weighted average of all past gradients with <em>geometrically decaying</em> weights. The effective window is about $\frac{1}{1-\gamma}$ steps — so $\gamma = 0.9$ remembers roughly the last 10 gradients, and $\gamma = 0.999$ roughly the last 1000. That is why $\beta_2$ is set so much higher than $\beta_1$ in Adam: curvature estimates need a longer memory than direction estimates.</p><p><em>(The course's momentum form drops the $(1-\gamma)$ and writes $v_t = \gamma v_{t-1} + g_t$. That is a plain sum, not a true average — it rescales the step by $\frac{1}{1-\gamma}$. Both forms are in circulation; use whichever the question prints.)</em></p><p><strong>"Moment" just means an expectation of a power.</strong> The <strong>first moment</strong> is $\mathbb{E}[g]$ — the average gradient, i.e. the <em>direction</em> you are consistently heading. The <strong>second moment</strong> is $\mathbb{E}[g^2]$ — the average squared gradient, i.e. the <em>scale</em> of the gradient, ignoring sign.</p><p>Now the two families have an obvious reading:</p><ul><li><strong>Momentum</strong> uses the first moment. Consistent directions accumulate; oscillating ones cancel against each other. Fixes zig-zagging.</li><li><strong>Adagrad / RMSProp</strong> use the second moment, dividing by $\sqrt{\mathbb{E}[g^2]}$. A parameter with historically huge gradients gets a small effective step; a rarely-updated one gets a large step. Fixes "one learning rate cannot suit all parameters".</li><li><strong>Adam</strong> uses both. It is not more than that.</li></ul><p><strong>Why RMSProp exists.</strong> Adagrad divides by $\sqrt{\sum_{t} g_t^2}$ — a running <em>sum</em>, which only ever grows. The effective learning rate therefore decays monotonically to zero and training stalls before convergence. RMSProp swaps the sum for an EMA, so old gradients decay <em>out</em> of the estimate and the learning rate can recover. One word changed, one problem fixed.</p><p><strong>Why Adam needs bias correction.</strong> Both moments are initialized at $v_0 = 0$, so early on they are biased toward zero. Dividing by $(1-\beta^t)$ undoes it exactly, and the correction vanishes as $t$ grows.</p></div></details>
+<p>Learn the lineage, and the true/false questions collapse. Each optimizer exists to fix a specific flaw in the previous one.</p>
+<div class="fm hero">$$\text{SGD} \xrightarrow{\text{oscillation}} \text{Momentum} \xrightarrow{\text{overshoot}} \text{Nesterov} \qquad \text{SGD} \xrightarrow{\text{one LR for all}} \text{Adagrad} \xrightarrow{\text{LR}\,\to\,0} \text{RMSProp}$$</div>
+<div class="fm hero">$$\text{Adam} \;=\; \text{RMSProp} \;+\; \text{Momentum}$$</div>
+<table>
+<tr><th>Optimizer</th><th>Fixes</th><th>How</th></tr>
+<tr><td>Momentum</td><td>slow, zig-zagging progress in ravines</td><td>accumulate a velocity $v$; consistent directions build up, oscillating ones cancel</td></tr>
+<tr><td>Nesterov (NAG)</td><td>momentum overshooting the minimum</td><td><strong>look-ahead</strong>: evaluate the gradient at $\theta_t - \alpha\gamma v_{t-1}$, where momentum is <em>about</em> to put you</td></tr>
+<tr><td>Adagrad</td><td>one global LR for all parameters; sparse features</td><td>per-parameter LR $\propto 1/\sqrt{\text{sum of past squared grads}}$</td></tr>
+<tr><td>RMSProp</td><td class="k">Adagrad's monotonically shrinking LR</td><td>replace the running <em>sum</em> with an <strong>exponential moving average</strong>, so old gradients decay out</td></tr>
+<tr><td>Adam</td><td>RMSProp has no momentum</td><td>first moment (momentum) + second moment (RMSProp) + bias correction</td></tr>
+</table>
+
+<div class="box trap"><b>The two lineage traps &mdash; both are marked FALSE</b>
+<ul style="margin:6px 0 0">
+<li><em>"Adagrad was introduced to overcome the diminishing learning-rate problem in RMSProp."</em> &rarr; <strong style="color:var(--rose)">False.</strong> Backwards. Adagrad <em>has</em> the diminishing-LR problem; RMSProp fixes it. Adagrad came first.</li>
+<li><em>"ADAM was introduced to solve problems in RMSProp by combining RMSProp and Adagrad."</em> &rarr; <strong style="color:var(--rose)">False.</strong> Adam $=$ RMSProp $+$ <strong>momentum</strong>, not $+$ Adagrad.</li>
+</ul>
+Both distractors work by naming real components in the wrong order. Get the arrow direction right and both fall.</div>
+
+<h3>The full true/false bank</h3>
+<table>
+<tr><th>Statement</th><th></th></tr>
+<tr><td>Nesterov accelerated gradient uses a look-ahead step and often converges faster than classical momentum.</td><td class="k">True</td></tr>
+<tr><td>Adam uses only a first-moment estimate of the gradient.</td><td class="x">False &mdash; first <em>and</em> second moment</td></tr>
+<tr><td>In Adam, setting $\beta_1 = 0$ and $\beta_2 = 0$ reduces it to SGD with momentum.</td><td class="x">False &mdash; $\beta_1{=}0$ <em>kills</em> momentum</td></tr>
+<tr><td>Momentum-based GD oscillates around the minima before converging.</td><td class="k">True &mdash; the velocity carries you past the bottom</td></tr>
+<tr><td>Momentum-based GD causes oscillations in flat regions / at saddle points because the momentum term dominates the small gradient.</td><td class="x">False &mdash; momentum <em>helps</em> escape saddle points; that is the point of it</td></tr>
+<tr><td>The noise in SGD's gradient estimates can help escape local minima and saddle points.</td><td class="k">True</td></tr>
+<tr><td>A large fixed learning rate always speeds up convergence.</td><td class="x">False &mdash; "always" is the tell; it diverges</td></tr>
+<tr><td>Adagrad is well-suited to sparse features.</td><td class="k">True</td></tr>
+<tr><td>Cosine annealing with warm restarts can help escape sharp minima.</td><td class="k">True</td></tr>
+</table>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">Mark each True or False.<br><br>(a) RMSProp was introduced to overcome the diminishing learning-rate problem in Adagrad.<br>(b) Adam maintains both a first-moment and a second-moment estimate of the gradient.<br>(c) Nesterov evaluates the gradient at the current position and then applies momentum.<br>(d) The noise in SGD's gradient estimates is purely harmful and should be minimized.</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage)">(a) True</b> — and note this is the <em>correct</em> direction of the arrow. The paper's version reverses it ("Adagrad was introduced to overcome... in RMSProp") and marks it false. Adagrad came first and <em>has</em> the problem; RMSProp fixes it with an EMA.<br><br><b style="color:var(--sage)">(b) True</b> — that <em>is</em> Adam. "Adam uses only a first-moment estimate" is the marked-false version.<br><br><b style="color:var(--rose)">(c) False</b> — backwards. Nesterov evaluates the gradient at the <em>look-ahead</em> position $\theta_t - \alpha\gamma v_{t-1}$, i.e. where momentum is <em>about</em> to take you. That is the entire idea: you get a correction before you overshoot, rather than after. Evaluating at the current position and then applying momentum is plain classical momentum.<br><br><b style="color:var(--rose)">(d) False</b> — the noise <em>helps</em>. It lets the iterate escape local minima and, more importantly, saddle points, which dominate high-dimensional loss surfaces. This is a marked-true statement in the reverse phrasing.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>SGD &rarr;<span class="lbl">(zig-zag)</span>&rarr; Momentum &rarr;<span class="lbl">(overshoot)</span>&rarr; Nesterov</b><br><b>SGD &rarr;<span class="lbl">(one LR for all)</span>&rarr; Adagrad &rarr;<span class="lbl">(LR&rarr;0)</span>&rarr; RMSProp</b><br><b>Adam = RMSProp + Momentum</b> &nbsp;<span class="lbl">(2nd moment + 1st moment + bias correction)</span><hr><i>THE TWO LINEAGE TRAPS &mdash; both FALSE:<br>&nbsp;&nbsp;"Adagrad overcomes the diminishing LR in RMSProp" &rarr; BACKWARDS<br>&nbsp;&nbsp;"Adam = RMSProp + Adagrad" &rarr; it is + MOMENTUM</i><hr><span class="lbl">1st moment E[g] =</span> <b>direction</b> &nbsp;|&nbsp; <span class="lbl">2nd moment E[g&sup2;] =</span> <b>scale</b><br><span class="lbl">Adagrad = running SUM &rarr; LR decays to 0. RMSProp = EMA &rarr; it recovers.</span><hr><b>Nesterov = look-ahead</b> <span class="lbl">(gradient at &theta;&minus;&alpha;&gamma;v, where you are ABOUT to be)</span> &rarr; <b>TRUE</b><br><b>momentum oscillates around minima</b> &rarr; <b>TRUE</b> &nbsp;|&nbsp; <b>momentum HELPS at saddle points</b> <span class="lbl">("causes oscillation at saddles" = FALSE)</span><br><b>SGD noise escapes local minima/saddles</b> &rarr; <b>TRUE</b><br><b>Adagrad suits sparse features</b> &rarr; <b>TRUE</b> &nbsp;|&nbsp; <b>cosine warm restarts escape sharp minima</b> &rarr; <b>TRUE</b><br><b>"large fixed LR ALWAYS speeds convergence"</b> &rarr; <b>FALSE</b> <span class="lbl">("always" is the tell)</span><br><b>"&beta;&#8321;=0, &beta;&#8322;=0 &rarr; SGD with momentum"</b> &rarr; <b>FALSE</b> <span class="lbl">(&beta;&#8321;=0 KILLS momentum)</span></div></div>
+</div>
+</details>
+
+<details class="t" open>
+<summary><span class="f f3">3&times;</span>Momentum GD &mdash; the numeric update</summary>
+<div class="body">
+<div class="box conflict"><b>Two conventions. This is the single highest-risk numeric on the paper.</b>The papers disagree about <strong>where $\alpha$ goes</strong> &mdash; inside the velocity or outside it. Same inputs, wildly different answers.
+<table style="margin-top:8px">
+<tr><th>Convention</th><th>Velocity</th><th>Update</th><th>Used by</th></tr>
+<tr><td>A &mdash; $\alpha$ outside</td><td>$v_t = \gamma v_{t-1} + \nabla_\theta L(\theta_t)$</td><td>$\theta_{t+1} = \theta_t - \alpha v_t$</td><td class="k">T3 &mdash; and it <em>prints the formula</em></td></tr>
+<tr><td>B &mdash; $\alpha$ inside</td><td>$v_t = \gamma v_{t-1} + \alpha\,\nabla_\theta L(\theta_t)$</td><td>$\theta_{t+1} = \theta_t - v_t$</td><td class="k">T2 &mdash; prints no formula</td></tr>
+</table>
+<strong style="display:block;margin-top:8px">Decision rule: if the question prints the formula, use it verbatim. If it prints no formula, use Convention B.</strong></div>
+
+<h3>Worked &mdash; Convention A (formula given)</h3>
+<em class="q">$\theta_t = 1.2$, $\nabla_\theta L(\theta_t) = -0.5$, $v_{t-1} = 0.3$, $\alpha = 0.1$, $\gamma = 0.9$. Find $\theta_{t+1}$.</em>
+<div class="fm">$$v_t = 0.9(0.3) + (-0.5) = 0.27 - 0.5 = -0.23$$</div>
+<div class="fm">$$\theta_{t+1} = 1.2 - 0.1(-0.23) = 1.2 + 0.023 = \mathbf{1.223}$$</div>
+<p>Sanity: the gradient is negative, so the parameter should <em>increase</em>. It did. &check;</p>
+
+<h3>Worked &mdash; Convention B (no formula given)</h3>
+<em class="q">$\theta_t = 0.5$, $\nabla_\theta L(\theta_t) = 0.2$, $V_{t-1} = 0.7$, $\alpha = 0.75$, $\gamma = 0.8$. Find $\theta_{t+1}$.</em>
+<div class="fm">$$v_t = 0.8(0.7) + 0.75(0.2) = 0.56 + 0.15 = 0.71$$</div>
+<div class="fm">$$\theta_{t+1} = 0.5 - 0.71 = \mathbf{-0.21}$$</div>
+<p><span class="src">Key range: &minus;0.260 to &minus;0.210. Convention A would give $0.5 - 0.75(0.76) = -0.07$, which is <em>outside</em> the range &mdash; that is how we know T2 uses B.</span></p>
+<div class="box trap"><b>The trap</b>$\gamma$ multiplies $v_{t-1}$ only, never the gradient. And the gradient sign carries through &mdash; instance A has a <em>negative</em> gradient, so $\theta$ goes <em>up</em>. Read the sign before you start.</div>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">$\theta_t = -0.8$, &nbsp; $\nabla_\theta L(\theta_t) = 0.4$, &nbsp; $v_{t-1} = -0.2$, &nbsp; $\alpha = 0.5$, &nbsp; $\gamma = 0.9$.<br><br>Find $\theta_{t+1}$ under <b>(a)</b> Convention A, where the question prints $v_t = \gamma v_{t-1} + \nabla_\theta L(\theta_t)$ and $\theta_{t+1} = \theta_t - \alpha v_t$; and <b>(b)</b> Convention B, where no formula is printed.</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage)">(a) &minus;0.91</b><div class="fm">$$v_t = 0.9(-0.2) + 0.4 = -0.18 + 0.4 = 0.22$$</div><div class="fm">$$\theta_{t+1} = -0.8 - 0.5(0.22) = -0.8 - 0.11 = \mathbf{-0.91}$$</div><b style="color:var(--sage)">(b) &minus;0.82</b><div class="fm">$$v_t = 0.9(-0.2) + 0.5(0.4) = -0.18 + 0.2 = 0.02$$</div><div class="fm">$$\theta_{t+1} = -0.8 - 0.02 = \mathbf{-0.82}$$</div><u>Look at the gap.</u> Same inputs, and the answers differ by $0.09$ — more than enough to fall outside a keyed range. This is not a subtlety, it is a different algorithm. <b>Read the stem for a printed formula before you touch the numbers.</b><br><br><u>Sanity check both.</u> The gradient is positive ($+0.4$), so $\theta$ should <em>decrease</em>. Both answers moved from $-0.8$ downward &check;. Note the incoming velocity was <em>negative</em> ($-0.2$), pulling the other way — which is exactly the "oscillates around the minimum" behaviour, caught mid-oscillation.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>A &mdash; formula PRINTED (T3):</b><br>&nbsp;&nbsp;<b>v<sub>t</sub> = &gamma;v<sub>t&minus;1</sub> + &nabla;</b> &nbsp;&nbsp; <b>&theta;<sub>t+1</sub> = &theta;<sub>t</sub> &minus; &alpha;v<sub>t</sub></b> &nbsp;<span class="lbl">(&alpha; OUTSIDE)</span><br>&nbsp;&nbsp;<span class="lbl">&theta;=1.2, &nabla;=&minus;0.5, v=0.3, &alpha;=0.1, &gamma;=0.9 &rarr;</span> <b>1.223</b><hr><b>B &mdash; NO formula printed (T2):</b><br>&nbsp;&nbsp;<b>v<sub>t</sub> = &gamma;v<sub>t&minus;1</sub> + &alpha;&nabla;</b> &nbsp;&nbsp; <b>&theta;<sub>t+1</sub> = &theta;<sub>t</sub> &minus; v<sub>t</sub></b> &nbsp;<span class="lbl">(&alpha; INSIDE)</span><br>&nbsp;&nbsp;<span class="lbl">&theta;=0.5, &nabla;=0.2, v=0.7, &alpha;=0.75, &gamma;=0.8 &rarr;</span> <b>&minus;0.21</b><hr><b>DECISION: formula printed &rarr; use it VERBATIM. Not printed &rarr; Convention B.</b><hr><i>&gamma; multiplies v<sub>t&minus;1</sub> ONLY, never the gradient.<br>gradient sign carries: &nabla; &lt; 0 &rArr; &theta; goes UP.<br>sanity: &theta; must move OPPOSITE the gradient sign.</i></div></div>
+</div>
+</details>
+
+<details class="t">
+<summary><span class="f f1">1&times;</span>Regularization and hyperparameter tuning</summary>
+<div class="body">
+<table>
+<tr><th>Statement</th><th></th></tr>
+<tr><td>Adding Gaussian noise to the input is equivalent to $L_2$ weight decay when the loss is MSE.</td><td class="k">True &mdash; a standard result; expanding the expected MSE under input noise produces an $L_2$ penalty on the weights</td></tr>
+<tr><td>Using the training set to tune hyperparameters is the best choice.</td><td class="x">False &mdash; it selects for memorization</td></tr>
+<tr><td>Tuning hyperparameters on the test set is acceptable if you report honestly.</td><td class="x">False &mdash; the test set is spent the moment you tune on it</td></tr>
+<tr><td>Test performance, with hyperparameters chosen on a validation set, is a realistic estimate of generalization.</td><td class="k">True</td></tr>
+</table>
+<div class="box note"><b>The one-line reason</b>Any set you <em>select on</em> becomes optimistically biased. Train &rarr; fit parameters. Validation &rarr; fit hyperparameters. Test &rarr; touched exactly once, at the end. Three sets, three jobs.</div>
+
+<div class="prac"><div class="ph">PRACTICE</div><div class="pb">You train 40 models with different learning rates, pick the one with the best <b>test</b> accuracy (94%), and report 94% as your generalization estimate.<br><br>What is wrong, and what is the honest number?</div><details><summary>Show answer</summary><div class="pa"><b style="color:var(--sage)">You selected on the test set, so 94% is optimistically biased and is not a generalization estimate at all.</b><br><br>Taking the <em>maximum</em> over 40 noisy estimates does not give you the best model — it gives you the model that got <em>luckiest on that particular test set</em>. Each measurement has noise; the max systematically selects for models whose noise happened to be positive. The winner's 94% is partly skill and partly a draw you cannot repeat.<br><br><b>The honest procedure:</b> choose the learning rate on a <em>validation</em> set, then evaluate that single chosen model on the test set <em>once</em>. That number is unbiased, and it will typically be lower than 94%.<br><br><u>The principle worth carrying past the exam:</u> <b>any set you select on becomes a training set for whatever you selected.</b> The test set is spent the moment you look at it twice. Three sets, three jobs — and the third has exactly one use.</div></details></div>
+<div class="cheat"><div class="ch">EXAM CHEAT CODE</div><div class="cb"><b>train &rarr; parameters &nbsp;|&nbsp; validation &rarr; hyperparameters &nbsp;|&nbsp; test &rarr; touched ONCE, at the end</b><hr><i>any set you SELECT on becomes optimistically biased.</i><hr><b>tune on TRAIN</b> &rarr; <b>FALSE</b> <span class="lbl">(selects for memorization)</span><br><b>tune on TEST</b> &rarr; <b>not acceptable</b><br><b>test perf, HPs tuned on validation = realistic generalization estimate</b> &rarr; <b>TRUE</b><hr><b>Gaussian noise on the input &equiv; L2 weight decay (when loss = MSE)</b> &rarr; <b>TRUE</b></div></div>
+</div>
+</details>
+</section>
+
+<section class="block">
+<div class="bhead"><span class="num">BEFORE THE PAPER</span><h2>The 90-second checklist</h2></div>
+<ol style="font-size:16px">
+<li><strong>Convolution flips, correlation doesn't.</strong> Same weights, same output shape.</li>
+<li><strong>Straightness is negative.</strong> $\lambda_{\min} - \lambda_{\max}$ on top. Denominator is the trace.</li>
+<li><strong>Floor before the $+1$</strong>, never round.</li>
+<li><strong>Params ignore stride and padding.</strong> $k^2MN + N$.</li>
+<li><strong>$\partial L/\partial X$ has the shape of $X$.</strong> $= Y + k - 1$.</li>
+<li><strong>Sum of coefficients $=0$ &rarr; high-pass.</strong></li>
+<li><strong>Separable = rank 1.</strong> Every row a multiple of the first. A zero row is fine.</li>
+<li><strong>Median filter: default to output-indexing</strong>, window centred at input (4,4).</li>
+<li><strong>Momentum: use the printed formula.</strong> If none is printed, $\alpha$ goes inside the velocity.</li>
+<li><strong>Contrast stretch: transform the mean</strong>, don't average nine transformed pixels.</li>
+<li><strong>Canny: smoothing first, always.</strong> Large $\sigma$ &rarr; thick edges.</li>
+<li><strong>Receptive field: the top layer's own stride is noise.</strong></li>
+<li><strong>Laplacian middle element = number of neighbours</strong> (4 or 8). Coefficients sum to 0.</li>
+<li><strong>$\tanh x = 2\sigma(2x) - 1$.</strong> Both 2s.</li>
+<li><strong>Adagrad &rarr; RMSProp &rarr; Adam.</strong> Never the other direction.</li>
+</ol>
+</section>
+
+</div>
+<script>
+document.addEventListener('keydown', function(e){
+  if(e.key === 'e' && !e.metaKey && !e.ctrlKey && e.target === document.body){
+    var d = document.querySelectorAll('details.t');
+    var anyClosed = Array.prototype.some.call(d, function(x){return !x.open});
+    Array.prototype.forEach.call(d, function(x){x.open = anyClosed});
+  }
+});
+</script>
+</body>
+</html>

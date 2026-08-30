@@ -1,0 +1,395 @@
+LARGE LANGUAGE MODELS. QUIZ ONE. AUDIO REVISION.
+
+How to use this. Listen, do not compute. Every fact here is a conclusion, not a derivation. If a section feels unfamiliar, note the section number and read that block in the guide when you stop. There are fourteen sections. Roughly twenty five minutes.
+
+Let us begin.
+
+
+SECTION ONE. THE META. THE THINGS THAT ARE NOT PHYSICS BUT ARE WORTH MARKS.
+
+Fact one. There is no negative marking on this quiz. All three previous papers say section negative marks, zero. So answer every single question. Never leave a numeric box blank. A guess costs you nothing.
+
+Fact two. A scientific calculator is allowed. Set it to radians before you look at question one. Radians. Not degrees. If a cosine comes out positive when you expected negative, your calculator is in degrees.
+
+Fact three. Almost every numeric answer is graded as a range, typically plus or minus two or three percent. So rounding will not kill you. Method errors will kill you. Do not chase the fourth decimal place.
+
+Fact four. The comprehension blocks are the densest marks on the paper. One setup, then three to five questions off it. There are two or three such blocks per paper. Find them early.
+
+Fact five. Circle these words when you read a question. Bias. Learned. Sinusoidal. For a given head. Beginning of sequence token. Exactly. Maximum. Total. At least. Per head. Across all. Each of those words changes the answer.
+
+Fact six. Simplify symbolically before you substitute numbers. Three questions on the real papers collapse to nothing if you do algebra first. I will point them out as we go.
+
+
+SECTION TWO. SHAPES AND CONVENTIONS. THIS IS THE MOST IMPORTANT SECTION.
+
+The course uses two opposite conventions and does not warn you.
+
+Convention one is the row vector world. The input H is T by d model. Tokens are rows. You compute Q as H times W Q. W Q is d model by d k.
+
+Convention two is the column vector world. The input X is d model by T. Tokens are columns. You compute Q as W Q times X. W Q is d k by d model.
+
+How to tell which world you are in. Look at where d model sits in the shape. If the matrix is T by d model, you are in row world. If it is d model by T, you are in column world. Then follow the shapes. Matrix multiplication only works one way.
+
+Now the key results.
+
+In row world, Q is T by d k. K is T by d k. V is T by d k.
+
+Q times K transpose is T by T. That is the score matrix. It is always T by T. If your score matrix comes out d k by d k, you transposed the wrong thing.
+
+Softmax of the score matrix, times V, gives output of shape T by d k. Same shape as V.
+
+Softmax is applied row wise. Not globally. Not to the whole matrix at once. Row wise. Each row sums to one.
+
+The output of a transformer encoder layer is T by d model. Same shape as the input. It must be, because the residual connection has to add them together.
+
+Therefore the output of a six layer encoder stack, with T equal to fifty and d model equal to five hundred and twelve, is fifty by five hundred and twelve. One vector per token. Sequence length is preserved.
+
+The wrong answers on that question are one by five hundred and twelve, and six by five hundred and twelve. Both are recurrent neural network thinking. The transformer encoder never compresses to a single vector. Never.
+
+One more warning. When T equals d model, the toy matrices are square, and shapes cannot tell you the convention. In that case the question must state it. Graded assignment two says, note that the embeddings are row vectors. Read that sentence.
+
+
+SECTION THREE. SELF ATTENTION.
+
+The skeleton is three steps. Score. Softmax. Blend. Every attention mechanism in this course is those three steps. Only the score function changes.
+
+Step one. The unnormalised score e is the dot product of a query with a key, divided by the square root of d k.
+
+Step two. The normalised score a is the softmax of e.
+
+Step three. The output z is the sum over j of a j times v j.
+
+Why do we divide by the square root of d k. Because the dot product of two random vectors of dimension d k has variance proportional to d k. So as d k grows, the scores spread out, the softmax saturates, and the gradients vanish. Dividing by root d k puts the variance back to one. The keyed answer is, to prevent the dot product values from growing too large, which would push the softmax into regions with extremely small gradients.
+
+The keyed answer for the purpose of softmax in attention is, to normalise attention scores to a probability distribution. Not to add non linearity. Not to predict a class.
+
+Q K and V. In self attention, all three come from the same sequence. In cross attention, the queries come from the decoder, and the keys and values come from the encoder. Remember it as, the decoder asks the questions, the encoder holds the answers.
+
+Transformers process input tokens all at once, in parallel. That is the keyed answer. Not sequentially. Not in reverse order.
+
+
+SECTION FOUR. THE SOFTMAX GRADIENT. ONE RESULT, MEMORISE IT.
+
+The gradient of the loss with respect to the pre softmax scores always sums to exactly zero.
+
+Say that again. The sum of the gradients with respect to the unnormalised attention scores is zero. Always. For any loss. For any input.
+
+Why. Because softmax outputs must sum to one. So any change that pushes probability into one slot must pull it out of another. The gradients are a redistribution, and a redistribution sums to zero.
+
+Graded assignment two asks for the sum of the gradient of L with respect to e one. The answer is zero. You do not need to compute anything. If you spent five minutes on that question, that was five minutes the setter designed you to waste.
+
+Related result. For cross entropy loss with a softmax output, the gradient with respect to the logits is simply y hat minus y. Predicted minus true. That is why softmax and cross entropy are always paired.
+
+
+SECTION FIVE. MULTI HEAD, MASKED, AND CROSS ATTENTION.
+
+Result one. d k equals d model divided by the number of heads. Derive it, do not wait to be told. Seven hundred sixty eight divided by twelve is sixty four. Five hundred twelve divided by eight is sixty four. Seven hundred sixty eight divided by eight is ninety six. Sixty four divided by four is sixteen.
+
+Result two. Multi head attention has four times d model squared parameters. Four. Not three. Q, K, V, and the output projection W O. Forgetting W O is the single most common parameter counting error.
+
+Result three. There is exactly one W O per layer. It never splits per head. It is what merges the heads. It is always d model by d model. Always square. Because the number of heads times d v equals d model by construction.
+
+Result four. Multi head attention is almost free. The number of heads cancels. Number of heads, times d model, times d model over number of heads, equals d model squared. Eight heads of width sixty four cost exactly what one head of width five hundred and twelve costs.
+
+Because of that cancellation, increasing the number of heads while keeping d model fixed decreases the dimension handled by each head. That is a keyed true statement.
+
+But heads do not reduce memory. Memory for attention scores grows with the number of heads. Parameters stay flat. Activations do not. That is a keyed false statement.
+
+The causal mask. It sets scores to minus infinity where j is greater than i. Minus infinity, not zero. Because after the softmax, e to the minus infinity is zero, and a hard zero before the softmax would become e to the zero, which is one.
+
+Very important. The mask blocks j greater than i. It does not block j greater than or equal to i. A token can attend to itself. The current token is allowed.
+
+So for a decoder row for token three, with pre softmax scores one, two, zero, two, after masking it becomes one, two, zero, minus infinity. Only the future position is killed. The current position survives.
+
+Masking is applied in every decoder self attention layer. Not just the first one. That is keyed.
+
+Cross attention has no causal mask. A padding mask may be applied to ignore padded source positions. But no causal masking. The decoder is allowed to see the whole source sentence.
+
+
+SECTION SIX. PARAMETER COUNTING. HIGH YIELD.
+
+The ledger. Learn these six lines.
+
+Line one. Multi head attention. Four times d model squared. With bias, add four times d model.
+
+Line two. Feed forward network. Two times d model times d f f. With bias, add d f f plus d model.
+
+Line three. Layer norm. Two times d model. That is gamma plus beta. Shared across all positions. Never multiply by sequence length. Never.
+
+Line four. Encoder layer. One multi head attention, plus one feed forward, plus two layer norms. Two sublayers, so two layer norms.
+
+Line five. Decoder layer. Two multi head attentions, masked and cross, plus one feed forward, plus three layer norms. Three sublayers, so three layer norms.
+
+Line six. Embedding layer. Vocabulary size times d model.
+
+Now the trap that costs the most marks. The scope of the question.
+
+If the question says, for a given head, the answer is d model times d k.
+
+If the question says, for one complete head, Q plus K plus V, the answer is three times d model times d k.
+
+If the question says, for the model, or all heads, the answer is d model squared per matrix.
+
+If the question asks about W O, it is always d model squared. There is no per head version of W O.
+
+Real examples. d model five hundred twelve, eight heads, d k sixty four. W Q for a given head is thirty two thousand seven hundred sixty eight. That is five hundred twelve times sixty four.
+
+d model seven hundred sixty eight, twelve heads, d k sixty four. One complete head, Q plus K plus V, is one hundred forty seven thousand four hundred fifty six. That is three times seven hundred sixty eight times sixty four.
+
+W O for d model seven hundred sixty eight is five hundred eighty nine thousand eight hundred twenty four. That is seven hundred sixty eight squared.
+
+Bias sizes. In the feed forward network, b one has size d f f, because it is added after the expansion. b two has size d model, because it is added after the projection back. One bias per output neuron of that layer. Always.
+
+The zero parameter list. Memorise it. Residual connections. Softmax. ReLU. GELU. Dropout. Masking. Sinusoidal positional encoding. The mean and standard deviation inside layer norm and batch norm. All zero parameters. GELU appearing in a question is a red herring.
+
+The verified graded assignment two numbers. Encoder layer is forty nine thousand four hundred eight. Decoder layer is sixty five thousand nine hundred twenty. Two layers of each gives two hundred thirty thousand six hundred fifty six.
+
+The output layer with target vocabulary fifteen hundred and d model sixty four is ninety six thousand without bias, or ninety seven thousand five hundred with bias. Both were accepted.
+
+The input embedding layer is sixty four thousand. That is source vocabulary one thousand, times d model sixty four. Note this carefully. Your own answer of one hundred sixty thousand was wrong. It is source vocabulary times d model. Sixty four thousand.
+
+
+SECTION SEVEN. BAHDANAU ATTENTION. THE WEEK ONE MATERIAL.
+
+Why it exists. The old encoder decoder recurrent network squeezed the entire source sentence into one fixed vector. A five word sentence and a fifty word sentence got the same five hundred and twelve numbers. Performance collapsed past about thirty tokens. Bahdanau's fix. Do not compress. Keep all encoder hidden states, and build a fresh context vector at every output step.
+
+The score function. Score of s t minus one and h j, equals V attention transpose, times tanh, of U attention times s t minus one, plus W attention times h j.
+
+Then alpha is the softmax of the scores. Then the context vector c t is the sum over j of alpha t j times h j.
+
+Same skeleton. Score. Softmax. Blend.
+
+The exam shortcut. The papers keep choosing U attention and W attention equal to the identity matrix, and V attention equal to the all ones vector. When that happens, the score collapses to, tanh of s plus h j, then add up the components. The matrix algebra evaporates. Spot it and skip it.
+
+Second shortcut. The sum of all elements of c t equals the sum over j of alpha j times the sum of h j. So when asked for the sum of the context vector, never build the vector.
+
+Memorise three tanh values. Tanh of one is zero point seven six. Tanh of two is zero point nine six. Tanh of three is one point zero zero. These recur.
+
+Additive attention parameters. U attention is d by d. W attention is d by d. V attention is d by one. Total, two d squared plus d.
+
+Why the transformer switched to dot product attention. Both have similar accuracy. But a dot product is a single matrix multiply, which maps onto one optimised operation on a graphics card. Additive attention needs a tanh over a large intermediate for every query. The paper says dot product is much faster and more space efficient in practice.
+
+
+SECTION EIGHT. POSITIONAL ENCODING. ON EVERY PAPER.
+
+Why it exists. Self attention is permutation equivariant. Shuffle the input tokens and the outputs shuffle identically, but they do not change. So dog bites man and man bites dog give identical representations. We deleted recurrence, so we deleted order, and we must put it back by hand.
+
+The formula. Positional encoding at position pos and even index two i, equals sine of, pos divided by ten thousand raised to the power two i over d model.
+
+At odd index two i plus one, it is cosine of the same angle.
+
+Now the biggest trap on this question. The choice between sine and cosine is decided by the dimension index. Not by the position. Say that again. Sine or cosine is decided by the dimension index, never by the position.
+
+Every position uses both sine and cosine. Sine on its even dimensions. Cosine on its odd dimensions.
+
+The wrong answer that most people pick says, words at even positions use sine, and words at odd positions use cosine. That is wrong. The keyed correct answer says, the encoding vector for each word position contains values computed using both sine, for even dimensions, and cosine, for odd dimensions.
+
+The four step recipe. Given index k and position pos. Step one. Is k even or odd. Even means sine. Odd means cosine. Step two. Recover i as the floor of k divided by two. Step three. The angle is pos divided by ten thousand raised to the power two i over d model. Note the exponent uses two i, not k. Step four. Apply sine or cosine in radians.
+
+Free values. When k is zero or one, i is zero, so ten thousand to the power zero is one, and the angle is just pos. So index zero is sine of pos, and index one is cosine of pos.
+
+Calculator shortcut. Ten thousand to the power a, equals e to the power nine point two one zero three times a. Because the natural log of ten thousand is nine point two one zero three.
+
+Two verified results. With d model four and position three, the positional vector is zero point one four one one, minus zero point nine nine, zero point zero three, and zero point nine nine nine six.
+
+With d model one hundred twenty eight, position three, and index five, the answer is minus zero point six three. Index five is odd, so cosine. i is two. The exponent is four over one twenty eight, which is zero point zero three one two five. The angle is two point two five radians. Two point two five radians is in the second quadrant, past pi over two, so cosine must be negative.
+
+Parameters. Sinusoidal positional encoding has zero parameters. Learned positional encoding has maximum sequence length times d model parameters.
+
+Which is which. The original transformer uses sinusoidal. G P T and B E R T use learned. So if a question names G P T or B E R T, or says positional embedding matrix, the answer is not zero.
+
+Example. Maximum length five hundred twelve, d model seven hundred sixty eight, learned. Five hundred twelve times seven hundred sixty eight, is three hundred ninety three thousand two hundred sixteen.
+
+Positional encoding is added, not concatenated. Same dimension. And it goes into both the encoder and the decoder. Both. That is keyed.
+
+
+SECTION NINE. ADD AND NORM.
+
+The residual connection. R equals X plus sublayer of X. Zero parameters. Its job is that the derivative of x plus f of x, with respect to x, is one plus f prime of x. That constant one is a highway for gradients. The keyed answer is, residual connections help in training deep networks by enabling gradient flow.
+
+Because you must be able to add x to f of x, every sublayer must map d model to d model. That single constraint fixes the entire width of the transformer. It is also why W O must exist.
+
+Layer norm. Normalise across features, within one token. Batch norm. Normalise across the batch, for one feature. That is the one line discriminator. Say it again. Layer norm is across features within a token. Batch norm is across the batch for a feature.
+
+Layer norm parameters. Two times d model. Gamma and beta. Shared across all positions. If you multiplied by the sequence length, you are wrong.
+
+Verified example. A matrix R that is four by two, with d model equal to four. The learnable parameters are eight. Four for gamma, four for beta. Not sixteen. The sequence length of two does not enter.
+
+Variance. Both layer norm and batch norm divide by N. Population variance. Not N minus one. Neural networks use the biased estimator. The distractor with zero point seven zero seven is what you get if you use N minus one. Do not use N minus one.
+
+Verified batch norm example. X is the matrix one, two, on the first row, and three, four, on the second row. Rows are samples, columns are features. With gamma one and beta zero, the answer is minus one, minus one, on the first row, and one, one, on the second row.
+
+Now the beautiful one. If gamma equals two times sigma, and beta equals one, and epsilon is zero, then the sum of the layer norm output is simply the number of tokens, times H, times beta. The sigma cancels. The normalised x has mean exactly zero by construction, so it contributes nothing to a sum. For two tokens with H equal to four and beta equal to one, the answer is eight. You never touch the matrix R at all.
+
+Why not use batch norm in a transformer. Two reasons. One. Sentences have variable length and padding, so batch statistics are contaminated. Two. Batch norm's output for one sample depends on the other samples in the batch, so you need running averages at inference and you get a train test mismatch. Layer norm's statistics depend only on the token itself.
+
+The one line answer. Layer norm's statistics are independent of batch composition and sequence length. Batch norm's are not.
+
+
+SECTION TEN. THE COUNTING MACHINE. FIVE FORMULAS.
+
+Formula one. Total scalar attention scores equals batch size, times number of heads, times T squared.
+
+Verified. Batch four, T twelve, two heads. Four times two times twelve times twelve is one thousand one hundred fifty two.
+
+Formula two. Non zero scores after the causal mask, per head per sequence, equals T times T plus one, all divided by two.
+
+Note the plus one. Plus one, not minus one. Because the diagonal survives. A token attends to itself.
+
+Verified. T equals one thousand twenty four. One thousand twenty four times one thousand twenty five, divided by two, is five hundred twenty four thousand eight hundred.
+
+Formula three. Next token prediction targets. If there is no beginning of sequence token, it is batch size times T minus one. If there is a beginning of sequence token, it is batch size times T.
+
+Verified. Batch thirty two, T one thousand twenty four, no beginning of sequence token. Thirty two times one thousand twenty three, is thirty two thousand seven hundred thirty six. Note that with a beginning of sequence token you would get thirty two thousand seven hundred sixty eight instead. The clause about the beginning of sequence token is the entire question.
+
+Formula four. Memory for attention scores in float thirty two, equals four bytes, times batch, times heads, times T squared. Float thirty two is thirty two bits, is four bytes. And in this course, one megabyte is ten to the power six bytes.
+
+Formula five, and this is a strategy not a formula. Ratio questions cancel. If you double the number of heads, the memory doubles. That is a one hundred percent increase. The T value, the float size, the megabyte conversion, all of it cancels. Do not compute the absolute numbers.
+
+Scaling intuition. Memory grows linearly in the number of heads. But quadratically in T. Doubling heads doubles memory. Doubling T quadruples it. Know which variable you are changing.
+
+Verified feed forward. d model seven hundred sixty eight, d f f three thousand seventy two, with biases. The answer is four million seven hundred twenty two thousand four hundred thirty two. Without biases it is four million seven hundred eighteen thousand five hundred ninety two. The difference is three thousand eight hundred forty, which is three thousand seventy two plus seven hundred sixty eight.
+
+Verified token embedding. Vocabulary forty thousand, d model seven hundred sixty eight. Thirty million seven hundred twenty thousand.
+
+
+SECTION ELEVEN. B E R T.
+
+The one line contrast. G P T is decoder only, causal language modelling, unidirectional. B E R T is encoder only, masked language modelling, bidirectional. The distractor swaps them. Read the option twice.
+
+Why B E R T exists. For understanding a sentence, reading left to right is a handicap. In the phrase, the bank of the river, the word bank is disambiguated by the word river, which comes after it. So drop the causal mask and look both ways. But then next token prediction becomes trivial. So B E R T invented masked language modelling instead. Hide fifteen percent of tokens and predict them from both sides.
+
+The fifteen percent split. Eighty percent become the mask token. Ten percent become a random token. Ten percent are left unchanged. Why the mess. Because the mask token never appears at fine tuning time. If the model only ever saw masks, it would only build good representations at mask positions. The random and unchanged twenty percent force it to build a good representation everywhere.
+
+B E R T's input is the sum of three embeddings. Token embedding, plus segment embedding, plus position embedding. Three.
+
+The C L S token is always first. Its final representation is the sentence summary. The S E P token separates sentence A from sentence B. Segment embeddings tell the model which sentence a token belongs to.
+
+For next sentence prediction, the input includes the C L S token at the start, the S E P token between sentences, and segment embeddings. All three are keyed correct. And position embeddings are always required. The statement that position embeddings are not required is keyed false.
+
+For a single sentence classification task, all tokens get the same segment embedding, E A. The layer is not disabled. It is just constant.
+
+Which vector goes to the classification head. The final hidden state of the C L S token. Not S E P. Not average pooling. Not a concatenation. The C L S token. Both for feature extraction and for fine tuning. Same answer.
+
+Why C L S. Because it has no word of its own to represent. It is a deliberately content free slot whose only job is to aggregate the whole sequence. Every other token's representation is dominated by that token's own meaning. C L S is the only position free to be a summary.
+
+The masked language modelling loss. It is the negative natural log of the probability of the true word, summed over the masked positions only.
+
+Two critical points. One. Only masked positions contribute. Unmasked positions contribute nothing. Two. You read the probability of the true word. Not the model's argmax. Not the biggest number in the row. The true word's column.
+
+Verified. Two masked positions with probabilities zero point one four and zero point two three. The loss is minus natural log of zero point one four, minus natural log of zero point two three, which is one point nine six six one plus one point four six nine seven, equals three point four three five eight.
+
+Note that in that question the model's argmax at the first masked position was zero point four eight, a different word entirely. It guessed wrong. Does not matter. Read the true word.
+
+Loss anchors. Negative log of one is zero. Negative log of zero point five is zero point six nine. Negative log of zero point one is two point three zero.
+
+B E R T base numbers. Twelve layers. d model seven hundred sixty eight. Twelve heads. d f f three thousand seventy two. About one hundred ten million parameters.
+
+Causal language modelling, the keyed multiple select. True. The model only attends to past and current tokens. True. It is trained by predicting the next token. False. It uses bidirectional context. False. It is used for encoder only models. Note the phrase past and current. Current is correct, because a token attends to itself.
+
+
+SECTION TWELVE. DECODING AND SEARCH.
+
+The five strategies. Greedy. Beam. Exhaustive. Top k sampling. Top p, also called nucleus sampling.
+
+Determinism. Greedy, beam, and exhaustive are all deterministic. They take argmaxes. Only the sampling methods are non deterministic. So when asked which decoding strategy is inherently non deterministic, the answer is nucleus. And top k, if it is offered.
+
+Beam counting. Greedy has one beam, forever. Beam search with size k has k beams, forever. Exhaustive search has vocabulary size to the power t, at step t.
+
+So for vocabulary ten. At step one. Greedy one, beam three, exhaustive ten. At step three. Greedy one, beam three, exhaustive one thousand. Greedy and beam are flat in t. Only exhaustive explodes.
+
+Now the distinction that unlocks everything. Beams after step t, versus decoder runs at step t. You run the decoder once per surviving prefix. So decoder runs at step t, equals beams after step t minus one.
+
+Therefore, in exhaustive search, decoder runs at step t equals vocabulary to the power t minus one. But beams at step t equals vocabulary to the power t. Two different questions, one exponent apart.
+
+Verified. Six tokens, exhaustive, decoder runs at step four. Six to the power three, is two hundred sixteen.
+
+Sequence counting. The number of sequences of exactly length L, is vocabulary to the power L. The number of sequences of maximum length L, is the sum from k equals one to L, of vocabulary to the power k. Exactly versus maximum. Different questions.
+
+For maximum length five, the answer is the sum from k equals one to five, of V to the power k. Not V to the power five. And not V to the power five minus one, over V minus one.
+
+Increasing the length from L to L plus one adds V minus one, times V to the power L, additional sequences. Because V to the L plus one, minus V to the L, factorises to V to the L, times V minus one.
+
+Sequence probability. The product over t, of the probability of y t given everything before it. This is the exact chain rule. There is no independence assumption. Nothing is approximated. It is n gram models that approximate, not transformers.
+
+And now the trap. The probability matrix in these questions follows the greedy path. So a row is only usable if your prefix matches the prefix that row was conditioned on. The moment your sequence departs from the greedy path, every row after the departure is dead, and the answer is minus one, insufficient information.
+
+So before multiplying, ask one question. Is my sentence the greedy sentence. If yes, multiply. If no, the answer is minus one.
+
+Verified. The sequence astronomy is a character building experience, is the greedy path, and its probability is zero point zero zero one six. The sequence astronomy is a natural science, departs from greedy at the fourth word, and the answer is minus one.
+
+Top k. Keep the k highest probability tokens. Zero the rest. Renormalise so the survivors sum to one. Then sample.
+
+Key insight. Restricting the set raises the probability of the survivors. Verified. Zero point four one, divided by zero point six four, equals zero point six four zero six. So zero point four one became zero point six four. Top k makes the model more confident and less diverse by construction.
+
+Increasing k in top k sampling increases the diversity of the generated text, but may reduce coherence if k is too large. That is the keyed answer, almost verbatim.
+
+Top p, or nucleus. Keep the smallest set of tokens whose cumulative probability exceeds p. Then renormalise and sample.
+
+The token that crosses the threshold is included. Because the definition says exceeds p.
+
+Top k versus top p. Top k keeps a fixed number. Top p keeps a variable number, depending on how peaked the distribution is. When the model is confident, top p keeps about one token. When it is uncertain, it keeps many. That adaptivity is the entire argument for nucleus.
+
+Keyed false. It always selects the top p tokens with equal probability. No. It renormalises and preserves the relative probabilities.
+
+Beam versus top two sampling. Beam search with beam size two will always keep the top two most probable tokens, and continue both. Top two sampling restricts to the top two tokens, then samples one probabilistically. That is the keyed distinction. Beam keeps both. Top k keeps one.
+
+Temperature. Divide the logits by tau, then apply softmax. Divide. On the logits. Before the softmax.
+
+Direction. As tau goes to zero, the distribution becomes one hot, which is greedy. At tau equal to one, it is the model's own distribution. As tau goes to infinity, it becomes uniform. So lower temperature means sharper. Higher temperature means flatter.
+
+Verified. Logits two point zero, one point zero, zero point five, minus one point zero, with tau equal to zero point five. Dividing by zero point five means multiplying by two. So the scaled logits are four, two, one, minus two. The answer for the first token is zero point eight four.
+
+Sanity check. At tau equal to one the same token has probability zero point six one. At tau equal to two it has zero point four three. So dropping tau from one to zero point five pushed it from zero point six one up to zero point eight four. Lower tau, sharper. If your answer moved the other way, you multiplied where you should have divided.
+
+
+SECTION THIRTEEN. THE TRAP INVENTORY. FOURTEEN TRAPS. LISTEN TWICE.
+
+Trap one. Sine or cosine is chosen by the dimension index, never the position.
+
+Trap two. Learned positional encoding has maximum length times d model parameters. Sinusoidal has zero. G P T and B E R T learn it.
+
+Trap three. For a given head means d model times d k. For the model means d model squared. W O never splits per head.
+
+Trap four. Multi head attention is four times d model squared. Do not forget W O.
+
+Trap five. Layer norm is two times d model. Never multiply by the sequence length.
+
+Trap six. Use population variance. Divide by N. Never N minus one.
+
+Trap seven. If there is no beginning of sequence token, targets are batch times T minus one. Hunt for that clause.
+
+Trap eight. The causal mask keeps the diagonal. It is T times T plus one over two. Plus one.
+
+Trap nine. Loss reads the true word's probability, not the model's argmax.
+
+Trap ten. Exactly length L is V to the L. Maximum length L is the sum from one to L.
+
+Trap eleven. Decoder runs at step t equals beams after step t minus one. One exponent apart.
+
+Trap twelve. Temperature divides the logits. Lower tau is sharper.
+
+Trap thirteen. Off the greedy path means every later row is dead. The answer is minus one.
+
+Trap fourteen. Radians, not degrees.
+
+
+SECTION FOURTEEN. THE LAST SIXTY SECONDS BEFORE YOU START.
+
+One. Set the calculator to radians. Do it before question one.
+
+Two. There is no negative marking. Fill in every box.
+
+Three. Find the comprehension blocks first. They are the densest marks.
+
+Four. Circle the words. Bias. Learned. Sinusoidal. For a given head. Beginning of sequence. Exactly. Maximum. Per head. Across all.
+
+Five. Answers are ranges. Chase the method, not the fourth decimal.
+
+Six. Ratio questions. Cancel before you compute.
+
+Seven. Simplify symbolically before substituting. Three questions on the real papers collapse to nothing. The gradient sum is zero. The gamma equals two sigma sum is H times beta. The context vector sum is the blend of the sums.
+
+Eight. When in doubt on shapes, follow the dimensions. The score matrix must be T by T. The layer output must be T by d model. Let the shapes constrain the algebra.
+
+That is the end of the revision. Drive safely, and do not do arithmetic in the car. Good luck.

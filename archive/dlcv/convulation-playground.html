@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Convolution Playground · DLCV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Spectral:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+window.MathJax = { tex:{ inlineMath:[['\\(','\\)']], displayMath:[['\\[','\\]']] },
+  options:{ skipHtmlTags:['script','noscript','style','textarea','pre','code','input'] } };
+</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<style>
+:root{
+  --bg:#F5F6F8; --surface:#FFFFFF; --surface2:#FBFBFD; --border:#E4E7EC; --border2:#EDEFF3;
+  --ink:#15181F; --muted:#5C6371; --faint:#8A909C;
+  --accent:#4338CA; --accent2:#635BF0; --accent-soft:#EEEFFE; --accent-border:#D6D9FB;
+  --neg:#2563EB; --pos:#EA7317; --zero:#EEF0F4;
+  --font-display:'Space Grotesk',system-ui,sans-serif;
+  --font-body:'Spectral',Georgia,serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);
+  font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+
+header{border-bottom:1px solid var(--border);background:
+  radial-gradient(120% 120% at 90% -20%,#ECEDFE 0%,rgba(236,237,254,0) 55%),var(--surface)}
+.head-in{padding:26px 20px 22px;max-width:1240px;margin:0 auto}
+.eyebrow{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent);font-weight:600}
+h1{font-family:var(--font-display);font-weight:600;letter-spacing:-.02em;
+  font-size:clamp(24px,4vw,36px);margin:.25em 0 .15em}
+.sub{color:var(--muted);max-width:74ch;margin:0;font-size:16.5px}
+
+.controls{position:sticky;top:0;z-index:20;background:rgba(245,246,248,.92);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.controls-in{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:flex-end;
+  padding:12px 20px;max-width:1240px;margin:0 auto}
+.ctl{display:flex;flex-direction:column;gap:5px}
+.ctl>label{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--faint);font-weight:600}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:9px;overflow:hidden;background:var(--surface)}
+.seg button{border:none;background:transparent;padding:7px 12px;font-family:var(--font-display);
+  font-size:13.5px;color:var(--muted);cursor:pointer;font-weight:500}
+.seg button+button{border-left:1px solid var(--border)}
+.seg button.on{background:var(--accent);color:#fff}
+select{font-family:var(--font-display);font-size:13.5px;padding:7px 10px;border:1px solid var(--border);
+  border-radius:9px;background:var(--surface);color:var(--ink);cursor:pointer}
+.play{display:inline-flex;align-items:center;gap:8px}
+.play button{font-family:var(--font-display);font-size:13.5px;font-weight:500;cursor:pointer;
+  border:1px solid var(--accent-border);background:var(--accent-soft);color:var(--accent);
+  padding:7px 14px;border-radius:9px}
+.play input[type=range]{accent-color:var(--accent);width:90px}
+
+.stage{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;padding:22px 0}
+@media(max-width:980px){.stage{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px}
+.panel h2{font-family:var(--font-display);font-weight:600;font-size:15px;margin:0 0 3px;
+  display:flex;align-items:center;gap:8px}
+.panel h2 .pin{font-family:var(--font-mono);font-size:10.5px;color:var(--accent);
+  background:var(--accent-soft);border:1px solid var(--accent-border);border-radius:6px;
+  padding:1px 7px;font-weight:600}
+.panel .cap{font-size:13.5px;color:var(--muted);margin:0 0 12px}
+canvas.grid{width:100%;max-width:340px;image-rendering:pixelated;border-radius:8px;
+  border:1px solid var(--border2);display:block;background:#000;cursor:crosshair}
+canvas.out{cursor:pointer}
+
+.tools{margin-top:12px}
+.presets{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.presets button{font-family:var(--font-display);font-size:12.5px;padding:5px 10px;border-radius:7px;
+  border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer}
+.presets button:hover{border-color:var(--accent2);color:var(--ink)}
+.brush{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.brush label{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:11px;letter-spacing:.04em}
+.brush input[type=range]{accent-color:var(--accent)}
+.swatch{width:18px;height:18px;border-radius:4px;border:1px solid var(--border)}
+
+.kwrap{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+.kgrid{display:grid;gap:4px}
+.kcell{width:44px;height:38px;border:1px solid var(--border);border-radius:6px;text-align:center;
+  font-family:var(--font-mono);font-size:14px;font-weight:500;color:var(--ink);padding:0;-moz-appearance:textfield}
+.kcell::-webkit-outer-spin-button,.kcell::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.kcell:focus{outline:2px solid var(--accent);outline-offset:1px}
+.kflip .kfc{width:32px;height:28px;border-radius:5px;border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:11.5px}
+.kmeta{font-size:13px;color:var(--muted);margin-top:12px}
+.kmeta .row{font-family:var(--font-mono);font-size:12px;margin-bottom:3px}
+.opnote{font-size:13px;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-border);
+  border-radius:8px;padding:8px 11px;margin-top:12px}
+.kdesc{font-size:13.5px;color:var(--ink);background:var(--surface2);border:1px solid var(--border2);
+  border-radius:8px;padding:9px 11px;margin-top:10px}
+.kdesc b{font-family:var(--font-display)}
+.flabel{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;color:var(--faint);
+  text-transform:uppercase;margin-bottom:6px;display:block}
+
+.legend{display:flex;align-items:center;gap:8px;margin-top:12px;font-family:var(--font-mono);
+  font-size:11px;color:var(--muted)}
+.bar{height:12px;flex:1;border-radius:6px;border:1px solid var(--border2);
+  background:linear-gradient(90deg,var(--neg),var(--zero),var(--pos))}
+.bar.gray{background:linear-gradient(90deg,#000,#fff)}
+
+.mech{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:24px}
+.mech h2{font-family:var(--font-display);font-weight:600;font-size:16px;margin:0 0 4px;display:flex;
+  align-items:center;gap:8px;flex-wrap:wrap}
+.ijsel{font-family:var(--font-mono);font-size:13px;color:var(--accent);display:inline-flex;align-items:center;gap:4px}
+.ijsel input{width:52px;font-family:var(--font-mono);font-size:13px;padding:3px 6px;border:1px solid var(--accent-border);
+  border-radius:6px;background:var(--accent-soft);color:var(--accent);text-align:center;-moz-appearance:textfield}
+.ijsel input::-webkit-outer-spin-button,.ijsel input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.mech .formula{font-family:var(--font-mono);font-size:13.5px;color:var(--accent);
+  background:var(--accent-soft);border:1px solid var(--accent-border);border-radius:8px;
+  padding:8px 12px;margin:10px 0 6px;display:inline-block}
+.mech .mnote{font-size:13.5px;color:var(--muted);margin:0 0 16px}
+.mrow{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.mblock{display:flex;flex-direction:column;align-items:center;gap:6px}
+.mblock .t{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.mgrid{display:grid;gap:3px}
+.mc{width:40px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:5px;
+  font-family:var(--font-mono);font-size:12px;border:1px solid var(--border2)}
+.mc.pad{border-style:dashed;color:var(--faint)}
+.op{font-family:var(--font-display);font-size:22px;color:var(--muted);font-weight:500}
+.result{font-family:var(--font-mono);font-size:14px}
+.result .big{font-size:22px;font-weight:600;font-family:var(--font-display)}
+.result .step{color:var(--muted);font-size:12.5px}
+.pixchip{display:inline-block;width:14px;height:14px;border-radius:3px;border:1px solid var(--border);
+  vertical-align:-2px;margin-left:4px}
+
+.formulae{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:24px}
+.formulae h2{font-family:var(--font-display);font-weight:600;font-size:16px;margin:0 0 14px}
+.fgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 26px}
+@media(max-width:820px){.fgrid{grid-template-columns:1fr}}
+.fgroup .gt{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent);font-weight:600;margin-bottom:8px;border-bottom:1px solid var(--border2);padding-bottom:5px}
+.frow{margin-bottom:10px}
+.frow .eq{font-size:15px}
+.frow .g{font-size:13px;color:var(--muted);display:block;margin-top:1px}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:40px}
+@media(max-width:820px){.cols{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px}
+.card h3{font-family:var(--font-display);font-weight:600;font-size:15px;margin:0 0 10px}
+.cheat li{margin-bottom:8px;font-size:14.5px}
+.cheat code{font-family:var(--font-mono);font-size:12.5px;background:var(--surface2);
+  border:1px solid var(--border2);border-radius:5px;padding:1px 6px}
+.exp{counter-reset:e;list-style:none;padding:0;margin:0}
+.exp li{padding-left:30px;position:relative;margin-bottom:11px;font-size:14.5px}
+.exp li::before{counter-increment:e;content:counter(e);position:absolute;left:0;top:0;
+  font-family:var(--font-mono);font-size:11px;color:var(--accent);background:var(--accent-soft);
+  border:1px solid var(--accent-border);border-radius:6px;width:20px;height:20px;
+  display:flex;align-items:center;justify-content:center;font-weight:600}
+.exp b{font-family:var(--font-display);font-weight:600}
+
+footer{border-top:1px solid var(--border);color:var(--muted);font-size:14px;padding:22px 0 50px;text-align:center}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="head-in">
+    <span class="eyebrow">IITM DLCV · Week 1 · linear filtering, made visible</span>
+    <h1>Convolution Playground</h1>
+    <p class="sub">Pick an image size and shape, configure a kernel and operation, then <b>choose a pixel</b> (hover, or type its coordinates) to watch the exact window it came from, the kernel laid over it, and the multiply-and-sum that produced it. Kernel cells and output share one colour language: <span style="color:var(--neg);font-weight:600">blue = negative</span>, <span style="color:var(--pos);font-weight:600">orange = positive</span>. A 1×1 kernel is the point-operator case.</p>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="controls-in">
+    <div class="ctl"><label>Image size</label>
+      <select id="imgsize">
+        <option value="16">16 × 16</option>
+        <option value="20">20 × 20</option>
+        <option value="28" selected>28 × 28</option>
+        <option value="32">32 × 32</option>
+      </select>
+    </div>
+    <div class="ctl"><label>Operation</label>
+      <div class="seg" id="op">
+        <button data-v="corr" class="on">Cross-correlation ⊗</button>
+        <button data-v="conv">Convolution ∗</button>
+      </div>
+    </div>
+    <div class="ctl"><label>Kernel size</label>
+      <div class="seg" id="ksize">
+        <button data-v="1">1×1</button>
+        <button data-v="3" class="on">3×3</button>
+        <button data-v="5">5×5</button>
+      </div>
+    </div>
+    <div class="ctl"><label>Padding</label>
+      <select id="pad">
+        <option value="zero">zero</option>
+        <option value="replicate">replicate (clamp)</option>
+        <option value="reflect">reflect</option>
+        <option value="wrap">wrap</option>
+      </select>
+    </div>
+    <div class="ctl"><label>Output view</label>
+      <select id="view">
+        <option value="auto">auto</option>
+        <option value="gray">grayscale (clamp)</option>
+        <option value="signed">signed (blue↔orange)</option>
+        <option value="abs">absolute value</option>
+        <option value="norm">normalized</option>
+      </select>
+    </div>
+    <div class="ctl"><label>Normalize kernel (÷ sum)</label>
+      <div class="seg" id="norm">
+        <button data-v="off" class="on">off</button>
+        <button data-v="on">on</button>
+      </div>
+    </div>
+    <div class="ctl"><label>Watch it fill</label>
+      <div class="play">
+        <button id="playbtn">▶ Scan</button>
+        <input type="range" id="speed" min="1" max="40" value="14" title="scan speed">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="stage">
+    <div class="panel">
+      <h2><span class="pin">f</span> Input image</h2>
+      <p class="cap">Grayscale grid. Load a shape, or paint directly on it.</p>
+      <canvas id="inCanvas" class="grid" width="336" height="336"></canvas>
+      <div class="tools">
+        <div class="presets" id="presets">
+          <button data-s="circle">Circle</button>
+          <button data-s="square">Square</button>
+          <button data-s="triangle">Triangle</button>
+          <button data-s="cross">Cross</button>
+          <button data-s="diag">Diagonal edge</button>
+          <button data-s="gradient">Gradient</button>
+          <button data-s="checker">Checker</button>
+          <button data-s="noise">Noise</button>
+          <button data-s="clear">Clear</button>
+        </div>
+        <div class="brush">
+          <label>brush<span class="swatch" id="brushSw"></span></label>
+          <input type="range" id="brushVal" min="0" max="255" value="240" title="brush value">
+          <label>size <input type="range" id="brushSize" min="1" max="4" value="2" style="width:70px"></label>
+          <span style="font-size:12px">drag to paint</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2><span class="pin">h</span> Kernel</h2>
+      <p class="cap">Pick a preset or edit any cell. Cell colour shows its sign &amp; magnitude.</p>
+      <div class="presets" id="kpresets"></div>
+      <div class="kwrap">
+        <div>
+          <span class="flabel">editable weights</span>
+          <div class="kgrid" id="kgrid"></div>
+        </div>
+        <div class="kflip" id="kflipWrap" style="display:none">
+          <span class="flabel">same weights, flipped 180°</span>
+          <div class="kgrid" id="kflip"></div>
+        </div>
+      </div>
+      <div class="opnote" id="opNote"></div>
+      <div class="kmeta"><div class="row" id="ksum"></div></div>
+      <div class="kdesc" id="kdesc"></div>
+    </div>
+
+    <div class="panel">
+      <h2><span class="pin">g</span> Output</h2>
+      <p class="cap">Hover or type a pixel to inspect it ↓</p>
+      <canvas id="outCanvas" class="grid out" width="336" height="336"></canvas>
+      <div class="legend" id="legend"><span id="legL">−</span><div class="bar" id="legbar"></div><span id="legR">+</span></div>
+    </div>
+  </div>
+
+  <div class="mech">
+    <h2>How pixel
+      <span class="ijsel">(&nbsp;<input type="number" id="iSel" min="0" value="14">,&nbsp;<input type="number" id="jSel" min="0" value="14">&nbsp;)</span>
+      is computed</h2>
+    <div class="formula" id="mFormula"></div>
+    <p class="mnote" id="mNote"></p>
+    <div class="mrow">
+      <div class="mblock"><span class="t">source window (f)</span><div class="mgrid" id="mSrc"></div></div>
+      <div class="op">×</div>
+      <div class="mblock"><span class="t" id="mKlabel">kernel (h)</span><div class="mgrid" id="mKer"></div></div>
+      <div class="op">=</div>
+      <div class="mblock"><span class="t">products</span><div class="mgrid" id="mProd"></div></div>
+      <div class="op">→</div>
+      <div class="result" id="mResult"></div>
+    </div>
+  </div>
+
+  <div class="formulae">
+    <h2>Key formulae</h2>
+    <div class="fgrid">
+      <div class="fgroup">
+        <div class="gt">Point operator · 1×1</div>
+        <div class="frow"><span class="eq">\( g(i,j)=h\big(f(i,j)\big) \)</span><span class="g">output depends on one input pixel</span></div>
+        <div class="frow"><span class="eq">\( g = a\,f + b \)</span><span class="g">gain \(a\) = contrast, bias \(b\) = brightness (a 1×1 kernel is exactly gain \(a\))</span></div>
+      </div>
+      <div class="fgroup">
+        <div class="gt">Neighbourhood — the whole point</div>
+        <div class="frow"><span class="eq">\( g(i,j)=\sum_{a,b} f(i+a,\,j+b)\,h(a,b)=f\otimes h \)</span><span class="g">cross-correlation: kernel as-is</span></div>
+        <div class="frow"><span class="eq">\( g(i,j)=\sum_{a,b} f(i-a,\,j-b)\,h(a,b)=f*h \)</span><span class="g">convolution: same weights, reversed indexing</span></div>
+        <div class="frow"><span class="eq">\( f*h = f\otimes\tilde h \)</span><span class="g">\(\tilde h\) = \(h\) rotated 180°. Both use the kernel weights — this is the only difference</span></div>
+        <div class="frow"><span class="eq">\( h*\delta = h \)</span><span class="g">convolving with an impulse reproduces the kernel</span></div>
+      </div>
+      <div class="fgroup">
+        <div class="gt">Linear shift-invariant (LSI)</div>
+        <div class="frow"><span class="eq">\( h\circ(f_0+f_1)=h\circ f_0 + h\circ f_1 \)</span><span class="g">superposition (linearity)</span></div>
+        <div class="frow"><span class="eq">\( f(i{+}k,j{+}l)\;\Rightarrow\;(h\circ f)(i{+}k,j{+}l) \)</span><span class="g">shift-invariance: behaves the same everywhere</span></div>
+        <div class="frow"><span class="eq">\( \textstyle\sum_{a,b} h(a,b) \) = DC gain</span><span class="g">1 preserves brightness · 0 keeps only edges</span></div>
+      </div>
+      <div class="fgroup">
+        <div class="gt">Design &amp; frequency</div>
+        <div class="frow"><span class="eq">\( K = v\,h^{\mathsf T},\quad 2K \text{ vs } K^2 \)</span><span class="g">separable kernel → two 1D passes instead of one 2D pass</span></div>
+        <div class="frow"><span class="eq">\( G(x,y;\sigma)=\tfrac{1}{2\pi\sigma^2}\,e^{-(x^2+y^2)/2\sigma^2} \)</span><span class="g">the Gaussian (binomial kernels approximate it)</span></div>
+        <div class="frow"><span class="eq">\( f*h \;\Leftrightarrow\; F\cdot H \)</span><span class="g">convolution theorem: filtering = multiply in frequency</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="card">
+      <h3>Reading a kernel by eye</h3>
+      <ul class="cheat">
+        <li><b>1×1</b> → point operator: \(g=a\,f\), no neighbours (brightness/contrast).</li>
+        <li><b>All positive, sums to 1</b> → averaging / <code>blur</code> (low-pass). Box, Gaussian.</li>
+        <li><b>Big positive centre, negative surround</b> → <code>sharpen</code> (sum 1) or <code>edge</code> (sum 0).</li>
+        <li><b>One side negative, other positive, zero middle</b> → <code>directional gradient</code>; fires on edges running <i>across</i> it (Sobel-X → vertical edges).</li>
+        <li><b>Symmetric, sums to ~0</b> → <code>second derivative</code> (Laplacian): any rapid change, orientation-blind.</li>
+        <li><b>The sum of cells</b> is the DC gain: 1 keeps brightness, 0 gives a pure edge map.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Six things to try</h3>
+      <ol class="exp">
+        <li><b>Set kernel size to 1×1.</b> That's a point operator — output = a·input, no neighbourhood. Switch between Identity / Brighten / Darken.</li>
+        <li><b>Circle + Sobel-X + signed view.</b> Left and right edges come out opposite colours. Flip Cross-correlation → Convolution: colours swap, because ∗ flips the kernel — but the same weights are still used (watch the products row).</li>
+        <li><b>Type i=27, j=27</b> (at 28×28) to inspect the corner, then change Padding — see how the out-of-bounds cells (dashed) change.</li>
+        <li><b>Box vs Gaussian at 5×5</b> on a circle; normalize on to preserve brightness.</li>
+        <li><b>Checker + Box 5×5:</b> the fine pattern washes out — low-pass in action.</li>
+        <li><b>Hand-build a detector:</b> clear the kernel, left column −1, right +1, middle 0. Predict, then look.</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<footer>DLCV Week 1 · a companion to the recitation guide — configure, watch, then read the maths again.</footer>
+
+<script>
+"use strict";
+let N = 28, SCALE = 12;
+const inC=document.getElementById('inCanvas'), outC=document.getElementById('outCanvas');
+const inCtx=inC.getContext('2d'), outCtx=outC.getContext('2d');
+inCtx.imageSmoothingEnabled=false; outCtx.imageSmoothingEnabled=false;
+
+const state = {
+  img:new Float32Array(N*N), shape:'circle',
+  ksize:3, kernel:[[0,0,0],[0,1,0],[0,0,0]],
+  op:'corr', pad:'zero', view:'auto', normalize:false,
+  active:{i:14,j:14}, presetKey:'sobelx',
+  scanning:false, scanTimer:null, scanIdx:0, scanReveal:false
+};
+
+/* ---------- presets ---------- */
+const P1 = {
+  identity:{k:[[1]], norm:false, d:"<b>Identity point operator.</b> 1×1 kernel: \\(g=1\\cdot f\\). Output depends on a single pixel — no neighbours. This is the point-operator case (M1)."},
+  brighten:{k:[[1.6]], norm:false, d:"<b>Gain — brighten.</b> \\(g=1.6\\,f\\): a point operator scaling every pixel. Contrast/brightness live here."},
+  darken:{k:[[0.5]], norm:false, d:"<b>Gain — darken.</b> \\(g=0.5\\,f\\)."}
+};
+const P3 = {
+  identity:{k:[[0,0,0],[0,1,0],[0,0,0]], norm:false, d:"<b>Identity.</b> Copies the image — centre weight 1, everything else 0."},
+  box:{k:[[1,1,1],[1,1,1],[1,1,1]], norm:true, d:"<b>Box blur.</b> Plain average. Normalize ÷9 keeps brightness. Low-pass (rings a little)."},
+  gaussian:{k:[[1,2,1],[2,4,2],[1,2,1]], norm:true, d:"<b>Gaussian (binomial).</b> Weighted average, heavier centre. ÷16. Smoother low-pass than the box."},
+  sharpen:{k:[[0,-1,0],[-1,5,-1],[0,-1,0]], norm:false, d:"<b>Sharpen.</b> Centre boosted, neighbours subtracted. Sums to 1 → brightness kept, detail exaggerated."},
+  sobelx:{k:[[-1,0,1],[-2,0,2],[-1,0,1]], norm:false, d:"<b>Sobel-X.</b> Horizontal gradient: negative left column, positive right. Fires on vertical edges; sign = dark→bright direction."},
+  sobely:{k:[[-1,-2,-1],[0,0,0],[1,2,1]], norm:false, d:"<b>Sobel-Y.</b> Vertical gradient — catches horizontal edges."},
+  prewittx:{k:[[-1,0,1],[-1,0,1],[-1,0,1]], norm:false, d:"<b>Prewitt-X.</b> Like Sobel-X but with uniform (not weighted) row smoothing."},
+  laplacian:{k:[[0,1,0],[1,-4,1],[0,1,0]], norm:false, d:"<b>Laplacian.</b> Second derivative. Sums to 0, symmetric → any rapid change, no preferred direction."},
+  emboss:{k:[[-2,-1,0],[-1,1,1],[0,1,2]], norm:false, d:"<b>Emboss.</b> Directional derivative that looks like lit relief."},
+  outline:{k:[[-1,-1,-1],[-1,8,-1],[-1,-1,-1]], norm:false, d:"<b>Outline.</b> Strong centre vs all 8 neighbours; sums to 0 → edges of every orientation."}
+};
+const P5 = {
+  gaussian:{k:[[1,4,6,4,1],[4,16,24,16,4],[6,24,36,24,6],[4,16,24,16,4],[1,4,6,4,1]], norm:true, d:"<b>Gaussian 5×5 (binomial).</b> The [1 4 6 4 1] kernel as a 2D outer product. ÷256. Wider, smoother low-pass."},
+  box:{k:[[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1]], norm:true, d:"<b>Box blur 5×5.</b> Average over a 5×5 window (÷25). Wider blur; more ringing."},
+  log:{k:[[0,0,-1,0,0],[0,-1,-2,-1,0],[-1,-2,16,-2,-1],[0,-1,-2,-1,0],[0,0,-1,0,0]], norm:false, d:"<b>Laplacian-of-Gaussian (LoG).</b> Blur then Laplacian in one kernel — edges at a scale, less noise. Sums to 0."}
+};
+const LABEL={identity:'Identity',brighten:'Brighten',darken:'Darken',box:'Box',gaussian:'Gaussian',
+  sharpen:'Sharpen',sobelx:'Sobel-X',sobely:'Sobel-Y',prewittx:'Prewitt-X',laplacian:'Laplacian',
+  emboss:'Emboss',outline:'Outline',log:'LoG'};
+function presetSet(){ return state.ksize===1?P1:(state.ksize===3?P3:P5); }
+function buildKPresets(){
+  const host=document.getElementById('kpresets'); host.innerHTML='';
+  Object.keys(presetSet()).forEach(key=>{
+    const b=document.createElement('button'); b.textContent=LABEL[key]||key; b.onclick=()=>applyPreset(key);
+    host.appendChild(b);
+  });
+}
+function applyPreset(key){
+  const set=presetSet(); let def=set[key];
+  if(!def){ key=Object.keys(set)[0]; def=set[key]; }
+  state.kernel=def.k.map(r=>r.slice());
+  state.normalize=def.norm; setSeg('norm',def.norm?'on':'off');
+  state.presetKey=key;
+  const kd=document.getElementById('kdesc'); kd.innerHTML=def.d; typeset(kd);
+  renderKernel(); recompute();
+}
+
+/* ---------- colours ---------- */
+function kernelAbsMax(){ let m=1; for(const r of state.kernel)for(const v of r)m=Math.max(m,Math.abs(v)); return m; }
+function signColor(t){
+  const zero=[238,240,244], neg=[37,99,235], pos=[234,115,23];
+  let a,b,f; if(t<0){a=zero;b=neg;f=Math.min(1,-t);}else{a=zero;b=pos;f=Math.min(1,t);}
+  return [Math.round(a[0]+(b[0]-a[0])*f),Math.round(a[1]+(b[1]-a[1])*f),Math.round(a[2]+(b[2]-a[2])*f)];
+}
+function textOn(rgb){ return (0.299*rgb[0]+0.587*rgb[1]+0.114*rgb[2])<140?'#fff':'#15181F'; }
+function grayCol(v){ const g=Math.max(0,Math.min(255,Math.round(v))); return `rgb(${g},${g},${g})`; }
+function round(x){ return Math.abs(x-Math.round(x))<1e-9?Math.round(x):(Math.round(x*1000)/1000); }
+
+/* ---------- kernel render ---------- */
+function flipped(){ const k=state.ksize,o=Array.from({length:k},()=>Array(k).fill(0));
+  for(let a=0;a<k;a++)for(let b=0;b<k;b++)o[a][b]=state.kernel[k-1-a][k-1-b]; return o; }
+function renderKernel(){
+  const k=state.ksize, grid=document.getElementById('kgrid');
+  grid.style.gridTemplateColumns=`repeat(${k},auto)`; grid.innerHTML='';
+  const am=kernelAbsMax();
+  for(let a=0;a<k;a++)for(let b=0;b<k;b++){
+    const inp=document.createElement('input'); inp.type='number'; inp.className='kcell'; inp.value=state.kernel[a][b];
+    const rgb=signColor(state.kernel[a][b]/am); inp.style.background=`rgb(${rgb[0]},${rgb[1]},${rgb[2]})`; inp.style.color=textOn(rgb);
+    inp.oninput=()=>{ const v=parseFloat(inp.value); state.kernel[a][b]=isNaN(v)?0:v; state.presetKey='custom';
+      const kd=document.getElementById('kdesc'); kd.innerHTML="<b>Custom kernel.</b> Read it with the cheat-sheet, predict the output, then check.";
+      renderKernel(); recompute(); inp.focus(); };
+    grid.appendChild(inp);
+  }
+  const fw=document.getElementById('kflipWrap');
+  if(state.op==='conv' && k>1){
+    fw.style.display='block'; const fg=document.getElementById('kflip'); fg.style.gridTemplateColumns=`repeat(${k},auto)`; fg.innerHTML='';
+    const fk=flipped();
+    for(let a=0;a<k;a++)for(let b=0;b<k;b++){ const c=document.createElement('div'); c.className='kfc'; c.textContent=fk[a][b];
+      const rgb=signColor(fk[a][b]/am); c.style.background=`rgb(${rgb[0]},${rgb[1]},${rgb[2]})`; c.style.color=textOn(rgb); fg.appendChild(c); }
+  } else fw.style.display='none';
+  let s=0; for(const r of state.kernel)for(const v of r)s+=v;
+  const div=(state.normalize&&Math.abs(s)>1e-6)?s:1;
+  document.getElementById('ksum').innerHTML=`sum = ${round(s)} &nbsp;·&nbsp; divisor = ${round(div)} &nbsp;·&nbsp; DC gain = ${round(s/div)}`;
+  document.getElementById('opNote').innerHTML = state.op==='conv'
+    ? "Convolution (∗): the <b>same weights</b> are applied, but the kernel is flipped 180° first. For symmetric kernels this changes nothing."
+    : "Cross-correlation (⊗): the kernel weights are applied <b>as-is</b>, no flip.";
+}
+
+/* ---------- shapes ---------- */
+function setImg(fn){ for(let i=0;i<N;i++)for(let j=0;j<N;j++) state.img[i*N+j]=fn(i,j); }
+const BG=22, FG=235;
+const shapes={
+  clear:()=>setImg(()=>BG),
+  circle:()=>{const c=(N-1)/2,R=N*0.33; setImg((i,j)=>Math.hypot(i-c,j-c)<=R?FG:BG);},
+  square:()=>{const a=Math.round(N*0.22),b=N-1-a; setImg((i,j)=>(i>=a&&i<=b&&j>=a&&j<=b)?FG:BG);},
+  triangle:()=>{const top=Math.round(N*0.12),c=(N-1)/2; setImg((i,j)=>{const y=i-top; const half=y*0.6; return (y>=0&&i<=N*0.85&&j>=c-half&&j<=c+half)?FG:BG;});},
+  cross:()=>{const a=Math.round(N*0.4),b=N-1-a; setImg((i,j)=>((j>=a&&j<=b)||(i>=a&&i<=b))?FG:BG);},
+  diag:()=>setImg((i,j)=>(i+j)>(N-1)?FG:BG),
+  gradient:()=>setImg((i,j)=>Math.round(j/(N-1)*255)),
+  checker:()=>{const s=Math.max(2,Math.round(N/7)); setImg((i,j)=>((Math.floor(i/s)+Math.floor(j/s))%2)?FG:BG);},
+  noise:()=>setImg(()=>Math.round(Math.random()*255))
+};
+
+/* ---------- padding + convolution ---------- */
+function reflect(i,n){ if(n===1)return 0; const p=2*(n-1); let m=((i%p)+p)%p; return m<n?m:p-m; }
+function sample(i,j){
+  let padded=(i<0||i>=N||j<0||j>=N), pi=i,pj=j;
+  if(!padded) return {v:state.img[i*N+j],padded:false};
+  switch(state.pad){
+    case 'zero': return {v:0,padded:true};
+    case 'replicate': pi=Math.max(0,Math.min(N-1,i)); pj=Math.max(0,Math.min(N-1,j)); break;
+    case 'reflect': pi=reflect(i,N); pj=reflect(j,N); break;
+    case 'wrap': pi=((i%N)+N)%N; pj=((j%N)+N)%N; break;
+  }
+  return {v:state.img[pi*N+pj],padded:true};
+}
+let OUT=new Float32Array(N*N), outMin=0,outMax=0,outAbs=1;
+function activeKernel(){ return state.op==='conv'?flipped():state.kernel; }
+function divisor(){ let s=0; for(const r of state.kernel)for(const v of r)s+=v; return (state.normalize&&Math.abs(s)>1e-6)?s:1; }
+function recompute(){
+  const k=state.ksize,h=(k-1)/2,K=activeKernel(),div=divisor();
+  outMin=Infinity;outMax=-Infinity;outAbs=1e-6;
+  for(let i=0;i<N;i++)for(let j=0;j<N;j++){
+    let acc=0; for(let a=0;a<k;a++)for(let b=0;b<k;b++) acc+=sample(i+a-h,j+b-h).v*K[a][b];
+    acc/=div; OUT[i*N+j]=acc;
+    if(acc<outMin)outMin=acc; if(acc>outMax)outMax=acc; if(Math.abs(acc)>outAbs)outAbs=Math.abs(acc);
+  }
+  renderInput(); renderOutput(); renderMech();
+}
+
+/* ---------- output colours + canvas ---------- */
+function resolveView(){ if(state.view!=='auto')return state.view;
+  let s=0; for(const r of state.kernel)for(const v of r)s+=v; return Math.abs(s)<0.5?'signed':'gray'; }
+function outColor(v){ const view=resolveView();
+  if(view==='signed'){const rgb=signColor(v/outAbs);return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;}
+  if(view==='abs'){const g=Math.round(Math.min(255,Math.abs(v)/outAbs*255));return `rgb(${g},${g},${g})`;}
+  if(view==='norm'){const g=Math.round((v-outMin)/((outMax-outMin)||1)*255);return `rgb(${g},${g},${g})`;}
+  return grayCol(v);
+}
+function renderInput(){ for(let i=0;i<N;i++)for(let j=0;j<N;j++){ inCtx.fillStyle=grayCol(state.img[i*N+j]); inCtx.fillRect(j*SCALE,i*SCALE,SCALE,SCALE);} overlay(inCtx,true); }
+function renderOutput(){ const lim=(state.scanning&&state.scanReveal)?state.scanIdx:N*N;
+  for(let i=0;i<N;i++)for(let j=0;j<N;j++){ const idx=i*N+j; outCtx.fillStyle=idx<lim?outColor(OUT[idx]):'#0d0f14'; outCtx.fillRect(j*SCALE,i*SCALE,SCALE,SCALE);} overlay(outCtx,false); updateLegend(); }
+function overlay(ctx,isInput){ const k=state.ksize,h=(k-1)/2,{i,j}=state.active;
+  if(isInput){ ctx.strokeStyle='rgba(67,56,202,.95)'; ctx.lineWidth=2; ctx.strokeRect((j-h)*SCALE+1,(i-h)*SCALE+1,k*SCALE-2,k*SCALE-2); }
+  else{ ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.strokeRect(j*SCALE+1,i*SCALE+1,SCALE-2,SCALE-2);
+    ctx.strokeStyle='rgba(67,56,202,.95)'; ctx.strokeRect(j*SCALE,i*SCALE,SCALE,SCALE); } }
+function updateLegend(){ const view=resolveView(),bar=document.getElementById('legbar'),L=document.getElementById('legL'),R=document.getElementById('legR');
+  if(view==='signed'){bar.className='bar';L.textContent='− '+(-round(outAbs));R.textContent='+ '+round(outAbs);}
+  else if(view==='abs'){bar.className='bar gray';L.textContent='0';R.textContent=round(outAbs);}
+  else if(view==='norm'){bar.className='bar gray';L.textContent=round(outMin);R.textContent=round(outMax);}
+  else{bar.className='bar gray';L.textContent='0';R.textContent='255';} }
+
+/* ---------- mechanism ---------- */
+function renderMech(){
+  const k=state.ksize,h=(k-1)/2,{i,j}=state.active,K=activeKernel(),div=divisor();
+  const iSel=document.getElementById('iSel'), jSel=document.getElementById('jSel');
+  if(document.activeElement!==iSel) iSel.value=i;
+  if(document.activeElement!==jSel) jSel.value=j;
+  document.getElementById('mKlabel').textContent = state.op==='conv'?'kernel h (flipped)':'kernel h';
+  const sign = state.op==='conv'?'i−a, j−b':'i+a, j+b';
+  const dtxt = div!==1?` &nbsp;÷&nbsp; ${round(div)}`:'';
+  document.getElementById('mFormula').innerHTML = k===1
+    ? `g(i,j) = f(i,j) · h${dtxt}` : `g(i,j) = Σ<sub>a,b</sub> f(${sign})·h(a,b)${dtxt}`;
+  document.getElementById('mNote').innerHTML = state.op==='conv'
+    ? "Convolution still multiplies by every kernel weight — the kernel is just flipped 180° first (compare the two kernel grids above)."
+    : "Cross-correlation multiplies each window pixel by the kernel weight in the same position.";
+  const src=document.getElementById('mSrc'),ker=document.getElementById('mKer'),prod=document.getElementById('mProd');
+  [src,ker,prod].forEach(g=>{ g.style.gridTemplateColumns=`repeat(${k},auto)`; g.innerHTML=''; });
+  const am=kernelAbsMax(); let total=0,prodAbs=1e-6,cells=[];
+  for(let a=0;a<k;a++)for(let b=0;b<k;b++){ const s=sample(i+a-h,j+b-h),p=s.v*K[a][b]; total+=p; prodAbs=Math.max(prodAbs,Math.abs(p)); cells.push({s,kv:K[a][b],p}); }
+  cells.forEach(({s,kv,p})=>{
+    const sc=document.createElement('div'); sc.className='mc'+(s.padded?' pad':''); sc.textContent=Math.round(s.v);
+    sc.style.background=grayCol(s.v); sc.style.color=(s.v<128?'#fff':'#15181F'); src.appendChild(sc);
+    const kc=document.createElement('div'); kc.className='mc'; kc.textContent=kv;
+    const rgb=signColor(kv/am); kc.style.background=`rgb(${rgb[0]},${rgb[1]},${rgb[2]})`; kc.style.color=textOn(rgb); ker.appendChild(kc);
+    const pc=document.createElement('div'); pc.className='mc'; pc.textContent=Math.round(p);
+    const prgb=signColor(p/prodAbs); pc.style.background=`rgb(${prgb[0]},${prgb[1]},${prgb[2]})`; pc.style.color=textOn(prgb); prod.appendChild(pc);
+  });
+  const val=total/div;
+  document.getElementById('mResult').innerHTML =
+    `<div class="step">Σ products = ${round(total)}${div!==1?` &nbsp;÷&nbsp; ${round(div)}`:''}</div>`+
+    `<div class="big">g = ${round(val)}<span class="pixchip" style="background:${outColor(val)}"></span></div>`+
+    `<div class="step">the highlighted output pixel</div>`;
+}
+
+/* ---------- controls ---------- */
+function setSeg(id,v){ document.querySelectorAll(`#${id} button`).forEach(b=>b.classList.toggle('on',b.dataset.v===v)); }
+function typeset(el){ if(window.MathJax&&MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(()=>{}); }
+
+function setSize(newN){
+  stopScan(); N=newN; SCALE=Math.max(7,Math.round(336/N));
+  inC.width=inC.height=N*SCALE; outC.width=outC.height=N*SCALE;
+  inCtx.imageSmoothingEnabled=false; outCtx.imageSmoothingEnabled=false;
+  state.img=new Float32Array(N*N); OUT=new Float32Array(N*N);
+  state.active.i=Math.min(state.active.i,N-1); state.active.j=Math.min(state.active.j,N-1);
+  document.getElementById('iSel').max=N-1; document.getElementById('jSel').max=N-1;
+  (shapes[state.shape]||shapes.circle)(); recompute();
+}
+document.getElementById('imgsize').addEventListener('change',e=>setSize(parseInt(e.target.value)));
+document.getElementById('op').addEventListener('click',e=>{ if(!e.target.dataset.v)return; state.op=e.target.dataset.v; setSeg('op',state.op); renderKernel(); recompute(); });
+document.getElementById('ksize').addEventListener('click',e=>{ if(!e.target.dataset.v)return;
+  state.ksize=parseInt(e.target.dataset.v); setSeg('ksize',e.target.dataset.v); buildKPresets();
+  const fallback = state.ksize===1?'identity':(state.ksize===5?'gaussian':'sobelx');
+  applyPreset(presetSet()[state.presetKey]?state.presetKey:fallback);
+});
+document.getElementById('pad').addEventListener('change',e=>{ state.pad=e.target.value; recompute(); });
+document.getElementById('view').addEventListener('change',e=>{ state.view=e.target.value; renderOutput(); renderMech(); });
+document.getElementById('norm').addEventListener('click',e=>{ if(!e.target.dataset.v)return; state.normalize=e.target.dataset.v==='on'; setSeg('norm',e.target.dataset.v); renderKernel(); recompute(); });
+document.getElementById('presets').addEventListener('click',e=>{ const s=e.target.dataset.s; if(!s)return; state.shape=s; shapes[s](); recompute(); });
+
+// pixel selectors
+function pickIJ(){
+  let i=parseInt(document.getElementById('iSel').value), j=parseInt(document.getElementById('jSel').value);
+  if(isNaN(i)||isNaN(j))return; i=Math.max(0,Math.min(N-1,i)); j=Math.max(0,Math.min(N-1,j));
+  state.active={i,j}; renderInput(); renderOutput(); renderMech();
+}
+document.getElementById('iSel').addEventListener('change',pickIJ);
+document.getElementById('jSel').addEventListener('change',pickIJ);
+document.getElementById('iSel').addEventListener('keyup',e=>{if(e.key==='Enter')pickIJ();});
+document.getElementById('jSel').addEventListener('keyup',e=>{if(e.key==='Enter')pickIJ();});
+
+// brush + paint
+const brushVal=document.getElementById('brushVal'),brushSize=document.getElementById('brushSize'),sw=document.getElementById('brushSw');
+function updSw(){ sw.style.background=grayCol(+brushVal.value); } brushVal.oninput=updSw; updSw();
+let painting=false;
+function cellFrom(canvas,ev){ const r=canvas.getBoundingClientRect();
+  const x=(ev.clientX-r.left)*(canvas.width/r.width), y=(ev.clientY-r.top)*(canvas.height/r.height);
+  return {i:Math.floor(y/SCALE), j:Math.floor(x/SCALE)}; }
+function paintAt(ev){ const {i,j}=cellFrom(inC,ev); const rad=+brushSize.value-1, val=+brushVal.value;
+  for(let di=-rad;di<=rad;di++)for(let dj=-rad;dj<=rad;dj++){ const ii=i+di,jj=j+dj; if(ii>=0&&ii<N&&jj>=0&&jj<N) state.img[ii*N+jj]=val; }
+  state.shape='custom'; recompute(); }
+inC.addEventListener('pointerdown',e=>{painting=true; inC.setPointerCapture(e.pointerId); paintAt(e);});
+inC.addEventListener('pointermove',e=>{ if(painting) paintAt(e); });
+inC.addEventListener('pointerup',()=>painting=false); inC.addEventListener('pointerleave',()=>painting=false);
+
+// hover / click output to inspect
+let rafPending=false;
+function inspect(ev){ const {i,j}=cellFrom(outC,ev); if(i<0||i>=N||j<0||j>=N)return; state.active={i,j};
+  if(!rafPending){ rafPending=true; requestAnimationFrame(()=>{ rafPending=false; renderInput(); renderOutput(); renderMech(); }); } }
+outC.addEventListener('pointermove',inspect); outC.addEventListener('pointerdown',inspect);
+
+// scan
+const playbtn=document.getElementById('playbtn'),speed=document.getElementById('speed');
+function stopScan(){ state.scanning=false; state.scanReveal=false; if(state.scanTimer)clearInterval(state.scanTimer); playbtn.textContent='▶ Scan'; renderOutput(); }
+function startScan(){ state.scanning=true; state.scanReveal=true; state.scanIdx=0; playbtn.textContent='⏸ Stop';
+  state.scanTimer=setInterval(()=>{ const per=Math.max(1,Math.round(N*N/(900/(+speed.value))));
+    state.scanIdx=Math.min(N*N,state.scanIdx+per); const idx=Math.min(N*N-1,state.scanIdx-1);
+    state.active={i:Math.floor(idx/N),j:idx%N}; renderInput(); renderOutput(); renderMech();
+    if(state.scanIdx>=N*N){ clearInterval(state.scanTimer); state.scanReveal=false; state.scanning=false; playbtn.textContent='▶ Scan'; renderOutput(); }
+  },32); }
+playbtn.onclick=()=>{ state.scanning?stopScan():startScan(); };
+
+/* ---------- boot ---------- */
+document.getElementById('iSel').max=N-1; document.getElementById('jSel').max=N-1;
+buildKPresets(); shapes.circle(); applyPreset('sobelx');
+</script>
+</body>
+</html>

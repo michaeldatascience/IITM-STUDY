@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transformer Models — Aspect by Aspect</title>
+<style>
+:root{
+  --bg:#0F1218; --panel:#171C26; --panel2:#1E2431; --line:#2A3242;
+  --ink:#E6EAF2; --muted:#96A1B8;
+  --amber:#F0B429; --mint:#5FD3A0; --coral:#FF7B72; --blue:#8AB4F8; --violet:#C29BFF;
+  --bert:#5FD3A0; --gpt:#8AB4F8; --bart:#F0B429; --t5:#C29BFF;
+  --mono: ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px 100px}
+header{padding:44px 0 22px;border-bottom:1px solid var(--line);margin-bottom:26px}
+.eyebrow{font:600 11px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--amber)}
+h1{font:700 33px/1.15 Georgia,serif;margin:12px 0 8px}
+.sub{color:var(--muted);font-size:15px;max-width:64ch}
+h2{font:700 21px/1.25 Georgia,serif;margin:42px 0 6px;padding-bottom:9px;border-bottom:2px solid var(--amber)}
+h2 .n{font:700 12px var(--mono);color:var(--amber);letter-spacing:.1em;margin-right:10px}
+h3{font:600 15.5px Georgia,serif;color:var(--amber);margin:24px 0 8px}
+p{margin:0 0 12px} ul,ol{margin:0 0 12px;padding-left:21px} li{margin:0 0 5px}
+code{font:13.5px var(--mono);background:var(--panel2);padding:2px 6px;border-radius:4px;color:var(--blue)}
+pre{background:#0B0E13;border:1px solid var(--line);border-radius:8px;padding:12px 15px;
+  overflow-x:auto;font:13px/1.65 var(--mono);color:#CBD5E5;margin:11px 0}
+table{width:100%;border-collapse:collapse;margin:13px 0;font-size:13.8px}
+th{background:var(--panel2);text-align:left;padding:8px 10px;border:1px solid var(--line);
+  font:600 10.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+td{padding:8px 10px;border:1px solid var(--line);vertical-align:top}
+td.n{font-family:var(--mono);white-space:nowrap}
+th.bert,td.bert{border-top:2px solid var(--bert)} th.gpt,td.gpt{border-top:2px solid var(--gpt)}
+th.bart,td.bart{border-top:2px solid var(--bart)} th.t5,td.t5{border-top:2px solid var(--t5)}
+.mB{color:var(--bert);font-weight:700} .mG{color:var(--gpt);font-weight:700}
+.mA{color:var(--bart);font-weight:700} .mT{color:var(--t5);font-weight:700}
+.ans{color:var(--mint);font-weight:700} .bad{color:var(--coral);font-weight:700}
+.eq{font:14.5px/1.85 var(--mono);color:var(--blue);text-align:center;padding:10px 0;overflow-x:auto}
+
+.story{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--amber);
+  border-radius:10px;padding:18px 22px;margin:22px 0}
+.story h4{font:600 11px var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--amber);margin:0 0 10px}
+
+.hook{border-left:3px solid var(--mint);background:rgba(95,211,160,.06);padding:11px 15px;
+  border-radius:0 6px 6px 0;margin:14px 0;font-size:14.3px}
+.hook b{color:var(--mint)}
+.hook .lbl{font:700 9.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mint);display:block;margin-bottom:5px}
+.trap{border-left:3px solid var(--coral);background:rgba(255,123,114,.06);padding:11px 15px;
+  border-radius:0 6px 6px 0;margin:14px 0;font-size:14.3px}
+.trap b{color:var(--coral)}
+.trap .lbl{font:700 9.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--coral);display:block;margin-bottom:5px}
+.pyq{border-left:3px solid var(--violet);padding-left:14px;margin:14px 0;font-size:14.2px;color:var(--muted)}
+.pyq .lbl{font:700 9.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--violet);display:block;margin-bottom:5px}
+.pyq b{color:var(--ink)}
+
+details.q{border:1px solid var(--line);border-radius:9px;margin:10px 0;background:var(--panel)}
+details.q>summary{cursor:pointer;list-style:none;padding:12px 16px;font-size:14.5px;display:flex;gap:11px;align-items:flex-start}
+details.q>summary::-webkit-details-marker{display:none}
+details.q>summary::before{content:"Q";font:700 10px var(--mono);color:var(--violet);
+  border:1px solid var(--violet);border-radius:4px;padding:2px 5px;flex-shrink:0;margin-top:2px}
+details.q[open]>summary{border-bottom:1px solid var(--line);background:var(--panel2)}
+details.q .a{padding:13px 16px 14px 43px;font-size:14.2px}
+details.q .a>:first-child{margin-top:0}
+.src{font:600 9.5px var(--mono);color:var(--muted);letter-spacing:.06em;margin-left:auto;flex-shrink:0;padding-top:3px}
+
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+.mcard{border:1px solid var(--line);border-radius:9px;padding:13px 14px;background:var(--panel)}
+.mcard.b{border-top:3px solid var(--bert)} .mcard.g{border-top:3px solid var(--gpt)}
+.mcard.a{border-top:3px solid var(--bart)} .mcard.t{border-top:3px solid var(--t5)}
+.mcard h5{margin:0 0 7px;font:700 15px Georgia,serif}
+.mcard p{font-size:13px;color:var(--muted);margin:0}
+@media(max-width:760px){.grid4{grid-template-columns:1fr 1fr}}
+@media(max-width:460px){.grid4{grid-template-columns:1fr} h1{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Weeks 7–8 · BERT · GPT · BART · T5 · Prefix-LM</div>
+  <h1>Transformer Models — Aspect by Aspect</h1>
+  <p class="sub">Eleven aspects, each with the intuition, the side-by-side, the trap, and the actual
+  PYQ that hinges on it. Everything beyond Quiz 2 scope has been left out.</p>
+</header>
+
+<div class="story">
+  <h4>The one story — four students in an exam hall</h4>
+  <p>Every model in this syllabus is a student sitting a different kind of test. Get these four
+  pictures fixed and almost every question answers itself.</p>
+  <div class="grid4">
+    <div class="mcard b"><h5 class="mB">BERT</h5>
+      <p><b>Cloze test.</b> Sees the whole sentence with a few words blacked out. Fills in the blanks.
+      <b>Never writes new sentences.</b></p></div>
+    <div class="mcard g"><h5 class="mG">GPT</h5>
+      <p><b>Continue the story.</b> Sees only what's written so far. Adds the next word. Cannot peek
+      ahead — the rest isn't written yet.</p></div>
+    <div class="mcard a"><h5 class="mA">BART</h5>
+      <p><b>Retype this mess.</b> Gets a mangled passage. Types out the <b>entire clean version</b>
+      from scratch.</p></div>
+    <div class="mcard t"><h5 class="mT">T5</h5>
+      <p><b>Fill-in-the-blank worksheet.</b> Blanks are numbered. Writes <b>only the answers</b>, each
+      next to its number.</p></div>
+  </div>
+</div>
+
+<div class="hook"><span class="lbl">The master key</span>
+<b>Encoder = the reading brain. Decoder = the writing hand.</b><br>
+Everything follows from this. No decoder ⇒ <b>cannot generate</b> (BERT). No encoder ⇒ <b>cannot look
+ahead</b> (GPT). Both ⇒ reads one thing, writes another (BART, T5).</div>
+
+
+<!-- ══════ 1 ══════ -->
+<h2><span class="n">01</span>Architecture type</h2>
+
+<p>The single most-asked structural fact. Three families, and the family determines almost everything else.</p>
+
+<table>
+  <tr><th></th><th class="bert">BERT</th><th class="gpt">GPT</th><th class="bart">BART</th><th class="t5">T5</th></tr>
+  <tr><td><b>Type</b></td><td class="bert">Encoder-only</td><td class="gpt">Decoder-only</td>
+      <td class="bart">Encoder-Decoder</td><td class="t5">Encoder-Decoder</td></tr>
+  <tr><td><b>Can it generate text?</b></td><td class="bert bad">No</td><td class="gpt ans">Yes</td>
+      <td class="bart ans">Yes</td><td class="t5 ans">Yes</td></tr>
+  <tr><td><b>Cross-attention?</b></td><td class="bert bad">No</td><td class="gpt bad">No</td>
+      <td class="bart ans">Yes</td><td class="t5 ans">Yes</td></tr>
+</table>
+
+<div class="hook"><span class="lbl">Memory hook</span>
+<b>"Decoder always generates."</b> You said this yourself and it's the right anchor. Run it both ways:
+<br>• Model has a decoder → it can produce text.
+<br>• Question says "generate / write / produce a sequence" → the model must have a decoder → <b>not BERT</b>.
+<br>• Question says "classify / understand / score, no generation needed" → encoder is enough → <b>BERT</b>.</div>
+
+<div class="pyq"><span class="lbl">PYQ</span>
+<b>GA8 Q1–3:</b> Of {BERT, GPT-1, GPT-2, T5, BART, GPT-3, GPT-4, LLaMA, LLaMA-2, Galactica} —
+encoder-only / enc-dec / decoder-only? → <b class="ans">1 / 2 / 7</b>.
+<br><b>Shortcut:</b> everything modern and generative is decoder-only. Enc-dec is essentially just T5 and
+BART. Encoder-only is essentially just BERT.</div>
+
+
+<!-- ══════ 2 ══════ -->
+<h2><span class="n">02</span>Attention direction &amp; masking</h2>
+
+<p>"Attention direction" means: <b>which other tokens am I allowed to look at?</b> There are only two
+directions in this syllabus.</p>
+
+<table>
+  <tr><th>Direction</th><th>Means</th><th>Lives in</th></tr>
+  <tr><td><b>Bidirectional</b></td><td>see everything — left, right, and yourself</td>
+      <td>every <b>encoder</b>; BERT's whole model</td></tr>
+  <tr><td><b>Causal</b> (forward-only)</td><td>see yourself and everything <i>before</i> you; nothing ahead</td>
+      <td>every <b>decoder</b>'s self-attention; GPT's whole model</td></tr>
+</table>
+
+<div class="trap"><span class="lbl">On "reverse" attention</span>
+There is <b>no reverse-only transformer</b> in this syllabus. You may be thinking of older RNN models
+(ELMo) that ran one LSTM forward and one backward and glued them together. Transformers don't do that —
+bidirectional attention sees both directions <b>at once</b> in a single pass, which is a different and
+stronger thing. Only two directions exist here: bidirectional and causal.</div>
+
+<h3>Masking, region by region</h3>
+<table>
+  <tr><th>Where</th><th>Masked?</th><th>Why</th></tr>
+  <tr><td>Encoder self-attention</td><td class="ans">No mask</td><td>you're reading a document that already exists — look anywhere</td></tr>
+  <tr><td>Decoder self-attention</td><td class="bad">Causal mask</td><td>you're writing; the future isn't written yet</td></tr>
+  <tr><td>Cross-attention (decoder → encoder)</td><td class="ans">No mask</td><td>the input document is fully available while you write</td></tr>
+</table>
+
+<div class="hook"><span class="lbl">Memory hook</span>
+<b>Reading is free, writing is blind.</b> You can re-read a page in any order. But while writing a
+sentence, you cannot read the words you haven't written yet. That's the causal mask, and it's why GPT can
+never do MLM.</div>
+
+<h3>How the mask is actually applied</h3>
+<div class="eq">score → <b>−∞ before softmax</b> → e<sup>−∞</sup> = 0 → attention weight exactly 0</div>
+<p>It happens on the raw dot-product scores, <b>before</b> softmax. So a masked position gets weight
+<b>exactly 0</b>, not "a small number". You never need to compute exponentials for masked positions.</p>
+
+<h3>Prefix-LM — the dial between GPT and BERT</h3>
+<p>First <i>p</i> tokens see each other bidirectionally; everything after is causal.</p>
+<pre>T = 5, p = 2         1  2  3  4  5
+            row 1 [  ✓  ✓  ✗  ✗  ✗ ]   ← can see token 2 (bidirectional inside prefix)
+            row 2 [  ✓  ✓  ✗  ✗  ✗ ]
+            row 3 [  ✓  ✓  ✓  ✗  ✗ ]   ← causal from here on
+            row 4 [  ✓  ✓  ✓  ✓  ✗ ]
+            row 5 [  ✓  ✓  ✓  ✓  ✓ ]        count = 16</pre>
+<div class="eq">non-−∞ count = T(T+1)/2 + p(p−1)/2</div>
+<p><b>Sanity:</b> p = 0 → pure causal (GPT). p = T → T², the full grid (BERT). Prefix-LM sits between them
+and <i>p</i> is the dial position.</p>
+
+<div class="pyq"><span class="lbl">PYQ</span>
+<b>2026 Q4:</b> why is GPT unsuitable for MLM? → <b class="ans">the causal mask blocks right-side context</b>,
+and MLM is defined by using both sides.
+<br><b>2025T3 Q123:</b> A and B see each other; D sees A,B,C but not E → <b class="ans">Prefix-LM</b>.
+<br><b>2025T3 Q113:</b> causal mask on token 3 of 4 → attention on token 4 = <b class="ans">0</b>.
+<br><b>Dec24 Q14:</b> T=32, p=2 → <b class="ans">529</b>.</div>
+
+
+<!-- ══════ 3 ══════ -->
+<h2><span class="n">03</span>Pretraining objective</h2>
+
+<p>The objective is <b>the game the model plays during pretraining</b>. It's chosen to match what the
+architecture can physically do.</p>
+
+<table>
+  <tr><th>Objective</th><th>Model</th><th>The game</th><th>Needs</th></tr>
+  <tr><td><b>MLM</b> — Masked LM</td><td class="mB">BERT</td>
+      <td>black out ~15% of tokens, predict them from both sides</td><td>bidirectional attention</td></tr>
+  <tr><td><b>CLM</b> — Causal LM</td><td class="mG">GPT</td>
+      <td>predict the next token from the left context</td><td>causal mask</td></tr>
+  <tr><td><b>Denoising</b></td><td class="mA">BART</td>
+      <td>corrupt the input, regenerate the <b>whole</b> original</td><td>encoder + decoder</td></tr>
+  <tr><td><b>Span corruption</b></td><td class="mT">T5</td>
+      <td>replace spans with sentinels, generate <b>only the spans</b></td><td>encoder + decoder</td></tr>
+  <tr><td><b>Prefix-LM</b></td><td>UniLM</td>
+      <td>read a prefix bidirectionally, then continue causally</td><td>hybrid mask</td></tr>
+</table>
+
+<div class="trap"><span class="lbl">Trap — "which models use denoising?"</span>
+<b class="ans">BERT, BART, T5.</b> Denoising means <i>corrupt then reconstruct</i>, and MLM counts —
+BERT corrupts by masking. <b class="bad">GPT-3 does not</b>: causal LM predicts the next token from
+<b>clean</b> text. Nothing is ever corrupted.</div>
+
+<h3>BERT's 80 / 10 / 10 rule</h3>
+<p>Of the 15% chosen for prediction: 80% become <code>[MASK]</code>, 10% become a <b>random</b> word,
+10% are left <b>unchanged</b>.</p>
+<ul>
+  <li><b>Why 10% unchanged?</b> <code>[MASK]</code> never appears at fine-tuning time. If the model only
+  ever built good representations at <code>[MASK]</code> positions, nothing would transfer. This is the
+  <b class="ans">pretrain / fine-tune mismatch</b>.</li>
+  <li><b>Why 10% random?</b> So the model can't blindly trust the token it sees — it has to keep checking
+  against context.</li>
+</ul>
+
+
+<!-- ══════ 4 ══════ -->
+<h2><span class="n">04</span>What the input looks like</h2>
+
+<p>Same base sentence throughout: <code>The quick brown fox jumps over the lazy dog</code>.</p>
+
+<table>
+  <tr><th>Model</th><th>Input during pretraining</th></tr>
+  <tr><td class="mB">BERT</td><td class="n">The quick [MASK] fox jumps over the lazy dog</td></tr>
+  <tr><td class="mG">GPT</td><td class="n">The quick brown fox jumps over the lazy &nbsp;&nbsp;(clean, truncated)</td></tr>
+  <tr><td class="mA">BART</td><td class="n">The quick &lt;mask&gt; fox &lt;mask&gt; over the lazy dog &nbsp;&nbsp;(corrupted)</td></tr>
+  <tr><td class="mT">T5</td><td class="n">The quick &lt;X&gt; fox &lt;Y&gt; over the lazy dog &nbsp;&nbsp;(sentinels, <b>no terminal sentinel</b>)</td></tr>
+</table>
+
+<div class="hook"><span class="lbl">Memory hook</span>
+<b>Only GPT gets clean input.</b> It's the only one not playing a repair game — it just continues text.
+Everything else receives damaged text of some kind.</div>
+
+
+<!-- ══════ 5 ══════ -->
+<h2><span class="n">05</span>What the output looks like — the big one</h2>
+
+<p>This aspect alone separates BART from T5, which is the most-tested distinction in the whole topic.</p>
+
+<table>
+  <tr><th>Model</th><th>Target / output</th><th>Length</th></tr>
+  <tr><td class="mB">BERT</td><td class="n">brown &nbsp;&nbsp;(just the masked token, at that position)</td><td>1 token per mask</td></tr>
+  <tr><td class="mG">GPT</td><td class="n">dog &nbsp;&nbsp;(the next token)</td><td>1 token</td></tr>
+  <tr><td class="mA">BART</td><td class="n">The quick brown fox jumps over the lazy dog</td><td><b>the whole sentence</b></td></tr>
+  <tr><td class="mT">T5</td><td class="n">&lt;X&gt; brown &lt;Y&gt; jumps &lt;Z&gt;</td><td><b>only the spans</b></td></tr>
+</table>
+
+<div class="story">
+  <h4>The worksheet vs the retype</h4>
+  <p><b class="mA">BART</b> is told: <i>"this passage is mangled — retype the whole thing correctly."</i>
+  It reproduces every word, including the ones that were never damaged.</p>
+  <p><b class="mT">T5</b> is told: <i>"here's a worksheet with numbered blanks — write only the answers,
+  each next to its number, then sign off."</i> It never repeats the words that weren't blanked. The
+  <code>&lt;Z&gt;</code> at the end is the sign-off, meaning <i>"answer sheet finished."</i></p>
+  <p>That's why T5's targets are short — the entire computational argument for span corruption.</p>
+</div>
+
+<div class="hook"><span class="lbl">The binary rule that gets tested</span>
+<b>TARGET ends with [z] · INPUT does not.</b><br>
+Why: the input already has an end — the rest of the sentence follows the last sentinel. The output doesn't;
+the decoder needs a stop signal.</div>
+
+<div class="trap"><span class="lbl">Trap — the naming twin</span>
+Sentinel <b>letters are arbitrary</b>. <code>[v][w][x][y][z]</code> and <code>[a][b][c][d][z]</code> are
+<b>both correct</b>. Only three things are graded: spans in original order, distinct sentinels, and the
+terminal <code>[z]</code>. These appear as multiple-select questions with <b>two</b> right answers.
+Picking only the natural-looking one scores half.</div>
+
+<div class="pyq"><span class="lbl">PYQ</span>
+<b>2025T3 Q122:</b> corrupted <code>The quick &lt;X&gt; fox &lt;Y&gt; over the lazy dog</code> → target
+<b class="ans">&lt;X&gt; brown &lt;Y&gt; jumps &lt;Z&gt;</b>. Not "brown jumps" (no sentinels), not the
+full sentence (that's BART).
+<br><b>2025T3 Q118:</b> model C outputs "cat … the" bare → <b class="ans">BART</b>; model D outputs
+sentinel-prefixed fragments → <b class="ans">T5</b>.</div>
+
+
+<!-- ══════ 6 ══════ -->
+<h2><span class="n">06</span>What feeds the decoder during training</h2>
+
+<p>Only relevant for BART and T5 — the other two have no decoder.</p>
+
+<div class="eq">decoder input = <b>the target sequence, shifted right by one</b></div>
+
+<p>This is <b>teacher forcing</b>: at step <i>t</i>, the decoder is shown the <b>correct</b> tokens
+1…<i>t−1</i>, not its own guesses. Otherwise one early mistake would poison everything after it and
+training would never get off the ground.</p>
+
+<table>
+  <tr><th></th><th>Encoder receives</th><th>Decoder receives</th></tr>
+  <tr><td class="mA">BART</td><td class="n">the <b>corrupted</b> text</td><td class="n">the <b>original uncorrupted</b> text, shifted right</td></tr>
+  <tr><td class="mT">T5</td><td class="n">the <b>sentinel-substituted</b> text</td><td class="n">the <b>target</b> (sentinels + spans), shifted right</td></tr>
+</table>
+
+<div class="trap"><span class="lbl">Trap</span>
+<b>The corrupted text goes to the encoder, never the decoder.</b> "The decoder receives the corrupted text
+from the encoder" is the standard wrong option — it sounds plausible because the encoder <i>did</i> read
+the corrupted text, but what passes to the decoder is the encoder's <b>hidden states</b> via
+cross-attention, not the raw corrupted tokens.</div>
+
+<div class="pyq"><span class="lbl">PYQ</span>
+<b>2025T3 Q124:</b> what is fed to BART's decoder during denoising pretraining? →
+<b class="ans">the original, uncorrupted text, shifted right by one token</b>.</div>
+
+
+<!-- ══════ 7 ══════ -->
+<h2><span class="n">07</span>Loss — same formula, different positions</h2>
+
+<p>Every model here uses <b>cross-entropy over the vocabulary</b>. The formula never changes:</p>
+
+<div class="eq">L = −(1/n) Σ<sub>t</sub> ln p(correct token at step t)</div>
+
+<p><b>where:</b> n = number of positions being scored; p(correct token) = the probability the model put on
+the <b>right</b> word, read from that position's distribution.</p>
+
+<table>
+  <tr><th>Model</th><th>Loss computed at</th><th>n =</th></tr>
+  <tr><td class="mB">BERT</td><td>only the <b>masked</b> positions</td><td>~15% of tokens</td></tr>
+  <tr><td class="mG">GPT</td><td><b>every</b> position (each predicts the next)</td><td>sequence length</td></tr>
+  <tr><td class="mA">BART</td><td>every <b>decoder</b> position</td><td>length of the full original</td></tr>
+  <tr><td class="mT">T5</td><td>every <b>decoder</b> position</td><td>length of the span-target (short)</td></tr>
+</table>
+
+<div class="trap"><span class="lbl">Trap — the 4-mark one</span>
+<b>MEAN, not sum.</b> And read the <b>correct</b> token's probability, not the row maximum.<br><br>
+"Greedy decoding" in the question describes how the matrix was <i>produced</i> — it is not an instruction
+to take maxima. Loss measures <i>wrongness</i>, so it must look at the right answer. A model that
+confidently generates nonsense would score a low loss under the max reading, which is backwards.<br><br>
+GA7: sum = 7.62, correct answer = <b class="ans">1.09</b>.</div>
+
+<div class="pyq"><span class="lbl">PYQ procedure</span>
+<b>1.</b> Number the vocabulary columns in the order V is written.
+<b>2.</b> Write the target sequence = the <b>original</b> sentence, minus <code>[start]</code>, one word per row.
+<b>3.</b> Read each row at that word's column.
+<b>4.</b> Negative natural logs, then <b>average</b>.</div>
+
+
+<!-- ══════ 8 ══════ -->
+<h2><span class="n">08</span>Special tokens</h2>
+
+<table>
+  <tr><th>Model</th><th>Tokens</th><th>What they do</th></tr>
+  <tr><td class="mB">BERT</td><td class="n">[CLS] [SEP] [MASK]</td>
+      <td><code>[CLS]</code> = a slot whose final vector represents the whole sentence, used for
+      classification. <code>[SEP]</code> separates two sentences. <code>[MASK]</code> = the blank.</td></tr>
+  <tr><td class="mG">GPT</td><td class="n">&lt;|endoftext|&gt;</td><td>document boundary; that's about it</td></tr>
+  <tr><td class="mA">BART</td><td class="n">&lt;mask&gt; &lt;s&gt; &lt;/s&gt;</td><td>corruption marker, sequence start/end</td></tr>
+  <tr><td class="mT">T5</td><td class="n">&lt;extra_id_0&gt;, &lt;extra_id_1&gt;, …</td>
+      <td><b>sentinels</b> — one per removed span, plus a terminal one</td></tr>
+</table>
+
+<div class="hook"><span class="lbl">Asked directly</span>
+<b>Are T5's sentinel tokens part of the vocabulary?</b> → <b class="ans">True.</b> They're real embedded
+tokens added at vocabulary construction. They <b>must</b> be — otherwise the decoder could never emit them,
+and the entire target sequence is built out of them.</div>
+
+<div class="trap"><span class="lbl">Trap</span>
+T5 has <b>no <code>[CLS]</code> and no <code>[MASK]</code></b>. An option describing T5 as "filling in
+<code>[MASK]</code> tokens" or "generating from a <code>[CLS]</code> token" is mixing up BERT and T5.</div>
+
+
+<!-- ══════ 9 ══════ -->
+<h2><span class="n">09</span>How you fine-tune it</h2>
+
+<table>
+  <tr><th>Model</th><th>Fine-tuning style</th><th>Add a head?</th></tr>
+  <tr><td class="mB">BERT</td><td>take the <code>[CLS]</code> vector, attach a classifier on top</td><td class="ans">Yes</td></tr>
+  <tr><td class="mG">GPT</td><td>zero-shot / few-shot prompting, or full fine-tuning</td><td>optional</td></tr>
+  <tr><td class="mA">BART</td><td>seq2seq fine-tuning (summarisation, translation)</td><td>usually not</td></tr>
+  <tr><td class="mT">T5</td><td><b>text-to-text</b> — labels become strings</td><td class="bad">Never</td></tr>
+</table>
+
+<div class="story">
+  <h4>T5's contract, and why it forbids things</h4>
+  <p>T5's rule is: <b>every task is text in → text out.</b> Nothing is ever bolted onto the model.</p>
+  <ul>
+    <li>Classification: label <code>0</code> becomes the string <code>"negative"</code> — or the string
+    <code>"0"</code>. <b>Both are valid.</b></li>
+    <li>Regression: STS-B similarity 3.8 is generated as the literal characters <code>"3.8"</code>,
+    token by token, by the decoder.</li>
+    <li><b>No vocabulary update needed</b> — those label strings tokenize fine with the existing vocabulary.</li>
+    <li><b>No difference between pretraining and fine-tuning objective</b> — both are sequence generation.
+    That uniformity is exactly what lets one checkpoint serve every task.</li>
+  </ul>
+</div>
+
+<div class="trap"><span class="lbl">Two traps in one question</span>
+<b>(1)</b> "Add a linear layer on top of the decoder for classification" is <b>always wrong</b> for T5.<br>
+<b>(2)</b> The label mapping must cover <b>every class</b>. With three classes, a mapping that only handles
+0 and 1 silently drops class 2 — wrong, even though it looks reasonable.<br>
+And as usual, <b>two options are correct</b>: the word mapping <i>and</i> the digit-string mapping.</div>
+
+
+<!-- ══════ 10 ══════ -->
+<h2><span class="n">10</span>Which model for which task</h2>
+
+<table>
+  <tr><th>Task</th><th>Best fit</th><th>Because</th></tr>
+  <tr><td>Sentiment / topic classification</td><td class="mB">BERT</td>
+      <td>needs <b>understanding</b> only. A decoder you never use is pure cost.</td></tr>
+  <tr><td>Named entity recognition, Q&amp;A span extraction</td><td class="mB">BERT</td><td>per-token labels, no generation</td></tr>
+  <tr><td>Open-ended text generation, chat</td><td class="mG">GPT</td><td>pure continuation</td></tr>
+  <tr><td>Summarisation, translation</td><td class="mA">BART</td><td>read one sequence, write a different one</td></tr>
+  <tr><td>Many tasks with one checkpoint</td><td class="mT">T5</td><td>text-to-text needs no per-task head</td></tr>
+</table>
+
+<div class="pyq"><span class="lbl">PYQ</span>
+<b>2025T3 Q120:</b> sentiment analysis, 10,000 reviews/min, memory-constrained, no explanations needed
+— BERT or BART? → <b class="ans">BERT: classification requires understanding (encoding), not generation
+(decoding), so it's faster and more memory-efficient without sacrificing accuracy.</b>
+<br>The distractor "use BART's encoder and discard the decoder" sounds clever but just reinvents a worse BERT.</div>
+
+
+<!-- ══════ 11 ══════ -->
+<h2><span class="n">11</span>Parameters &amp; compute</h2>
+
+<h3>Where the parameters live</h3>
+<table>
+  <tr><th>Component</th><th>Count</th><th>Note</th></tr>
+  <tr><td>Token embeddings</td><td class="n">|V| × d</td><td>usually the single biggest block</td></tr>
+  <tr><td>Position embeddings</td><td class="n">T<sub>max</sub> × d</td><td>BERT and GPT (learned, absolute)</td></tr>
+  <tr><td>Segment embeddings</td><td class="n">2 × d</td><td><b>BERT only</b> — marks sentence A vs B</td></tr>
+  <tr><td>W<sup>Q</sup>, W<sup>K</sup>, W<sup>V</sup></td><td class="n">d × d<sub>k</sub> each, <b>per head</b></td><td>d<sub>k</sub> = d/h</td></tr>
+  <tr><td>W<sup>O</sup></td><td class="n">d × d</td><td>after concatenating heads</td></tr>
+  <tr><td>LayerNorm</td><td class="n">2H</td><td>γ and β, one each per feature</td></tr>
+</table>
+
+<pre>BERT-like: d=128, |V|=5000, T_max=64, 2 segments
+   5000×128 = 640,000  +  64×128 = 8,192  +  2×128 = 256   =  <span class="ans">648,448</span>
+
+d_model=512, h=8:  d_k = 512/8 = 64;  concat of 8 heads = 8×64 = <span class="ans">T × 512</span>  ← back to d_model</pre>
+
+<h3>The two compute facts that get asked</h3>
+<ul>
+  <li><b>Shared encoder-decoder halves the parameters.</b> A 220M model with equal halves, sharing
+  W<sub>Enc</sub> = W<sub>Dec</sub>, becomes <b class="ans">110M</b>.</li>
+  <li><b>Decoder(P) and Encoder-Decoder(2P) cost the same — TRUE.</b> In the enc-dec, the input sequence
+  passes only through the P encoder parameters and the output only through the P decoder parameters. Each
+  token traverses ~P, not 2P. This is T5's central argument that enc-dec is not "twice as expensive".</li>
+</ul>
+
+<div class="hook"><span class="lbl">Memory hook</span>
+<b>Two rooms, one corridor.</b> The encoder and decoder are separate rooms. A given token only ever walks
+through <i>one</i> of them — the input goes to the reading room, the output to the writing room. So doubling
+the total floor space doesn't double any individual token's walk.</div>
+
+
+<!-- ══════ MASTER ══════ -->
+<h2><span class="n">★</span>Master table</h2>
+
+<table>
+  <tr><th>Aspect</th><th class="bert">BERT</th><th class="gpt">GPT</th><th class="bart">BART</th><th class="t5">T5</th></tr>
+  <tr><td><b>Type</b></td><td class="bert">Encoder-only</td><td class="gpt">Decoder-only</td><td class="bart">Enc-Dec</td><td class="t5">Enc-Dec</td></tr>
+  <tr><td><b>Attention</b></td><td class="bert">Bidirectional</td><td class="gpt">Causal</td>
+      <td class="bart">Bidir enc + causal dec</td><td class="t5">Bidir enc + causal dec</td></tr>
+  <tr><td><b>Objective</b></td><td class="bert">MLM</td><td class="gpt">CLM</td><td class="bart">Denoising</td><td class="t5">Span corruption</td></tr>
+  <tr><td><b>Is it denoising?</b></td><td class="bert ans">Yes</td><td class="gpt bad">No</td><td class="bart ans">Yes</td><td class="t5 ans">Yes</td></tr>
+  <tr><td><b>Input</b></td><td class="bert">masked</td><td class="gpt">clean prefix</td><td class="bart">corrupted</td><td class="t5">sentinel-substituted</td></tr>
+  <tr><td><b>Output</b></td><td class="bert">masked token</td><td class="gpt">next token</td>
+      <td class="bart"><b>full</b> original</td><td class="t5"><b>spans only</b> + [z]</td></tr>
+  <tr><td><b>Decoder input</b></td><td class="bert">—</td><td class="gpt">—</td>
+      <td class="bart">original, shifted right</td><td class="t5">target, shifted right</td></tr>
+  <tr><td><b>Cross-attention</b></td><td class="bert bad">No</td><td class="gpt bad">No</td><td class="bart ans">Yes</td><td class="t5 ans">Yes</td></tr>
+  <tr><td><b>Can generate</b></td><td class="bert bad">No</td><td class="gpt ans">Yes</td><td class="bart ans">Yes</td><td class="t5 ans">Yes</td></tr>
+  <tr><td><b>Loss at</b></td><td class="bert">masked positions</td><td class="gpt">every position</td>
+      <td class="bart">every decoder position</td><td class="t5">every decoder position</td></tr>
+  <tr><td><b>Special tokens</b></td><td class="bert">[CLS] [SEP] [MASK]</td><td class="gpt">&lt;|endoftext|&gt;</td>
+      <td class="bart">&lt;mask&gt; &lt;s&gt; &lt;/s&gt;</td><td class="t5">sentinels</td></tr>
+  <tr><td><b>Fine-tune</b></td><td class="bert">+ classifier head</td><td class="gpt">prompt / fine-tune</td>
+      <td class="bart">seq2seq</td><td class="t5 bad">text-to-text, never a head</td></tr>
+  <tr><td><b>Best at</b></td><td class="bert">classification</td><td class="gpt">generation</td>
+      <td class="bart">summarise/translate</td><td class="t5">one model, all tasks</td></tr>
+</table>
+
+
+<!-- ══════ REVERSE LOOKUP ══════ -->
+<h2><span class="n">→</span>Reverse lookup: clue → model</h2>
+
+<p>Exam questions usually give you a <b>clue</b> and expect the model. Read down this list.</p>
+
+<table>
+  <tr><th>The clue in the question</th><th>Model</th></tr>
+  <tr><td>"predict using both left and right context"</td><td class="mB">BERT</td></tr>
+  <tr><td>"[MASK]" appears anywhere</td><td class="mB">BERT</td></tr>
+  <tr><td>"classification only, no generation needed"</td><td class="mB">BERT</td></tr>
+  <tr><td>"predict the next token"</td><td class="mG">GPT</td></tr>
+  <tr><td>"causal mask" / "cannot see the future"</td><td class="mG">GPT</td></tr>
+  <tr><td>output is the <b>whole</b> sentence rebuilt</td><td class="mA">BART</td></tr>
+  <tr><td>output words appear with <b>no</b> markers around them</td><td class="mA">BART</td></tr>
+  <tr><td>output has <code>&lt;X&gt;</code> / <code>&lt;extra_id_0&gt;</code> in it</td><td class="mT">T5</td></tr>
+  <tr><td>sequence ends with <code>[z]</code></td><td class="mT">T5 target</td></tr>
+  <tr><td>"labels become strings" / "no head added"</td><td class="mT">T5</td></tr>
+  <tr><td>first few tokens see each other, rest is causal</td><td>Prefix-LM</td></tr>
+</table>
+
+<div class="hook"><span class="lbl">The 5-second diagnostic</span>
+<b>1.</b> Is anything being generated? No → BERT. <br>
+<b>2.</b> Is the input clean? Yes → GPT. <br>
+<b>3.</b> Does the <b>output</b> contain sentinel markers? Yes → T5, no → BART.<br>
+Three questions, four models.</div>
+
+
+<!-- ══════ PRACTICE ══════ -->
+<h2><span class="n">✎</span>Practice — answer before unfolding</h2>
+
+<details class="q"><summary>A model is given "The cat sat on the __" and must predict "mat" using both left and right context. Which model, and could GPT do this?<span class="src">2025T3 Q118 · 2026 Q4</span></summary>
+<div class="a"><p><b class="ans">BERT.</b> "Both left and right context" is the definition of MLM, which
+requires bidirectional attention.</p>
+<p><b>GPT cannot.</b> Its causal mask blocks attention to future tokens, so the right-side context is
+physically unreachable. The objective and the mask are structurally incompatible — not a matter of model
+size or activation function.</p></div></details>
+
+<details class="q"><summary>Model C: given "The &lt;X&gt; sat on &lt;Y&gt; mat", generates "cat … the". Model D: given "&lt;extra_id_0&gt; cat sat &lt;extra_id_1&gt; mat", generates "&lt;extra_id_0&gt; The &lt;extra_id_1&gt; on the". Which is BART, which is T5?<span class="src">2025T3 Q118</span></summary>
+<div class="a"><p><b class="ans">C = BART, D = T5.</b></p>
+<p>Look at the <b>output</b>, not the input — both inputs have placeholders. C emits <b>bare words</b>;
+D emits <b>sentinel-prefixed fragments</b>. Sentinels in the output ⇒ T5, always.</p></div></details>
+
+<details class="q"><summary>Which models use a form of denoising objective: BERT, GPT-3, BART, T5?<span class="src">Mar25 Q9</span></summary>
+<div class="a"><p><b class="ans">BERT, BART, T5.</b></p>
+<p>Denoising = corrupt then reconstruct. BERT masks tokens (MLM <i>is</i> a denoising objective). BART
+corrupts and rebuilds the whole sequence. T5 corrupts spans and emits only the spans.</p>
+<p><b class="bad">GPT-3 is not.</b> Causal LM predicts the next token from clean text — nothing is
+corrupted, so there is nothing to denoise.</p></div></details>
+
+<details class="q"><summary>Which components are found in a standard Transformer Encoder layer?<span class="src">2026 Q8</span></summary>
+<div class="a"><p><b class="ans">Multi-head self-attention</b> and <b class="ans">position-wise feed-forward
+network</b>.</p>
+<p><b>Not cross-attention</b> — that connects a decoder to an encoder, so it lives in the decoder.
+<b>Not masked self-attention</b> — also decoder-only; the encoder is bidirectional by definition. Both
+wrong options are decoder parts smuggled into an encoder question.</p></div></details>
+
+<details class="q"><summary>In an encoder-decoder Transformer, where do Q, K, V come from in the decoder's cross-attention?<span class="src">2025T3 Q128</summary>
+<div class="a"><p><b class="ans">Q from the decoder's previous sub-layer; K and V from the encoder's final
+hidden states.</b></p>
+<p><b>Mnemonic:</b> the decoder is the one <i>asking</i> (query). The encoder holds the <i>content being
+looked up</i> (key/value). You bring your question to the library; the library holds the books.</p></div></details>
+
+<details class="q"><summary>An attention mask lets A and B see each other, and lets D see A, B, C but not E. Which objective?<span class="src">2025T3 Q123</span></summary>
+<div class="a"><p><b class="ans">Prefix Language Modeling.</b></p>
+<p>Bidirectional block at the front (A ↔ B), causal afterwards (D sees back but not forward).
+<b>CLM</b> would forbid A from seeing B. <b>MLM</b> would let D see E. <b>BART's denoising</b> is described
+by an architecture, not by one mask over one sequence.</p></div></details>
+
+<details class="q"><summary>A company needs sentiment classification: 10,000 reviews/min, memory-constrained, no explanations. BERT or BART?<span class="src">2025T3 Q120</span></summary>
+<div class="a"><p><b class="ans">BERT — classification requires understanding (encoding), not generation
+(decoding), so it is faster and more memory-efficient without sacrificing accuracy.</b></p>
+<p>Carrying a decoder you never invoke is pure cost. The tempting distractor — "use BART's encoder only and
+discard the decoder" — just reinvents a worse BERT, since BART's encoder wasn't pretrained for that role.</p></div></details>
+
+<details class="q"><summary>What is the fundamental difference between T5's pretraining objective and its supervised fine-tuning objectives?<span class="src">2025T3 Q121</span></summary>
+<div class="a"><p><b class="ans">There is no fundamental difference — both are text-to-text tasks generating
+a target sequence from an input sequence.</b></p>
+<p>Same architecture, same decoder, same cross-entropy loss. That uniformity is precisely what lets one
+checkpoint serve every task with no architectural change.</p></div></details>
+
+<details class="q"><summary>Model A: 12-layer encoder + 12-layer decoder, separate parameters, 220M total, halves equal. Model C shares them. Parameter count of Model C? And is it true that a decoder with P parameters costs the same as an enc-dec with 2P?<span class="src">2025T3 Q110 · GA7 Q7</summary>
+<div class="a"><p><b class="ans">110M.</b> 220M split equally = 110M each; sharing means keeping one copy.</p>
+<p><b class="ans">True.</b> In the enc-dec, the input passes only through the P encoder parameters and the
+output only through the P decoder parameters — each token traverses ~P, not 2P.</p></div></details>
+
+<details class="q"><summary>Original: "Deep learning models need clean data". Drop "learning models" and "clean". Write the T5 input and target.<span class="src">construct it yourself</span></summary>
+<div class="a">
+<pre>INPUT :  Deep &lt;X&gt; need &lt;Y&gt; data          ← no terminal sentinel
+TARGET:  &lt;X&gt; learning models &lt;Y&gt; clean &lt;Z&gt;   ← ends with [z]</pre>
+<p>Note <code>&lt;X&gt;</code> covers <b>two words</b> — one sentinel per <i>span</i>, however long. And
+the target never repeats <code>Deep</code>, <code>need</code>, or <code>data</code>.</p>
+<p><b>If this had been BART:</b> the target would be the entire sentence,
+<code>Deep learning models need clean data</code>, with no markers at all.</p></div></details>
+
+
+<!-- ══════════════════ MODEL CARDS ══════════════════ -->
+<h2 style="margin-top:60px"><span class="n">▣</span>Model Cards — architecture in detail</h2>
+<p style="color:var(--muted);font-size:14.5px">Each card: the diagram, the layer-by-layer breakdown, the
+configuration numbers that actually get tested, and what the exam asks. Everything beyond Quiz 2 scope is
+left out.</p>
+
+
+<!-- ── SHARED BLOCK ── -->
+<div class="story" style="border-left-color:var(--amber)">
+  <h4>Card 0 — the shared skeleton</h4>
+  <p>All four models are built from the <b>same repeating block</b>. What changes is (a) which sub-layers
+  are inside it, and (b) whether the attention is masked. Learn the block once.</p>
+
+  <svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;margin:14px 0">
+    <defs>
+      <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L6,3 L0,6 z" fill="#96A1B8"/></marker>
+    </defs>
+    <style>
+      .bx{fill:#1E2431;stroke:#2A3242;stroke-width:1.5;rx:6}
+      .lb{fill:#E6EAF2;font:600 12px ui-monospace,monospace;text-anchor:middle}
+      .sm{fill:#96A1B8;font:10px ui-monospace,monospace;text-anchor:middle}
+      .hd{font:700 12px Georgia,serif;text-anchor:middle}
+      .ln{stroke:#96A1B8;stroke-width:1.4;fill:none;marker-end:url(#ar)}
+      .rs{stroke:#5FD3A0;stroke-width:1.2;fill:none;stroke-dasharray:3 3}
+    </style>
+
+    <!-- encoder block -->
+    <text x="110" y="18" class="hd" fill="#5FD3A0">Encoder block</text>
+    <text x="110" y="34" class="sm">2 sub-layers</text>
+    <rect x="30" y="46" width="160" height="34" class="bx"/>
+    <text x="110" y="62" class="lb">Multi-Head</text><text x="110" y="75" class="sm">SELF-attention (no mask)</text>
+    <rect x="30" y="96" width="160" height="24" class="bx"/><text x="110" y="112" class="lb">Add &amp; Norm</text>
+    <rect x="30" y="136" width="160" height="34" class="bx"/>
+    <text x="110" y="152" class="lb">Feed-Forward</text><text x="110" y="165" class="sm">d → 4d → d</text>
+    <rect x="30" y="186" width="160" height="24" class="bx"/><text x="110" y="202" class="lb">Add &amp; Norm</text>
+    <path d="M110,80 L110,92" class="ln"/><path d="M110,120 L110,132" class="ln"/><path d="M110,170 L110,182" class="ln"/>
+    <text x="110" y="232" class="sm" fill="#5FD3A0">BERT · encoder of BART / T5</text>
+
+    <!-- decoder-only block -->
+    <text x="350" y="18" class="hd" fill="#8AB4F8">Decoder-only block</text>
+    <text x="350" y="34" class="sm">2 sub-layers</text>
+    <rect x="270" y="46" width="160" height="34" class="bx"/>
+    <text x="350" y="62" class="lb">Multi-Head</text><text x="350" y="75" class="sm">MASKED self-attention</text>
+    <rect x="270" y="96" width="160" height="24" class="bx"/><text x="350" y="112" class="lb">Add &amp; Norm</text>
+    <rect x="270" y="136" width="160" height="34" class="bx"/>
+    <text x="350" y="152" class="lb">Feed-Forward</text><text x="350" y="165" class="sm">d → 4d → d</text>
+    <rect x="270" y="186" width="160" height="24" class="bx"/><text x="350" y="202" class="lb">Add &amp; Norm</text>
+    <path d="M350,80 L350,92" class="ln"/><path d="M350,120 L350,132" class="ln"/><path d="M350,170 L350,182" class="ln"/>
+    <text x="350" y="232" class="sm" fill="#8AB4F8">GPT (no cross-attention)</text>
+
+    <!-- enc-dec decoder block -->
+    <text x="590" y="18" class="hd" fill="#F0B429">Enc-Dec decoder block</text>
+    <text x="590" y="34" class="sm">3 sub-layers</text>
+    <rect x="510" y="46" width="160" height="28" class="bx"/>
+    <text x="590" y="58" class="lb">Multi-Head</text><text x="590" y="70" class="sm">MASKED self-attention</text>
+    <rect x="510" y="80" width="160" height="20" class="bx"/><text x="590" y="94" class="lb">Add &amp; Norm</text>
+    <rect x="510" y="106" width="160" height="28" class="bx" stroke="#F0B429"/>
+    <text x="590" y="118" class="lb" fill="#F0B429">CROSS-attention</text><text x="590" y="130" class="sm">Q=decoder · K,V=encoder</text>
+    <rect x="510" y="140" width="160" height="20" class="bx"/><text x="590" y="154" class="lb">Add &amp; Norm</text>
+    <rect x="510" y="166" width="160" height="24" class="bx"/><text x="590" y="182" class="lb">Feed-Forward</text>
+    <rect x="510" y="196" width="160" height="20" class="bx"/><text x="590" y="210" class="lb">Add &amp; Norm</text>
+    <text x="590" y="238" class="sm" fill="#F0B429">decoder of BART / T5</text>
+  </svg>
+
+  <p style="margin-top:6px"><b>Read the difference:</b> the <b>only</b> thing separating the three is the
+  attention row. Encoder = unmasked self-attention. Decoder-only = masked self-attention. Encoder-decoder's
+  decoder = masked self-attention <b>plus</b> a cross-attention sub-layer that reaches into the encoder.</p>
+</div>
+
+<div class="hook"><span class="lbl">What gets asked about the block</span>
+<b>2026 Q8 — components of an encoder layer:</b> <b class="ans">multi-head self-attention + position-wise
+feed-forward</b>. Cross-attention and masked self-attention are <b>decoder</b> parts smuggled into an
+encoder question.<br><br>
+<b>LayerNorm parameters:</b> each "Add &amp; Norm" learns γ and β, one per feature ⇒ <b>2H</b>. For 512
+features that's <b class="ans">1024</b>. BatchNorm also has 2H — the difference is <i>what they average
+over</i>, not how many parameters they hold.</div>
+
+
+<!-- ── BERT ── -->
+<h3 style="color:var(--bert);font-size:19px;margin-top:38px">BERT — the reader</h3>
+<p><b>Bidirectional Encoder Representations from Transformers.</b> Encoder-only. Reads a sentence in full
+and produces a contextual vector for every token. Has no decoder, so it <b>cannot generate text</b>.</p>
+
+<svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;margin:14px 0">
+  <style>
+    .b2{fill:#1E2431;stroke:#2A3242;stroke-width:1.4;rx:5}
+    .t2{fill:#E6EAF2;font:600 11px ui-monospace,monospace;text-anchor:middle}
+    .s2{fill:#96A1B8;font:9.5px ui-monospace,monospace;text-anchor:middle}
+    .g2{fill:#5FD3A0;font:600 11px ui-monospace,monospace;text-anchor:middle}
+    .l2{stroke:#96A1B8;stroke-width:1.3;fill:none;marker-end:url(#ar)}
+  </style>
+  <!-- input tokens -->
+  <text x="350" y="16" class="s2">INPUT</text>
+  <rect x="60" y="26" width="80" height="24" class="b2"/><text x="100" y="42" class="t2">[CLS]</text>
+  <rect x="150" y="26" width="80" height="24" class="b2"/><text x="190" y="42" class="t2">the</text>
+  <rect x="240" y="26" width="80" height="24" class="b2" stroke="#5FD3A0"/><text x="280" y="42" class="g2">[MASK]</text>
+  <rect x="330" y="26" width="80" height="24" class="b2"/><text x="370" y="42" class="t2">fox</text>
+  <rect x="420" y="26" width="80" height="24" class="b2"/><text x="460" y="42" class="t2">ran</text>
+  <rect x="510" y="26" width="80" height="24" class="b2"/><text x="550" y="42" class="t2">[SEP]</text>
+
+  <!-- embedding sum -->
+  <rect x="60" y="66" width="530" height="20" class="b2"/><text x="325" y="80" class="t2">Token embeddings &nbsp; |V| × d</text>
+  <text x="620" y="80" class="s2">+</text>
+  <rect x="60" y="90" width="530" height="20" class="b2"/><text x="325" y="104" class="t2">Position embeddings &nbsp; T_max × d &nbsp;(learned, absolute)</text>
+  <text x="620" y="104" class="s2">+</text>
+  <rect x="60" y="114" width="530" height="20" class="b2"/><text x="325" y="128" class="t2">Segment embeddings &nbsp; 2 × d &nbsp;(sentence A / B)</text>
+  <path d="M325,50 L325,62" class="l2"/>
+  <path d="M325,134 L325,148" class="l2"/>
+
+  <!-- encoder stack -->
+  <rect x="150" y="152" width="350" height="30" class="b2" stroke="#5FD3A0"/>
+  <text x="325" y="171" class="g2">Encoder block × 12  (bidirectional self-attention)</text>
+  <rect x="165" y="186" width="320" height="18" class="b2"/><text x="325" y="199" class="s2">↑ every token sees every other token, both directions</text>
+  <path d="M325,204 L325,218" class="l2"/>
+
+  <!-- heads -->
+  <rect x="60" y="222" width="230" height="34" class="b2" stroke="#5FD3A0"/>
+  <text x="175" y="238" class="g2">MLM head</text><text x="175" y="250" class="s2">predict the masked token</text>
+  <rect x="360" y="222" width="230" height="34" class="b2" stroke="#5FD3A0"/>
+  <text x="475" y="238" class="g2">[CLS] head</text><text x="475" y="250" class="s2">sentence-level classification</text>
+  <text x="350" y="278" class="s2">loss computed ONLY at masked positions (~15% of tokens)</text>
+</svg>
+
+<table>
+  <tr><th>Component</th><th>Detail</th></tr>
+  <tr><td><b>Input embedding</b></td><td>the <b>sum</b> of three tables: token (|V| × d) + position
+      (T<sub>max</sub> × d, learned absolute) + segment (2 × d)</td></tr>
+  <tr><td><b>Special tokens</b></td><td><code>[CLS]</code> first — its final vector represents the whole
+      sequence. <code>[SEP]</code> separates sentences. <code>[MASK]</code> is the blank.</td></tr>
+  <tr><td><b>Stack</b></td><td>12 encoder blocks (base) / 24 (large). No mask anywhere.</td></tr>
+  <tr><td><b>Objective</b></td><td>MLM — 15% of tokens chosen; of those <b>80% → [MASK], 10% → random
+      word, 10% unchanged</b>. Plus Next Sentence Prediction on the <code>[CLS]</code> vector.</td></tr>
+  <tr><td><b>Loss</b></td><td>cross-entropy at the <b>masked positions only</b></td></tr>
+  <tr><td><b>Fine-tuning</b></td><td>attach a <b>classifier head</b> on the <code>[CLS]</code> vector</td></tr>
+  <tr><td><b>Config (base)</b></td><td>d = 768, h = 12, 12 layers, ≈110M parameters</td></tr>
+</table>
+
+<div class="pyq"><span class="lbl">Exam hooks</span>
+<b>2026 Q18 —</b> embedding parameter count. d=128, |V|=5000, T=64, 2 segments →
+5000·128 + 64·128 + 2·128 = <b class="ans">648,448</b>. Segment embeddings are the piece people forget,
+and they exist <b>only in BERT</b>.<br>
+<b>2026 Q3 —</b> why 10% unchanged? <b class="ans">pretrain/fine-tune mismatch</b> — <code>[MASK]</code>
+never appears at fine-tuning time.<br>
+<b>2026 Q4 —</b> why can't GPT do MLM? The causal mask blocks right-side context.</div>
+
+
+<!-- ── GPT ── -->
+<h3 style="color:var(--gpt);font-size:19px;margin-top:38px">GPT — the storyteller</h3>
+<p><b>Generative Pre-trained Transformer.</b> Decoder-only. Predicts the next token from everything before
+it. No encoder, therefore <b>no cross-attention</b> — its blocks have only 2 sub-layers.</p>
+
+<svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;margin:14px 0">
+  <style>
+    .b3{fill:#1E2431;stroke:#2A3242;stroke-width:1.4;rx:5}
+    .t3{fill:#E6EAF2;font:600 11px ui-monospace,monospace;text-anchor:middle}
+    .s3{fill:#96A1B8;font:9.5px ui-monospace,monospace;text-anchor:middle}
+    .g3{fill:#8AB4F8;font:600 11px ui-monospace,monospace;text-anchor:middle}
+    .l3{stroke:#96A1B8;stroke-width:1.3;fill:none;marker-end:url(#ar)}
+  </style>
+  <text x="230" y="16" class="s3">INPUT (clean text, no corruption)</text>
+  <rect x="60" y="26" width="76" height="24" class="b3"/><text x="98" y="42" class="t3">The</text>
+  <rect x="146" y="26" width="76" height="24" class="b3"/><text x="184" y="42" class="t3">cat</text>
+  <rect x="232" y="26" width="76" height="24" class="b3"/><text x="270" y="42" class="t3">sat</text>
+  <rect x="318" y="26" width="76" height="24" class="b3"/><text x="356" y="42" class="t3">on</text>
+
+  <rect x="60" y="64" width="334" height="20" class="b3"/><text x="227" y="78" class="t3">Token embeddings &nbsp; |V| × d</text>
+  <text x="415" y="78" class="s3">+</text>
+  <rect x="60" y="88" width="334" height="20" class="b3"/><text x="227" y="102" class="t3">Position embeddings &nbsp;(absolute)</text>
+  <path d="M227,50 L227,60" class="l3"/><path d="M227,108 L227,122" class="l3"/>
+
+  <rect x="60" y="126" width="334" height="30" class="b3" stroke="#8AB4F8"/>
+  <text x="227" y="145" class="g3">Decoder block × 12  (MASKED self-attention)</text>
+  <path d="M227,156 L227,170" class="l3"/>
+  <rect x="60" y="174" width="334" height="28" class="b3" stroke="#8AB4F8"/>
+  <text x="227" y="186" class="g3">LM head → softmax over |V|</text>
+  <text x="227" y="197" class="s3">predicts the NEXT token at every position</text>
+  <text x="227" y="222" class="s3" fill="#8AB4F8">"the" → cat &nbsp;·&nbsp; "the cat" → sat &nbsp;·&nbsp; "the cat sat" → on</text>
+  <text x="227" y="240" class="s3">loss at EVERY position</text>
+
+  <!-- causal mask inset -->
+  <text x="570" y="16" class="s3">the causal mask</text>
+  <rect x="490" y="26" width="160" height="160" fill="#0B0E13" stroke="#2A3242"/>
+  <rect x="490" y="26" width="32" height="32" fill="#8AB4F8" opacity=".85"/>
+  <rect x="490" y="58" width="64" height="32" fill="#8AB4F8" opacity=".85"/>
+  <rect x="490" y="90" width="96" height="32" fill="#8AB4F8" opacity=".85"/>
+  <rect x="490" y="122" width="128" height="32" fill="#8AB4F8" opacity=".85"/>
+  <rect x="490" y="154" width="160" height="32" fill="#8AB4F8" opacity=".85"/>
+  <g stroke="#2A3242" stroke-width="1">
+    <line x1="522" y1="26" x2="522" y2="186"/><line x1="554" y1="26" x2="554" y2="186"/>
+    <line x1="586" y1="26" x2="586" y2="186"/><line x1="618" y1="26" x2="618" y2="186"/>
+    <line x1="490" y1="58" x2="650" y2="58"/><line x1="490" y1="90" x2="650" y2="90"/>
+    <line x1="490" y1="122" x2="650" y2="122"/><line x1="490" y1="154" x2="650" y2="154"/>
+  </g>
+  <text x="570" y="202" class="s3">filled = allowed · empty = −∞</text>
+  <text x="570" y="216" class="s3">count = T(T+1)/2</text>
+</svg>
+
+<table>
+  <tr><th>Component</th><th>Detail</th></tr>
+  <tr><td><b>Input embedding</b></td><td>token + position only. <b>No segment embeddings.</b></td></tr>
+  <tr><td><b>Positional encoding</b></td><td><b>learned absolute</b> — this is asked directly about GPT-3</td></tr>
+  <tr><td><b>Stack</b></td><td>decoder blocks with <b>2</b> sub-layers (masked self-attn + FFN).
+      <b>No cross-attention</b> — there's no encoder to attend to.</td></tr>
+  <tr><td><b>Objective</b></td><td>CLM — predict token <i>t+1</i> from tokens 1…<i>t</i></td></tr>
+  <tr><td><b>Loss</b></td><td>cross-entropy at <b>every</b> position</td></tr>
+  <tr><td><b>Transfer</b></td><td>GPT-1 fine-tuning · GPT-2 <b>zero-shot</b> · GPT-3 <b>few-shot / in-context</b></td></tr>
+  <tr><td><b>Config</b></td><td>GPT-1 117M, 12 layers · GPT-2 up to 1.5B · GPT-3 175B, composite dataset</td></tr>
+</table>
+
+<div class="pyq"><span class="lbl">Exam hooks</span>
+<b>Mar25 Q11 —</b> true of GPT-3: <b class="ans">absolute positional encoding</b> and
+<b class="ans">composite pretraining dataset</b>. It is <b>decoder-only</b>, so "encoder-decoder" is false.<br>
+<b>2026 Q11 —</b> why prefer zero-shot: no labelled data needed · no separate checkpoint per task · mimics
+instruction-following. <b>Not</b> "always beats a fine-tuned model".<br>
+<b>GA7 Q2 —</b> labels dropped + CLM ⇒ zero-shot, few-shot <b>and</b> full fine-tuning all remain valid.</div>
+
+
+<!-- ── BART ── -->
+<h3 style="color:var(--bart);font-size:19px;margin-top:38px">BART — the copy editor</h3>
+<p><b>Bidirectional and Auto-Regressive Transformers.</b> A BERT-style encoder bolted to a GPT-style
+decoder. Reads corrupted text, regenerates the <b>entire</b> original.</p>
+
+<svg viewBox="0 0 700 290" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;margin:14px 0">
+  <style>
+    .b4{fill:#1E2431;stroke:#2A3242;stroke-width:1.4;rx:5}
+    .t4{fill:#E6EAF2;font:600 11px ui-monospace,monospace;text-anchor:middle}
+    .s4{fill:#96A1B8;font:9.5px ui-monospace,monospace;text-anchor:middle}
+    .a4{fill:#F0B429;font:600 11px ui-monospace,monospace;text-anchor:middle}
+    .l4{stroke:#96A1B8;stroke-width:1.3;fill:none;marker-end:url(#ar)}
+    .x4{stroke:#F0B429;stroke-width:1.8;fill:none;marker-end:url(#ar)}
+  </style>
+  <!-- encoder side -->
+  <text x="160" y="16" class="s4">ENCODER side</text>
+  <rect x="30" y="26" width="260" height="26" class="b4" stroke="#FF7B72"/>
+  <text x="160" y="43" class="t4" fill="#FF7B72">The &lt;mask&gt; sat on &lt;mask&gt; mat</text>
+  <text x="160" y="62" class="s4">corrupted input</text>
+  <path d="M160,66 L160,80" class="l4"/>
+  <rect x="30" y="84" width="260" height="30" class="b4" stroke="#5FD3A0"/>
+  <text x="160" y="103" class="t4" fill="#5FD3A0">Encoder × 12 (bidirectional)</text>
+  <rect x="30" y="124" width="260" height="22" class="b4"/>
+  <text x="160" y="139" class="s4">encoder hidden states</text>
+
+  <!-- decoder side -->
+  <text x="530" y="16" class="s4">DECODER side</text>
+  <rect x="400" y="26" width="260" height="26" class="b4" stroke="#5FD3A0"/>
+  <text x="530" y="43" class="t4" fill="#5FD3A0">&lt;s&gt; The cat sat on the mat</text>
+  <text x="530" y="62" class="s4">ORIGINAL text, shifted right (teacher forcing)</text>
+  <path d="M530,66 L530,80" class="l4"/>
+  <rect x="400" y="84" width="260" height="30" class="b4" stroke="#F0B429"/>
+  <text x="530" y="103" class="a4">Decoder × 12 (masked + cross-attn)</text>
+  <path d="M530,114 L530,128" class="l4"/>
+  <rect x="400" y="132" width="260" height="26" class="b4"/>
+  <text x="530" y="149" class="t4">LM head → softmax over |V|</text>
+  <path d="M530,158 L530,172" class="l4"/>
+  <rect x="400" y="176" width="260" height="26" class="b4" stroke="#5FD3A0"/>
+  <text x="530" y="193" class="t4" fill="#5FD3A0">The cat sat on the mat</text>
+  <text x="530" y="212" class="s4">the FULL original — every word, including undamaged ones</text>
+
+  <!-- cross attention arrow -->
+  <path d="M290,135 L392,103" class="x4"/>
+  <text x="345" y="126" class="a4" font-size="10">K, V</text>
+  <text x="345" y="164" class="s4">cross-attention:</text>
+  <text x="345" y="176" class="s4">Q from decoder</text>
+
+  <text x="350" y="245" class="s4" fill="#F0B429">Corruptions used: token masking · token deletion · text infilling · sentence permutation · document rotation</text>
+  <text x="350" y="264" class="s4">loss at every decoder position, over the full original sequence</text>
+</svg>
+
+<table>
+  <tr><th>Component</th><th>Detail</th></tr>
+  <tr><td><b>Encoder</b></td><td>bidirectional, receives the <b>corrupted</b> text</td></tr>
+  <tr><td><b>Decoder</b></td><td>causal, 3 sub-layers, receives the <b>original text shifted right</b></td></tr>
+  <tr><td><b>Cross-attention</b></td><td>Q from the decoder's previous sub-layer; K and V from the
+      encoder's <b>final</b> hidden states</td></tr>
+  <tr><td><b>Objective</b></td><td>denoising — reconstruct the <b>whole</b> original sequence</td></tr>
+  <tr><td><b>Corruptions</b></td><td>token masking · deletion · text infilling · sentence permutation ·
+      document rotation. More varied than BERT's single masking scheme.</td></tr>
+  <tr><td><b>Special tokens</b></td><td><code>&lt;mask&gt;</code>, <code>&lt;s&gt;</code>,
+      <code>&lt;/s&gt;</code>. <b>No sentinels</b> — that's T5.</td></tr>
+  <tr><td><b>Loss</b></td><td>mean cross-entropy over every decoder step against the original sentence</td></tr>
+  <tr><td><b>Config</b></td><td>base 6+6 layers · large 12+12, ≈400M</td></tr>
+</table>
+
+<div class="pyq"><span class="lbl">Exam hooks</span>
+<b>2025T3 Q124 —</b> what feeds BART's decoder? <b class="ans">the original uncorrupted text, shifted right
+by one</b>. The corrupted text goes to the <b>encoder</b>; what reaches the decoder is hidden states via
+cross-attention, not raw corrupted tokens.<br>
+<b>GA7 Q1 / Mar25 Q12 —</b> the loss question. Target = the original sentence, one word per row; read each
+row at the gold column; take the <b>mean</b> of the negative logs.</div>
+
+
+<!-- ── T5 ── -->
+<h3 style="color:var(--t5);font-size:19px;margin-top:38px">T5 — the universal form-filler</h3>
+<p><b>Text-to-Text Transfer Transformer.</b> Same encoder-decoder skeleton as BART, but every task —
+pretraining, classification, translation, regression — is cast as <b>text in → text out</b>.</p>
+
+<svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;margin:14px 0">
+  <style>
+    .b5{fill:#1E2431;stroke:#2A3242;stroke-width:1.4;rx:5}
+    .t5x{fill:#E6EAF2;font:600 11px ui-monospace,monospace;text-anchor:middle}
+    .s5{fill:#96A1B8;font:9.5px ui-monospace,monospace;text-anchor:middle}
+    .v5{fill:#C29BFF;font:600 11px ui-monospace,monospace;text-anchor:middle}
+    .l5{stroke:#96A1B8;stroke-width:1.3;fill:none;marker-end:url(#ar)}
+    .x5{stroke:#C29BFF;stroke-width:1.8;fill:none;marker-end:url(#ar)}
+  </style>
+  <text x="160" y="16" class="s5">ENCODER side</text>
+  <rect x="20" y="26" width="280" height="26" class="b5" stroke="#C29BFF"/>
+  <text x="160" y="43" class="v5">The quick &lt;X&gt; fox &lt;Y&gt; over the dog</text>
+  <text x="160" y="62" class="s5">spans replaced in place · NO terminal sentinel</text>
+  <path d="M160,66 L160,80" class="l5"/>
+  <rect x="20" y="84" width="280" height="30" class="b5" stroke="#5FD3A0"/>
+  <text x="160" y="103" class="t5x" fill="#5FD3A0">Encoder × 12 (bidirectional)</text>
+  <rect x="20" y="124" width="280" height="22" class="b5"/>
+  <text x="160" y="139" class="s5">encoder hidden states</text>
+
+  <text x="530" y="16" class="s5">DECODER side</text>
+  <rect x="400" y="26" width="270" height="26" class="b5" stroke="#C29BFF"/>
+  <text x="535" y="43" class="v5">target, shifted right</text>
+  <path d="M535,56 L535,80" class="l5"/>
+  <rect x="400" y="84" width="270" height="30" class="b5" stroke="#C29BFF"/>
+  <text x="535" y="103" class="v5">Decoder × 12 (masked + cross-attn)</text>
+  <path d="M535,114 L535,128" class="l5"/>
+  <rect x="400" y="132" width="270" height="26" class="b5"/>
+  <text x="535" y="149" class="t5x">LM head → softmax over |V|</text>
+  <path d="M535,158 L535,172" class="l5"/>
+  <rect x="400" y="176" width="270" height="26" class="b5" stroke="#C29BFF"/>
+  <text x="535" y="193" class="v5">&lt;X&gt; brown &lt;Y&gt; jumps &lt;Z&gt;</text>
+  <text x="535" y="212" class="s5">ONLY the spans · ends with terminal sentinel</text>
+
+  <path d="M300,135 L392,103" class="x5"/>
+  <text x="350" y="126" class="v5" font-size="10">K, V</text>
+
+  <rect x="80" y="230" width="540" height="52" class="b5" stroke="#C29BFF"/>
+  <text x="350" y="248" class="v5">The text-to-text contract</text>
+  <text x="350" y="264" class="s5">classification → label becomes a STRING · regression → "3.8" generated token by token</text>
+  <text x="350" y="276" class="s5">NEVER add a task head · NEVER update the vocabulary</text>
+</svg>
+
+<table>
+  <tr><th>Component</th><th>Detail</th></tr>
+  <tr><td><b>Encoder input</b></td><td>spans replaced by sentinels <b>in place</b>, no terminal sentinel</td></tr>
+  <tr><td><b>Decoder target</b></td><td>sentinel + span, in original order, then a <b>terminal sentinel</b></td></tr>
+  <tr><td><b>Sentinels</b></td><td><code>&lt;extra_id_0&gt;</code>, … — real tokens, <b>part of the
+      vocabulary</b>. One per span, however many words the span holds.</td></tr>
+  <tr><td><b>Corruption settings</b></td><td>≈15% of tokens, mean span length ≈3. The paper found the
+      exact rate barely matters, span ≈3 slightly beats single tokens, and replacing with a sentinel
+      beats simply dropping.</td></tr>
+  <tr><td><b>Positional encoding</b></td><td><b>relative</b> position biases, not absolute — a genuine
+      difference from BERT and GPT</td></tr>
+  <tr><td><b>Pretraining data</b></td><td><b>C4</b> (Colossal Clean Crawled Corpus)</td></tr>
+  <tr><td><b>Fine-tuning</b></td><td>text-to-text. Gradual unfreezing goes <b>top-down, one layer per
+      phase, encoder and decoder simultaneously</b>.</td></tr>
+  <tr><td><b>Multi-task mixing</b></td><td>proportional with cap K, or temperature mixing with exponent 1/T</td></tr>
+  <tr><td><b>Config</b></td><td>small 60M · base 220M · large 770M · 3B · 11B</td></tr>
+</table>
+
+<div class="pyq"><span class="lbl">Exam hooks</span>
+<b>Sentinel questions —</b> target ends with <code>[z]</code>, input doesn't. Naming is free, so
+<b>two MSQ options are usually correct</b>.<br>
+<b>Label mapping —</b> both <code>"negative"/"positive"</code> and <code>"0"/"1"</code> are valid, and the
+mapping must cover <b>every</b> class. Adding a linear head is always wrong.<br>
+<b>2025T3 Q121 —</b> pretraining vs fine-tuning objective: <b class="ans">no fundamental difference</b>,
+both are text-to-text generation.<br>
+<b>2025T3 Q110 / GA7 Q7 —</b> sharing W<sub>Enc</sub>=W<sub>Dec</sub> halves parameters (220M → 110M); a
+decoder with P parameters and an enc-dec with 2P cost the <b>same</b>.</div>
+
+
+<!-- ── PREFIX LM ── -->
+<h3 style="font-size:19px;margin-top:38px">Prefix-LM — the dial between GPT and BERT</h3>
+<p>Not a separate architecture so much as a <b>masking scheme</b>. One stack, one sequence: the first
+<i>p</i> tokens attend bidirectionally among themselves; everything after is causal. T5 studied it as an
+alternative objective; UniLM is the named model.</p>
+
+<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;margin:14px 0">
+  <style>
+    .s6{fill:#96A1B8;font:9.5px ui-monospace,monospace;text-anchor:middle}
+    .h6{font:600 11px ui-monospace,monospace;text-anchor:middle}
+    .gl{stroke:#2A3242;stroke-width:1}
+  </style>
+  <!-- bidirectional -->
+  <text x="110" y="18" class="h6" fill="#5FD3A0">Bidirectional (BERT)</text>
+  <rect x="50" y="30" width="120" height="120" fill="#0B0E13" stroke="#2A3242"/>
+  <rect x="50" y="30" width="120" height="120" fill="#5FD3A0" opacity=".8"/>
+  <g class="gl"><line x1="74" y1="30" x2="74" y2="150"/><line x1="98" y1="30" x2="98" y2="150"/>
+  <line x1="122" y1="30" x2="122" y2="150"/><line x1="146" y1="30" x2="146" y2="150"/>
+  <line x1="50" y1="54" x2="170" y2="54"/><line x1="50" y1="78" x2="170" y2="78"/>
+  <line x1="50" y1="102" x2="170" y2="102"/><line x1="50" y1="126" x2="170" y2="126"/></g>
+  <text x="110" y="168" class="s6">p = T · every cell allowed</text>
+  <text x="110" y="184" class="s6">count = T²</text>
+
+  <!-- prefix LM -->
+  <text x="350" y="18" class="h6" fill="#C29BFF">Prefix-LM, p = 2</text>
+  <rect x="290" y="30" width="120" height="120" fill="#0B0E13" stroke="#2A3242"/>
+  <rect x="290" y="30" width="48" height="48" fill="#C29BFF" opacity=".8"/>
+  <rect x="290" y="78" width="72" height="24" fill="#C29BFF" opacity=".8"/>
+  <rect x="290" y="102" width="96" height="24" fill="#C29BFF" opacity=".8"/>
+  <rect x="290" y="126" width="120" height="24" fill="#C29BFF" opacity=".8"/>
+  <g class="gl"><line x1="314" y1="30" x2="314" y2="150"/><line x1="338" y1="30" x2="338" y2="150"/>
+  <line x1="362" y1="30" x2="362" y2="150"/><line x1="386" y1="30" x2="386" y2="150"/>
+  <line x1="290" y1="54" x2="410" y2="54"/><line x1="290" y1="78" x2="410" y2="78"/>
+  <line x1="290" y1="102" x2="410" y2="102"/><line x1="290" y1="126" x2="410" y2="126"/></g>
+  <line x1="290" y1="78" x2="410" y2="78" stroke="#C29BFF" stroke-width="2" stroke-dasharray="4 3"/>
+  <text x="350" y="168" class="s6">prefix block full, rest causal</text>
+  <text x="350" y="184" class="s6" fill="#C29BFF">count = T(T+1)/2 + p(p−1)/2</text>
+
+  <!-- causal -->
+  <text x="590" y="18" class="h6" fill="#8AB4F8">Causal (GPT)</text>
+  <rect x="530" y="30" width="120" height="120" fill="#0B0E13" stroke="#2A3242"/>
+  <rect x="530" y="30" width="24" height="24" fill="#8AB4F8" opacity=".8"/>
+  <rect x="530" y="54" width="48" height="24" fill="#8AB4F8" opacity=".8"/>
+  <rect x="530" y="78" width="72" height="24" fill="#8AB4F8" opacity=".8"/>
+  <rect x="530" y="102" width="96" height="24" fill="#8AB4F8" opacity=".8"/>
+  <rect x="530" y="126" width="120" height="24" fill="#8AB4F8" opacity=".8"/>
+  <g class="gl"><line x1="554" y1="30" x2="554" y2="150"/><line x1="578" y1="30" x2="578" y2="150"/>
+  <line x1="602" y1="30" x2="602" y2="150"/><line x1="626" y1="30" x2="626" y2="150"/>
+  <line x1="530" y1="54" x2="650" y2="54"/><line x1="530" y1="78" x2="650" y2="78"/>
+  <line x1="530" y1="102" x2="650" y2="102"/><line x1="530" y1="126" x2="650" y2="126"/></g>
+  <text x="590" y="168" class="s6">p = 0 · lower triangle only</text>
+  <text x="590" y="184" class="s6">count = T(T+1)/2</text>
+
+  <text x="350" y="210" class="s6">One formula covers all three. Prefix-LM is the dial; p is the position.</text>
+</svg>
+
+<div class="hook"><span class="lbl">Read the three grids together</span>
+The middle grid is the left grid's top-left corner pasted onto the right grid. That's literally all
+Prefix-LM is — and it's why <b>p = 0 gives GPT</b> and <b>p = T gives BERT</b>. If your formula doesn't
+degrade correctly at both ends, you've derived it wrong.</div>
+
+
+<!-- ── SIZE / STAT TABLE ── -->
+<h3 style="margin-top:38px">Configuration numbers worth knowing</h3>
+<table>
+  <tr><th>Model</th><th>Layers</th><th>Params</th><th>Pretraining data</th><th>Position encoding</th></tr>
+  <tr><td class="mB">BERT-base</td><td class="n">12 enc</td><td class="n">≈110M</td>
+      <td>BookCorpus + Wikipedia</td><td>learned absolute</td></tr>
+  <tr><td class="mG">GPT-1</td><td class="n">12 dec</td><td class="n">117M</td><td>BookCorpus</td><td>learned absolute</td></tr>
+  <tr><td class="mG">GPT-2</td><td class="n">up to 48</td><td class="n">1.5B</td><td>WebText</td><td>learned absolute</td></tr>
+  <tr><td class="mG">GPT-3</td><td class="n">96</td><td class="n">175B</td><td><b>composite</b> (CC, WebText2, Books, Wikipedia)</td><td><b>absolute</b></td></tr>
+  <tr><td class="mA">BART-large</td><td class="n">12 + 12</td><td class="n">≈400M</td><td>same corpus family as RoBERTa</td><td>learned absolute</td></tr>
+  <tr><td class="mT">T5-base</td><td class="n">12 + 12</td><td class="n">220M</td><td><b>C4</b></td><td><b>relative</b></td></tr>
+</table>
+
+<div class="trap"><span class="lbl">Only two of these numbers have actually been examined</span>
+<b>T5-base = 220M</b> (the parameter-sharing question splits it into 110M + 110M), and <b>GPT-3's absolute
+positional encoding + composite dataset</b>. Treat the rest as context, not memorisation — the exam tests
+<b>structure</b>, not model trivia.</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Tokenizer Simulator — BPE / WordPiece / Unigram</title>
+<style>
+  :root{
+    --bg:#0a0e14; --panel:#111722; --panel2:#1c2333; --border:#2a3444;
+    --text:#e6edf3; --muted:#8b98a9; --accent:#5eb1ef; --good:#7ee787; --warn:#f0883e;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--bg); color:var(--text); font-family:-apple-system,Segoe UI,Roboto,sans-serif; margin:0; padding:20px 14px 60px;}
+  .wrap{max-width:760px; margin:0 auto;}
+  h1{font-size:1.25rem; margin:0 0 2px;}
+  .sub{color:var(--muted); font-size:0.86rem; margin-bottom:18px;}
+  .box{background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:14px; margin-bottom:14px;}
+  .label{font-size:0.72rem; text-transform:uppercase; letter-spacing:0.04em; color:var(--muted); margin-bottom:8px;}
+  textarea{width:100%; background:var(--panel2); border:1px solid var(--border); border-radius:6px; color:var(--text);
+    font-family:"SF Mono",Consolas,monospace; font-size:0.85rem; padding:8px; resize:vertical;}
+  input[type=text]{background:var(--panel2); border:1px solid var(--border); border-radius:6px; color:var(--text);
+    font-family:"SF Mono",Consolas,monospace; font-size:0.85rem; padding:6px 8px; width:160px;}
+  .tabs{display:flex; gap:6px; border-bottom:1px solid var(--border); margin-bottom:16px;}
+  .tab{background:none; border:none; color:var(--muted); font-size:0.88rem; padding:8px 12px; cursor:pointer;
+    border-bottom:2px solid transparent; font-family:inherit;}
+  .tab.active{color:var(--good); border-bottom-color:var(--good);}
+  .tab:hover:not(.active){color:var(--text);}
+  .row{display:flex; align-items:center; gap:8px; margin-bottom:6px; font-size:0.88rem;}
+  .cnt{color:var(--muted); width:26px; text-align:right; font-family:monospace; font-size:0.82rem;}
+  .chip{display:inline-block; font-family:monospace; font-size:0.82rem; padding:2px 7px; margin:2px 3px 2px 0;
+    border-radius:5px; border:1px solid var(--border); background:var(--panel2);}
+  .chipsm{font-size:0.75rem; padding:1px 6px;}
+  table{width:100%; border-collapse:collapse; font-size:0.85rem;}
+  th{text-align:left; color:var(--muted); font-size:0.72rem; font-weight:500; padding:3px 6px; border-bottom:1px solid var(--border);}
+  td{padding:4px 6px; font-family:monospace; border-bottom:1px solid #1a2130;}
+  tr.winner td{background:rgba(126,231,135,0.12); color:var(--good);}
+  .btn{background:none; border:1px solid var(--border); color:var(--muted); border-radius:6px; padding:6px 11px;
+    font-size:0.8rem; cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; gap:4px;}
+  .btn:hover{background:var(--panel2); color:var(--text);}
+  .btn.next{border-color:#2d6a4f; color:var(--good);}
+  .btn.next:hover{background:rgba(126,231,135,0.08);}
+  .btn:disabled{opacity:0.3; cursor:default;}
+  .btn:disabled:hover{background:none; color:var(--muted);}
+  .steprow{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
+  .stepinfo{color:var(--muted); font-size:0.85rem;}
+  .footnote{color:var(--muted); font-size:0.78rem; margin-top:6px;}
+  .arrow{color:var(--muted); margin-right:6px;}
+  .empty{color:var(--muted); font-style:italic; font-size:0.85rem; padding:4px 0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Tokenizer Simulator</h1>
+  <div class="sub">Edit the corpus, step through merges, test on new words. Fully self-contained — no internet, no build step.</div>
+
+  <div class="box">
+    <div class="label">Corpus (one "word count" per line)</div>
+    <textarea id="corpusInput" rows="4">low 5
+lower 2
+newest 6
+widest 3</textarea>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-tab="bpe">BPE</button>
+    <button class="tab" data-tab="wordpiece">WordPiece</button>
+    <button class="tab" data-tab="unigram">Unigram / Viterbi</button>
+  </div>
+
+  <div id="panel"></div>
+</div>
+
+<script>
+const PALETTE = ["#5eb1ef","#7ee787","#f0883e","#e08fe0","#f0d264","#ff8f8f","#8fd6d6","#c3a6ff"];
+
+// ---------- algorithm core (identical logic to the React version) ----------
+
+function parseCorpus(text){
+  return text.split("\n").map(l=>l.trim()).filter(Boolean).map(line=>{
+    const parts = line.split(/\s+/);
+    const word = parts[0];
+    const count = parseInt(parts[1]||"1",10) || 1;
+    return {word, count};
+  });
+}
+
+function toInitialWords(parsed){
+  return parsed.map(w=>({symbols:[...w.word.split(""), "_"], count:w.count}));
+}
+
+function computeSteps(initialWords, algorithm, maxSteps){
+  let words = initialWords.map(w=>({symbols:[...w.symbols], count:w.count}));
+  let vocab = new Set();
+  words.forEach(w=>w.symbols.forEach(s=>vocab.add(s)));
+  const steps = [];
+
+  for (let i=0;i<maxSteps;i++){
+    const pairCounts = new Map();
+    for (const w of words){
+      for (let j=0;j<w.symbols.length-1;j++){
+        const key = w.symbols[j]+"\u0001"+w.symbols[j+1];
+        pairCounts.set(key, (pairCounts.get(key)||0)+w.count);
+      }
+    }
+    if (pairCounts.size===0) break;
+
+    let scored;
+    if (algorithm==="bpe"){
+      scored = Array.from(pairCounts.entries()).map(([key,count])=>{
+        const [a,b]=key.split("\u0001");
+        return {a,b,count,score:count};
+      });
+    } else {
+      const symbolCounts = new Map();
+      for (const w of words){
+        for (const s of w.symbols) symbolCounts.set(s, (symbolCounts.get(s)||0)+w.count);
+      }
+      scored = Array.from(pairCounts.entries()).map(([key,count])=>{
+        const [a,b]=key.split("\u0001");
+        const score = count/(symbolCounts.get(a)*symbolCounts.get(b));
+        return {a,b,count,score};
+      });
+    }
+    scored.sort((x,y)=>y.score-x.score);
+    const best = scored[0];
+    const merged = best.a+best.b;
+
+    const newWords = words.map(w=>{
+      const ns=[]; let j=0;
+      while(j<w.symbols.length){
+        if (j<w.symbols.length-1 && w.symbols[j]===best.a && w.symbols[j+1]===best.b){
+          ns.push(merged); j+=2;
+        } else { ns.push(w.symbols[j]); j+=1; }
+      }
+      return {symbols:ns, count:w.count};
+    });
+
+    vocab = new Set(vocab);
+    vocab.add(merged);
+
+    steps.push({candidates:scored.slice(0,8), chosen:best, wordsBefore:words, wordsAfter:newWords, vocabSnapshot:vocab});
+    words = newWords;
+  }
+  return steps;
+}
+
+function applyBPE(word, merges){
+  let symbols = [...word.split(""), "_"];
+  for (const [a,b] of merges){
+    const merged=a+b; const ns=[]; let i=0;
+    while(i<symbols.length){
+      if(i<symbols.length-1 && symbols[i]===a && symbols[i+1]===b){ns.push(merged); i+=2;}
+      else {ns.push(symbols[i]); i+=1;}
+    }
+    symbols=ns;
+  }
+  return symbols;
+}
+
+function applyWordPiece(word, vocabSet){
+  const s = word.split("").join("") + "_";
+  let i=0; const tokens=[];
+  while(i<s.length){
+    let matched=null;
+    for(let end=s.length; end>i; end--){
+      const piece=s.slice(i,end);
+      if (vocabSet.has(piece)){ matched=piece; break; }
+    }
+    if(matched){ tokens.push(i===0?matched:"##"+matched); i+=matched.length; }
+    else { tokens.push(i===0? s[i] : "##"+s[i]); i+=1; }
+  }
+  return tokens;
+}
+
+function buildUnigramVocab(parsedCorpus){
+  const substrCounts = new Map();
+  let total=0;
+  for (const {word,count} of parsedCorpus){
+    const s = word+"_";
+    for (let i=0;i<s.length;i++){
+      for (let j=i+1;j<=s.length;j++){
+        const piece=s.slice(i,j);
+        substrCounts.set(piece, (substrCounts.get(piece)||0)+count);
+        total+=count;
+      }
+    }
+  }
+  const vocab = new Map();
+  for (const [piece,count] of substrCounts.entries()) vocab.set(piece, Math.log(count/total));
+  return vocab;
+}
+
+function viterbi(word, vocabLogProb){
+  const s = word+"_";
+  const n=s.length;
+  const bestScore=new Array(n+1).fill(-Infinity);
+  bestScore[0]=0;
+  const backptr=new Array(n+1).fill(null);
+  const table=[];
+  for (let end=1; end<=n; end++){
+    for (let start=0; start<end; start++){
+      const piece=s.slice(start,end);
+      if (vocabLogProb.has(piece)){
+        const sc = bestScore[start]+vocabLogProb.get(piece);
+        if (sc>bestScore[end]){ bestScore[end]=sc; backptr[end]=start; }
+      }
+    }
+    table.push({end, char:s[end-1]});
+  }
+  const tokens=[];
+  let pos=n;
+  while(pos>0 && backptr[pos]!==null){
+    const start=backptr[pos];
+    tokens.push(s.slice(start,pos));
+    pos=start;
+  }
+  tokens.reverse();
+  return {tokens, bestScore, backptr, table, s};
+}
+
+// ---------- rendering helpers ----------
+
+function chip(sym, small){
+  const color = PALETTE[(sym.length-1) % PALETTE.length];
+  const disp = sym === "_" ? "⌴" : sym;
+  return `<span class="chip${small?" chipsm":""}" style="color:${color}">${disp}</span>`;
+}
+function chips(symbols, small){ return symbols.map(s=>chip(s,small)).join(""); }
+
+// ---------- state ----------
+
+let state = {
+  corpusText: "low 5\nlower 2\nnewest 6\nwidest 3",
+  tab: "bpe",
+  stepBpe: 0,
+  stepWp: 0,
+  testWordBpe: "lowest",
+  testWordWp: "lowest",
+  viterbiWord: "lowest",
+};
+let derived = {};
+
+function recompute(){
+  const parsedCorpus = parseCorpus(state.corpusText);
+  const initialWords = toInitialWords(parsedCorpus);
+  const bpeSteps = computeSteps(initialWords, "bpe", 15);
+  const wpSteps = computeSteps(initialWords, "wordpiece", 15);
+  const vocabLogProb = buildUnigramVocab(parsedCorpus);
+  state.stepBpe = Math.min(state.stepBpe, bpeSteps.length);
+  state.stepWp = Math.min(state.stepWp, wpSteps.length);
+  derived = {parsedCorpus, initialWords, bpeSteps, wpSteps, vocabLogProb};
+}
+
+// ---------- panel builders ----------
+
+function baseVocabOf(initialWords){
+  const v = new Set();
+  initialWords.forEach(w=>w.symbols.forEach(s=>v.add(s)));
+  return v;
+}
+
+function stepPanelHTML(kind){
+  const steps = kind==="bpe" ? derived.bpeSteps : derived.wpSteps;
+  const stepIdx = kind==="bpe" ? state.stepBpe : state.stepWp;
+  const maxStep = steps.length;
+  const baseVocab = baseVocabOf(derived.initialWords);
+  const currentWords = stepIdx===0 ? derived.initialWords : steps[stepIdx-1].wordsAfter;
+  const vocabNow = stepIdx===0 ? baseVocab : steps[stepIdx-1].vocabSnapshot;
+  const upcoming = stepIdx < maxStep ? steps[stepIdx] : null;
+  const scoreLabel = kind==="bpe" ? "count" : "score";
+
+  const wordsHTML = currentWords.map(w=>
+    `<div class="row"><span class="cnt">${w.count}×</span>${chips(w.symbols)}</div>`
+  ).join("");
+
+  let candHTML;
+  if (upcoming){
+    const rows = upcoming.candidates.map(c=>{
+      const isWinner = c.a===upcoming.chosen.a && c.b===upcoming.chosen.b;
+      const scoreCell = scoreLabel==="score" ? `<td>${c.score.toFixed(4)}</td>` : "";
+      return `<tr class="${isWinner?"winner":""}">
+        <td>(${c.a==="_"?"⌴":c.a}, ${c.b==="_"?"⌴":c.b})${isWinner?" ← chosen":""}</td>
+        <td>${c.count}</td>${scoreCell}
+      </tr>`;
+    }).join("");
+    candHTML = `<table>
+      <thead><tr><th>pair</th><th>count</th>${scoreLabel==="score"?"<th>score</th>":""}</tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+  } else {
+    candHTML = `<div class="empty">All possible merges exhausted for this corpus.</div>`;
+  }
+
+  const vocabHTML = Array.from(vocabNow).map(t=>
+    `<span class="chip chipsm">${t==="_"?"⌴":t}</span>`
+  ).join("");
+
+  const label = kind==="bpe" ? "BPE" : "WordPiece";
+  const testId = kind==="bpe" ? "testInputBpe" : "testInputWp";
+  const resultId = kind==="bpe" ? "testResultBpe" : "testResultWp";
+  const testWord = kind==="bpe" ? state.testWordBpe : state.testWordWp;
+  const footnote = kind==="bpe"
+    ? `Replays only the merges learned up to step ${stepIdx}.`
+    : `Greedy longest-match; continuation pieces prefixed with ##.`;
+
+  return `
+    <div class="steprow">
+      <div class="stepinfo">Step <b style="color:var(--text)">${stepIdx}</b> of ${maxStep}</div>
+      <div>
+        <button class="btn" data-act="reset" data-kind="${kind}">↺ Reset</button>
+        <button class="btn" data-act="prev" data-kind="${kind}" ${stepIdx===0?"disabled":""}>← Prev</button>
+        <button class="btn next" data-act="next" data-kind="${kind}" ${stepIdx===maxStep?"disabled":""}>Next →</button>
+      </div>
+    </div>
+
+    <div class="box">
+      <div class="label">Corpus, after ${stepIdx} merge(s)</div>
+      ${wordsHTML}
+    </div>
+
+    <div class="box">
+      <div class="label">Candidate pairs for merge #${stepIdx+1} (ranked by ${scoreLabel})</div>
+      ${candHTML}
+    </div>
+
+    <div class="box">
+      <div class="label">Vocabulary so far (${vocabNow.size} tokens)</div>
+      ${vocabHTML}
+    </div>
+
+    <div class="box">
+      <div class="label">Test tokenization with vocab trained so far</div>
+      <input type="text" id="${testId}" value="${testWord}">
+      <div id="${resultId}" style="margin-top:8px;"></div>
+      <div class="footnote">${footnote}</div>
+    </div>
+  `;
+}
+
+function renderTestResult(kind){
+  const steps = kind==="bpe" ? derived.bpeSteps : derived.wpSteps;
+  const stepIdx = kind==="bpe" ? state.stepBpe : state.stepWp;
+  const word = (kind==="bpe" ? state.testWordBpe : state.testWordWp).toLowerCase();
+  let result;
+  if (kind==="bpe"){
+    const merges = steps.slice(0, stepIdx).map(s=>[s.chosen.a, s.chosen.b]);
+    result = applyBPE(word, merges);
+  } else {
+    const baseVocab = baseVocabOf(derived.initialWords);
+    const vocabNow = stepIdx===0 ? baseVocab : steps[stepIdx-1].vocabSnapshot;
+    result = applyWordPiece(word, vocabNow);
+  }
+  const el = document.getElementById(kind==="bpe"?"testResultBpe":"testResultWp");
+  if (el) el.innerHTML = `<span class="arrow">→</span>${chips(result, true)}`;
+}
+
+function unigramPanelHTML(){
+  const result = viterbi(state.viterbiWord.toLowerCase(), derived.vocabLogProb);
+  return `
+    <div class="box">
+      <div class="label">Candidate vocab: every substring of every corpus word, scored by log(count / total)</div>
+      <div class="footnote">${derived.vocabLogProb.size} candidate pieces derived from your corpus.</div>
+    </div>
+
+    <div class="box">
+      <div class="label">Word to segment (Viterbi best-path)</div>
+      <input type="text" id="viterbiInput" value="${state.viterbiWord}">
+      <div id="viterbiOutput" style="margin-top:10px;"></div>
+    </div>
+  `;
+}
+
+function renderViterbiOutput(){
+  const result = viterbi(state.viterbiWord.toLowerCase(), derived.vocabLogProb);
+  const total = result.bestScore[result.bestScore.length-1];
+  const totalStr = isFinite(total) ? total.toFixed(3) : "−∞ (no valid segmentation — try a word closer to your corpus)";
+
+  const rows = result.table.map(row=>{
+    const start = result.backptr[row.end];
+    const winPiece = start!==null ? result.s.slice(start, row.end) : "—";
+    const score = result.bestScore[row.end];
+    return `<tr>
+      <td>${row.end}</td>
+      <td>${row.char==="_"?"⌴":row.char}</td>
+      <td>${isFinite(score)?score.toFixed(3):"−∞"}</td>
+      <td style="color:var(--good)">${winPiece==="_"?"⌴":winPiece}</td>
+    </tr>`;
+  }).join("");
+
+  const html = `
+    <div class="row" style="margin-bottom:4px;"><span class="arrow">Best segmentation →</span>${chips(result.tokens)}</div>
+    <div class="footnote" style="margin-bottom:10px;">total log-prob: ${totalStr}</div>
+    <div class="label">DP table: best_score[end] and the piece that achieved it</div>
+    <table>
+      <thead><tr><th>position</th><th>char</th><th>best_score</th><th>winning piece</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+  document.getElementById("viterbiOutput").innerHTML = html;
+}
+
+// ---------- main render / event wiring ----------
+
+function render(){
+  const panel = document.getElementById("panel");
+  if (state.tab === "bpe"){
+    panel.innerHTML = stepPanelHTML("bpe");
+    renderTestResult("bpe");
+    wireStepButtons("bpe");
+    wireTestInput("bpe");
+  } else if (state.tab === "wordpiece"){
+    panel.innerHTML = stepPanelHTML("wordpiece");
+    renderTestResult("wordpiece");
+    wireStepButtons("wordpiece");
+    wireTestInput("wordpiece");
+  } else {
+    panel.innerHTML = unigramPanelHTML();
+    renderViterbiOutput();
+    wireViterbiInput();
+  }
+}
+
+function wireStepButtons(kind){
+  document.querySelectorAll(`#panel button[data-kind="${kind}"]`).forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const steps = kind==="bpe" ? derived.bpeSteps : derived.wpSteps;
+      const act = btn.dataset.act;
+      if (kind==="bpe"){
+        if (act==="reset") state.stepBpe = 0;
+        else if (act==="prev") state.stepBpe = Math.max(0, state.stepBpe-1);
+        else if (act==="next") state.stepBpe = Math.min(steps.length, state.stepBpe+1);
+      } else {
+        if (act==="reset") state.stepWp = 0;
+        else if (act==="prev") state.stepWp = Math.max(0, state.stepWp-1);
+        else if (act==="next") state.stepWp = Math.min(steps.length, state.stepWp+1);
+      }
+      render();
+    });
+  });
+}
+
+function wireTestInput(kind){
+  const id = kind==="bpe" ? "testInputBpe" : "testInputWp";
+  const input = document.getElementById(id);
+  input.addEventListener("input", ()=>{
+    const clean = input.value.replace(/[^a-zA-Z]/g, "");
+    input.value = clean;
+    if (kind==="bpe") state.testWordBpe = clean || "a";
+    else state.testWordWp = clean || "a";
+    renderTestResult(kind);
+  });
+}
+
+function wireViterbiInput(){
+  const input = document.getElementById("viterbiInput");
+  input.addEventListener("input", ()=>{
+    const clean = input.value.replace(/[^a-zA-Z]/g, "");
+    input.value = clean;
+    state.viterbiWord = clean || "a";
+    renderViterbiOutput();
+  });
+}
+
+document.getElementById("corpusInput").addEventListener("input", (e)=>{
+  state.corpusText = e.target.value;
+  recompute();
+  render();
+});
+
+document.querySelectorAll(".tab").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    state.tab = btn.dataset.tab;
+    render();
+  });
+});
+
+// ---------- init ----------
+recompute();
+render();
+</script>
+</body>
+</html>

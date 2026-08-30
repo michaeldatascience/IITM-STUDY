@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DLCV Week 1 — Recitation · Image Processing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]'],['$$','$$']] },
+  chtml: { scale: 0.98 },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+};
+</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<style>
+:root{
+  --bg:#F5F6F8; --surface:#FFFFFF; --surface2:#FBFBFD; --border:#E4E7EC;
+  --ink:#15181F; --muted:#5C6371; --faint:#8A909C;
+  --accent:#4338CA; --accent2:#635BF0; --accent-soft:#EEEFFE; --accent-border:#D6D9FB;
+  --trap:#B54708; --trap-bg:#FEF7EF; --trap-border:#F3D9BC;
+  --recall:#0E7A6E; --recall-bg:#ECFBF6; --recall-border:#BEE9DE;
+  --code-bg:#181B24; --code-ink:#D5DAE6; --code-accent:#8FA0FF;
+  --font-display:'Space Grotesk',system-ui,sans-serif;
+  --font-body:'Spectral',Georgia,serif;
+  --font-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,monospace;
+  --maxw:1180px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--font-body);font-size:17px;line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+
+/* ---------- Hero ---------- */
+.hero{border-bottom:1px solid var(--border);background:
+  radial-gradient(120% 100% at 85% -10%, #ECEDFE 0%, rgba(236,237,254,0) 55%), var(--surface);}
+.hero-inner{padding:52px 24px 40px;max-width:var(--maxw);margin:0 auto}
+.eyebrow{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-family:var(--font-display);font-weight:600;letter-spacing:-.02em;
+  font-size:clamp(30px,5vw,50px);line-height:1.04;margin:.35em 0 .25em}
+h1 .thin{color:var(--faint);font-weight:400}
+.lede{font-size:19px;color:var(--muted);max-width:64ch;margin:0 0 4px}
+.meta-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.tag{font-family:var(--font-mono);font-size:12px;padding:4px 10px;border-radius:999px;
+  border:1px solid var(--border);background:var(--surface2);color:var(--muted)}
+
+/* signature: sliding-kernel pixel grid */
+.signature{display:grid;grid-template-columns:1.4fr 1fr;gap:32px;align-items:center;margin-top:34px}
+@media(max-width:820px){.signature{grid-template-columns:1fr}}
+.pixgrid{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;
+  font-family:var(--font-mono);font-size:13px;max-width:360px}
+.px{aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  border-radius:5px;background:var(--surface2);color:var(--muted);transition:background .25s,color .25s,transform .25s}
+.px.kw{background:var(--accent);color:#fff;transform:scale(1.04)}
+.sig-note{color:var(--muted);font-size:15.5px}
+.sig-note b{color:var(--ink);font-weight:600;font-family:var(--font-display)}
+
+/* ---------- Layout ---------- */
+.shell{display:grid;grid-template-columns:230px 1fr;gap:44px;
+  max-width:var(--maxw);margin:0 auto;padding:40px 24px 80px}
+@media(max-width:900px){.shell{grid-template-columns:1fr;gap:0}}
+nav.toc{position:sticky;top:20px;align-self:start;font-family:var(--font-display);font-size:14.5px}
+@media(max-width:900px){nav.toc{position:static;margin-bottom:28px;
+  border:1px solid var(--border);border-radius:12px;background:var(--surface);padding:14px 16px}}
+.toc-title{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint);margin-bottom:12px}
+.toc a{display:block;color:var(--muted);padding:5px 0 5px 12px;border-left:2px solid var(--border);
+  line-height:1.3}
+.toc a:hover{color:var(--ink);border-color:var(--accent2);text-decoration:none}
+.toc a .n{font-family:var(--font-mono);color:var(--accent);font-size:12px;margin-right:7px}
+
+/* ---------- Modules ---------- */
+.spine{background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  padding:26px 26px 22px;margin-bottom:40px}
+.pipeline{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin-top:14px}
+.stage{flex:1;min-width:120px;background:var(--surface2);border:1px solid var(--border);
+  border-radius:10px;padding:12px 12px}
+.stage .k{font-family:var(--font-mono);font-size:11px;color:var(--accent);letter-spacing:.06em}
+.stage .t{font-family:var(--font-display);font-weight:500;font-size:15px;margin-top:3px}
+.stage .d{font-size:13.5px;color:var(--muted);margin-top:3px;line-height:1.4}
+.arrow{align-self:center;color:var(--faint);font-family:var(--font-mono)}
+@media(max-width:720px){.arrow{display:none}}
+
+section.module{margin-bottom:56px;scroll-margin-top:20px}
+.mod-head{border-top:2px solid var(--ink);padding-top:16px;margin-bottom:8px}
+.mod-num{font-family:var(--font-mono);font-size:13px;color:var(--accent);letter-spacing:.1em;font-weight:600}
+.mod-title{font-family:var(--font-display);font-weight:600;font-size:26px;letter-spacing:-.01em;margin:4px 0 6px}
+.mod-ref{font-family:var(--font-mono);font-size:12.5px;color:var(--faint)}
+.mod-ref .quiz{color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-border);
+  padding:2px 8px;border-radius:999px;margin-left:8px}
+
+h3{font-family:var(--font-display);font-weight:600;font-size:18px;margin:26px 0 8px;letter-spacing:-.01em}
+h3 .idx{font-family:var(--font-mono);color:var(--faint);font-size:13px;margin-right:8px;font-weight:400}
+p{margin:0 0 14px}
+.analogy{border-left:3px solid var(--accent2);padding:6px 0 6px 16px;margin:14px 0;
+  color:var(--muted);font-style:italic}
+.analogy b{color:var(--ink);font-style:normal;font-weight:600}
+
+/* callouts */
+.callout{border-radius:12px;padding:16px 18px;margin:16px 0;border:1px solid}
+.callout .lab{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;font-weight:600;display:block;margin-bottom:8px}
+.callout p:last-child{margin-bottom:0}
+.c-prime{background:var(--accent-soft);border-color:var(--accent-border)}
+.c-prime .lab{color:var(--accent)}
+.c-notes{background:var(--recall-bg);border-color:var(--recall-border)}
+.c-notes .lab{color:var(--recall)}
+.c-notes ul{margin:6px 0 0;padding-left:20px}
+.c-notes li{margin-bottom:5px}
+.prime-q{padding-left:20px;margin:6px 0 0}
+.prime-q li{margin-bottom:5px}
+
+/* worked example */
+.worked{background:var(--surface2);border:1px solid var(--border);border-radius:12px;
+  padding:16px 18px;margin:16px 0}
+.worked .lab{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:8px;display:block}
+.num{font-family:var(--font-mono);background:#EFF0F4;border-radius:5px;padding:1px 6px;font-size:14px}
+
+/* cross-questions (details) */
+.xq{border:1px solid var(--border);border-radius:10px;margin:10px 0;background:var(--surface);overflow:hidden}
+.xq>summary{cursor:pointer;padding:13px 16px;font-family:var(--font-display);font-weight:500;
+  font-size:15.5px;list-style:none;display:flex;align-items:flex-start;gap:10px}
+.xq>summary::-webkit-details-marker{display:none}
+.xq>summary::before{content:"?";font-family:var(--font-mono);color:var(--accent);
+  background:var(--accent-soft);border-radius:6px;width:22px;height:22px;flex:none;
+  display:inline-flex;align-items:center;justify-content:center;font-size:13px;margin-top:1px}
+.xq[open]>summary{border-bottom:1px solid var(--border)}
+.xq .ans{padding:14px 16px 16px;color:var(--muted);font-size:16px}
+.xq.trap>summary::before{content:"!";color:var(--trap);background:var(--trap-bg)}
+.chip-trap{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--trap);
+  background:var(--trap-bg);border:1px solid var(--trap-border);border-radius:999px;
+  padding:2px 7px;margin-left:auto;text-transform:uppercase;flex:none}
+
+/* flashcards */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin:16px 0}
+.flip{perspective:1000px;height:130px;cursor:pointer}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flip.flipped .flip-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:12px;border:1px solid var(--border);
+  padding:14px;display:flex;align-items:center;justify-content:center;text-align:center;
+  font-size:14.5px;line-height:1.35}
+.face.front{background:var(--surface);font-family:var(--font-display);font-weight:500}
+.face.back{background:var(--ink);color:#EDEEF3;transform:rotateY(180deg);font-family:var(--font-body)}
+.face .hint{position:absolute;bottom:8px;right:10px;font-family:var(--font-mono);font-size:9.5px;
+  letter-spacing:.1em;color:var(--faint);text-transform:uppercase}
+.face.back .hint{color:#6A7183}
+
+/* code stub */
+.stub{margin:16px 0;border-radius:12px;overflow:hidden;border:1px solid var(--code-bg)}
+.stub>summary{cursor:pointer;list-style:none;background:var(--code-bg);color:var(--code-ink);
+  padding:12px 16px;font-family:var(--font-mono);font-size:13.5px;display:flex;align-items:center;gap:10px}
+.stub>summary::-webkit-details-marker{display:none}
+.stub>summary::before{content:"›";color:var(--code-accent);font-size:18px;transition:transform .2s}
+.stub[open]>summary::before{transform:rotate(90deg)}
+.chip-defer{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;
+  color:#F0C99A;border:1px solid #5A4A34;border-radius:999px;padding:2px 8px;margin-left:auto;text-transform:uppercase}
+.stub pre{margin:0;background:#12141C;color:var(--code-ink);padding:16px 18px;overflow-x:auto;
+  font-family:var(--font-mono);font-size:13px;line-height:1.6}
+.stub pre .cm{color:#7C8598}
+.stub pre .kw{color:#8FA0FF}
+
+/* spaced-rep callback */
+.callback{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:16px 0 2px;
+  padding-top:12px;border-top:1px dashed var(--border)}
+.callback .lab{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--faint)}
+.callback .cb{font-size:14px;color:var(--muted);background:var(--surface2);
+  border:1px solid var(--border);border-radius:8px;padding:5px 11px}
+
+/* capstone */
+.capstone{background:var(--ink);color:#E9EAF0;border-radius:18px;padding:34px 30px;margin:30px 0}
+.capstone h2{font-family:var(--font-display);font-weight:600;font-size:24px;margin:0 0 6px}
+.capstone p{color:#AEB4C4}
+.capstone .xq{background:#20242F;border-color:#2C313E}
+.capstone .xq>summary{color:#E9EAF0}
+.capstone .xq[open]>summary{border-color:#2C313E}
+.capstone .xq .ans{color:#AEB4C4}
+.capstone .xq>summary::before{background:#2A2F3D;color:var(--code-accent)}
+
+footer{border-top:1px solid var(--border);color:var(--muted);font-size:15px;
+  padding:30px 0 60px;text-align:center}
+footer .next{background:var(--accent-soft);border:1px solid var(--accent-border);border-radius:12px;
+  padding:16px 20px;max-width:640px;margin:0 auto 20px;text-align:left;color:var(--ink)}
+footer .next .lab{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--accent);font-weight:600;display:block;margin-bottom:6px}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div class="hero-inner">
+    <span class="eyebrow">IITM DLCV · Recitation · Week 1</span>
+    <h1>Image Processing <span class="thin">— a second reading</span></h1>
+    <p class="lede">One idea threads every topic below: an image is a function, and everything we do is either transforming its <em>values</em> or its <em>coordinates</em>. This is the map for that.</p>
+    <div class="meta-row">
+      <span class="tag">Szeliski §3.1–3.5.2</span>
+      <span class="tag">Forsyth 7.1 · 7.2 · 7.4 → next</span>
+      <span class="tag">7 modules</span>
+      <span class="tag">Prime · Cross-Q · Recall · Cards</span>
+    </div>
+
+    <div class="signature">
+      <div class="pixgrid" id="pixgrid" aria-hidden="true"></div>
+      <div class="sig-note">
+        <p><b>The kernel window.</b> A 3&times;3 stencil sliding over a grid of pixel values is the single most characteristic motion in this chapter — it <em>is</em> linear filtering (Module 2). Point operators are the special case where the window shrinks to 1&times;1; frequency analysis (Module 5) is what tells us what the window actually <em>does</em>.</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+
+  <!-- ============ TOC ============ -->
+  <nav class="toc" aria-label="Contents">
+    <div class="toc-title">Modules</div>
+    <a href="#m0"><span class="n">00</span>The spine</a>
+    <a href="#m1"><span class="n">01</span>Image as a function · point ops</a>
+    <a href="#m2"><span class="n">02</span>Linear filtering I</a>
+    <a href="#m3"><span class="n">03</span>Linear filtering II · kernels</a>
+    <a href="#m4"><span class="n">04</span>Non-linear filtering</a>
+    <a href="#m5"><span class="n">05</span>Frequency domain</a>
+    <a href="#m6"><span class="n">06</span>Sampling</a>
+    <a href="#test"><span class="n">★</span>Hard test</a>
+  </nav>
+
+  <main>
+
+  <!-- ============ M0 SPINE ============ -->
+  <section class="module" id="m0">
+    <div class="spine">
+      <div class="mod-num">MODULE 00</div>
+      <div class="mod-title">The spine — read this first</div>
+      <p style="margin-top:6px">An image is a function \( f(i,j) \) from pixel coordinates to intensity. Two kinds of thing can happen to it. Point operators and filters change the <em>range</em> (the output value): \( g(\mathbf{x}) = h\big(f(\mathbf{x})\big) \). Geometric transforms change the <em>domain</em> (where each value lands): \( g(\mathbf{x}) = f\big(h(\mathbf{x})\big) \). This recitation lives almost entirely on the range side; hold onto the duality — it's the closer.</p>
+      <div class="pipeline">
+        <div class="stage"><div class="k">range · pixel</div><div class="t">Point ops</div><div class="d">each output depends on one input pixel</div></div>
+        <span class="arrow">→</span>
+        <div class="stage"><div class="k">range · nbhd</div><div class="t">Linear filter</div><div class="d">weighted vote of neighbors</div></div>
+        <span class="arrow">→</span>
+        <div class="stage"><div class="k">range · nbhd</div><div class="t">Non-linear</div><div class="d">smart / robust neighbor selection</div></div>
+        <span class="arrow">→</span>
+        <div class="stage"><div class="k">the lens</div><div class="t">Frequency</div><div class="d">what any filter <em>does</em> to each frequency</div></div>
+        <span class="arrow">→</span>
+        <div class="stage"><div class="k">resolution</div><div class="t">Sampling</div><div class="d">interpolate / decimate; aliasing</div></div>
+      </div>
+      <p style="margin:16px 0 0;font-size:15px;color:var(--muted)"><b style="font-family:var(--font-display);color:var(--ink)">How to use this.</b> Each module opens with <em>Prime</em> questions — answer them before reading. Cross-questions are collapsed; predict, then click to check. Flashcards flip. This guide teaches and interrogates; the notes are still yours — write each module's <em>Recall skeleton</em> from memory, then bring gaps back to chat.</p>
+    </div>
+  </section>
+
+  <!-- ============ M1 ============ -->
+  <section class="module" id="m1">
+    <div class="mod-head">
+      <div class="mod-num">MODULE 01</div>
+      <div class="mod-title">Image as a function &amp; point operators</div>
+      <div class="mod-ref">Szeliski 3.1 · 3.1.1–3.1.4 <span class="quiz">quiz-critical</span></div>
+    </div>
+
+    <div class="callout c-prime">
+      <span class="lab">Prime — predict before reading</span>
+      <ol class="prime-q">
+        <li>If you add the same constant to R, G, and B, does the picture only get brighter — or does something else change too?</li>
+        <li>Why is multiplying by a gain "linear" but gamma correction is not?</li>
+        <li>After histogram equalization, is the image always better?</li>
+      </ol>
+    </div>
+
+    <h3><span class="idx">1.1</span>Three faces of one image</h3>
+    <p>The same image is a colour picture, a grid of numbers, and a 2D surface where height is brightness. A <em>point operator</em> (or point process) treats each pixel in isolation: \( g(i,j) = h\big(f(i,j)\big) \). No neighbours involved.</p>
+    <div class="analogy"><b>Analogy.</b> Point operators are a grade curve applied to every student independently — the same rule, pixel by pixel. Neighbourhood filters (next module) are when your grade depends on the people sitting around you.</div>
+
+    <h3><span class="idx">1.2</span>The core operators</h3>
+    <p><b>Gain and bias</b> — \( g = a\,f + b \). Here \(a>0\) is the <em>gain</em> (contrast) and \(b\) the <em>bias</em> (brightness). Both can vary spatially, \(a(\mathbf{x}),b(\mathbf{x})\), to model vignetting or a graded ND filter. Multiplicative gain is <em>linear</em>: it obeys superposition \( h(f_0+f_1)=h(f_0)+h(f_1) \). Squaring an image is not.</p>
+    <p><b>Linear blend / cross-dissolve</b> — \( g = (1-\alpha)f_0 + \alpha f_1 \). Sweep \(\alpha:0\to1\) to dissolve between two images; the backbone of morphing.</p>
+    <p><b>Gamma</b> — \( g = f^{\,1/\gamma},\ \gamma\approx2.2 \). Non-linear; it undoes the sensor's radiance→value gamma so downstream math sees linear light.</p>
+    <p><b>Compositing (over operator)</b> — \( C = (1-\alpha)B + \alpha F \). \(\alpha\) is opacity / fractional coverage: \(\alpha=1\) fully foreground, \(\alpha=0\) fully background, smooth at edges to kill jaggies. Often stored premultiplied as \(\alpha F\).</p>
+    <p><b>Histogram equalization</b> — spread a lopsided intensity distribution to use the full range. Build the histogram \(h(I)\) (pixel count per level), then the cumulative distribution \( c(I)=\frac{1}{N}\sum_{i=0}^{I}h(i) \), and use \(c\) itself as the transfer function. Full equalization can look flat/muddy, so blend with identity: \( f(I)=\alpha\,c(I) + (1-\alpha)\,I \).</p>
+
+    <div class="worked">
+      <span class="lab">Worked — gamma lifts the mid-tones</span>
+      <p style="margin-bottom:8px">Take mid-grey <span class="num">f = 128</span> (8-bit) with \(\gamma=2.2\):</p>
+      <p style="margin-bottom:0">\( g = 255\cdot(128/255)^{1/2.2} = 255\cdot(0.502)^{0.4545} \approx 255\cdot 0.731 \approx \) <span class="num">186</span>.</p>
+      <p style="margin:8px 0 0;color:var(--muted);font-size:15px">Mid-grey jumps to ~186 — gamma brightens mid-tones while pinning \(0\to0\) and \(255\to255\). Contrast that with bias \(b=16\), which would shift <em>every</em> value up by 16 and clip the highlights.</p>
+    </div>
+
+    <h3><span class="idx">1.3</span>Cross-questions</h3>
+    <details class="xq trap">
+      <summary>Adding a constant to R, G, B makes it brighter. What's the catch? <span class="chip-trap">trap</span></summary>
+      <div class="ans">It raises apparent intensity but also shifts <b>hue and saturation</b> — the three channels move by the same absolute amount, not the same ratio, so colours drift. The fix is to brighten luminance \(Y\) while preserving chromaticity/colour ratios, then reconstruct RGB.</div>
+    </details>
+    <details class="xq">
+      <summary>Why is gain linear but gamma isn't?</summary>
+      <div class="ans">Linearity needs \(h(f_0+f_1)=h(f_0)+h(f_1)\). For gain, \(a(f_0+f_1)=af_0+af_1\) ✓. For gamma, \((f_0+f_1)^{1/\gamma}\neq f_0^{1/\gamma}+f_1^{1/\gamma}\) — the exponent breaks superposition.</div>
+    </details>
+    <details class="xq">
+      <summary>Point operator ≡ which CNN layer?</summary>
+      <div class="ans">A <b>1×1 convolution</b>. Szeliski flags this directly — a per-pixel value transform is exactly what a 1×1 conv does across channels. Useful anchor for your DL goals: the humblest image-processing op is already a neural-net primitive.</div>
+    </details>
+
+    <div class="callout c-notes">
+      <span class="lab">Recall skeleton — write in your own words, from memory</span>
+      <ul>
+        <li>State \(g=af+b\); which is contrast, which is brightness; why gain is linear.</li>
+        <li>Reproduce the blend, gamma, over-operator, and CDF equations.</li>
+        <li>Explain in one line why <em>partial</em> equalization exists.</li>
+      </ul>
+    </div>
+
+    <div class="cards">
+      <div class="flip"><div class="flip-in"><div class="face front">In \(g=af+b\), what do \(a\) and \(b\) control?<span class="hint">flip</span></div><div class="face back">\(a\) = gain = contrast; \(b\) = bias = brightness.<span class="hint">back</span></div></div></div>
+      <div class="flip"><div class="flip-in"><div class="face front">Over operator?<span class="hint">flip</span></div><div class="face back">\(C=(1-\alpha)B+\alpha F\). \(\alpha\)=opacity/coverage.<span class="hint">back</span></div></div></div>
+      <div class="flip"><div class="flip-in"><div class="face front">Transfer function used for histogram equalization?<span class="hint">flip</span></div><div class="face back">The CDF \(c(I)=\frac1N\sum_{i\le I}h(i)\).<span class="hint">back</span></div></div></div>
+      <div class="flip"><div class="flip-in"><div class="face front">Is image squaring a linear operator?<span class="hint">flip</span></div><div class="face back">No — it violates superposition.<span class="hint">back</span></div></div></div>
+    </div>
+
+    <details class="stub">
+      <summary>From-scratch code stub <span class="chip-defer">deferred · post-quiz</span></summary>
+      <pre><span class="cm"># No cv2. Build the primitives yourself.</span>
+<span class="kw">def</span> gain_bias(img, a, b):      <span class="cm"># g = clip(a*f + b)</span>
+    ...
+<span class="kw">def</span> gamma(img, g):            <span class="cm"># 255*(f/255)**(1/g)</span>
+    ...
+<span class="kw">def</span> hist_equalize(img):       <span class="cm"># histogram -> CDF -> LUT -> remap</span>
+    hist = ...                 <span class="cm"># 256-bin count</span>
+    cdf  = ...                 <span class="cm"># normalized cumulative sum</span>
+    lut  = ...                 <span class="cm"># round(cdf * 255)</span>
+    <span class="kw">return</span> lut[img]</pre>
+    </details>
+
+    <div class="callback"><span class="lab">Spaced-rep · looks ahead</span><span class="cb">The 1×1-conv link previews neighbourhoods → Module 2.</span></div>
+  </section>
+
+  <!-- ============ M2 ============ -->
+  <section class="module" id="m2">
+    <div class="mod-head">
+      <div class="mod-num">MODULE 02</div>
+      <div class="mod-title">Linear filtering I — correlation, convolution, LSI</div>
+      <div class="mod-ref">Szeliski 3.2 · Forsyth 7.1–7.2 (next) <span class="quiz">quiz-critical</span></div>
+    </div>
+
+    <div class="callout c-prime">
+      <span class="lab">Prime — predict before reading</span>
+      <ol class="prime-q">
+        <li>Correlation and convolution differ by a sign flip. When does that flip actually matter?</li>
+        <li>What does convolving an image with a single bright dot (impulse) give you?</li>
+        <li>Deep learning says "convolution" — is it really?</li>
+      </ol>
+    </div>
+
+    <h3><span class="idx">2.1</span>Two neighbourhood sums</h3>
+    <p>Now the output depends on a small neighbourhood \(\mathcal{N}\) weighted by a kernel \(h\) (the mask / filter coefficients). <b>Correlation</b> slides the kernel as-is:
+    \[ g(i,j) = \sum_{k,l} f(i+k,\,j+l)\,h(k,l) = f\otimes h. \]
+    <b>Convolution</b> flips the offsets — equivalently, flips the kernel:
+    \[ g(i,j) = \sum_{k,l} f(i-k,\,j-l)\,h(k,l) = f*h. \]
+    The kernel spans a \((2k{+}1)\) window. The name for \(h\) under convolution is the <em>impulse response</em>, because \( h*\delta = h \): convolving with a lone impulse reproduces the kernel, whereas correlation reproduces its <em>reflection</em>.</p>
+
+    <div class="worked">
+      <span class="lab">Worked — the impulse test (why the flip is real)</span>
+      <p style="margin-bottom:6px">Kernel <span class="num">h = [3, 2, 1]</span> (asymmetric), input an impulse <span class="num">[… 0, 1, 0 …]</span>.</p>
+      <p style="margin-bottom:6px"><b>Convolution:</b> \(g(i)=\sum_k f(k)\,h(i{-}k)=h(i)\) → output <span class="num">[3, 2, 1]</span> — the kernel, unflipped.</p>
+      <p style="margin-bottom:0"><b>Correlation:</b> \(g(i)=\sum_k f(i{+}k)\,h(k)=h(-i)\) → output <span class="num">[1, 2, 3]</span> — reflected.</p>
+      <p style="margin:8px 0 0;color:var(--muted);font-size:15px">So the flip is invisible for symmetric kernels (box, Gaussian) and decisive for asymmetric ones (derivatives, Sobel).</p>
+    </div>
+
+    <h3><span class="idx">2.2</span>Why convolution is the "right" one — LSI</h3>
+    <p>Both correlation and convolution are <b>Linear Shift-Invariant (LSI)</b> operators. They obey <em>superposition</em>, \( h\circ(f_0+f_1)=h\circ f_0 + h\circ f_1 \), and <em>shift-invariance</em> — shifting the input just shifts the output ("behaves the same everywhere"). Convolution earns the theoretical seat because it is commutative and associative and turns into simple multiplication in the frequency domain (Module 5). Any LSI operator can be written as a big sparse matrix multiply \( \mathbf{g}=H\mathbf{f} \), with \(H\) holding shifted copies of the kernel.</p>
+
+    <h3><span class="idx">2.3</span>Borders — padding modes</h3>
+    <p>The window falls off the edge, so the naïve result is smaller ("valid"). To keep size ("same") you pad: <em>zero</em> (good for alpha-matted cutouts), <em>constant</em>, <em>clamp</em>/replicate (repeat edge), <em>wrap</em> (toroidal), <em>mirror</em> (reflect), <em>extend</em>. Each biases the border differently — zero darkens edges, clamp bleeds them inward, mirror preserves them.</p>
+
+    <h3><span class="idx">2.4</span>Cross-questions</h3>
+    <details class="xq trap">
+      <summary>For a Gaussian kernel, is correlation the same as convolution? <span class="chip-trap">trap</span></summary>
+      <div class="ans"><b>Yes</b> — because the Gaussian is symmetric, the flip does nothing. That's exactly why people use the words loosely and get away with it. Never assume it in general: for Sobel or any derivative kernel, correlation and convolution give mirror-image results.</div>
+    </details>
+    <details class="xq trap">
+      <summary>CNNs are "convolutional." Do they convolve? <span class="chip-trap">trap</span></summary>
+      <div class="ans">They compute <b>cross-correlation</b> — no kernel flip. Since the weights are learned, the flip is irrelevant (the network just learns the flipped kernel if it wanted the other), so the naming survives. Worth stating precisely in your notes, because it trips up interviews.</div>
+    </details>
+    <details class="xq">
+      <summary>Which padding for a cut-out object on transparency?</summary>
+      <div class="ans">Zero padding — outside the object there genuinely is nothing, and the darkening can be undone by dividing by the blurred alpha.</div>
+    </details>
+
+    <div class="callout c-notes">
+      <span class="lab">Recall skeleton</span>
+      <ul>
+        <li>Write both sums (3.12) and (3.14); mark where the sign flips.</li>
+        <li>State the two LSI properties and \(h*\delta=h\).</li>
+        <li>List the padding modes and one consequence of each.</li>
+      </ul>
+    </div>
+
+    <div class="cards">
+      <div class="flip"><div class="flip-in"><div class="face front">Convolution vs correlation — the difference?<span class="hint">flip</span></div><div class="face back">Convolution flips the kernel (offsets \(i-k\) vs \(i+k\)).<span class="hint">back</span></div></div></div>
+      <div class="flip"><div class="flip-in"><div class="face front">\(h*\delta = ?\)<span class="hint">flip</span></div><div class="face back">\(=h\). Convolving with an impulse reproduces the kernel.<span class="hint">back</span></div></div></div>
+      <div class="flip"><div class="flip-in"><div class="face front">LSI = which two properties?<span class="hint">flip</span></div><div class="face back">Linearity (superposition) + shift-invariance.<span class="hint">back</span></div></div></div>
+      <div class="flip"><div class="flip-in"><div class="face front">A CNN "conv" is really…?<span class="hint">flip</span></div><div class="face back">Cross-correlation (no flip).<span class="hint">back</span></div></div></div>
+    </div>
+
+    <details class="stub">
+      <summary>From-scratch code stub <span class="chip-defer">deferred · post-quiz</span></summary>
+      <pre><span class="kw">def</span> conv2d(img, kernel, pad=<span class="cm">'zero'</span>):
+    <span class="cm"># 1. flip kernel (np.flipud+fliplr) -> this is what makes it CONV</span>
+    <span class="cm"># 2. pad img per mode</span>
+    <span class="cm"># 3. slide window, sum(window * flipped_kernel)</span>
+    ...
+<span class="kw">def</span> correlate2d(img, kernel, pad=<span class="cm">'zero'</span>):
+    <span class="cm"># same but DON'T flip -> verify on impulse gives reflected kernel</span>
+    ...</pre>
+    </details>
+
+    <div class="callback"><span class="lab">Spaced-rep</span><span class="cb">M1: a point op is this with a 1×1 kernel.</span><span class="cb">Ahead: LSI ⇒ frequency multiplication (M5).</span></div>
+  </section>
+
+  <!-- ============ M3 ============ -->
+  <section class="module" id="m3">
+    <div class="mod-head">
+      <div class="mod-num">MODULE 03</div>
+      <div class="mod-title">Linear filtering II — separability &amp; the kernel zoo</div>
+      <div class="mod-ref">Szeliski 3.2.1–3.2.3 · Forsyth 7.1–7.2 (next) <span class="quiz">quiz-critical</span></div>
+    </div>
+
+    <div class="callout c-prime">
+      <span class="lab">Prime</span>
+      <ol class="prime-q">
+        <li>How can a 2D blur cost \(2K\) operations instead of \(K^2\)?</li>
+        <li>Why the Gaussian, out of all smoothing kernels?</li>
+        <li>How do you <em>sharpen</em> an image using only a <em>blur</em>?</li>
+      </ol>
+    </div>
+
+    <h3><span class="idx">3.1</span>Separability — the free speed-up</h3>
+    <p>A 2D kernel is <em>separable</em> if it's the outer product of two 1D kernels, \( K = v\,h^{\mathsf T} \). Then one 2D pass (\(K^2\) mult-adds/pixel) becomes a horizontal pass followed by a vertical pass (\(2K\)). The test: take the SVD, \( K=\sum_i \sigma_i u_i v_i^{\mathsf T} \); the kernel is separable iff only \(\sigma_0\neq0\), giving \(\sqrt{\sigma_0}\,u_0\) and \(\sqrt{\sigma_0}\,v_0^{\mathsf T}\).</p>
+
+    <div class="worked">
+      <span class="lab">Worked — the Gaussian is separable</span>
+      \[ \tfrac{1}{16}\begin{bmatrix}1&2&1\\2&4&2\\1&2&1\end{bmatrix}=\Big(\tfrac14[1\ 2\ 1]\Big)^{\!\mathsf T}\Big(\tfrac14[1\ 2\ 1]\Big) \]
+      <p style="margin:6px 0 0;color:var(--muted);font-size:15px">For \(K=5\): separable costs \(2\times5=10\) vs \(5^2=25\) mult-adds per pixel — and the gap widens fast with kernel size.</p>
+    </div>
+
+    <h3><span class="idx">3.2</span>The kernel zoo</h3>
+    <p><b>Box / moving average</b> — \(\tfrac{1}{K^2}\) of all ones. Cheap blur; separable; a running sum makes it \(O(1)\) per pixel (summed-area tables generalise this). <b>Tent / bilinear</b> — \(\tfrac14[1\,2\,1]\), a smoother blur. <b>"Gaussian" / binomial</b> — \(\tfrac1{16}[1\,4\,6\,4\,1]\); repeated box convolutions converge to a Gaussian. <b>Sobel</b> — a central-difference (derivative) combined with a tent (smoothing): edges. <b>Gaussian derivatives</b> build band-pass and oriented filters; \( \nabla^2 G \) is the Laplacian-of-Gaussian (LoG), and a difference of Gaussians (DoG) approximates it — the bridge to pyramids you'll meet later.</p>
+    <p><b>Unsharp masking</b> — sharpen with a blur: \( g_{\text{sharp}} = f + \gamma\,(f - h_{\text{blur}}*f) \). The blur removes highs; subtracting it isolates the highs; adding them back exaggerates edges.</p>
+
+    <h3><span class="idx">3.3</span>Cross-questions</h3>
+    <details class="xq trap">
+      <summary>Is every useful kernel separable? <span class="chip-trap">trap</span></summary>
+      <div class="ans"><b>No.</b> The LoG and the simple corner detector aren't directly separable (though LoG can be written as a sum of two separable filters). The SVD count of non-zero singular values is the honest test — one ⇒ separable, more ⇒ not.</div>
+    </details>
+    <details class="xq">
+      <summary>Why smooth <em>before</em> differentiating (Sobel = derivative ⊗ tent)?</summary>
+      <div class="ans">Differentiation amplifies high-frequency noise. Pre-smoothing tames it so the derivative responds to real edges, not grain. This is the seed of the whole scale-space idea.</div>
+    </details>
+    <details class="xq">
+      <summary>Why the Gaussian specifically?</summary>
+      <div class="ans">It's separable, rotationally symmetric, has unique scale-space properties, and — the deep reason, coming in M5 — it's smooth in frequency, so it low-passes cleanly without the ringing that a box filter introduces.</div>
+    </details>
+
+    <div class="callout c-notes">
+      <span class="lab">Recall skeleton</span>
+      <ul>
+        <li>Separability cost (\(2K\) vs \(K^2\)) and the SVD test.</li>
+        <li>Name the five zoo kernels and what each does; write the binomial.</li>
+        <li>Reproduce the unsharp-mask equation and explain each term.</li>
+      </ul>
+    </div>
+
+    <div class="cards">
+      <div class="flip"><div class="flip-in"><div class="face front">Separable filter cost vs non-separable?<span class="hint">flip</span></div><div class="face back">\(2K\) vs \(K^2\) mult-adds per pixel.<span class="hint">back</span></div></div></div>
+      <div class="flip"><div class="flip-in"><div class="face front">SVD test for separability?<span class="hint">flip</span></div><div class="face back">Separable iff only \(\sigma_0\neq0\).<span class="hint">back</span></div></div></div>
+      <div class="flip"><div class="flip-in"><div class="face front">Binomial ("Gaussian") 1D kernel?<span class="hint">flip</span></div><div class="face back">\(\tfrac1{16}[1\,4\,6\,4\,1]\).<span class="hint">back</span></div></div></div>
+      <div class="flip"><div class="flip-in"><div class="face front">Sharpen using a blur — equation?<span class="hint">flip</span></div><div class="face back">\(g=f+\gamma(f-h_{\text{blur}}*f)\).<span class="hint">back</span></div></div></div>
+    </div>
+
+    <details class="stub">
+      <summary>From-scratch code stub <span class="chip-defer">deferred · post-quiz</span></summary>
+      <pre><span class="kw">def</span> gaussian_kernel_1d(sigma):    <span class="cm"># sample & normalize to sum 1</span>
+    ...
+<span class="kw">def</span> separable_conv(img, kx, ky):  <span class="cm"># conv rows with kx, then cols with ky</span>
+    ...
+<span class="kw">def</span> sobel(img):                   <span class="cm"># Gx, Gy separable; magnitude = hypot(gx,gy)</span>
+    ...
+<span class="kw">def</span> unsharp(img, sigma, g):        <span class="cm"># f + g*(f - blur(f))</span>
+    ...</pre>
+    </details>
+
+    <div class="callback"><span class="lab">Spaced-rep</span><span class="cb">M2: these all ride on the convolution sum.</span><span class="cb">Ahead: each kernel's frequency response (M5).</span></div>
+  </section>
+
+  <!-- ============ M4 ============ -->
+  <section class="module" id="m4">
+    <div class="mod-head">
+      <div class="mod-num">MODULE 04</div>
+      <div class="mod-title">Non-linear neighbourhood filtering</div>
+      <div class="mod-ref">Szeliski 3.3 · 3.3.1–3.3.2</div>
+    </div>
+
+    <div class="callout c-prime">
+      <span class="lab">Prime</span>
+      <ol class="prime-q">
+        <li>Why does a Gaussian blur fail to remove a single very bright ("shot") pixel?</li>
+        <li>How can a filter smooth noise yet keep edges sharp?</li>
+        <li>Is the bilateral filter shift-invariant?</li>
+      </ol>
+    </div>
+
+    <h3><span class="idx">4.1</span>Median — robust to outliers</h3>
+    <p>Replace each pixel with the <em>median</em> of its neighbourhood. Because shot / salt-and-pepper noise sits far outside the true local values, the median simply ignores it — where a Gaussian would smear it into a soft blob. It's <b>not linear</b>. Downsides: it rounds sharp corners, costs a bit more, and is weaker on ordinary Gaussian noise (variants: \(\alpha\)-trimmed mean drops the extremes; weighted median). The unifying objective \( \sum_{k,l} w\,|f-g|^{p} \) gives the median at \(p=1\) and the (correlation-like) mean at \(p=2\).</p>
+
+    <div class="worked">
+      <span class="lab">Worked — median beats mean on shot noise</span>
+      <p style="margin-bottom:6px">Neighbourhood <span class="num">[10, 11, 12, 200, 13]</span> — the 200 is a corrupt pixel.</p>
+      <p style="margin-bottom:0"><b>Mean</b> = \(246/5 =\) <span class="num">49.2</span> (wrecked by one outlier). &nbsp; <b>Median</b> = <span class="num">12</span> (clean).</p>
+    </div>
+
+    <h3><span class="idx">4.2</span>Bilateral — edge-preserving smoothing</h3>
+    <p>Weight neighbours by <em>both</em> spatial closeness and value similarity:
+    \[ g(i,j)=\frac{\sum_{k,l} f(k,l)\,w(i,j,k,l)}{\sum_{k,l} w(i,j,k,l)},\quad w = d\cdot r. \]
+    The <b>domain</b> kernel is the usual spatial Gaussian, \( d=\exp\!\big(-\tfrac{(i-k)^2+(j-l)^2}{2\sigma_d^2}\big) \); the <b>range</b> kernel penalises value difference, \( r=\exp\!\big(-\tfrac{\|f(i,j)-f(k,l)\|^2}{2\sigma_r^2}\big) \). A neighbour on the far side of an edge differs a lot in value → its \(r\) is tiny → it's downweighted → the edge survives. For colour, use the vector distance so an edge in any channel counts.</p>
+
+    <p style="font-size:15.5px;color:var(--muted)">Skim-only relatives (know they exist, one line each): anisotropic diffusion (iterated bilateral ≈ Perona–Malik), guided filter (local affine fit), binary morphology (dilate/erode/open/close), distance transforms, connected components.</p>
+
+    <h3><span class="idx">4.3</span>Cross-questions</h3>
+    <details class="xq trap">
+      <summary>Is the bilateral filter LSI? <span class="chip-trap">trap</span></summary>
+      <div class="ans"><b>No.</b> Its weights depend on the image content (the range kernel reads the actual pixel values), so it's neither linear nor shift-invariant — it's data-adaptive. That's precisely what buys edge preservation, and precisely why you can't analyse it with a single frequency response.</div>
+    </details>
+    <details class="xq">
+      <summary>Why does bilateral filtering fail on shot noise but median succeeds?</summary>
+      <div class="ans">On a shot pixel, the <em>centre</em> pixel is itself the outlier. The range kernel measures difference <em>from that corrupt centre</em>, so it downweights the good neighbours and keeps the bad centre. The median, which picks a value from the neighbourhood, discards the outlier outright.</div>
+    </details>
+
+    <div class="callout c-notes">
+      <span class="lab">Recall skeleton</span>
+      <ul>
+        <li>Why median is non-linear and kills shot noise.</li>
+        <li>Bilateral = domain kernel × range kernel; write both; why it preserves edges.</li>
+        <li>One sentence on why bilateral fails on shot noise.</li>
+      </ul>
+    </div>
+
+    <div class="cards">
+      <div class="flip"><div class="flip-in"><div class="face front">Best simple filter for salt-and-pepper noise?<span class="hint">flip</span></div><div class="face back">Median filter.<span class="hint">back</span></div></div></div>
+      <div class="flip"><div class="flip-in"><div class="face front">Bilateral filter = product of which two kernels?<span class="hint">flip</span></div><div class="face back">Domain (spatial) × range (intensity-difference).<span class="hint">back</span></div></div></div>
+      <div class="flip"><div class="flip-in"><div class="face front">Is bilateral filtering LSI?<span class="hint">flip</span></div><div class="face back">No — weights depend on the data.<span class="hint">back</span></div></div></div>
+      <div class="flip"><div class="flip-in"><div class="face front">\(\alpha\)-trimmed mean does what?<span class="hint">flip</span></div><div class="face back">Averages after dropping the smallest/largest \(\alpha\) fraction.<span class="hint">back</span></div></div></div>
+    </div>
+
+    <details class="stub">
+      <summary>From-scratch code stub <span class="chip-defer">deferred · post-quiz</span></summary>
+      <pre><span class="kw">def</span> median_filter(img, k):
+    <span class="cm"># for each window: sorted(vals)[len//2]</span>
+    ...
+<span class="kw">def</span> bilateral(img, sd, sr):
+    <span class="cm"># precompute domain gaussian once;</span>
+    <span class="cm"># range weight = exp(-(center-neighbor)**2 / (2*sr*sr)) per window</span>
+    <span class="cm"># g = sum(f*d*r)/sum(d*r)</span>
+    ...</pre>
+    </details>
+
+    <div class="callback"><span class="lab">Spaced-rep</span><span class="cb">M2: contrast with LSI linear filters.</span><span class="cb">M3: bilateral's domain kernel is your Gaussian.</span></div>
+  </section>
+
+  <!-- ============ M5 ============ -->
+  <section class="module" id="m5">
+    <div class="mod-head">
+      <div class="mod-num">MODULE 05</div>
+      <div class="mod-title">Frequency domain — the lens</div>
+      <div class="mod-ref">Szeliski 3.4 · 3.4.1</div>
+    </div>
+
+    <div class="callout c-prime">
+      <span class="lab">Prime</span>
+      <ol class="prime-q">
+        <li>Feed a pure sinusoid through an LSI filter. What comes out?</li>
+        <li>What single fact makes large-kernel convolution fast?</li>
+        <li>Why does the box filter cause ringing but the Gaussian doesn't?</li>
+      </ol>
+    </div>
+
+    <h3><span class="idx">5.1</span>Fourier as a filter's report card</h3>
+    <p>Push a complex sinusoid \( s(x)=e^{j\omega x} \) through an LSI filter and you get the <em>same</em> frequency back, scaled and phase-shifted: \( o(x)=h*s = A\,e^{j(\omega x+\phi)} \). Reason: convolution is a sum of shifted copies of one sinusoid, which is just one sinusoid. Tabulating that gain and phase over all \(\omega\) <em>is</em> the Fourier transform:
+    \[ H(\omega)=\mathcal{F}\{h\}=A\,e^{j\phi}. \]
+    Closed forms: continuous \( H(\omega)=\int_{-\infty}^{\infty} h(x)\,e^{-j\omega x}\,dx \); discrete (DFT) \( H(k)=\tfrac1N\sum_{x=0}^{N-1} h(x)\,e^{-j2\pi kx/N} \), meaningful for \(k\in[-\tfrac N2,\tfrac N2]\) (beyond that it aliases). The FFT computes this in \(O(N\log N)\) instead of \(O(N^2)\).</p>
+
+    <h3><span class="idx">5.2</span>The one theorem to keep</h3>
+    <p><b>Convolution in space = multiplication in frequency</b>: \( f*h \ \Leftrightarrow\ F\cdot H \). This is why filtering with a big kernel can be done by FFT → multiply → inverse FFT, in time independent of kernel size. In 2D, the same story holds with an oriented sinusoid \( \sin(\omega_x x+\omega_y y) \) and a 2D transform. Magnitude carries energy per frequency; phase carries where the structure (edges) sits.</p>
+
+    <div class="worked">
+      <span class="lab">Worked — why \([1\,2\,1]/4\) is low-pass (ties M3 ↔ M5)</span>
+      <p style="margin-bottom:6px">\( H(\omega)=\tfrac14\big(e^{j\omega}+2+e^{-j\omega}\big)=\tfrac14(2+2\cos\omega)=\tfrac12(1+\cos\omega). \)</p>
+      <p style="margin-bottom:0">Check the ends: \( H(0)=1 \) (DC passes untouched), \( H(\pi)=0 \) (the highest frequency is killed). Monotonic drop ⇒ a clean low-pass. The box filter's response \(\tfrac13(1+2\cos\omega)\) instead <em>dips negative</em> → sign flips → ringing.</p>
+    </div>
+
+    <p style="font-size:15.5px;color:var(--muted)"><b style="color:var(--ink);font-family:var(--font-display)">DCT (light).</b> A cosine-basis, block-wise cousin used in JPEG. It closely approximates the optimal Karhunen–Loève (PCA) decomposition of natural-image patches — a neat link to the PCA you already know from your DL foundations.</p>
+
+    <h3><span class="idx">5.3</span>Cross-questions</h3>
+    <details class="xq trap">
+      <summary>The box filter is a blur, so it must cleanly remove high frequencies, right? <span class="chip-trap">trap</span></summary>
+      <div class="ans"><b>No.</b> Its frequency response \(\tfrac13(1+2\cos\omega)\) is non-monotonic and goes negative — some high frequencies come back with a sign flip, producing <b>ringing</b>. The binomial/Gaussian, \(\tfrac14(1+\cos\omega)^2\), stays smooth and non-negative, so it low-passes gracefully. This is the deep answer to "why Gaussian" from M3.</div>
+    </details>
+    <details class="xq">
+      <summary>Why is the convolution theorem a computational big deal?</summary>
+      <div class="ans">A \(K\times K\) spatial convolution costs \(\sim K^2\) per pixel; via FFT it's multiply-in-frequency at \(O(N\log N)\) total, independent of \(K\). For large kernels, that's the difference between feasible and not.</div>
+    </details>
+
+    <div class="callout c-notes">
+      <span class="lab">Recall skeleton</span>
+      <ul>
+        <li>Fourier transform as "sinusoid in → scaled, shifted sinusoid out."</li>
+        <li>The convolution theorem, and the DFT formula.</li>
+        <li>Low-pass criterion: \(H(0)=1,\ H(\pi)=0\); why box rings.</li>
+      </ul>
+    </div>
+
+    <div class="cards">
+      <div class="flip"><div class="flip-in"><div class="face front">Convolution in space ⇔ ? in frequency<span class="hint">flip</span></div><div class="face back">Multiplication: \(f*h \Leftrightarrow F\cdot H\).<span class="hint">back</span></div></div></div>
+      <div class="flip"><div class="flip-in"><div class="face front">FFT cost vs direct DFT?<span class="hint">flip</span></div><div class="face back">\(O(N\log N)\) vs \(O(N^2)\).<span class="hint">back</span></div></div></div>
+      <div class="flip"><div class="flip-in"><div class="face front">Low-pass filter fingerprint in frequency?<span class="hint">flip</span></div><div class="face back">\(H(0)=1\), \(H(\pi)\to0\), smooth.<span class="hint">back</span></div></div></div>
+      <div class="flip"><div class="flip-in"><div class="face front">DCT ≈ which statistical decomposition?<span class="hint">flip</span></div><div class="face back">Karhunen–Loève / PCA of natural patches.<span class="hint">back</span></div></div></div>
+    </div>
+
+    <details class="stub">
+      <summary>From-scratch code stub <span class="chip-defer">deferred · post-quiz</span></summary>
+      <pre><span class="kw">def</span> dft_1d(x):
+    <span class="cm"># O(N^2): X[k] = sum_n x[n]*exp(-2j*pi*k*n/N)</span>
+    ...
+<span class="kw">def</span> freq_response(kernel, N=256):
+    <span class="cm"># zero-pad kernel to N, dft, take |H| -> plot; verify [1,2,1]/4 -> (1+cos w)/2</span>
+    ...
+<span class="cm"># sanity: conv via FFT (ifft(fft(f)*fft(h))) == spatial conv</span></pre>
+    </details>
+
+    <div class="callback"><span class="lab">Spaced-rep</span><span class="cb">M3: this is the "why Gaussian" answer.</span><span class="cb">Ahead: aliasing is a frequency story (M6).</span></div>
+  </section>
+
+  <!-- ============ M6 ============ -->
+  <section class="module" id="m6">
+    <div class="mod-head">
+      <div class="mod-num">MODULE 06</div>
+      <div class="mod-title">Sampling — interpolation, decimation, aliasing</div>
+      <div class="mod-ref">Szeliski 3.5.1–3.5.2 · Forsyth 7.4 (next)</div>
+    </div>
+
+    <div class="callout c-prime">
+      <span class="lab">Prime</span>
+      <ol class="prime-q">
+        <li>To shrink an image, can you just drop every other pixel?</li>
+        <li>Why does interpolation need a <em>kernel</em> at all — why not just repeat pixels?</li>
+        <li>What is the Nyquist rate, in one sentence?</li>
+      </ol>
+    </div>
+
+    <h3><span class="idx">6.1</span>Interpolation (upsampling)</h3>
+    <p>To raise resolution by rate \(r\), convolve with an interpolation kernel placed at each input sample:
+    \[ g(i,j)=\sum_{k,l} f(k,l)\,h(i-rk,\,j-rl). \]
+    Kernel choices trade sharpness against ringing: <em>nearest</em> (blocky), <em>linear/tent</em> (creases), <em>cubic B-spline</em> (soft), <em>bicubic</em> (\(a=-1\) sharper with some ringing; \(a=-0.5\) reproduces linear/quadratic exactly), <em>windowed sinc</em> (highest quality, ringing). The polyphase view: store \(h\) as \(r\) sub-kernels selected by the output pixel's phase.</p>
+
+    <h3><span class="idx">6.2</span>Decimation (downsampling) — prefilter first</h3>
+    <p>To reduce resolution you must <b>low-pass first, then drop samples</b>:
+    \[ g(i,j)=\sum_{k,l} f(k,l)\,h(ri-k,\,rj-l). \]
+    Skip the prefilter and you get <b>aliasing</b>. Common \(r=2\) choice: binomial \(\tfrac1{16}[1\,4\,6\,4\,1]\) — fine for blending, but it leaves enough high-frequency energy to alias if you display the result; for display use windowed-sinc / cubic / QMF-9 / JPEG-2000 filters.</p>
+
+    <h3><span class="idx">6.3</span>Aliasing &amp; Nyquist — the frequency reason</h3>
+    <p>To represent frequencies up to \(f_{\max}\) you must sample at \( f_s \ge 2 f_{\max} \) (Nyquist). Sample too coarsely and high frequencies <em>fold</em> down and masquerade as fake low frequencies — moiré, jagged edges, the wagon-wheel effect. Prefiltering removes everything above the new Nyquist limit <em>before</em> you throw samples away, so nothing is left to fold.</p>
+
+    <div class="worked">
+      <span class="lab">Worked — where a stripe pattern lands after careless downsampling</span>
+      <p style="margin-bottom:6px">A texture at <span class="num">0.4 cycles/pixel</span>, downsampled by 2 with no prefilter. New Nyquist limit = <span class="num">0.25 cyc/px</span>. Since \(0.4>0.25\), it folds to</p>
+      <p style="margin-bottom:0">\( |0.5 - 0.4| = \) <span class="num">0.1 cycles/pixel</span> — the fine stripes reappear as coarse, wrong stripes. Blur to below 0.25 first and they'd vanish cleanly instead.</p>
+    </div>
+
+    <p style="font-size:15.5px;color:var(--muted)"><b style="color:var(--ink);font-family:var(--font-display)">Bridge (optional).</b> Repeatedly blur-and-subsample and you get a Gaussian pyramid (3.5.3); the band-pass differences form the Laplacian pyramid. Same machinery, and it foreshadows pooling/multi-scale CNNs in your later curriculum.</p>
+
+    <h3><span class="idx">6.4</span>Cross-questions</h3>
+    <details class="xq trap">
+      <summary>Shrinking = keep every other pixel. What breaks? <span class="chip-trap">trap</span></summary>
+      <div class="ans"><b>Aliasing.</b> Dropping samples without low-passing lets frequencies above the new Nyquist fold into the low band — you get moiré and jaggies that no later processing can undo. Prefilter, <em>then</em> drop.</div>
+    </details>
+    <details class="xq">
+      <summary>Why is the binomial fine for blending but not for display?</summary>
+      <div class="ans">It leaves a fair amount of high frequency. In a blend that residual is masked by the compositing; shown directly (or MIP-blended), it aliases visibly, so a sharper-cutoff filter is preferred.</div>
+    </details>
+
+    <div class="callout c-notes">
+      <span class="lab">Recall skeleton</span>
+      <ul>
+        <li>Interpolation sum; two of the kernel choices and their trade-offs.</li>
+        <li>Decimation = prefilter + drop; what happens if you skip the prefilter.</li>
+        <li>State Nyquist and explain folding in one line.</li>
+      </ul>
+    </div>
+
+    <div class="cards">
+      <div class="flip"><div class="flip-in"><div class="face front">The two steps of correct decimation?<span class="hint">flip</span></div><div class="face back">Low-pass prefilter, then keep every \(r\)-th sample.<span class="hint">back</span></div></div></div>
+      <div class="flip"><div class="flip-in"><div class="face front">Nyquist rate?<span class="hint">flip</span></div><div class="face back">\(f_s \ge 2 f_{\max}\).<span class="hint">back</span></div></div></div>
+      <div class="flip"><div class="flip-in"><div class="face front">Highest-quality interpolation kernel?<span class="hint">flip</span></div><div class="face back">Windowed sinc (at the cost of ringing).<span class="hint">back</span></div></div></div>
+      <div class="flip"><div class="flip-in"><div class="face front">Aliasing, in one word?<span class="hint">flip</span></div><div class="face back">Folding — high freq disguised as low freq.<span class="hint">back</span></div></div></div>
+    </div>
+
+    <details class="stub">
+      <summary>From-scratch code stub <span class="chip-defer">deferred · post-quiz</span></summary>
+      <pre><span class="kw">def</span> upsample(img, r, kernel=<span class="cm">'bilinear'</span>):
+    ...
+<span class="kw">def</span> downsample(img, r, prefilter=<span class="kw">True</span>):
+    <span class="cm"># prefilter=True: gaussian/binomial blur then stride-r slice</span>
+    <span class="cm"># prefilter=False: stride-r slice only -> reproduce aliasing to SEE it</span>
+    ...
+<span class="cm"># demo: render fine stripes, downsample both ways, compare</span></pre>
+    </details>
+
+    <div class="callback"><span class="lab">Spaced-rep</span><span class="cb">M5: aliasing is folding in the frequency spectrum.</span><span class="cb">M3: the prefilter is your Gaussian/binomial.</span></div>
+  </section>
+
+  <!-- ============ CAPSTONE TEST ============ -->
+  <section class="module" id="test">
+    <div class="capstone">
+      <h2>Hard test — no hints</h2>
+      <p style="margin-bottom:18px">Answer out loud or on paper first, then reveal. Then take your usual 24-hour gap before the final recall-write.</p>
+
+      <details class="xq"><summary>1. Write correlation and convolution side by side and mark the exact place they differ.</summary><div class="ans">\(f\otimes h=\sum f(i{+}k,j{+}l)h(k,l)\) vs \(f*h=\sum f(i{-}k,j{-}l)h(k,l)\) — the sign of the offsets on \(f\) (equivalently, a flipped kernel).</div></details>
+      <details class="xq"><summary>2. A CNN layer, a point operator, and a box blur are all "the same operation" in one framing. Which, and how do they differ?</summary><div class="ans">All are (cross-)correlation with a kernel. Point op = 1×1 kernel (range only); box blur = fixed uniform \(K\times K\); CNN = learned \(K\times K\), no flip.</div></details>
+      <details class="xq"><summary>3. Prove the Gaussian is a better low-pass than the box, using frequency responses.</summary><div class="ans">Box: \(\tfrac13(1+2\cos\omega)\) — non-monotonic, goes negative ⇒ ringing. Binomial: \(\tfrac14(1+\cos\omega)^2\) — smooth, non-negative, monotone drop ⇒ clean low-pass.</div></details>
+      <details class="xq"><summary>4. Median filter fixes shot noise; bilateral filter doesn't. Explain the asymmetry precisely.</summary><div class="ans">The corrupt pixel is the window centre; bilateral's range kernel measures difference from that corrupt centre, downweighting the good neighbours. Median selects a neighbourhood value, discarding the outlier.</div></details>
+      <details class="xq"><summary>5. You downsample by 2 without prefiltering. A 0.4 cyc/px texture appears at what frequency, and why?</summary><div class="ans">\(|0.5-0.4|=0.1\) cyc/px. It exceeds the new Nyquist (0.25) and folds back into the low band — aliasing.</div></details>
+      <details class="xq"><summary>6. State the convolution theorem and one consequence for algorithm design.</summary><div class="ans">\(f*h\Leftrightarrow F\cdot H\). Consequence: large-kernel convolution via FFT→multiply→IFFT, cost independent of kernel size.</div></details>
+      <details class="xq"><summary>7. Why is separability an SVD question, and what does the SVD tell you?</summary><div class="ans">Separable ⇔ rank-1 kernel ⇔ single non-zero singular value; then \(\sqrt{\sigma_0}u_0,\ \sqrt{\sigma_0}v_0^{\mathsf T}\) are the 1D factors.</div></details>
+      <details class="xq"><summary>8. Give the range-vs-domain duality that closes the whole chapter.</summary><div class="ans">Point/filter ops change the range: \(g(\mathbf{x})=h(f(\mathbf{x}))\). Geometric transforms change the domain: \(g(\mathbf{x})=f(h(\mathbf{x}))\).</div></details>
+    </div>
+  </section>
+
+  <footer>
+    <div class="next">
+      <span class="lab">Next chats</span>
+      Bring Forsyth: 7.1–7.2 fold into Modules 2–3 (Gaussian, derivatives, edges) and 7.4 into Module 6 (sampling/aliasing), with notation reconciled to Szeliski. Then we deepen any module you flag, and batch the from-scratch code after Quiz 1.
+    </div>
+    <div>IITM DLCV · Week 1 recitation · v1 — a companion for your second reading, not a substitute for your own notes.</div>
+  </footer>
+
+  </main>
+</div>
+
+<script>
+(function(){
+  var grid = [
+    [45,60,98,127,132,133,137,133],
+    [46,65,98,123,126,128,131,133],
+    [47,65,96,115,119,123,135,137],
+    [47,63,91,107,113,122,138,134],
+    [50,59,80,97,110,123,133,134],
+    [49,53,68,83,97,113,128,133],
+    [50,50,58,70,84,102,116,126],
+    [50,50,52,58,69,86,101,120]
+  ];
+  var host = document.getElementById('pixgrid');
+  var cells = [];
+  for(var r=0;r<8;r++){ cells[r]=[]; for(var c=0;c<8;c++){
+    var d=document.createElement('div'); d.className='px'; d.textContent=grid[r][c];
+    host.appendChild(d); cells[r][c]=d;
+  }}
+  var path=[];
+  for(var rr=0;rr<=5;rr++){ var seq=(rr%2===0)?[0,1,2,3,4,5]:[5,4,3,2,1,0];
+    for(var s=0;s<seq.length;s++){ path.push([rr,seq[s]]); } }
+  function paint(tr,tc){
+    for(var r=0;r<8;r++)for(var c=0;c<8;c++)cells[r][c].classList.remove('kw');
+    for(var i=0;i<3;i++)for(var j=0;j<3;j++)cells[tr+i][tc+j].classList.add('kw');
+  }
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce){ paint(3,3); }
+  else{ var idx=0; paint(path[0][0],path[0][1]);
+    setInterval(function(){ idx=(idx+1)%path.length; paint(path[idx][0],path[idx][1]); }, 1100); }
+
+  document.querySelectorAll('.flip').forEach(function(card){
+    card.setAttribute('tabindex','0'); card.setAttribute('role','button');
+    function toggle(){ card.classList.toggle('flipped'); }
+    card.addEventListener('click', toggle);
+    card.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); }});
+  });
+
+  var links = Array.prototype.slice.call(document.querySelectorAll('nav.toc a'));
+  var map={}; links.forEach(function(a){ map[a.getAttribute('href').slice(1)]=a; });
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){ if(en.isIntersecting){
+      links.forEach(function(a){ a.style.color=''; a.style.borderColor=''; });
+      var a=map[en.target.id]; if(a){ a.style.color='var(--ink)'; a.style.borderColor='var(--accent2)'; }
+    }});
+  },{rootMargin:'-20% 0px -70% 0px'});
+  document.querySelectorAll('section.module').forEach(function(s){ obs.observe(s); });
+})();
+</script>
+</body>
+</html>

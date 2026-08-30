@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prerequisite Essentials — Weeks 1-4 (Compressed for Q2)</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --border:#2a2f3a;
+    --text:#e6e8ec; --dim:#9aa3b2; --accent:#7dd3fc; --accent2:#a78bfa;
+    --good:#4ade80; --warn:#fbbf24; --code:#0b0d12;
+  }
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    margin:0; padding:0 14px 60px; line-height:1.55; font-size:16px;
+  }
+  .wrap{max-width:760px; margin:0 auto;}
+  header{padding:22px 0 10px; border-bottom:1px solid var(--border); margin-bottom:18px;}
+  h1{font-size:1.35rem; margin:0 0 6px; color:var(--accent);}
+  .sub{color:var(--dim); font-size:0.92rem;}
+  .tag{
+    display:inline-block; background:var(--panel2); border:1px solid var(--border);
+    color:var(--accent2); font-size:0.75rem; padding:3px 9px; border-radius:20px; margin:2px 4px 2px 0;
+  }
+  .unlocks{
+    margin-top:10px; padding:9px 12px; background:rgba(167,139,250,0.08);
+    border-left:3px solid var(--accent2); border-radius:4px; font-size:0.87rem; color:var(--dim);
+  }
+  .unlocks b{color:var(--accent2);}
+  section.block{
+    background:var(--panel); border:1px solid var(--border); border-radius:10px;
+    padding:16px 16px 14px; margin-bottom:16px;
+  }
+  h2{font-size:1.08rem; margin:0 0 4px; color:var(--text);}
+  h2 .num{color:var(--dim); font-weight:400; margin-right:6px;}
+  h3{font-size:0.85rem; text-transform:uppercase; letter-spacing:0.04em; color:var(--accent); margin:16px 0 6px;}
+  p{margin:6px 0;}
+  .formula{
+    background:var(--code); border:1px solid var(--border); border-radius:6px;
+    padding:10px 12px; margin:8px 0; overflow-x:auto; font-family:"SF Mono",Menlo,Consolas,monospace; font-size:0.92rem;
+  }
+  .where{font-size:0.85rem; color:var(--dim); margin:6px 0 0;}
+  .where code{color:var(--accent);}
+  .example{
+    background:var(--panel2); border-radius:8px; padding:10px 12px; margin:8px 0;
+    font-size:0.92rem;
+  }
+  .example .lbl{color:var(--warn); font-weight:600; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.03em;}
+  code{font-family:"SF Mono",Menlo,Consolas,monospace; background:var(--code); padding:1px 5px; border-radius:4px; font-size:0.88em;}
+  details{
+    margin-top:10px; background:var(--panel2); border:1px solid var(--border); border-radius:8px; padding:8px 12px;
+  }
+  summary{cursor:pointer; font-size:0.88rem; color:var(--accent); font-weight:600; padding:4px 0;}
+  details[open] summary{margin-bottom:6px;}
+  .qa{font-size:0.9rem; margin-top:6px; padding-top:6px; border-top:1px dashed var(--border);}
+  .qa .q{color:var(--warn); font-weight:600;}
+  .qa .a{color:var(--dim); margin-top:4px;}
+  .drill{
+    background:var(--panel); border:1px solid var(--accent2); border-radius:10px; padding:16px; margin-top:24px;
+  }
+  .drill h2{color:var(--accent2);}
+  ol.drillist{padding-left:20px; margin:10px 0 0;}
+  ol.drillist li{margin-bottom:14px;}
+  .toc{
+    background:var(--panel2); border-radius:8px; padding:10px 14px; margin-bottom:18px; font-size:0.88rem;
+  }
+  .toc a{color:var(--dim); text-decoration:none; display:block; padding:3px 0;}
+  .toc a:hover{color:var(--accent);}
+  .badge-skip{color:var(--dim); font-size:0.78rem; font-style:italic;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Prerequisite Essentials — Weeks 1–4</h1>
+    <div class="sub">Compressed refresher. Not the full Q1 guide — only what Weeks 5–8 lean on. Target: ~60–75 min including the drill.</div>
+  </header>
+
+  <div class="toc">
+    <a href="#s1">1. The bottleneck that forced attention into existence</a>
+    <a href="#s2">2. Self-attention (Q, K, V)</a>
+    <a href="#s3">3. Multi-head attention</a>
+    <a href="#s4">4. Positional encoding</a>
+    <a href="#s5">5. Encoder stack vs decoder stack (masking + cross-attention)</a>
+    <a href="#s6">6. Decoder-only: GPT / causal LM</a>
+    <a href="#s7">7. Encoder-only: BERT / masked LM</a>
+    <a href="#s8">8. Decoding strategies</a>
+    <a href="#s9">9. Attention complexity: O(T²·d)</a>
+    <a href="#drill">→ Rapid cross-question drill (do this last)</a>
+  </div>
+
+  <section class="block" id="s1">
+    <h2><span class="num">1</span>Why attention exists at all</h2>
+    <p><b>Motivation.</b> Before transformers, sequence-to-sequence models (RNN encoder → RNN decoder) compressed an <em>entire input sentence</em> into one fixed-size vector — the final hidden state. The decoder then had to generate the whole output from that single vector.</p>
+    <p><b>The problem:</b> a 3-word sentence and a 300-word sentence get squeezed into the same size box. Long sequences lose information — it's a bottleneck, literally.</p>
+    <p><b>The fix:</b> instead of one summary vector, let the decoder look back at <em>all</em> encoder hidden states at every generation step, and learn which ones matter right now. That "learn which ones matter" mechanism is attention.</p>
+    <div class="unlocks">Unlocks → <b>Week 6</b> (why encoder-decoder models like T5/BART exist at all — they're the direct descendants of this seq2seq idea, just with attention instead of RNNs) and gives you the origin story examiners like to test as MCQ distractors.</div>
+  </section>
+
+  <section class="block" id="s2">
+    <h2><span class="num">2</span>Self-attention: Q, K, V</h2>
+    <p><b>Intuition.</b> Every token asks a question ("what am I looking for?" = <b>Query</b>), every token advertises what it offers ("here's what I contain" = <b>Key</b>), and every token carries a payload ("here's my actual content" = <b>Value</b>). A token's new representation is a weighted blend of everyone's Value, where the weights come from how well its Query matches each Key.</p>
+    <h3>Math</h3>
+    <div class="formula">Attention(Q, K, V) = softmax( Q·K<sup>T</sup> / √d<sub>k</sub> ) · V</div>
+    <p class="where">where: <code>Q</code> is (T×d<sub>k</sub>), <code>K</code> is (T×d<sub>k</sub>), <code>V</code> is (T×d<sub>v</sub>), T = sequence length, d<sub>k</sub> = key/query dimension. The <code>/√d<sub>k</sub></code> scaling stops dot products from blowing up in magnitude as d<sub>k</sub> grows (keeps softmax gradients healthy).</p>
+    <div class="example">
+      <div class="lbl">Worked example</div>
+      2 tokens, d<sub>k</sub>=2. Q·K<sup>T</sup> gives a 2×2 score matrix. Say row 1 (token "the" as query) scores [4, 2] against the two keys. Scale by √2 ≈ 1.41 → [2.83, 1.41]. Softmax → [0.80, 0.20]. Token "the"'s new representation = 0.80·V₁ + 0.20·V₂ — it mostly attends to itself, a little to token 2.
+    </div>
+    <div class="unlocks">Unlocks → everything. This <em>is</em> the shared spine of Weeks 5–8. Week 8's complexity analysis is literally "how expensive is this Q·K<sup>T</sup> step."</div>
+    <details>
+      <summary>Quick check (tap to reveal)</summary>
+      <div class="qa"><span class="q">Q: Why divide by √d_k and not just d_k?</span><div class="a">A: Variance of the dot product of two random d_k-dim vectors scales with d_k, so dividing by its square root normalizes the standard deviation back to ~1 — keeps softmax from saturating into near one-hot too early.</div></div>
+    </details>
+  </section>
+
+  <section class="block" id="s3">
+    <h2><span class="num">3</span>Multi-head attention</h2>
+    <p><b>Motivation.</b> One attention "view" learns one type of relationship (e.g. adjacent-word syntax). Real language needs several relationship types simultaneously (syntax, coreference, long-range topic). So: run h independent attention operations in parallel, each in a smaller subspace, then concatenate.</p>
+    <div class="formula">MultiHead(Q,K,V) = Concat(head₁,...,head_h)·W<sup>O</sup>,  head_i = Attention(Q·W<sub>i</sub><sup>Q</sup>, K·W<sub>i</sub><sup>K</sup>, V·W<sub>i</sub><sup>V</sup>)</div>
+    <p class="where">where: h = number of heads, each head's d<sub>k</sub> = d<sub>model</sub>/h (so total compute stays roughly the same as one big head), W<sup>O</sup> is (d<sub>model</sub>×d<sub>model</sub>) mixing the concatenated heads back together.</p>
+    <div class="unlocks">Unlocks → <b>Week 8</b>'s MQA/GQA (multi-query / grouped-query attention are literally "cheat on how many separate K,V projections you keep per head" — you can't understand the trick without knowing what a head is).</div>
+  </section>
+
+  <section class="block" id="s4">
+    <h2><span class="num">4</span>Positional encoding</h2>
+    <p><b>Motivation.</b> Attention is a weighted sum over all tokens — it has zero built-in notion of order. Shuffle the input tokens and self-attention alone gives the identical set of outputs, just permuted. Language needs order. So we inject position information directly into the embeddings.</p>
+    <div class="formula">PE(pos, 2i) = sin(pos / 10000<sup>2i/d_model</sup>)
+PE(pos, 2i+1) = cos(pos / 10000<sup>2i/d_model</sup>)</div>
+    <p class="where">where: pos = position index in sequence (0,1,2,...), i = dimension pair index, d_model = embedding size. Even dims → sin, odd dims → cos.</p>
+    <div class="example">
+      <div class="lbl">Worked example</div>
+      d_model=4, pos=1: i=0 → angle = 1/10000⁰ = 1 rad → PE(1,0)=sin(1)=0.841, PE(1,1)=cos(1)=0.540. i=1 → angle = 1/10000¹ ≈ 0.0001 → PE(1,2)≈0.0001, PE(1,3)≈1.0.
+    </div>
+    <div class="unlocks">Unlocks → <b>Week 5</b> tangentially (tokenization decides <em>what</em> gets a position; sub-word pieces still each need one) and reinforces the "attention has no order" fact that's a recurring exam trap.</div>
+  </section>
+
+  <section class="block" id="s5">
+    <h2><span class="num">5</span>Encoder stack vs decoder stack</h2>
+    <p><b>Encoder block:</b> self-attention (full, bidirectional — every token sees every other token) → Add&Norm → feed-forward → Add&Norm. Stacked N times. Output: contextualized representations of the input.</p>
+    <p><b>Decoder block:</b> <em>masked</em> self-attention (causal — token i can only see tokens ≤ i, enforced by setting future scores to −∞ before softmax) → Add&Norm → <em>cross-attention</em> (Query from decoder, Key/Value from encoder output — this is how the decoder "reads" the input) → Add&Norm → feed-forward → Add&Norm.</p>
+    <div class="example">
+      <div class="lbl">Why the mask matters</div>
+      Training a translator: decoder sees the full target sentence at once (teacher forcing) but must not cheat by looking ahead. Masking sets attention score(i,j) = −∞ for all j &gt; i, so softmax gives those positions weight 0.
+    </div>
+    <div class="unlocks">Unlocks → <b>Week 6</b> directly: BART/T5 <em>are</em> encoder-decoder stacks. The three-way taxonomy (encoder-only / decoder-only / encoder-decoder) in Week 6–7 is just "which of these two block types does the model use, and does it have cross-attention."</div>
+  </section>
+
+  <section class="block" id="s6">
+    <h2><span class="num">6</span>Decoder-only: GPT / causal LM</h2>
+    <p><b>Idea.</b> Stack <em>only</em> masked self-attention decoder blocks (no cross-attention needed — nothing to cross-attend to). Training objective: predict the next token given all previous tokens. That's it — pure next-token prediction at massive scale.</p>
+    <div class="formula">L = − Σ_t log P(x_t | x_1, ..., x_{t-1})</div>
+    <p class="where">where: x_t = token at position t. This is the causal/autoregressive language modeling loss — every token's target is "the next real token."</p>
+    <div class="unlocks">Unlocks → <b>Week 6</b> (GPT-2's zero-shot behavior is "the causal LM objective alone, at scale, turns out to implicitly learn many tasks") and <b>Week 7</b> (GPT-style pipelines are one branch of the model taxonomy you'll be asked to classify).</div>
+  </section>
+
+  <section class="block" id="s7">
+    <h2><span class="num">7</span>Encoder-only: BERT / masked LM</h2>
+    <p><b>Idea.</b> Stack only full (bidirectional) encoder blocks. Since there's no causal mask, you can't train with "predict next token" (the model would just see the answer). Instead: randomly mask ~15% of input tokens, train the model to predict the masked tokens using context from <em>both</em> directions.</p>
+    <div class="example">
+      <div class="lbl">Worked example (concept)</div>
+      Input: "The [MASK] sat on the mat." Model uses both "The" (left) and "sat on the mat" (right) to predict [MASK] = "cat". A causal/GPT-style model could never do this — it can't see "sat on the mat" when predicting position 2.
+    </div>
+    <div class="unlocks">Unlocks → <b>Week 6</b>'s BART comparison (BART generalizes BERT's masking into a full "corrupt then reconstruct" denoising objective — you need MLM clear in your head first to see what BART changes).</div>
+  </section>
+
+  <section class="block" id="s8">
+    <h2><span class="num">8</span>Decoding strategies</h2>
+    <p><b>Greedy:</b> always pick the highest-probability next token. Fast, deterministic, but can miss globally better sequences.</p>
+    <p><b>Beam search:</b> keep the top-k partial sequences at each step instead of just 1, expand each, keep the new top-k. Better quality, more compute.</p>
+    <p><b>Top-k sampling:</b> restrict to the k highest-probability tokens, renormalize, sample from that. Adds controlled randomness.</p>
+    <p><b>Top-p (nucleus) sampling:</b> take the smallest set of tokens whose cumulative probability ≥ p, renormalize, sample. Adapts the candidate pool size to how "peaked" the distribution is.</p>
+    <p class="badge-skip">(You already have full numericals for these in the Q1 guide — this is just the recognition-level recap.)</p>
+    <div class="unlocks">Unlocks → indirectly touches <b>Week 6</b> (GPT-2 zero-shot demos usually reference sampling strategy) — low priority, keep it shallow.</div>
+  </section>
+
+  <section class="block" id="s9">
+    <h2><span class="num">9</span>Attention complexity: O(T²·d)</h2>
+    <p><b>Why.</b> Computing Q·K<sup>T</sup> means comparing every token against every other token: T queries × T keys = T² pairwise score computations, each an O(d) dot product. Total: O(T²·d) time, and you must materialize a T×T score matrix → O(T²) space.</p>
+    <div class="example">
+      <div class="lbl">Worked example</div>
+      T=1000 tokens, d=64. Score matrix = 1000×1000 = 1,000,000 entries, each needing a 64-dim dot product → ~64,000,000 multiply-adds just for the scores. Double T → quadruple the cost. This is <em>the</em> scaling wall for long-context models.
+    </div>
+    <div class="unlocks">Unlocks → <b>Week 8</b> completely. Every technique that week (local/dilated/block-sparse attention, low-rank approximation, FlashAttention, KV-caching) exists <em>solely</em> to dodge this O(T²) wall. Once this number is intuitive, Week 8 is mostly "which trick attacks which part of the cost."</div>
+  </section>
+
+  <div class="drill" id="drill">
+    <h2>Rapid cross-question drill — do this last, out of order on purpose</h2>
+    <p class="sub" style="margin-top:-4px;">Answer each before revealing. If you miss one, don't just read the answer — go back to that block and re-derive it once.</p>
+    <ol class="drillist">
+      <li>A model has 8 attention heads, d_model=512. What's d_k per head, and why is it not just 512?
+        <details><summary>Reveal</summary><div class="a">d_k = 512/8 = 64. It's split so that concatenating all 8 heads' outputs (8×64=512) reconstructs d_model — total parameter/compute budget across all heads stays comparable to one full-size head, but you get 8 different "views."</div></details>
+      </li>
+      <li>Why can't BERT use a causal mask?
+        <details><summary>Reveal</summary><div class="a">Its objective needs bidirectional context (predicting a masked token from both left and right). A causal mask would hide the right-context tokens the objective depends on, making the task trivially unsolvable in the direction that matters — and BERT's whole point is bidirectionality.</div></details>
+      </li>
+      <li>If T doubles, how does attention's compute cost change? Which week 8 techniques attack this directly?
+        <details><summary>Reveal</summary><div class="a">Cost quadruples (O(T²)). Local/block-sparse/low-rank attention attack it by never computing the full T×T matrix; FlashAttention doesn't reduce the FLOPs but reduces memory movement (still O(T²) compute, but much less memory I/O).</div></details>
+      </li>
+      <li>Where does cross-attention's Query come from, and where do its Key/Value come from?
+        <details><summary>Reveal</summary><div class="a">Query comes from the decoder's own (masked self-attention) output so far. Key and Value come from the encoder's final output. This is literally how a decoder "reads" the source sequence.</div></details>
+      </li>
+      <li>What does positional encoding fix, and what would break without it?
+        <details><summary>Reveal</summary><div class="a">Fixes attention's permutation-invariance. Without it, "dog bites man" and "man bites dog" would produce the identical (just relabeled) set of token representations — the model couldn't distinguish word order at all.</div></details>
+      </li>
+      <li>Classify: a model with only encoder blocks, no masking, trained on masked-token prediction. Which of BERT / GPT / T5 family is this, and what's its Week 6/7 taxonomy label?
+        <details><summary>Reveal</summary><div class="a">BERT-style — encoder-only. Bidirectional, MLM objective, no cross-attention (nothing to cross-attend to, no decoder).</div></details>
+      </li>
+      <li>Top-k=3 gives probabilities [0.5, 0.3, 0.1] for the top 3 tokens (rest discarded). What's the renormalized probability of the top token?
+        <details><summary>Reveal</summary><div class="a">0.5 / (0.5+0.3+0.1) = 0.5/0.9 ≈ 0.556.</div></details>
+      </li>
+    </ol>
+  </div>
+</div>
+</body>
+</html>

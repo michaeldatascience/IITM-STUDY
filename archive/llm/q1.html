@@ -1,0 +1,2016 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LLM Quiz 1 — Speed Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] },
+  startup: { typeset: true }
+};
+</script>
+<script id="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+
+<style>
+:root{
+  --paper:#F7F7F2;
+  --card:#FFFFFF;
+  --ink:#14161A;
+  --muted:#646C78;
+  --rule:#E2E3DA;
+  --teal:#0F6E68;      /* concept */
+  --plum:#9B2C5E;      /* exam cheat code */
+  --indigo:#3F3D9E;    /* practice */
+  --amber:#9A6608;     /* prerequisite / background */
+  --wash-teal:#0f6e6810;
+  --wash-plum:#9b2c5e0e;
+  --wash-indigo:#3f3d9e0e;
+  --wash-amber:#9a660810;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:'Source Serif 4',Georgia,serif; font-size:17px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:820px;margin:0 auto;padding:0 22px 140px}
+
+/* ---------- masthead ---------- */
+header.mast{padding:64px 0 30px;border-bottom:2px solid var(--ink);margin-bottom:44px}
+.eyebrow{
+  font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);margin:0 0 14px
+}
+h1{
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
+  font-size:clamp(38px,7vw,62px);line-height:.96;letter-spacing:-.025em;margin:0 0 16px
+}
+h1 em{font-style:normal;color:var(--teal)}
+.dek{font-size:18px;color:var(--muted);margin:0;max-width:60ch}
+
+/* ---------- block ---------- */
+.block{margin:0 0 68px;scroll-margin-top:20px}
+.block-head{display:flex;gap:16px;align-items:baseline;border-bottom:1px solid var(--ink);padding-bottom:10px;margin-bottom:26px}
+.bnum{
+  font-family:'JetBrains Mono',monospace;font-weight:600;font-size:12px;
+  color:var(--paper);background:var(--ink);padding:3px 8px;border-radius:3px;flex:none
+}
+h2{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(24px,4vw,32px);letter-spacing:-.02em;margin:0;line-height:1.15}
+.btag{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);flex:none}
+h3{font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:19px;letter-spacing:-.01em;margin:34px 0 10px}
+h4{font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:15.5px;margin:22px 0 6px}
+p{margin:0 0 14px}
+ul,ol{margin:0 0 14px;padding-left:22px}
+li{margin-bottom:6px}
+code,.mono{font-family:'JetBrains Mono',monospace;font-size:.86em;background:#EFEFE8;padding:1px 5px;border-radius:3px}
+pre{background:var(--ink);color:#E8E8E0;padding:16px 18px;border-radius:6px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.55}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+strong{font-weight:600}
+hr{border:0;border-top:1px solid var(--rule);margin:30px 0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:15px}
+th,td{border:1px solid var(--rule);padding:7px 10px;text-align:left}
+th{background:#EFEFE8;font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:13.5px}
+td.mono,th.mono{font-family:'JetBrains Mono',monospace;font-size:13px}
+
+/* ---------- folded background ---------- */
+details.bg{
+  border-left:3px solid var(--amber);background:var(--wash-amber);
+  border-radius:0 5px 5px 0;margin:16px 0;padding:0
+}
+details.bg>summary{
+  cursor:pointer;list-style:none;padding:10px 14px;
+  font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--amber);font-weight:600;
+}
+details.bg>summary::-webkit-details-marker{display:none}
+details.bg>summary::before{content:'▸ ';display:inline-block;transition:transform .15s}
+details.bg[open]>summary::before{content:'▾ '}
+details.bg>summary:hover{background:#9a660814}
+details.bg .body{padding:2px 16px 14px;font-size:15.5px}
+
+/* ---------- cheat code ---------- */
+.cheat{
+  border:1px solid var(--plum);border-left-width:4px;background:var(--wash-plum);
+  border-radius:0 6px 6px 0;padding:16px 18px;margin:24px 0
+}
+.cheat .lbl{
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--plum);font-weight:600;display:block;margin-bottom:10px
+}
+.cheat ul{margin:0;padding-left:20px}
+.cheat li{margin-bottom:8px;font-size:15.5px}
+
+/* ---------- worked example ---------- */
+.worked{
+  border:1px solid var(--rule);border-top:3px solid var(--teal);
+  background:var(--card);border-radius:0 0 6px 6px;padding:18px 20px;margin:24px 0
+}
+.worked .lbl{
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--teal);font-weight:600;display:block;margin-bottom:10px
+}
+
+/* ---------- practice ---------- */
+.prac{
+  border:1px dashed var(--indigo);background:var(--wash-indigo);
+  border-radius:6px;padding:16px 18px;margin:24px 0
+}
+.prac .lbl{
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--indigo);font-weight:600;display:block;margin-bottom:10px
+}
+details.ans{margin-top:12px;border-top:1px solid #3f3d9e33;padding-top:10px}
+details.ans>summary{
+  cursor:pointer;list-style:none;font-family:'JetBrains Mono',monospace;
+  font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--indigo);font-weight:600
+}
+details.ans>summary::-webkit-details-marker{display:none}
+details.ans>summary::before{content:'▸ '}
+details.ans[open]>summary::before{content:'▾ '}
+details.ans .body{padding-top:10px;font-size:15.5px}
+
+.callout{border-left:3px solid var(--ink);padding:2px 0 2px 16px;margin:20px 0;color:var(--muted);font-size:15.5px}
+.kbd{font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--ink);color:var(--paper);padding:2px 6px;border-radius:3px}
+
+/* ---------- spine ---------- */
+#spine{position:fixed;left:18px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:9px;z-index:50}
+#spine a{
+  width:9px;height:9px;border-radius:2px;background:var(--rule);
+  display:block;transition:all .18s;position:relative
+}
+#spine a:hover,#spine a.on{background:var(--teal);transform:scale(1.5)}
+#spine a span{
+  position:absolute;left:18px;top:-4px;white-space:nowrap;background:var(--ink);color:var(--paper);
+  font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 7px;border-radius:3px;
+  opacity:0;pointer-events:none;transition:opacity .15s
+}
+#spine a:hover span{opacity:1}
+@media(max-width:1180px){#spine{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+footer{border-top:1px solid var(--rule);margin-top:60px;padding-top:20px;font-size:14px;color:var(--muted)}
+</style>
+
+<nav id="spine" aria-label="Blocks"></nav>
+
+<div class="wrap">
+
+<header class="mast">
+  <p class="eyebrow">BSCS / LLM · Quiz 1 · Weeks 1–4 · Installment 1 of 2</p>
+  <h1>Attention is all<br>you have <em>time for.</em></h1>
+  <p class="dek">A 2-day cram spine reverse-engineered from three previous-year papers, GA2 and GA4. Every rule here is the rule the grader used &mdash; each convention below was checked against a question whose official answer I reproduced by hand. 12 blocks. Background sections are folded; open only what you need.</p>
+</header>
+
+<!-- ============ BLOCK 0 ============ -->
+<section class="block" id="b0">
+  <div class="block-head"><span class="bnum">00</span><h2>The exam map</h2><span class="btag">read once</span></div>
+
+  <p>Before any content: <strong>what does this paper actually test?</strong> Three real papers (14, 16 and 18 questions; 40–50 marks each) plus GA2 and GA4. Every single question falls into one of these eight machines. Nothing else appeared, in any of the three.</p>
+
+  <table>
+    <tr><th>Machine</th><th>Typical form</th><th>Freq.</th><th>Block</th></tr>
+    <tr><td><strong>Shapes & conventions</strong></td><td>"$X\in\mathbb{R}^{T\times d_{model}}$, $W_Q\in\mathbb{R}^{d_{model}\times d_k}$ → shape of $Q$?"</td><td class="mono">2–3 / paper</td><td class="mono">B1, B11</td></tr>
+    <tr><td><strong>Attention arithmetic</strong></td><td>Compute $e_j$, $a_j$, $z_j$, or a weighted sum of $v_j$</td><td class="mono">3–5 / paper</td><td class="mono">B1, B3, B5</td></tr>
+    <tr><td><strong>Positional encoding numeric</strong></td><td>"Compute PE element at index $k$ for $pos=3$"</td><td class="mono">1 / paper, every paper</td><td class="mono">B6</td></tr>
+    <tr><td><strong>Add &amp; Norm numeric</strong></td><td>Residual sum, LN params, LN output sum, BatchNorm</td><td class="mono">1–3 / paper</td><td class="mono">B7</td></tr>
+    <tr><td><strong>The counting machine</strong></td><td>Params, attention scores, targets, memory, decoder runs</td><td class="mono">4–6 / paper</td><td class="mono">B4, B8</td></tr>
+    <tr><td><strong>Search &amp; decoding counting</strong></td><td>Beams at step $t$, $V^L$, exhaustive runs, top-k/top-p</td><td class="mono">3–4 / paper</td><td class="mono">B10</td></tr>
+    <tr><td><strong>Probability chains</strong></td><td>Sequence probability, MLM loss, temperature, renormalise</td><td class="mono">2–4 / paper</td><td class="mono">B9, B10</td></tr>
+    <tr><td><strong>Conceptual MCQ / MSQ</strong></td><td>Teacher forcing, GPT vs BERT, residuals, [CLS], heads</td><td class="mono">6–9 / paper</td><td class="mono">everywhere</td></tr>
+  </table>
+
+  <div class="cheat">
+    <span class="lbl">Exam cheat code — the meta (corrected from the real papers)</span>
+    <ul>
+      <li><strong>Section Negative Marks: 0.</strong> All three papers. Unlike GA2 (which had a −1.0 option), <em>the quiz does not penalise wrong answers</em>. Never leave a numeric blank. On an MSQ, if you're confident on two options and unsure on a third, the expected value of guessing is non-negative. <em>Answer everything.</em></li>
+      <li><strong>A scientific calculator is allowed</strong> ("Calculator: Scientific"). Every numeric on these papers is calculator-sized. Do not fear $\cos(3/10000^{0.03125})$.</li>
+      <li><strong>Answers Type: Range</strong> on almost every numeric — typically ±2–3%. So rounding errors won't kill you; <em>method</em> errors will. Don't agonise over the 3rd decimal.</li>
+      <li><strong>Marks are lopsided:</strong> MCQ = 2, MSQ = 2–4, SA numeric = 1–3. The comprehension blocks (4–5 sub-questions off one shared setup) are ~10 marks each and appear 2–3 times per paper. <strong>Learn the setups, not the questions</strong> — one config gets milked five ways.</li>
+      <li><strong>The <span class="mono">−1</span> trap</strong> is a GA/PA habit, not a quiz habit — it didn't appear in the three real papers. Still know it (Block 4.3), but don't over-apply it.</li>
+      <li><strong>Bias is a switch, not a default.</strong> Read the bias sentence twice: 96000 vs 97500, 4718592 vs 4722432. The papers ask both ways <em>on purpose</em>.</li>
+      <li><strong>"For a given head" vs "for all heads"</strong> is the single most common param-counting trap. See Block 8.</li>
+    </ul>
+  </div>
+
+  <div class="callout"><strong>The one structural surprise:</strong> the papers reach back into <strong>Week 1 RNN-era attention</strong> (Bahdanau's $V_{att}^\top\tanh(U_{att}s_{t-1}+W_{att}h_j)$) and into <strong>optimisation</strong> (momentum, contours, batch norm). Transformers are the bulk, but they are not all of it. Block 5 covers the Bahdanau material.</div>
+</section>
+
+<!-- ============ BLOCK 1 ============ -->
+<section class="block" id="b1">
+  <div class="block-head"><span class="bnum">01</span><h2>Self-attention, from the ground</h2><span class="btag">core · 60 min</span></div>
+
+  <h3>Motivation: why this thing exists at all</h3>
+  <p>Take the sentence <em>"The animal didn't cross the street because <strong>it</strong> was too tired."</em> To represent <span class="mono">it</span> you must look at <span class="mono">animal</span>. Now change one word — <em>"...because it was too <strong>wide</strong>"</em> — and suddenly <span class="mono">it</span> must look at <span class="mono">street</span>.</p>
+  <p>So: <strong>the representation of a word must depend on which other words it chooses to look at, and that choice must be computed from the content itself, not fixed in advance.</strong> That single sentence is the whole idea. Everything else is bookkeeping.</p>
+
+  <p>Two older answers failed:</p>
+  <ul>
+    <li><strong>RNN:</strong> squeezes all context into one hidden state passed left-to-right. Path length between word 1 and word 100 is 100 steps → gradient dies. Also strictly sequential → no GPU parallelism.</li>
+    <li><strong>CNN:</strong> fixed window. To connect distant words you stack layers. Path length grows like $\log_k T$ — better, but the window is chosen by you, not by the data.</li>
+  </ul>
+  <p><strong>Attention:</strong> path length between <em>any</em> two positions is $1$. And every position computes in parallel. That is the entire sales pitch.</p>
+
+  <details class="bg">
+    <summary>Background — the sequence-learning setup, if Week 1 is hazy</summary>
+    <div class="body">
+      <p>We have an input sequence $x_1,\dots,x_T$ and want output $y_1,\dots,y_{T'}$. The <strong>encoder–decoder</strong> pattern: encoder reads all of $x$ and produces representations; decoder emits $y$ one token at a time, each time conditioned on (a) everything it has emitted so far, and (b) the encoder's output.</p>
+      <p>The decoder is an <strong>autoregressive</strong> model — it factorises the joint probability:
+      $$P(y_1,\dots,y_{T'}) = \prod_{t=1}^{T'} P(y_t \mid y_{<t}, x)$$
+      This factorisation is <em>exact</em> (chain rule of probability, no assumption). It's the reason Block 7's "probability of a sequence = product of the numbers you read off the rows" works.</p>
+      <p><strong>Teacher forcing:</strong> during training we feed the decoder the <em>ground-truth</em> $y_{<t}$, not its own predictions. Why? (a) errors don't compound, (b) all $T'$ positions can be computed in one parallel pass instead of $T'$ sequential ones. At inference there is no ground truth, so we must feed back our own predictions → this is why <strong>training is 1 pass but inference is $T'$ passes</strong>. Memorise that asymmetry; GA2 tested it directly.</p>
+    </div>
+  </details>
+
+  <h3>The query–key–value abstraction</h3>
+  <p>Think of a <strong>soft dictionary lookup</strong>. A Python dict does a hard lookup: <code>d[k]</code> returns the value at the one key that matches exactly. Attention does a <em>soft</em> lookup: it compares your query to <em>every</em> key, gets a match score for each, turns those scores into weights that sum to 1, and returns the weighted blend of <em>all</em> values.</p>
+
+  <table>
+    <tr><th>Role</th><th>Symbol</th><th>"What am I..."</th></tr>
+    <tr><td>Query</td><td class="mono">$q_i$</td><td>...looking for? (emitted by the word doing the looking)</td></tr>
+    <tr><td>Key</td><td class="mono">$k_j$</td><td>...advertising? (emitted by the word being looked at)</td></tr>
+    <tr><td>Value</td><td class="mono">$v_j$</td><td>...actually offering, if you pick me?</td></tr>
+  </table>
+
+  <p>Now the course's exact notation. Let $H \in \mathbb{R}^{T\times d_{model}}$ stack the input embeddings <strong>as row vectors</strong> (the course is explicit about this — GA2 says "note that the embeddings are row vectors"). Then:</p>
+  $$Q = HW_Q,\qquad K = HW_K,\qquad V = HW_V$$
+  <p>with $W_Q,W_K \in \mathbb{R}^{d_{model}\times d_k}$ and $W_V\in\mathbb{R}^{d_{model}\times d_v}$.</p>
+
+  <div class="callout">Row-vector convention means $h_i W_Q$ — the embedding sits on the <em>left</em>. If you write $W_Q h_i$ you'll get a shape error and lose the question. Burn this in.</div>
+
+  <p>Then for the $i$-th word attending to the $j$-th word:</p>
+  $$e_{ij} = q_i \cdot k_j^\top \qquad\text{(unnormalised attention score)}$$
+  $$a_{ij} = \text{softmax}_j(e_{ij}) = \frac{\exp(e_{ij})}{\sum_{j'} \exp(e_{ij'})}\qquad\text{(normalised)}$$
+  $$z_i = \sum_j a_{ij}\, v_j \qquad\text{(the output — a convex combination of value vectors)}$$
+
+  <p>All at once, in matrix form:</p>
+  $$Z = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V$$
+
+  <details class="bg">
+    <summary>Background — why divide by $\sqrt{d_k}$?</summary>
+    <div class="body">
+      <p>Suppose the components of $q$ and $k$ are independent with mean $0$, variance $1$. Then
+      $$e = q\cdot k = \sum_{m=1}^{d_k} q_m k_m$$
+      Each term has mean 0 and variance 1; there are $d_k$ independent terms, so $\mathrm{Var}(e)=d_k$ and the standard deviation is $\sqrt{d_k}$.</p>
+      <p>Why does that hurt? Softmax on inputs with huge spread saturates: one $a_j \to 1$, the rest $\to 0$. And a saturated softmax has <strong>vanishing gradient</strong> — look ahead to Block 2, where $\partial a_i/\partial e_j = a_i(\delta_{ij}-a_j)$. If $a_i\approx 0$ or $a_i \approx 1$, that whole expression $\approx 0$. No learning signal.</p>
+      <p>Dividing by $\sqrt{d_k}$ restores unit variance and keeps softmax in its responsive regime.</p>
+      <p><strong>Exam note:</strong> questions routinely say "ignore the scaling by $\sqrt{d_k}$." They still expect you to <em>explain</em> it if asked conceptually. Know the reason, then ignore the factor when told.</p>
+    </div>
+  </details>
+
+  <details class="bg">
+    <summary>Background — softmax, and the two facts about it that matter</summary>
+    <div class="body">
+      <p>$\text{softmax}(e)_i = \dfrac{e^{e_i}}{\sum_j e^{e_j}}$. It maps any real vector to a probability distribution.</p>
+      <p><strong>Fact 1 — shift invariance:</strong> $\text{softmax}(e + c\mathbf{1}) = \text{softmax}(e)$ for any scalar $c$. Multiply numerator and denominator by $e^{-c}$ and it cancels. Practical use: subtract $\max_j e_j$ before exponentiating so you never overflow. This is exactly what a from-scratch implementation must do.</p>
+      <p><strong>Fact 2 — it's a <em>soft</em>-argmax, not a soft <em>max</em>.</strong> The name is a historical misnomer. It returns a distribution peaked at the largest input, not the largest value.</p>
+      <p>Temperature: $\text{softmax}(e/\tau)$. As $\tau\to 0$ it becomes hard argmax (one-hot); as $\tau\to\infty$ it becomes uniform. You'll meet this again in Block 8 (decoding).</p>
+    </div>
+  </details>
+
+  <h3>Worked example — the course's own numbers</h3>
+
+  <div class="worked">
+    <span class="lbl">Worked example 1.1 — GA2, "learning brings joy"</span>
+    <p>Embeddings (row vectors): $h_1=[0.5,0.25,1]$, $h_2=[0.1,0.25,0]$, $h_3=[0.1,0.1,0.9]$.</p>
+    $$W_Q=\begin{bmatrix}1&1\\-1&1\\0&1\end{bmatrix}\quad
+      W_K=\begin{bmatrix}0&1\\1&0\\0&1\end{bmatrix}\quad
+      W_V=\begin{bmatrix}0&0\\-1&-1\\1&1\end{bmatrix}$$
+    <p>So $d_{model}=3$, $d_k=d_v=2$, $T=3$.</p>
+
+    <h4>Step 1 — project</h4>
+    <p>$q_1 = h_1W_Q$. Row vector times matrix: multiply each embedding component by the corresponding <em>row</em> of $W_Q$ and add.</p>
+    $$q_1 = 0.5\,[1,1] + 0.25\,[-1,1] + 1\,[0,1] = [0.5-0.25+0,\;0.5+0.25+1] = [0.25,\,1.75]$$
+    <p>Same recipe for the keys:</p>
+    <table>
+      <tr><th class="mono">j</th><th class="mono">$k_j = h_jW_K$</th><th class="mono">$v_j = h_jW_V$</th></tr>
+      <tr><td class="mono">1</td><td class="mono">[0.25, 1.5]</td><td class="mono">[0.75, 0.75]</td></tr>
+      <tr><td class="mono">2</td><td class="mono">[0.25, 0.1]</td><td class="mono">[−0.25, −0.25]</td></tr>
+      <tr><td class="mono">3</td><td class="mono">[0.1, 1.0]</td><td class="mono">[0.8, 0.8]</td></tr>
+    </table>
+    <p><em>Check $k_1$:</em> $0.5[0,1] + 0.25[1,0] + 1[0,1] = [0.25,\,1.5]$. ✓<br>
+       <em>Check $v_1$:</em> $0.5[0,0] + 0.25[-1,-1] + 1[1,1] = [0.75,\,0.75]$. ✓</p>
+
+    <h4>Step 2 — scores (ignoring $\sqrt{d_k}$, as instructed)</h4>
+    $$e_{11}=q_1\cdot k_1 = 0.25(0.25)+1.75(1.5)=0.0625+2.625=2.6875 \approx 2.69$$
+    $$e_{12}=0.25(0.25)+1.75(0.1)=0.2375\approx 0.24$$
+    $$e_{13}=0.25(0.1)+1.75(1.0)=1.775\approx 1.78$$
+
+    <h4>Step 3 — softmax</h4>
+    <p>$e^{2.69}=14.73$, $e^{0.24}=1.27$, $e^{1.78}=5.93$. Sum $=21.93$.</p>
+    $$a_{11}=0.67,\quad a_{12}=0.06,\quad a_{13}=0.27$$
+    <p>Sanity: they sum to 1. ✓ Word 1 mostly attends to itself, a bit to word 3.</p>
+
+    <h4>Step 4 — output</h4>
+    $$z_1 = 0.67[0.75,0.75] + 0.06[-0.25,-0.25] + 0.27[0.8,0.8] = [0.71,\,0.71]$$
+    <p>Notice $z_1$ has both components equal — because <em>every</em> $v_j$ has both components equal (look at $W_V$: its two columns are identical). A convex combination of such vectors keeps the property. Free sanity check.</p>
+  </div>
+
+  <h3>From scratch — no libraries</h3>
+  <p>You cannot claim to know this until you've written it with loops, not <code>einsum</code>. Pure Python, no NumPy:</p>
+
+<pre><code>import math
+
+def matmul(A, B):
+    """A: n×m (list of rows), B: m×p  ->  n×p"""
+    n, m, p = len(A), len(B), len(B[0])
+    return [[sum(A[i][k] * B[k][j] for k in range(m))
+             for j in range(p)] for i in range(n)]
+
+def softmax(v):
+    m = max(v)                          # shift-invariance: overflow guard
+    ex = [math.exp(x - m) for x in v]
+    s = sum(ex)
+    return [x / s for x in ex]
+
+def self_attention(H, Wq, Wk, Wv, scale=True):
+    Q, K, V = matmul(H, Wq), matmul(H, Wk), matmul(H, Wv)
+    dk = len(K[0])
+    T = len(H)
+    Z, A = [], []
+    for i in range(T):
+        e = [sum(Q[i][d] * K[j][d] for d in range(dk)) for j in range(T)]
+        if scale:
+            e = [x / math.sqrt(dk) for x in e]
+        a = softmax(e)
+        z = [sum(a[j] * V[j][d] for d in range(len(V[0]))) for j in range(len(V[0]))]
+        # careful: index bug above is deliberate — see practice Q1.3
+        Z.append(z); A.append(a)
+    return Z, A
+
+H  = [[0.5,0.25,1],[0.1,0.25,0],[0.1,0.1,0.9]]
+Wq = [[1,1],[-1,1],[0,1]]
+Wk = [[0,1],[1,0],[0,1]]
+Wv = [[0,0],[-1,-1],[1,1]]
+Z, A = self_attention(H, Wq, Wk, Wv, scale=False)
+print(A[0])   # expect ≈ [0.67, 0.06, 0.27]
+print(Z[0])   # expect ≈ [0.71, 0.71]</code></pre>
+
+  <div class="cheat">
+    <span class="lbl">Exam cheat code — Block 1</span>
+    <ul>
+      <li><strong>Row-vector world:</strong> $Q=HW_Q$, shapes $(T\times d_{model})(d_{model}\times d_k)=(T\times d_k)$.</li>
+      <li><strong>Score → weight → blend.</strong> $e_{ij}=q_ik_j^\top$; $a_{i\cdot}=\text{softmax}(e_{i\cdot})$ <em>along $j$, i.e. row-wise</em>; $z_i=\sum_j a_{ij}v_j$.</li>
+      <li>$\sum_j a_{ij} = 1$ always. If your row doesn't sum to 1, you've softmaxed the wrong axis.</li>
+      <li>$z_i$ lives in $\mathbb{R}^{d_v}$, <em>not</em> $\mathbb{R}^{d_{model}}$. That's why $W_O$ exists (Block 3).</li>
+      <li>Scaling $\sqrt{d_k}$ exists to stop softmax saturating → to stop gradients vanishing. Say "variance of the dot product grows as $d_k$".</li>
+      <li>$A$ is $T\times T$ → memory and compute are $O(T^2)$. This is the one weakness of attention, and it's the standard "what's the drawback?" answer.</li>
+    </ul>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 1.1 — do this before reading on</span>
+    <p>Using the same $H, W_Q, W_K, W_V$: compute $a_{2\cdot}$ (the attention weights for the word <em>"brings"</em>) and then $z_2$. Round to 2 decimals at every step, exactly as the course instructs.</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p>$q_2 = h_2W_Q = 0.1[1,1]+0.25[-1,1]+0[0,1] = [-0.15,\,0.35]$.</p>
+      <p>$e_{21}=-0.15(0.25)+0.35(1.5)=-0.0375+0.525=0.49$<br>
+         $e_{22}=-0.15(0.25)+0.35(0.1)=-0.0375+0.035=0.00$<br>
+         $e_{23}=-0.15(0.1)+0.35(1.0)=-0.015+0.35=0.34$</p>
+      <p>$e^{0.49}=1.63$, $e^{0}=1.00$, $e^{0.34}=1.40$; sum $=4.03$ → $a_2=[0.40,\,0.25,\,0.35]$.</p>
+      <p>$z_2 = 0.40[0.75,0.75]+0.25[-0.25,-0.25]+0.35[0.8,0.8] = [0.52,\,0.52]$.</p>
+      <p>Both components equal again ✓.</p>
+    </div></details>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 1.2 — conceptual, MCQ-flavoured</span>
+    <p>True or false, and <em>why</em>: "If we set $W_Q = W_K$, self-attention would still work fine because $e_{ij}$ is symmetric anyway."</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p><strong>False, twice over.</strong></p>
+      <p>(a) $e_{ij}$ is <em>not</em> symmetric in general: $e_{ij}=h_iW_QW_K^\top h_j^\top$. Symmetry would need $W_QW_K^\top$ to be a symmetric matrix, which it isn't for arbitrary $W_Q,W_K$. And you <em>want</em> asymmetry — "it" should attend strongly to "animal" without "animal" attending strongly back.</p>
+      <p>(b) Setting $W_Q=W_K$ <em>forces</em> $W_QW_K^\top = W_QW_Q^\top$, which <em>is</em> symmetric (and positive semi-definite). You'd be throwing away exactly the directional relationships that make attention useful. It would still run, but it's a strict loss of expressiveness.</p>
+      <p>Key takeaway to carry: <strong>attention is a directed relationship.</strong></p>
+    </div></details>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 1.3 — the deliberate bug</span>
+    <p>The <code>z</code> line in <code>self_attention</code> above is wrong. Find it, say what shape error it hides, and fix it.</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p>The line is <code>z = [sum(a[j]*V[j][d] for d in range(len(V[0]))) for j in range(len(V[0]))]</code>. The comprehensions are inverted: it sums over the <em>feature</em> index $d$ and iterates over $j$ ranging over $d_v$, not $T$. It only "works" by accident when $T = d_v$ — which is true here ($3 \neq 2$, so it actually crashes or silently truncates).</p>
+      <p>Correct:</p>
+      <pre><code>z = [sum(a[j] * V[j][d] for j in range(T)) for d in range(len(V[0]))]</code></pre>
+      <p>Read it as: <em>for each output dimension $d$, blend the $j$-th value's $d$-th component with weight $a_j$.</em> The sum is <strong>over $j$ (positions)</strong>; the list is <strong>over $d$ (features)</strong>. Getting this index order reflexively right is 80% of implementing attention.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ============ BLOCK 2 ============ -->
+<section class="block" id="b2">
+  <div class="block-head"><span class="bnum">02</span><h2>Gradients through attention</h2><span class="btag">high yield · 45 min</span></div>
+
+  <h3>Motivation</h3>
+  <p>GA2's first question is worth doing properly because it hides a <strong>beautiful invariant</strong> that turns a 10-minute computation into a 5-second answer. And because the same softmax-Jacobian appears again in cross-entropy loss (Block 8). Learn it once, spend it three times.</p>
+
+  <details class="bg">
+    <summary>Background — the Jacobian, and why reverse-mode is "backprop"</summary>
+    <div class="body">
+      <p>For $f:\mathbb{R}^n\to\mathbb{R}^m$, the Jacobian is $J_{ij} = \partial f_i/\partial x_j$, an $m\times n$ matrix.</p>
+      <p>Chain rule in vector form: if $L$ is a scalar and $y = f(x)$, then
+      $$\frac{\partial L}{\partial x} = J^\top \frac{\partial L}{\partial y}$$
+      Read it aloud: <em>the upstream gradient, pulled back through the transpose of the local Jacobian.</em> That's all backprop is. Everything else is caching.</p>
+      <p><strong>Why reverse and not forward?</strong> Because $L$ is a scalar. Going backwards you propagate a vector of size $m$ then $n$ then... — always vectors. Going forwards you'd propagate whole Jacobians. Reverse-mode costs one pass per <em>output</em>; we have one output (the loss) and millions of inputs (the parameters). Forward-mode costs one pass per <em>input</em>. So reverse wins by a factor of millions.</p>
+      <p><strong>Why <code>+=</code>?</strong> If a node feeds several downstream consumers, the total derivative is the <em>sum</em> over all paths (multivariable chain rule). So gradients accumulate, they don't overwrite.</p>
+    </div>
+  </details>
+
+  <h3>The two Jacobians you need</h3>
+
+  <h4>(i) Through the value blend: $z_i = \sum_j a_{ij}v_j$</h4>
+  <p>$z_i$ is linear in $a_{ij}$, with coefficient $v_j$. So:</p>
+  $$\frac{\partial L}{\partial a_{ij}} = \frac{\partial L}{\partial z_i} \cdot v_j$$
+  <p>A dot product of two $d_v$-vectors → a scalar. One scalar per $j$.</p>
+
+  <h4>(ii) Through the softmax: $a_{i\cdot} = \text{softmax}(e_{i\cdot})$</h4>
+  <p>The Jacobian of softmax (dropping the $i$ subscript, since each row is independent):</p>
+  $$\frac{\partial a_m}{\partial e_j} = a_m(\delta_{mj} - a_j) =
+    \begin{cases} a_j(1-a_j) & m=j\\ -a_m a_j & m\neq j\end{cases}$$
+
+  <details class="bg">
+    <summary>Background — derive that softmax Jacobian yourself (2 lines)</summary>
+    <div class="body">
+      <p>Let $a_m = e^{e_m}/S$ where $S=\sum_{j'} e^{e_{j'}}$. Note $\partial S/\partial e_j = e^{e_j}$.</p>
+      <p><strong>Case $m=j$</strong> (quotient rule):
+      $$\frac{\partial a_j}{\partial e_j} = \frac{e^{e_j}S - e^{e_j}e^{e_j}}{S^2} = \frac{e^{e_j}}{S} - \left(\frac{e^{e_j}}{S}\right)^2 = a_j - a_j^2 = a_j(1-a_j)$$</p>
+      <p><strong>Case $m\neq j$</strong> (numerator has no $e_j$):
+      $$\frac{\partial a_m}{\partial e_j} = \frac{0\cdot S - e^{e_m}e^{e_j}}{S^2} = -a_m a_j$$</p>
+      <p>Both collapse to $a_m(\delta_{mj}-a_j)$. In matrix form: $J = \text{diag}(a) - aa^\top$ — symmetric, and singular (see the invariant below).</p>
+    </div>
+  </details>
+
+  <p>Now apply $\partial L/\partial e = J^\top(\partial L/\partial a)$. Write $g_m := \partial L/\partial a_m$:</p>
+  $$\frac{\partial L}{\partial e_j} = \sum_m g_m\, a_m(\delta_{mj}-a_j)
+    = a_j g_j - a_j\sum_m a_m g_m
+    = \boxed{\;a_j\left(g_j - \textstyle\sum_m a_m g_m\right)\;}$$
+
+  <p>Read it: <em>each score's gradient is its weight times how much its own signal exceeds the weighted-average signal.</em> It's a <strong>competition</strong>: if $g_j$ is above the crowd average, push $e_j$ up; below, push down. This is the same structure as cross-entropy's $\hat{y}-y$.</p>
+
+  <div class="callout"><strong>The invariant.</strong> $\sum_j \partial L/\partial e_j = \sum_j a_jg_j - (\sum_j a_j)(\sum_m a_mg_m) = \bar{g} - 1\cdot\bar{g} = 0.$<br>
+  <strong>The gradients w.r.t. the pre-softmax scores always sum to exactly zero.</strong> Because softmax outputs are constrained to sum to 1, there is no direction in which you can raise all scores and change anything. Shift-invariance in the forward pass ⟺ zero-sum in the backward pass.</div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 2.1 — GA2 Q1, the actual exam question</span>
+    <p><em>Given $\partial L/\partial z_1 = [1,1]$, find $\partial L/\partial e_1$. Enter the sum of gradients.</em></p>
+
+    <p><strong>The 5-second answer:</strong> the sum is <span class="mono">0</span>. By the invariant. Done. You do not need a single number from the question.</p>
+
+    <hr>
+    <p><strong>The full computation</strong> — do it once so you trust the shortcut, and because they might ask for the <em>vector</em> next time.</p>
+    <p>From Block 1: $a_1 = [0.67,\,0.06,\,0.27]$ (unrounded: $0.672,\,0.058,\,0.270$), $v_1=[0.75,0.75]$, $v_2=[-0.25,-0.25]$, $v_3=[0.8,0.8]$.</p>
+
+    <p><strong>Step 1 — $\partial L/\partial a_{1j} = \partial L/\partial z_1 \cdot v_j = [1,1]\cdot v_j$ = sum of $v_j$'s components:</strong></p>
+    $$g_1 = 0.75+0.75 = 1.5,\qquad g_2 = -0.5,\qquad g_3 = 1.6$$
+
+    <p><strong>Step 2 — the weighted average signal:</strong></p>
+    $$\bar g = \sum_m a_mg_m = 0.672(1.5) + 0.058(-0.5) + 0.270(1.6) = 1.008 - 0.029 + 0.432 = 1.411$$
+
+    <p><strong>Step 3 — each component:</strong></p>
+    $$\frac{\partial L}{\partial e_{11}} = 0.672(1.5-1.411) = 0.672(0.089) = +0.060$$
+    $$\frac{\partial L}{\partial e_{12}} = 0.058(-0.5-1.411) = 0.058(-1.911) = -0.111$$
+    $$\frac{\partial L}{\partial e_{13}} = 0.270(1.6-1.411) = 0.270(0.189) = +0.051$$
+    <p><strong>Sum:</strong> $0.060 - 0.111 + 0.051 = 0.000$ ✓ — exactly as the invariant promised.</p>
+    <p><strong>Interpretation:</strong> word 2 ("brings") offers a below-average value signal, so the network learns to <em>lower</em> its score and redistribute that attention mass to words 1 and 3. Attention mass is conserved; the gradient just reallocates it.</p>
+  </div>
+
+  <h3>From scratch</h3>
+<pre><code>def softmax_backward(a, g):
+    """a: forward softmax output. g: dL/da.  Returns dL/de."""
+    gbar = sum(a[m] * g[m] for m in range(len(a)))     # weighted average signal
+    return [a[j] * (g[j] - gbar) for j in range(len(a))]
+
+def attention_backward(a, V, dL_dz):
+    """Returns (dL/de, dL/dV) for one query row."""
+    T, dv = len(V), len(V[0])
+    g  = [sum(dL_dz[d] * V[j][d] for d in range(dv)) for j in range(T)]   # dL/da_j
+    de = softmax_backward(a, g)
+    dV = [[a[j] * dL_dz[d] for d in range(dv)] for j in range(T)]         # dL/dv_j
+    return de, dV
+
+a  = [0.672, 0.058, 0.270]
+V  = [[0.75,0.75], [-0.25,-0.25], [0.8,0.8]]
+de, dV = attention_backward(a, V, [1,1])
+print(de)        # [0.0598, -0.1108, 0.0510]
+print(sum(de))   # ≈ 0.0  <-- the invariant, verified numerically</code></pre>
+
+  <div class="cheat">
+    <span class="lbl">Exam cheat code — Block 2</span>
+    <ul>
+      <li><strong>$\sum_j \partial L/\partial e_j = 0$. Always.</strong> If a question asks for "the sum of the gradients" w.r.t. pre-softmax scores, the answer is <span class="mono">0</span>. Free marks.</li>
+      <li><strong>$\partial L/\partial a_j = (\partial L/\partial z_i)\cdot v_j$</strong> — upstream gradient dotted with the $j$-th value vector.</li>
+      <li><strong>$\partial L/\partial e_j = a_j(g_j - \sum_m a_mg_m)$</strong> — weight × (own signal − average signal).</li>
+      <li>Softmax Jacobian: $J = \text{diag}(a) - aa^\top$. Memorise this form; it's compact and it's what they'd want written.</li>
+      <li>$\partial L/\partial v_j = \sum_i a_{ij}\,(\partial L/\partial z_i)$ — sum over all queries $i$ that used $v_j$ (this is the <code>+=</code> accumulation in action: one value vector feeds every query).</li>
+      <li>Saturated softmax ⟹ $a_j\approx 0$ or $1$ ⟹ $a_j(1-a_j)\approx 0$ ⟹ dead gradient. That's the $\sqrt{d_k}$ justification, stated in gradient language.</li>
+    </ul>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 2.1</span>
+    <p>Same setup, but now $\partial L/\partial z_1 = [2,-2]$. Compute $\partial L/\partial e_1$ (the full vector). What do you notice, and why?</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p>$g_j = [2,-2]\cdot v_j$. But every $v_j$ has equal components $[c,c]$, so $g_j = 2c - 2c = 0$ for all $j$.</p>
+      <p>Therefore $\bar g = 0$ and $\partial L/\partial e_1 = [0,0,0]$ — <strong>identically zero</strong>.</p>
+      <p><strong>Why:</strong> all value vectors lie on the line spanned by $[1,1]$, so $z_1$ can only ever move along that line. An upstream gradient orthogonal to $[1,1]$ asks for a change attention <em>cannot deliver</em> — no reweighting of collinear vectors produces motion perpendicular to them. The gradient correctly reports "attention weights can't help you here."</p>
+      <p>This is a real phenomenon: $W_V$ here has rank 1 (its columns are identical), so the value subspace is 1-dimensional. Rank-deficient $W_V$ ⟹ crippled attention. Good conceptual MCQ bait.</p>
+    </div></details>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 2.2</span>
+    <p>Prove that $\sum_j \partial L/\partial e_j = 0$ <em>without</em> using the closed form — argue it from the forward pass alone.</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p>Softmax is shift-invariant: $\text{softmax}(e+c\mathbf{1}) = \text{softmax}(e)$ for all $c$. So $L$, which depends on $e$ only through $a$, satisfies $L(e+c\mathbf{1}) = L(e)$ — it's constant along the direction $\mathbf{1}$.</p>
+      <p>The directional derivative along $\mathbf{1}$ must therefore be zero:
+      $$0 = \frac{d}{dc}L(e+c\mathbf{1})\Big|_{c=0} = \nabla_e L \cdot \mathbf{1} = \sum_j \frac{\partial L}{\partial e_j}$$</p>
+      <p><strong>This is the good proof.</strong> A symmetry in the forward pass forces a constraint on the backward pass — no algebra required. Same argument shows $J\mathbf{1}=0$, i.e. $\text{diag}(a)-aa^\top$ is singular with $\mathbf{1}$ in its null space.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ============ BLOCK 3 ============ -->
+<section class="block" id="b3">
+  <div class="block-head"><span class="bnum">03</span><h2>Multi-head, masked, cross</h2><span class="btag">core · 40 min</span></div>
+
+  <h3>Motivation: one head is not enough</h3>
+  <p>In <em>"The animal didn't cross the street because it was too tired"</em>, the word <span class="mono">it</span> needs several different relationships at once: <em>what does it refer to?</em> (→ animal), <em>what is its verb?</em> (→ was), <em>what modifies it?</em> (→ tired). A single $T\times T$ attention matrix must produce <strong>one</strong> distribution per word. One distribution cannot express three relationships — it would have to average them into mush.</p>
+  <p><strong>Fix:</strong> run $n_h$ independent attention mechanisms in parallel, each with its own $W_Q^{(h)}, W_K^{(h)}, W_V^{(h)}$. Each head is free to specialise. Then concatenate and mix.</p>
+
+  <div class="callout"><strong>The analogy:</strong> one head is a single reviewer reading a paper. Multi-head is a review panel where one reviewer checks the math, one checks the experiments, one checks the writing — and $W_O$ is the area chair who merges the reviews into one decision.</div>
+
+  <h3>The math</h3>
+  <p>For head $h = 1,\dots,n_h$:</p>
+  $$Q^{(h)} = HW_Q^{(h)},\quad K^{(h)} = HW_K^{(h)},\quad V^{(h)} = HW_V^{(h)}$$
+  $$\text{head}_h = \text{softmax}\!\left(\frac{Q^{(h)}K^{(h)\top}}{\sqrt{d_k}}\right)V^{(h)} \in \mathbb{R}^{T\times d_v}$$
+  $$\text{MultiHead}(H) = \big[\text{head}_1;\text{head}_2;\dots;\text{head}_{n_h}\big]\,W_O$$
+  <p>with $W_O \in \mathbb{R}^{n_h d_v \times d_{model}}$. The concatenation is $T\times n_hd_v$; $W_O$ maps it back to $T\times d_{model}$.</p>
+
+  <div class="callout"><strong>The standard convention — and the exam's:</strong> $d_k = d_v = d_{model}/n_h$. Check GA2's config: $d_{model}=64$, $n_h=4$, $d_q=d_k=d_v=16$. Indeed $64/4=16$. ✓<br>
+  <strong>Consequence:</strong> $n_hd_v = d_{model}$, so <em>multi-head attention has the same parameter count as a single head of full width</em>. You get specialisation for free. This is the single most quotable fact about MHA.</div>
+
+  <details class="bg">
+    <summary>Background — the "one big matrix" implementation trick</summary>
+    <div class="body">
+      <p>In practice nobody stores $n_h$ separate $64\times16$ matrices. You store one $W_Q \in \mathbb{R}^{64\times 64}$, compute $Q = HW_Q$ once, then <em>reshape</em> the result into $n_h$ slices of width 16.</p>
+      <p>This is mathematically identical to $n_h$ separate projections — because each output column of $W_Q$ only depends on its own column. It's just faster (one big GEMM beats four small ones).</p>
+      <p><strong>Why this matters for the exam:</strong> when counting parameters, count $W_Q$ as $d_{model}\times(n_h\cdot d_k) = 64\times64 = 4096$, <em>not</em> $64\times16$. Getting this wrong is the classic way to be off by a factor of 4 in Block 4.</p>
+    </div>
+  </details>
+
+  <h3>Three flavours of attention in the Transformer</h3>
+  <table>
+    <tr><th>Flavour</th><th>Where</th><th>Q from</th><th>K, V from</th><th>Masked?</th></tr>
+    <tr><td>Self-attention</td><td>Encoder</td><td>encoder</td><td>encoder</td><td>No</td></tr>
+    <tr><td>Masked self-attention</td><td>Decoder, sublayer 1</td><td>decoder</td><td>decoder</td><td><strong>Yes (causal)</strong></td></tr>
+    <tr><td>Cross-attention</td><td>Decoder, sublayer 2</td><td><strong>decoder</strong></td><td><strong>encoder</strong></td><td>No</td></tr>
+  </table>
+
+  <div class="callout">Cross-attention is where translation actually happens: the decoder asks a question ("what am I looking for to produce the next Tamil word?") and the <em>encoder's</em> English representations answer. Q ≠ K,V source. Memorise the direction: <strong>Q from decoder, K/V from encoder.</strong> Reversing it is a favourite MCQ distractor.</div>
+
+  <h3>Masking</h3>
+  <p><strong>Why:</strong> at inference the decoder emits token $t$ knowing only $y_{<t}$. At training, teacher forcing hands it the whole ground-truth sequence at once so all positions compute in parallel. Without a mask, position 3 would <em>see</em> the answer at position 4 — it would learn to cheat, and at inference (where the future doesn't exist) it would collapse. This is <strong>train/test mismatch</strong>.</p>
+  <p><strong>How:</strong> before softmax, set $e_{ij} = -\infty$ for all $j > i$. Then $\exp(-\infty)=0$, so $a_{ij}=0$ for future positions and the remaining weights still sum to 1 (softmax renormalises automatically — this is <em>why</em> we mask before the softmax and not after).</p>
+
+  $$\text{Mask } M_{ij} = \begin{cases}0 & j\le i\\ -\infty & j>i\end{cases}\qquad
+    A = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}} + M\right)$$
+
+  <p>Resulting $A$ is <strong>lower-triangular</strong>. Row $i$ has $i$ nonzero entries.</p>
+
+  <div class="worked">
+    <span class="lbl">Worked example 3.1 — masking by hand</span>
+    <p>Take the same $e_{1\cdot} = [2.69,\,0.24,\,1.78]$, but now suppose these are decoder scores for position 1 (0-indexed: the <em>second</em> token, $i=2$ in 1-indexing... let's do position $i=2$ so one future token gets masked).</p>
+    <p>Say $e_{2\cdot} = [0.49,\,0.00,\,0.34]$ (from Practice 1.1). With causal masking at $i=2$, position 3 is in the future:</p>
+    $$e_{2\cdot} + M = [0.49,\;0.00,\;-\infty]$$
+    <p>$e^{0.49}=1.63$, $e^{0}=1.00$, $e^{-\infty}=0$. Sum $= 2.63$.</p>
+    $$a_{2\cdot} = [0.62,\;0.38,\;0.00]$$
+    <p>Compare to the unmasked $[0.40, 0.25, 0.35]$: the $0.35$ that went to the future has been <strong>redistributed proportionally</strong> to the visible tokens ($0.40/0.65 = 0.62$, $0.25/0.65=0.38$ ✓). Masking + softmax = automatic renormalisation over the visible set.</p>
+    <p>Then $z_2 = 0.62[0.75,0.75] + 0.38[-0.25,-0.25] + 0 = [0.37,\,0.37]$.</p>
+  </div>
+
+  <h3>From scratch</h3>
+<pre><code>def masked_softmax(e, i, causal=True):
+    if causal:
+        e = [x if j <= i else float('-inf') for j, x in enumerate(e)]
+    m = max(x for x in e if x != float('-inf'))
+    ex = [0.0 if x == float('-inf') else math.exp(x - m) for x in e]
+    s = sum(ex)
+    return [x / s for x in ex]
+
+def multi_head_attention(H, heads, Wo, causal=False):
+    """heads: list of (Wq, Wk, Wv), one triple per head."""
+    per_head = []
+    for (Wq, Wk, Wv) in heads:
+        Z, _ = self_attention_masked(H, Wq, Wk, Wv, causal)
+        per_head.append(Z)                       # each: T × dv
+    T = len(H)
+    concat = [sum((per_head[h][t] for h in range(len(heads))), [])
+              for t in range(T)]                 # T × (nh*dv)
+    return matmul(concat, Wo)                    # T × d_model</code></pre>
+  <p>Notice: the concat step is just list-joining along the feature axis. The <em>only</em> place the heads talk to each other is $W_O$. Before that they are completely independent — which is exactly why they parallelise perfectly.</p>
+
+  <div class="cheat">
+    <span class="lbl">Exam cheat code — Block 3</span>
+    <ul>
+      <li><strong>$d_k = d_v = d_{model}/n_h$.</strong> Therefore MHA costs the same params as a full-width single head. Quote this.</li>
+      <li><strong>$W_O: (n_hd_v) \times d_{model}$.</strong> With the convention above, that's $d_{model}\times d_{model}$. Never forget $W_O$ when counting — it's the #1 param-counting error.</li>
+      <li><strong>Cross-attention: Q ← decoder, K/V ← encoder.</strong> Not the other way.</li>
+      <li><strong>Mask before softmax, with $-\infty$.</strong> Not after, not with 0. Softmax then renormalises over visible tokens for free.</li>
+      <li>Causal mask ⟹ $A$ lower-triangular ⟹ row $i$ has $i$ nonzeros.</li>
+      <li>Encoder has <strong>2</strong> sublayers (MHA, FFN). Decoder has <strong>3</strong> (masked MHA, cross MHA, FFN). This "2 vs 3" drives the whole param count in Block 4.</li>
+      <li>In cross-attention $K,V$ have the source length $T_s$ while $Q$ has target length $T_t$ ⟹ $A$ is $T_t\times T_s$, <em>not square</em>. Good MCQ bait.</li>
+    </ul>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 3.1</span>
+    <p>An encoder-decoder model has $d_{model}=512$, $n_h=8$. Source sentence 20 tokens, target 15 tokens. Give the shape of the attention matrix $A$ in (a) encoder self-attention, (b) decoder masked self-attention, (c) cross-attention. And in (b), how many entries of $A$ are nonzero?</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p>(a) $20\times20$. (b) $15\times15$. (c) $15\times20$ — rows = target (queries), cols = source (keys).</p>
+      <p>(b) nonzeros: lower triangular including diagonal → $\frac{15\cdot16}{2} = 120$ out of 225.</p>
+      <p>Note $d_{model}$ and $n_h$ are red herrings for the shapes — $A$'s shape depends only on sequence lengths. That decoupling is the point of the question.</p>
+    </div></details>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 3.2 — conceptual</span>
+    <p>Someone proposes: "Instead of masking, just train the decoder one token at a time so it physically can't see the future." Is this correct? What's the cost?</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p><strong>Correct but catastrophically slow.</strong> It gives identical gradients — masking is precisely a trick to <em>simulate</em> $T'$ sequential passes in one parallel pass.</p>
+      <p>Cost: $T'$ forward/backward passes per training example instead of 1. For $T'=128$ that is a ~128× slowdown, and you lose GPU utilisation because each pass is tiny.</p>
+      <p><strong>Frame it as the central trade:</strong> masking + teacher forcing = <em>the</em> reason Transformers train fast. And note the asymmetry it creates: <strong>training is parallel over $T'$, inference is inherently sequential.</strong> That asymmetry is why GA2 asks "how many times must you run the decoder?" — at inference, once per output token.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ============ BLOCK 4 ============ -->
+<section class="block" id="b4">
+  <div class="block-head"><span class="bnum">04</span><h2>Parameter counting</h2><span class="btag">guaranteed marks · 45 min</span></div>
+
+  <h3>Motivation</h3>
+  <p>This is the most mechanical, most predictable, highest-density block on the paper — GA2 spent three of its seven questions here. It's pure bookkeeping: if your ledger is right, you cannot lose the marks. Build the ledger once, use it forever.</p>
+
+  <h3>The ledger</h3>
+  <p>Everything is one of five items. Learn them as a checklist you walk top to bottom.</p>
+
+  <table>
+    <tr><th>Component</th><th>Params</th><th>With GA2's config</th></tr>
+    <tr><td>$W_Q$ (all heads)</td><td class="mono">$d_{model}\times n_hd_k$</td><td class="mono">64×64 = 4096</td></tr>
+    <tr><td>$W_K$ (all heads)</td><td class="mono">$d_{model}\times n_hd_k$</td><td class="mono">64×64 = 4096</td></tr>
+    <tr><td>$W_V$ (all heads)</td><td class="mono">$d_{model}\times n_hd_v$</td><td class="mono">64×64 = 4096</td></tr>
+    <tr><td>$W_O$</td><td class="mono">$n_hd_v \times d_{model}$</td><td class="mono">64×64 = 4096</td></tr>
+    <tr><th colspan="2">→ one MHA block</th><th class="mono">16384</th></tr>
+    <tr><td>FFN layer 1</td><td class="mono">$d_{model}\times d_{ff}$</td><td class="mono">64×256 = 16384</td></tr>
+    <tr><td>FFN layer 2</td><td class="mono">$d_{ff}\times d_{model}$</td><td class="mono">256×64 = 16384</td></tr>
+    <tr><th colspan="2">→ one FFN (no bias)</th><th class="mono">32768</th></tr>
+    <tr><td>LayerNorm</td><td class="mono">$2\times d_{model}$ ($\gamma,\beta$)</td><td class="mono">2×64 = 128</td></tr>
+    <tr><td>Residual connection</td><td class="mono">0</td><td class="mono">0</td></tr>
+    <tr><td>Positional encoding (sinusoidal)</td><td class="mono">0</td><td class="mono">0</td></tr>
+  </table>
+
+  <details class="bg">
+    <summary>Background — the FFN, and why $d_{ff}=4d_{model}$</summary>
+    <div class="body">
+      <p>$\text{FFN}(x) = \max(0, xW_1 + b_1)W_2 + b_2$ — a 2-layer MLP with ReLU, applied <strong>position-wise</strong> (the same weights at every position, independently).</p>
+      <p><strong>Why does it exist?</strong> Attention is, given fixed weights $a$, a <em>linear</em> operation on the values. Stacking linear maps gives a linear map. The FFN is where the per-token <em>nonlinear</em> computation happens. Attention <em>mixes information across positions</em>; FFN <em>processes information within a position</em>. That division of labour is the cleanest one-line summary of a Transformer layer.</p>
+      <p><strong>Why 4×?</strong> Empirical. Expand to a wider space, apply the nonlinearity there (more room to carve up), project back. GA2 uses $d_{ff}=256 = 4\times 64$ ✓. Note that this makes the FFN <em>twice</em> as many parameters as the whole MHA block ($32768$ vs $16384$) — in real LLMs roughly two-thirds of the parameters are in the FFNs, not attention. Counterintuitive and quotable.</p>
+    </div>
+  </details>
+
+  <details class="bg">
+    <summary>Background — LayerNorm: why 2×$d_{model}$ and not more</summary>
+    <div class="body">
+      <p>$$\text{LN}(x) = \gamma\odot\frac{x-\mu}{\sqrt{\sigma^2+\epsilon}} + \beta$$
+      where $\mu,\sigma^2$ are computed <strong>across the feature dimension, per token</strong>:
+      $$\mu = \frac{1}{d}\sum_{k=1}^{d}x_k,\qquad \sigma^2 = \frac{1}{d}\sum_{k=1}^{d}(x_k-\mu)^2$$</p>
+      <p>$\mu$ and $\sigma$ are <em>statistics, not parameters</em> — computed fresh from the data every forward pass. The only learnable things are $\gamma$ (scale) and $\beta$ (shift), each of size $d_{model}$. Hence $2d_{model}$.</p>
+      <p><strong>LayerNorm vs BatchNorm:</strong> BatchNorm normalises across the <em>batch</em> per feature — which breaks when sequences have different lengths and makes inference depend on batch statistics. LayerNorm normalises across <em>features</em> per token — completely independent of batch size and sequence length. That independence is why NLP uses LN and vision uses BN.</p>
+      <p><strong>Residual:</strong> $x + \text{Sublayer}(x)$. Zero parameters — it's an addition. Its job is to give gradients a highway: $\partial(x+f(x))/\partial x = 1 + f'(x)$, so the gradient never fully dies even if $f'\approx 0$. Requires input and output of the sublayer to have the same shape — <em>which is why every sublayer maps $d_{model}\to d_{model}$</em>.</p>
+    </div>
+  </details>
+
+  <h3>From scratch — the component counter</h3>
+<pre><code>def mha_params(d_model, n_h, bias=False):
+    """All heads together. n_h cancels: n_h * d_model * (d_model/n_h) = d_model^2."""
+    d_k = d_model // n_h
+    qkv = 3 * n_h * (d_model * d_k)      # == 3 * d_model**2
+    w_o = d_model * d_model              # ONE W_O per layer, never per head
+    p   = qkv + w_o                      # == 4 * d_model**2
+    if bias:
+        p += 4 * d_model                 # one bias per output neuron, x4 matrices
+    return p
+
+def ffn_params(d_model, d_ff, bias=False):
+    p = 2 * d_model * d_ff
+    if bias:
+        p += d_ff + d_model              # b1 is d_ff, b2 is d_model
+    return p
+
+def ln_params(d_model):
+    return 2 * d_model                   # gamma + beta. NEVER times T.
+
+def encoder_layer(d_model, n_h, d_ff, bias=False):
+    return mha_params(d_model, n_h, bias) + ffn_params(d_model, d_ff, bias) \
+         + 2 * ln_params(d_model)        # 2 sublayers -> 2 LNs
+
+def decoder_layer(d_model, n_h, d_ff, bias=False):
+    return 2 * mha_params(d_model, n_h, bias) + ffn_params(d_model, d_ff, bias) \
+         + 3 * ln_params(d_model)        # masked MHA + cross MHA + FFN -> 3 LNs
+
+# GA2: d_model=64, n_h=4, d_ff=256, N=2, no bias in FFN
+enc, dec = encoder_layer(64, 4, 256), decoder_layer(64, 4, 256)
+print(enc, dec)                          # 49408 65920
+print(2 * (enc + dec))                   # 230656   <- the official GA2 answer
+
+# The output layer and embeddings, which GA2 asked separately
+print(1500 * 64)                         # 96000  output layer, no bias
+print(1500 * 64 + 1500)                  # 97500  output layer, with bias
+print(1000 * 64)                         # 64000  input embedding = |V_s| * d_model</code></pre>
+
+  <h3>Sublayer counting: the 2 vs 3 rule</h3>
+  <p>Each sublayer is wrapped as <span class="mono">LayerNorm(x + Sublayer(x))</span>. So <strong>#LayerNorms = #sublayers</strong>.</p>
+  <ul>
+    <li><strong>Encoder layer:</strong> 2 sublayers → MHA + FFN + <strong>2</strong> LNs</li>
+    <li><strong>Decoder layer:</strong> 3 sublayers → masked MHA + cross MHA + FFN + <strong>3</strong> LNs</li>
+  </ul>
+
+  <div class="worked">
+    <span class="lbl">Worked example 4.1 — GA2 Q1, the 230656 question</span>
+    <p><strong>Config:</strong> $|V_s|=1000$, $|V_t|=1500$, $T=128$, $d_{model}=64$, $d_q=d_k=d_v=16$, $n_h=4$, $d_{ff}=256$, $N=2$ layers, layer norm + residual, <strong>no bias in FFN</strong>. Exclude embedding and output layers.</p>
+
+    <h4>Encoder layer</h4>
+    <table>
+      <tr><td>MHA</td><td class="mono">4 × (64×64)</td><td class="mono">16384</td></tr>
+      <tr><td>FFN</td><td class="mono">64×256 + 256×64</td><td class="mono">32768</td></tr>
+      <tr><td>LN × 2</td><td class="mono">2 × 128</td><td class="mono">256</td></tr>
+      <tr><th colspan="2">one encoder layer</th><th class="mono">49408</th></tr>
+    </table>
+    <p>$N=2$ → encoder total $= 2 \times 49408 = \mathbf{98816}$</p>
+
+    <h4>Decoder layer</h4>
+    <table>
+      <tr><td>Masked MHA</td><td class="mono">16384</td><td class="mono">16384</td></tr>
+      <tr><td>Cross MHA</td><td class="mono">16384</td><td class="mono">16384</td></tr>
+      <tr><td>FFN</td><td class="mono">32768</td><td class="mono">32768</td></tr>
+      <tr><td>LN × 3</td><td class="mono">3 × 128</td><td class="mono">384</td></tr>
+      <tr><th colspan="2">one decoder layer</th><th class="mono">65920</th></tr>
+    </table>
+    <p>$N=2$ → decoder total $= 2 \times 65920 = \mathbf{131840}$</p>
+
+    <h4>Total</h4>
+    $$98816 + 131840 = \boxed{230656}\;✓$$
+
+    <div class="callout"><strong>Note what did NOT appear:</strong> $T=128$ (context length) contributed <em>nothing</em>. $|V_s|,|V_t|$ contributed nothing (excluded). Sinusoidal positional encoding contributes nothing. Residuals contribute nothing. <strong>Parameter count is independent of sequence length</strong> — that's a deep fact (it's why the same model handles any length), and it's dropped in as a distractor.</div>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 4.2 — embedding and output layers</span>
+    <p><strong>Input embedding layer:</strong> a lookup table mapping each source vocabulary item to a $d_{model}$ vector.</p>
+    $$|V_s| \times d_{model} = 1000 \times 64 = \boxed{64000}$$
+    <p>(If they asked for the <em>decoder's</em> input embedding it would be $1500\times64 = 96000$. Read which one they want.)</p>
+
+    <p><strong>Output layer:</strong> projects the decoder's $d_{model}$ output to vocabulary logits, then softmax.</p>
+    $$d_{model}\times|V_t| = 64\times1500 = \boxed{96000}\quad\text{(no bias)}$$
+    $$\text{or } 64\times1500 + 1500 = \boxed{97500}\quad\text{(with bias)}$$
+    <p><strong>GA2 accepted both.</strong> The question didn't specify bias for the output layer (it only specified "no bias in the FFN"). When the spec is silent, either is defensible — but if forced to pick one, <strong>no bias</strong> matches the "excluding bias" spirit of the rest of the question.</p>
+    <p>Softmax itself has <strong>zero</strong> parameters. It's a function, not a layer with weights. Frequent trap.</p>
+  </div>
+
+  <div class="cheat">
+    <span class="lbl">Exam cheat code — Block 4</span>
+    <ul>
+      <li><strong>MHA $= 4d_{model}^2$</strong> (when $d_k=d_v=d_{model}/n_h$). With bias: $+4d_{model}$.</li>
+      <li><strong>FFN $= 2\,d_{model}d_{ff}$</strong> (no bias). With bias: $+\,d_{ff}+d_{model}$.</li>
+      <li><strong>LN $= 2d_{model}$</strong> each. Encoder layer has 2, decoder layer has 3.</li>
+      <li><strong>Encoder layer $= 4d_{model}^2 + 2d_{model}d_{ff} + 4d_{model}$</strong></li>
+      <li><strong>Decoder layer $= 8d_{model}^2 + 2d_{model}d_{ff} + 6d_{model}$</strong></li>
+      <li><strong>Embedding $= |V|\times d_{model}$. Output $= d_{model}\times|V|$ (+$|V|$ if bias).</strong></li>
+      <li><strong>Zero-parameter list:</strong> residual, softmax, sinusoidal PE, dropout, masking, ReLU. (Learned PE is <em>not</em> zero: $T\times d_{model}$.)</li>
+      <li><strong>$T$ never appears in a parameter count</strong> (unless positional encodings are learned).</li>
+      <li>Quick check with GA2's numbers: encoder layer $=49408$, decoder layer $=65920$, ratio $\approx 1.33$. Decoder layer ≈ encoder layer + one MHA + one LN.</li>
+    </ul>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 4.1 — variation on GA2 Q1</span>
+    <p>Same config as GA2 ($d_{model}=64$, $n_h=4$, $d_{ff}=256$, layer norm + residual) but now $N=3$ layers, and <strong>bias IS included everywhere</strong> (in MHA projections and FFN). Total params excluding embedding and output layers?</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p><strong>MHA with bias:</strong> $4(64\times64) + 4(64) = 16384 + 256 = 16640$.</p>
+      <p><strong>FFN with bias:</strong> $64(256)+256 + 256(64)+64 = 16640 + 16448 = 33088$.</p>
+      <p><strong>Encoder layer:</strong> $16640 + 33088 + 2(128) = 49984$. × 3 = $149952$.</p>
+      <p><strong>Decoder layer:</strong> $2(16640) + 33088 + 3(128) = 33280 + 33088 + 384 = 66752$. × 3 = $200256$.</p>
+      <p><strong>Total = $149952 + 200256 = 350208$.</strong></p>
+      <p>Sanity: biases added only $350208 - 3(49408+65920) = 350208 - 345984 = 4224$ — about 1.2%. Biases are numerically almost irrelevant, which is exactly why modern LLMs (LLaMA, PaLM) drop them entirely.</p>
+    </div></details>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 4.2 — the reverse direction</span>
+    <p>An encoder-only model (BERT-style) has $N=12$ layers, $d_{model}=768$, $n_h=12$, $d_{ff}=3072$, $|V|=30000$, max length $T=512$ with <strong>learned</strong> positional embeddings. Ignore biases. Estimate the total parameter count and state what fraction sits in the FFNs.</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p><strong>Per encoder layer:</strong><br>
+      MHA $= 4(768^2) = 2{,}359{,}296$<br>
+      FFN $= 2(768)(3072) = 4{,}718{,}592$<br>
+      LN $= 2(2\times768) = 3{,}072$<br>
+      Total per layer $= 7{,}080{,}960$. × 12 = $\mathbf{84{,}971{,}520}$</p>
+      <p><strong>Token embedding:</strong> $30000\times768 = 23{,}040{,}000$<br>
+      <strong>Learned PE:</strong> $512\times768 = 393{,}216$ (note: NOT zero, because learned)</p>
+      <p><strong>Total ≈ $108.4$M</strong> — which is BERT-base's famous 110M. ✓ (the remainder is segment embeddings, pooler, biases).</p>
+      <p><strong>FFN fraction:</strong> $\frac{12\times4{,}718{,}592}{84{,}971{,}520} = \frac{56.6\text{M}}{85.0\text{M}} \approx \mathbf{67\%}$ of the encoder stack. Two-thirds of the model is feed-forward, not attention. Remember this.</p>
+    </div></details>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 4.3 — the trap question</span>
+    <p>GA2 asked: "At $t=1$, the prediction probabilities for 'Naan', 'transformer', 'padaththai' are 0.55, 0.15, 0.2. What is the probability of 'rasithen'? Enter −1 if insufficient." What's the answer and why?</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p><strong>−1. Insufficient.</strong></p>
+      <p>The tempting move: $1 - 0.55 - 0.15 - 0.2 = 0.10$. Wrong.</p>
+      <p><strong>Why:</strong> the softmax is over the <em>entire target vocabulary</em>, $|V_t| = 1500$ words. The remaining $0.10$ of probability mass is spread across all $1497$ other words, of which 'rasithen' is only one. You've been told three numbers out of fifteen hundred. You cannot recover the fourth.</p>
+      <p><strong>The general lesson — this is the whole "−1 trap":</strong> probabilities complete to 1 <em>over the full vocabulary</em>, never over the handful of words in the sentence. Whenever a question gives you $k$ probabilities and asks for a $(k{+}1)$-th, check whether $k+1 = |V|$. If not, it's −1.</p>
+      <p>Contrast with GA4, where the full $10$-word vocabulary <em>and</em> all 10 columns were given — there, complements are computable.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ============ BLOCK 5 ============ -->
+<section class="block" id="b5">
+  <div class="block-head"><span class="bnum">05</span><h2>Attention before Transformers</h2><span class="btag">week 1 · 30 min</span></div>
+
+  <h3>Motivation: the bottleneck</h3>
+  <p>The 2014 encoder–decoder RNN squeezed the <em>entire</em> source sentence into <strong>one fixed-size vector</strong> $c$ (the final encoder hidden state), then generated the whole translation from it. A 5-word sentence and a 50-word sentence get the same 512 numbers.</p>
+  <div class="callout"><strong>The analogy:</strong> read a paragraph, then close the book, then translate it from memory. It works for a sentence. It collapses for a page. Performance degraded sharply past ~30 tokens — that plot is the reason attention was invented.</div>
+  <p><strong>Bahdanau's fix (2015):</strong> don't compress. Keep <em>all</em> encoder hidden states $h_1,\dots,h_n$ around, and let the decoder build a <strong>fresh context vector $c_t$ at every output step</strong>, re-weighting the $h_j$ according to what it needs right now.</p>
+  <p>That is the seed of everything in Blocks 1–4. Self-attention is this idea turned inward (the sequence attends to itself) and with the alignment function swapped for a dot product.</p>
+
+  <h3>The math — the course's exact notation</h3>
+  <p>At decoder step $t$, with previous decoder state $s_{t-1}$ and encoder states $h_j$:</p>
+  $$\text{score}(s_{t-1}, h_j) = V_{att}^\top \tanh\!\big(U_{att}s_{t-1} + W_{att}h_j\big)$$
+  $$\alpha_{tj} = \text{align}(s_{t-1},h_j) = \frac{\exp\big(\text{score}(s_{t-1},h_j)\big)}{\sum_{i=1}^{n}\exp\big(\text{score}(s_{t-1},h_i)\big)}$$
+  $$c_t = \sum_{j=1}^{n}\alpha_{tj}\,h_j$$
+
+  <p>Same three-step skeleton as Block 1 — <strong>score → softmax → blend</strong>. Only the scoring function changed.</p>
+
+  <details class="bg">
+    <summary>Background — additive vs dot-product attention, and why the Transformer switched</summary>
+    <div class="body">
+      <p><strong>Additive (Bahdanau):</strong> $V_{att}^\top\tanh(U_{att}s + W_{att}h)$ — a tiny one-hidden-layer MLP that <em>learns</em> the alignment function. Parameters: $U_{att}\in\mathbb{R}^{d\times d}$, $W_{att}\in\mathbb{R}^{d\times d}$, $V_{att}\in\mathbb{R}^{d\times 1}$.</p>
+      <p><strong>Multiplicative / dot-product (Luong, then Transformer):</strong> $q\cdot k$ — no extra parameters in the scoring step at all; the learning is pushed into $W_Q,W_K$.</p>
+      <p><strong>Why the switch?</strong> Both have similar accuracy. But a dot product is a matrix multiply — it maps onto a single optimised GEMM on a GPU. Additive attention needs a $\tanh$ over an $n\times d$ intermediate for every query, which is far more memory traffic. The Transformer paper says this explicitly: dot-product is "much faster and more space-efficient in practice."</p>
+      <p><strong>Note $\tanh$ saturates too.</strong> $\tanh'(x)=1-\tanh^2(x)$, which $\to 0$ as $|x|$ grows. Same vanishing-gradient story as a saturated softmax — see Block 2.</p>
+    </div>
+  </details>
+
+  <div class="worked">
+    <span class="lbl">Worked example 5.1 — PYQ, verbatim</span>
+    <p>Encoder states $h_1=\begin{bmatrix}1\\0\end{bmatrix}$, $h_2=\begin{bmatrix}0\\1\end{bmatrix}$, $h_3=\begin{bmatrix}1\\1\end{bmatrix}$. Decoder state $s_{t-1}=\begin{bmatrix}1\\2\end{bmatrix}$.
+    $V_{att}=\begin{bmatrix}1\\1\end{bmatrix}$, $U_{att}=I_2$, $W_{att}=I_2$.</p>
+
+    <h4>Step 1 — scores</h4>
+    <p>Because $U_{att}=W_{att}=I$, the argument collapses to $s_{t-1}+h_j$. And $V_{att}^\top(\cdot)$ just <strong>sums the components</strong>. So:</p>
+    $$\text{score}_j = \tanh(s_1+h_{j,1}) + \tanh(s_2+h_{j,2})$$
+    <table>
+      <tr><th class="mono">j</th><th class="mono">$s+h_j$</th><th class="mono">tanh</th><th class="mono">score</th></tr>
+      <tr><td class="mono">1</td><td class="mono">[2, 2]</td><td class="mono">0.9640, 0.9640</td><td class="mono">1.9281</td></tr>
+      <tr><td class="mono">2</td><td class="mono">[1, 3]</td><td class="mono">0.7616, 0.9951</td><td class="mono">1.7567</td></tr>
+      <tr><td class="mono">3</td><td class="mono">[2, 3]</td><td class="mono">0.9640, 0.9951</td><td class="mono">1.9591</td></tr>
+    </table>
+    <p><strong>Sub-question A answer: $\text{score}(s_{t-1},h_1) = 1.93$</strong> (key range: 1.89–1.96 ✓)</p>
+
+    <h4>Step 2 — softmax</h4>
+    <p>$e^{1.9281}=6.876$, $e^{1.7567}=5.794$, $e^{1.9591}=7.093$. Sum $=19.763$.</p>
+    $$\alpha_t = [0.348,\;0.293,\;0.359]$$
+    <p><strong>Sub-question B answer: $\alpha_{t1} = 0.35$</strong> (key range: 0.31–0.39 ✓)</p>
+
+    <h4>Step 3 — context vector</h4>
+    $$c_t = 0.348\begin{bmatrix}1\\0\end{bmatrix} + 0.293\begin{bmatrix}0\\1\end{bmatrix} + 0.359\begin{bmatrix}1\\1\end{bmatrix} = \begin{bmatrix}0.707\\0.652\end{bmatrix}$$
+    <p><strong>Sub-question C answer: sum $= 1.36$</strong> (key range: 1.32–1.40 ✓)</p>
+
+    <div class="callout"><strong>Shortcut worth seeing:</strong> $\sum(c_t) = \sum_j \alpha_{tj}\sum(h_j) = 0.348(1) + 0.293(1) + 0.359(2) = 1.359$. The sum of a blend is the blend of the sums. Saves you assembling the vector at all.</div>
+  </div>
+
+  <h3>From scratch</h3>
+<pre><code>def tanh(x):
+    e = math.exp(2*x)
+    return (e - 1) / (e + 1)
+
+def bahdanau_attention(s_prev, H, V_att, U_att, W_att):
+    """s_prev: d-vector. H: list of d-vectors. Column-vector world."""
+    scores = []
+    for h in H:
+        # U_att @ s_prev + W_att @ h
+        Us = [sum(U_att[i][k]*s_prev[k] for k in range(len(s_prev)))
+              for i in range(len(U_att))]
+        Wh = [sum(W_att[i][k]*h[k] for k in range(len(h)))
+              for i in range(len(W_att))]
+        inner = [tanh(Us[i] + Wh[i]) for i in range(len(Us))]
+        scores.append(sum(V_att[i]*inner[i] for i in range(len(inner))))
+    alpha = softmax(scores)
+    c = [sum(alpha[j]*H[j][d] for j in range(len(H))) for d in range(len(H[0]))]
+    return scores, alpha, c
+
+H = [[1,0], [0,1], [1,1]]
+print(bahdanau_attention([1,2], H, [1,1], [[1,0],[0,1]], [[1,0],[0,1]]))
+# scores ≈ [1.928, 1.757, 1.959]; alpha ≈ [0.348, 0.293, 0.359]; c ≈ [0.707, 0.652]</code></pre>
+
+  <div class="cheat">
+    <span class="lbl">Exam cheat code — Block 5</span>
+    <ul>
+      <li><strong>score → softmax → blend.</strong> Identical skeleton to self-attention. Only <code>score</code> differs.</li>
+      <li><strong>$V_{att}^\top(\text{vector})$ with $V_{att}=\mathbf{1}$ means "add up the components."</strong> The papers keep choosing $I$ and $\mathbf{1}$ so the algebra evaporates. Spot it and skip the matrix multiply.</li>
+      <li><strong>$\sum(c_t) = \sum_j\alpha_{tj}\sum(h_j)$.</strong> When asked for "the sum of all elements of $c_t$", never build $c_t$.</li>
+      <li><strong>Additive params:</strong> $U_{att}$: $d\times d$, $W_{att}$: $d\times d$, $V_{att}$: $d\times1$ ⟹ $2d^2+d$ total.</li>
+      <li><strong>Here $Q$ is the decoder state, $K=V=h_j$.</strong> Bahdanau attention is <em>cross</em>-attention, and the value <em>is</em> the key (no separate $W_V$). Compare Block 3.</li>
+      <li>Compute $\tanh$ from $\dfrac{e^{2x}-1}{e^{2x}+1}$ — that's the form the paper hands you, and it's one calculator keystroke chain.</li>
+      <li>$\tanh(1)=0.76$, $\tanh(2)=0.96$, $\tanh(3)=1.00$. These three recur. Memorise them and you can often do the whole thing mentally.</li>
+    </ul>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 5.1 — variation</span>
+    <p>Same setup, but $s_{t-1}=\begin{bmatrix}0\\0\end{bmatrix}$. Compute $\alpha_t$ and the sum of $c_t$.</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p>scores $= \tanh(h_{j,1})+\tanh(h_{j,2})$:<br>
+      $j=1$: $\tanh(1)+\tanh(0) = 0.7616 + 0 = 0.762$<br>
+      $j=2$: $0 + 0.7616 = 0.762$<br>
+      $j=3$: $0.7616+0.7616 = 1.523$</p>
+      <p>$e^{0.762}=2.143$ (twice), $e^{1.523}=4.586$. Sum $=8.872$.<br>
+      $\alpha_t = [0.242,\,0.242,\,0.517]$</p>
+      <p>$\sum(c_t) = 0.242(1)+0.242(1)+0.517(2) = 1.517$</p>
+      <p><strong>Notice:</strong> $h_1$ and $h_2$ get identical weight — as they must, since the score function is symmetric in the two coordinates when $s=0$ and $h_1,h_2$ are the two unit vectors. Symmetry checks like this catch arithmetic slips instantly.</p>
+    </div></details>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 5.2 — conceptual</span>
+    <p>The PYQ MSQ asks: "Which are valid reasons transformer LLMs are widely used?" One option is <em>"They use recurrence to remember long-term dependencies more effectively than LSTMs."</em> Why is that wrong, and what's the correct framing?</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p><strong>Wrong because Transformers have no recurrence at all.</strong> That's the whole point — the title of the paper is <em>Attention Is All You Need</em>, meaning "you can delete the RNN." The option is a category error dressed up as a compliment.</p>
+      <p><strong>Correct framings</strong> (both were keyed correct): (a) parallel processing of the sequence enables faster training; (b) one pre-trained model fine-tunes to many NLP tasks.</p>
+      <p>Also keyed <em>wrong</em>: "Transformers are limited to short text inputs due to their architecture." Careful here — the $O(T^2)$ cost is a real practical limit, but it's not an <em>architectural</em> one; nothing in the architecture caps $T$. The distractor is designed to catch someone who half-remembers "quadratic = bad for long sequences." <strong>Know the difference between an architectural constraint and a resource constraint.</strong></p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ============ BLOCK 6 ============ -->
+<section class="block" id="b6">
+  <div class="block-head"><span class="bnum">06</span><h2>Positional encoding</h2><span class="btag">every paper · 35 min</span></div>
+
+  <h3>Motivation: attention is blind to order</h3>
+  <p>Look again at $z_i = \sum_j a_{ij}v_j$. Nothing in that expression knows <em>where</em> $j$ is. Shuffle the input tokens and the outputs shuffle identically — but they don't <em>change</em>. Formally, self-attention is <strong>permutation-equivariant</strong>: $\text{Attn}(PH) = P\,\text{Attn}(H)$ for any permutation matrix $P$.</p>
+  <p>So <em>"dog bites man"</em> and <em>"man bites dog"</em> produce the same set of representations. Catastrophic. An RNN got order for free (it processes left to right); by deleting recurrence we deleted order, and we have to put it back by hand.</p>
+
+  <details class="bg">
+    <summary>Background — prove the permutation-equivariance in three lines</summary>
+    <div class="body">
+      <p>Let $P$ be a permutation matrix. $Q'=PHW_Q = PQ$, and likewise $K'=PK$, $V'=PV$.</p>
+      <p>$$Q'K'^\top = PQ(PK)^\top = PQK^\top P^\top$$</p>
+      <p>Softmax is applied row-wise, and $P(\cdot)P^\top$ permutes rows and columns consistently, so $\text{softmax}(PQK^\top P^\top) = P\,\text{softmax}(QK^\top)\,P^\top$.</p>
+      <p>$$Z' = P\,\text{softmax}(QK^\top)P^\top PV = P\,\text{softmax}(QK^\top)V = PZ$$</p>
+      <p>(using $P^\top P = I$). So permuting the input just permutes the output — the <em>content</em> of each token's representation is untouched. Order is invisible. $\blacksquare$</p>
+    </div>
+  </details>
+
+  <h3>The formula — read the indices carefully</h3>
+  $$PE_{(pos,\,2i)} = \sin\!\left(\frac{pos}{10000^{2i/d_{model}}}\right)\qquad
+    PE_{(pos,\,2i+1)} = \cos\!\left(\frac{pos}{10000^{2i/d_{model}}}\right)$$
+
+  <div class="callout"><strong>The trap that eats half the marks on this question.</strong> The sin/cos choice is decided by the <strong>dimension index</strong>, not the position. <em>Every</em> position uses both sin and cos — sin on its even dimensions, cos on its odd ones. The PYQ distractor says "words at even <em>positions</em> use sine, words at odd <em>positions</em> use cosine." That is wrong, and it's the most-picked wrong answer.</div>
+
+  <h3>How to evaluate it in 20 seconds</h3>
+  <p>Given a dimension index $k$ and position $pos$:</p>
+  <ol>
+    <li><strong>Is $k$ even or odd?</strong> Even → sin. Odd → cos.</li>
+    <li><strong>Recover $i$:</strong> $i = \lfloor k/2 \rfloor$. (If $k=2i$ then $i=k/2$; if $k=2i+1$ then $i=(k-1)/2$. Both are $\lfloor k/2\rfloor$.)</li>
+    <li><strong>Build the angle:</strong> $\theta = \dfrac{pos}{10000^{2i/d_{model}}}$. Note the exponent uses $2i$, <em>not</em> $k$.</li>
+    <li>Apply sin or cos, <strong>in radians</strong>.</li>
+  </ol>
+
+  <div class="worked">
+    <span class="lbl">Worked example 6.1 — PYQ, $d_{model}=4$</span>
+    <p><em>$x = [0.5, -0.4, 0.3, -0.2]^\top$, word at $pos=3$. Compute $h = x + p$, then $h[0]-h[1]$.</em></p>
+
+    <table>
+      <tr><th class="mono">k</th><th class="mono">parity</th><th class="mono">i</th><th class="mono">2i/d</th><th class="mono">θ = 3/10000^(2i/d)</th><th class="mono">PE</th></tr>
+      <tr><td class="mono">0</td><td class="mono">even → sin</td><td class="mono">0</td><td class="mono">0</td><td class="mono">3/1 = 3</td><td class="mono">sin(3) = 0.1411</td></tr>
+      <tr><td class="mono">1</td><td class="mono">odd → cos</td><td class="mono">0</td><td class="mono">0</td><td class="mono">3</td><td class="mono">cos(3) = −0.9900</td></tr>
+      <tr><td class="mono">2</td><td class="mono">even → sin</td><td class="mono">1</td><td class="mono">2/4 = 0.5</td><td class="mono">3/100 = 0.03</td><td class="mono">sin(0.03) = 0.0300</td></tr>
+      <tr><td class="mono">3</td><td class="mono">odd → cos</td><td class="mono">1</td><td class="mono">0.5</td><td class="mono">0.03</td><td class="mono">cos(0.03) = 0.9996</td></tr>
+    </table>
+
+    <p>$$h = x + p = [0.5+0.1411,\;-0.4-0.9900,\;0.3+0.0300,\;-0.2+0.9996]$$
+    $$h = [0.6411,\;-1.3900,\;0.3300,\;0.7996]$$
+    $$h[0]-h[1] = 0.6411 - (-1.3900) = \boxed{2.03}$$</p>
+    <p>Key range: 1.98–2.08 ✓</p>
+
+    <div class="callout"><strong>Note $10000^{0}=1$.</strong> Dimensions 0 and 1 always get the raw position as the angle. That's the fastest-rotating pair. Dimensions further along get progressively slower angles ($10000^{2i/d}$ grows), which is the whole design: it's a <strong>binary-counter-like</strong> multi-scale clock. Fast hands for local order, slow hands for global position.</div>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 6.2 — PYQ, $d_{model}=128$ (the calculator one)</span>
+    <p><em>$d_{model}=128$, $pos=3$ (0-based), find element at index $k=5$.</em></p>
+    <ol>
+      <li>$k=5$ is <strong>odd</strong> → <strong>cos</strong>.</li>
+      <li>$i = \lfloor 5/2 \rfloor = 2$.</li>
+      <li>Exponent $= 2i/d_{model} = 4/128 = 0.03125$.</li>
+      <li>$10000^{0.03125} = e^{0.03125 \times \ln 10000} = e^{0.03125 \times 9.2103} = e^{0.2878} = 1.3335$</li>
+      <li>$\theta = 3/1.3335 = 2.2497$ rad</li>
+      <li>$\cos(2.2497) = \boxed{-0.63}$</li>
+    </ol>
+    <p>Key range: −0.65 to −0.59 ✓</p>
+    <p><strong>Calculator sanity:</strong> $2.25$ rad is just past $\pi/2 \approx 1.571$ and short of $\pi \approx 3.142$ — second quadrant, so cosine <em>must</em> be negative. If you got $+0.63$, your calculator is in degrees.</p>
+  </div>
+
+  <h3>Why sinusoids and not just "1, 2, 3, ..."?</h3>
+  <ul>
+    <li><strong>Bounded:</strong> every value in $[-1,1]$, so PE never swamps the word embedding it's added to. Raw integers would; $pos=1000$ added to an embedding of scale ~1 destroys the word.</li>
+    <li><strong>Unbounded length:</strong> the formula is defined for any $pos$, so the model can (in principle) see positions longer than it trained on. Learned PE cannot — it has a hard row limit.</li>
+    <li><strong>Relative positions are linear:</strong> $PE_{pos+k}$ is a fixed linear function (a rotation) of $PE_{pos}$ — the rotation angle depends only on $k$, not $pos$. This lets attention learn "look 3 tokens back" as a single linear operation.</li>
+    <li><strong>Zero parameters.</strong> This one matters for Block 4.</li>
+  </ul>
+
+  <details class="bg">
+    <summary>Background — the rotation property, made concrete</summary>
+    <div class="body">
+      <p>Take the $(2i, 2i{+}1)$ pair as a point on a circle at angle $\omega_i \cdot pos$ where $\omega_i = 1/10000^{2i/d}$:
+      $$\begin{bmatrix}PE_{pos,2i}\\PE_{pos,2i+1}\end{bmatrix} = \begin{bmatrix}\sin(\omega_i\,pos)\\\cos(\omega_i\,pos)\end{bmatrix}$$</p>
+      <p>Then by the angle-addition identities,
+      $$\begin{bmatrix}\sin(\omega_i(pos+k))\\\cos(\omega_i(pos+k))\end{bmatrix} =
+      \begin{bmatrix}\cos(\omega_i k) & \sin(\omega_i k)\\ -\sin(\omega_i k) & \cos(\omega_i k)\end{bmatrix}
+      \begin{bmatrix}\sin(\omega_i\,pos)\\\cos(\omega_i\,pos)\end{bmatrix}$$</p>
+      <p>That $2\times2$ matrix depends on <strong>$k$ only</strong>. So "shift by $k$" is one fixed rotation, identical at every position. <em>This is precisely why sin and cos must be paired within a position</em> — you need both coordinates of the circle to rotate. It's also why the "even positions get sin, odd positions get cos" distractor is not just wrong but incoherent: it would destroy the pairing.</p>
+    </div>
+  </details>
+
+  <h3>From scratch</h3>
+<pre><code>def positional_encoding(pos, d_model):
+    pe = []
+    for k in range(d_model):
+        i = k // 2                     # NOT k — recover i from the index
+        angle = pos / (10000 ** (2 * i / d_model))
+        pe.append(math.sin(angle) if k % 2 == 0 else math.cos(angle))
+    return pe
+
+p = positional_encoding(3, 4)
+print([round(v, 4) for v in p])        # [0.1411, -0.99, 0.03, 0.9996]
+
+x = [0.5, -0.4, 0.3, -0.2]
+h = [x[k] + p[k] for k in range(4)]
+print(round(h[0] - h[1], 2))           # 2.03
+
+print(round(positional_encoding(3, 128)[5], 2))   # -0.63</code></pre>
+
+  <div class="cheat">
+    <span class="lbl">Exam cheat code — Block 6</span>
+    <ul>
+      <li><strong>Index $k$ even → sin. Odd → cos.</strong> Decided by the <em>dimension</em>, never the position.</li>
+      <li><strong>$i = \lfloor k/2\rfloor$.</strong> Exponent is $2i/d_{model}$ — so the pair $(2i, 2i{+}1)$ shares one angle.</li>
+      <li><strong>$k=0,1 \Rightarrow 10000^0 = 1 \Rightarrow \theta = pos$.</strong> Free values: $\sin(pos)$, $\cos(pos)$.</li>
+      <li><strong>Radians. Always.</strong> Check your calculator before you start the paper.</li>
+      <li><strong>Sinusoidal PE: 0 params. Learned PE: $T_{max}\times d_{model}$ params.</strong> Both were asked. GPT/BERT use <em>learned</em>; the original Transformer uses <em>sinusoidal</em>.</li>
+      <li><strong>PE is added, not concatenated:</strong> $h = x + p$, same dimension.</li>
+      <li><strong>PE goes into both encoder and decoder.</strong> Keyed MSQ. Both need order.</li>
+      <li>$10000^{a} = e^{9.2103a}$ — the one-line calculator route ($\ln 10000 = 9.2103$).</li>
+    </ul>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 6.1 — variation on the PYQ</span>
+    <p>$d_{model}=4$, word at $pos=1$, embedding $x=[1.0, 0.5, -0.5, 0.0]^\top$. Compute $h = x+p$ and give $h[2]+h[3]$.</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p>$k=2$: even → sin, $i=1$, exponent $2/4=0.5$, $10000^{0.5}=100$, $\theta = 1/100 = 0.01$. $\sin(0.01)=0.0100$.<br>
+      $k=3$: odd → cos, $i=1$, same $\theta=0.01$. $\cos(0.01)=0.99995$.</p>
+      <p>$h[2] = -0.5+0.0100 = -0.4900$<br>
+      $h[3] = 0.0 + 0.99995 = 1.0000$</p>
+      <p>$h[2]+h[3] = \boxed{0.51}$</p>
+      <p>Note how small $\theta$ is: at $pos=1$ and $i=1$ the "slow hand" has barely moved off zero, so $\sin\approx0$, $\cos\approx1$. Nearby positions are nearly identical in the slow dimensions and clearly different in the fast ones — exactly the multi-scale design.</p>
+    </div></details>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 6.2 — the parameter question</span>
+    <p>A GPT model has vocab 40,000, $d_{model}=768$, max sequence length 512, and uses <strong>learned</strong> positional embeddings. How many parameters in (a) the token embedding matrix, (b) the positional embedding matrix? Why is (b) not zero?</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p>(a) $40000 \times 768 = \mathbf{30{,}720{,}000}$<br>
+      (b) $512 \times 768 = \mathbf{393{,}216}$</p>
+      <p>(b) is not zero because <strong>GPT and BERT learn their positional embeddings</strong> — one free $d_{model}$-vector per position slot, trained by gradient descent like any other parameter. Only the <em>original Transformer's sinusoidal</em> PE is parameter-free.</p>
+      <p><strong>The exam distinguishes these deliberately.</strong> If the question says "sinusoidal" or gives you the $\sin/\cos$ formula → 0 params. If it says "learned"/"positional embedding matrix" or names GPT/BERT → $T_{max}\times d_{model}$.</p>
+      <p>Distractor check: $512 \times 768 = 393216$; the wrong option "512,768" is just the two numbers glued together, and "3,932,160" is $\times 10$. Compute, don't pattern-match.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ============ BLOCK 7 ============ -->
+<section class="block" id="b7">
+  <div class="block-head"><span class="bnum">07</span><h2>Add &amp; Norm</h2><span class="btag">comprehension bait · 35 min</span></div>
+
+  <h3>Motivation</h3>
+  <p>Two of the three papers built a whole 3-question comprehension block (~6 marks) out of nothing but "apply add &amp; norm to this $4\times2$ matrix." It is free marks — <em>if</em> you know which axis you're normalising over. That's the entire difficulty.</p>
+
+  <h3>Residual: $R = X + \text{Sublayer}(X)$</h3>
+  <p>Zero parameters. It's addition. Its job: $\dfrac{\partial(x + f(x))}{\partial x} = 1 + f'(x)$ — the constant 1 gives gradients a highway straight past $f$, so even if $f' \approx 0$ the signal survives. That's how you train 96 layers.</p>
+  <div class="callout"><strong>Why every sublayer maps $d_{model}\to d_{model}$:</strong> you can't add $x$ to $f(x)$ unless they have the same shape. The residual connection is the constraint that fixes the entire Transformer's width. It's also why $W_O$ must exist (Block 3) — to get from $n_hd_v$ back to $d_{model}$.</div>
+
+  <h3>LayerNorm: normalise <em>across features, within a token</em></h3>
+  $$\mu_l = \frac{1}{H}\sum_{i=1}^{H}x_i \qquad
+    \sigma_l = \sqrt{\frac{1}{H}\sum_{i=1}^{H}(x_i-\mu_l)^2}$$
+  $$\hat{x}_i = \frac{x_i - \mu_l}{\sqrt{\sigma_l^2+\epsilon}} \qquad
+    \hat{y}_i = \gamma\hat{x}_i + \beta$$
+  <p>$H = d_{model}$. $\mu$ and $\sigma$ are <strong>statistics, recomputed every forward pass</strong> — not parameters. Only $\gamma$ (scale) and $\beta$ (shift) are learned, each of size $d_{model}$. Hence <strong>$2d_{model}$</strong>.</p>
+
+  <details class="bg">
+    <summary>Background — LayerNorm vs BatchNorm, the axis that decides everything</summary>
+    <div class="body">
+      <p>Picture the activation tensor as a grid: <strong>rows = samples in the batch, columns = features</strong>.</p>
+      <ul>
+        <li><strong>BatchNorm</strong> normalises <em>down a column</em> — for each feature, across the batch. Statistics depend on who else is in your minibatch. Needs running averages at inference; breaks with batch size 1; breaks with variable-length sequences (which "position" do you average over?).</li>
+        <li><strong>LayerNorm</strong> normalises <em>across a row</em> — for each sample/token, across its own features. Completely independent of batch size and sequence length. Nothing to store at inference; identical behaviour training and testing.</li>
+      </ul>
+      <p>That independence is the entire reason NLP uses LN and vision uses BN. Sentences have wildly varying lengths; images don't.</p>
+      <p><strong>Population vs sample variance:</strong> both use $\frac{1}{N}\sum(x-\mu)^2$, dividing by $N$, <em>not</em> $N-1$. The PYQ BatchNorm answer confirms this — with $N-1$ you'd get $\pm0.707$, which is offered as a distractor precisely to catch people who reach for the "unbiased" formula out of statistics habit. <strong>Neural networks use the biased (population) estimator.</strong></p>
+    </div>
+  </details>
+
+  <div class="worked">
+    <span class="lbl">Worked example 7.1 — PYQ BatchNorm</span>
+    <p><em>$X = \begin{bmatrix}1&2\\3&4\end{bmatrix}$, rows = samples, columns = features. BatchNorm across the batch per feature, $\gamma=1,\beta=0,\epsilon=0$.</em></p>
+    <p><strong>Feature 1</strong> (column 1) $= [1, 3]$: $\mu = 2$, $\sigma^2 = \frac{(1-2)^2+(3-2)^2}{2} = 1$, $\sigma = 1$.<br>
+    Normalised: $[\frac{1-2}{1}, \frac{3-2}{1}] = [-1, 1]$.</p>
+    <p><strong>Feature 2</strong> (column 2) $= [2, 4]$: $\mu = 3$, $\sigma = 1$. Normalised: $[-1, 1]$.</p>
+    $$\boxed{\begin{bmatrix}-1 & -1\\ 1 & 1\end{bmatrix}}\;✓$$
+    <p><strong>The distractor</strong> $\begin{bmatrix}-0.707&-0.707\\0.707&0.707\end{bmatrix}$ is what you get with the sample variance ($\div (N-1) = \div 1 = 2$, $\sigma=\sqrt2$). Wrong. And $\begin{bmatrix}-0.707&0.707\\-0.707&0.707\end{bmatrix}$ is what you get if you normalise along the wrong axis <em>and</em> use $N-1$. Two errors, one distractor.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 7.2 — PYQ Add &amp; Norm comprehension (3 sub-questions)</span>
+    <p><em>Sequence length 2, $d_{model}=4$. $X$ and $\text{MHA}(X)$ are given as $4\times2$ matrices — so <strong>columns are tokens, rows are features.</strong></em></p>
+
+    <h4>(a) Residual: sum of all elements of $R = X + \text{MHA}(X)$</h4>
+    <p>No matrix work needed:
+    $$\textstyle\sum R = \sum X + \sum \text{MHA}(X)$$
+    Add the two totals. That's it. (Addition is elementwise; summation is linear.)</p>
+
+    <h4>(b) How many learnable parameters $(\gamma,\beta)$ for LayerNorm on $R$?</h4>
+    <p>Read the shape. $R$ is $4\times2$ and $d_{model}=4$ ⟹ each <strong>column</strong> is a token of 4 features ⟹ $H=4$.</p>
+    $$|\gamma| + |\beta| = 4 + 4 = \boxed{8}\;✓$$
+    <p><strong>Note it does not depend on the sequence length.</strong> There are 2 tokens, but $\gamma,\beta$ are <em>shared across tokens</em> — the same 8 numbers are applied to every position. If you answered 16, you multiplied by the sequence length. Classic.</p>
+
+    <h4>(c) $\gamma = 2\sigma_l$, $\beta = 1$, $\epsilon = 0$. Sum of all elements of $\text{LN}(R)$?</h4>
+    <p>Substitute:
+    $$\hat{y}_i = \gamma\hat{x}_i + \beta = 2\sigma_l\cdot\frac{x_i-\mu_l}{\sigma_l} + 1 = 2(x_i - \mu_l) + 1$$
+    The $\sigma_l$ <strong>cancels</strong>. Now sum over one token's $H=4$ features:
+    $$\sum_{i=1}^{H}\hat{y}_i = 2\sum_i(x_i-\mu_l) + H\beta = 2\big(\textstyle\sum_i x_i - H\mu_l\big) + H\beta$$
+    But $\sum_i x_i = H\mu_l$ by the definition of the mean, so the first term is <strong>exactly zero</strong>:
+    $$\sum_{i=1}^{H}\hat{y}_i = H\beta = 4(1) = 4$$
+    Two tokens ⟹ total $= 2 \times 4 = \boxed{8}\;✓$</p>
+
+    <div class="callout"><strong>This is the most elegant question on the paper, and the answer never touches $R$.</strong> The normalised $\hat{x}$ has mean exactly 0 by construction, so it contributes nothing to a sum. Whatever $R$ is, the total is $(\text{number of tokens}) \times H \times \beta$. If you spent five minutes computing $\mu$ and $\sigma$ for each column, you did work the question was designed to make unnecessary. <em>Always simplify symbolically before substituting numbers.</em></div>
+  </div>
+
+  <h3>From scratch</h3>
+<pre><code>def layer_norm(x, gamma, beta, eps=1e-5):
+    """x: one token's feature vector (length H)."""
+    H = len(x)
+    mu = sum(x) / H
+    var = sum((xi - mu) ** 2 for xi in x) / H          # population: / H, not H-1
+    sd = math.sqrt(var + eps)
+    return [gamma[i] * (x[i] - mu) / sd + beta[i] for i in range(H)]
+
+def batch_norm(X, gamma, beta, eps=0.0):
+    """X: rows = samples, cols = features. Normalise DOWN each column."""
+    n, d = len(X), len(X[0])
+    out = [[0]*d for _ in range(n)]
+    for j in range(d):
+        col = [X[i][j] for i in range(n)]
+        mu = sum(col) / n
+        var = sum((c - mu) ** 2 for c in col) / n      # population again
+        sd = math.sqrt(var + eps)
+        for i in range(n):
+            out[i][j] = gamma[j] * (X[i][j] - mu) / sd + beta[j]
+    return out
+
+print(batch_norm([[1,2],[3,4]], [1,1], [0,0]))   # [[-1.0, -1.0], [1.0, 1.0]]
+
+# The gamma = 2*sigma trick, verified numerically:
+R_token = [2, 3, 5, 6]                            # any values at all
+mu = sum(R_token)/4
+sd = math.sqrt(sum((x-mu)**2 for x in R_token)/4)
+y = layer_norm(R_token, [2*sd]*4, [1]*4, eps=0)
+print(round(sum(y), 6))                           # 4.0  — always H*beta</code></pre>
+
+  <div class="cheat">
+    <span class="lbl">Exam cheat code — Block 7</span>
+    <ul>
+      <li><strong>LN params $= 2d_{model}$.</strong> Shared across all positions. Never multiply by $T$.</li>
+      <li><strong>LN: across features, per token. BN: across batch, per feature.</strong> The one-line discriminator.</li>
+      <li><strong>Divide by $N$, not $N-1$.</strong> Population variance, always.</li>
+      <li><strong>$\sum \text{LN}(x) = H\beta$ per token</strong> whenever $\gamma\propto\sigma_l$ (and $=0$ when $\beta=0$). More generally $\sum_i\hat{x}_i = 0$ always, since $\hat x$ is mean-centred.</li>
+      <li><strong>Residual = 0 params.</strong> $\sum(X + f(X)) = \sum X + \sum f(X)$.</li>
+      <li><strong>Read the matrix shape to find the feature axis.</strong> "$d_{model}=4$" + a $4\times2$ matrix ⟹ features run down the columns, $H=4$, tokens are columns. Do not assume.</li>
+      <li>Sublayer wrapper is <span class="mono">LayerNorm(x + Sublayer(x))</span> ⟹ <strong>#LN = #sublayers</strong>. Encoder 2, decoder 3.</li>
+      <li>Residuals help by <strong>enabling gradient flow</strong> in deep nets — that's the keyed MCQ answer. Not "reduce memory", not "replace layer norm".</li>
+    </ul>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 7.1</span>
+    <p>$R = \begin{bmatrix}2&1\\4&3\\6&5\\8&7\end{bmatrix}$ with $d_{model}=4$, sequence length 2. Apply LayerNorm with $\gamma = \mathbf{1}$, $\beta = \mathbf{0}$, $\epsilon=0$. Give the first column of the output, and the sum of all elements.</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p><strong>Sum first, because it's free:</strong> $\gamma=1,\beta=0$ ⟹ output is just $\hat{x}$, which is mean-zero per token ⟹ <strong>total sum $= 0$</strong>. No computation.</p>
+      <p><strong>Column 1</strong> $= [2,4,6,8]$: $\mu = 5$. Deviations: $[-3,-1,1,3]$. $\sigma^2 = \frac{9+1+1+9}{4} = 5$, $\sigma = 2.236$.</p>
+      $$\hat{x} = [-1.342,\;-0.447,\;0.447,\;1.342]$$
+      <p>Check: sums to 0 ✓, and it's antisymmetric because $[2,4,6,8]$ is symmetric about its mean. (Column 2 $=[1,3,5,7]$ gives the <em>identical</em> normalised vector — LN is invariant to a constant shift, and column 2 is just column 1 minus 1. Nice free check.)</p>
+    </div></details>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 7.2 — conceptual</span>
+    <p>Why can't we just use BatchNorm in a Transformer? Give two independent reasons.</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p><strong>(1) Variable sequence length + padding.</strong> BN would average a feature across all (sample, position) pairs in the batch. Padded positions are meaningless, and the number of real positions differs per sentence — so the statistics are contaminated and unstable in a way that depends on how you happened to batch.</p>
+      <p><strong>(2) Train/test dependence on the batch.</strong> BN's output for one sample depends on the other samples beside it. At inference you often have batch size 1, so you must fall back on stored running averages — a train/test discrepancy, and a source of bugs. LN's output for a token depends only on that token.</p>
+      <p><strong>Bonus (3):</strong> BN statistics get noisy at small batch sizes, and large-$T$ Transformers are forced into small batches by memory.</p>
+      <p><strong>The one-line version to write in an exam:</strong> "LayerNorm's statistics are independent of batch composition and sequence length; BatchNorm's are not."</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ============ BLOCK 8 ============ -->
+<section class="block" id="b8">
+  <div class="block-head"><span class="bnum">08</span><h2>The counting machine</h2><span class="btag">highest yield · 50 min</span></div>
+
+  <h3>Motivation</h3>
+  <p>Block 4 counted parameters. This block counts <em>everything else the papers count</em>: attention scores, non-zero entries, prediction targets, memory, decoder runs. Same skill — build a ledger, walk it. Between them, Blocks 4 and 8 are worth roughly a third of the paper.</p>
+
+  <h3>Trap first: "for a given head" vs "for all heads"</h3>
+  <p>This wording flip is the most common way to lose these marks, and the papers exploit it in <em>both</em> directions on the same paper.</p>
+
+  <table>
+    <tr><th>Question says</th><th>$W_Q$ counts as</th><th>Real PYQ</th></tr>
+    <tr><td>"...in the projection matrix $Q$ <strong>for a given head</strong>"</td><td class="mono">$d_{model}\times d_k$</td><td class="mono">512×64 = <strong>32,768</strong></td></tr>
+    <tr><td>"For <strong>ONE complete attention head</strong>, total params (Q+K+V)"</td><td class="mono">$3\times(d_{model}\times d_k)$</td><td class="mono">3×768×64 = <strong>147,456</strong></td></tr>
+    <tr><td>"total number of parameters in the model"</td><td class="mono">$d_{model}\times n_hd_k = d_{model}^2$</td><td class="mono">64×64 = <strong>4,096</strong> (GA2)</td></tr>
+    <tr><td>"the <strong>output projection matrix</strong> $W_O$"</td><td class="mono">$n_hd_v \times d_{model} = d_{model}^2$</td><td class="mono">768×768 = <strong>589,824</strong></td></tr>
+  </table>
+
+  <div class="callout"><strong>Why $W_O$ never splits per head.</strong> Every head has its own $W_Q^{(h)},W_K^{(h)},W_V^{(h)}$, but there is exactly <strong>one</strong> $W_O$ for the whole layer — it's the thing that <em>merges</em> the heads. So "$W_O$ for a given head" is a meaningless phrase, and $W_O$ is always $d_{model}\times d_{model}$. That asymmetry is worth internalising: it's why the 147,456 and 589,824 answers coexist on one paper without contradiction.</div>
+
+  <p><strong>The reconciliation:</strong> $n_h \times 147{,}456 = 12 \times 147{,}456 = 1{,}769{,}472 = 3\times768^2$ ✓ — the per-head counts sum to the "all heads" count. Nothing is inconsistent; only the question's scope changes.</p>
+
+  <details class="bg">
+    <summary>Background — why $d_k = d_{model}/n_h$, and why multi-head is nearly free</summary>
+    <div class="body">
+      <p>Nothing <em>forces</em> $d_k = d_{model}/n_h$. You could give every head the full $d_{model}$. The reason the Transformer divides is <strong>compute neutrality</strong>.</p>
+      <p>With $n_h$ heads each of width $d_k = d_{model}/n_h$:</p>
+      $$\text{params}(W_Q\text{, all heads}) = n_h \times (d_{model} \times d_k) = n_h \times d_{model} \times \frac{d_{model}}{n_h} = d_{model}^2$$
+      <p>The $n_h$ <strong>cancels</strong>. Eight heads of width 64 cost exactly what one head of width 512 costs. So multi-head attention buys you eight independent representation subspaces for <em>zero</em> extra parameters and (roughly) zero extra FLOPs. That is an unusually good deal, and it's why the paper says the cost is "similar to that of single-head attention with full dimensionality."</p>
+      <p><strong>This cancellation is exactly why the "for a given head" trap works.</strong> $d_{model}d_k$ and $d_{model}^2$ differ by a factor of $n_h$, and both are legitimate answers to differently-scoped questions. The keyed PYQ pair — 32,768 and 589,824 — sit on opposite sides of this identity.</p>
+      <p><strong>The keyed MSQ follows directly:</strong> "increasing $n_h$ while keeping $d_{model}$ fixed decreases the dimensionality handled by each head" ✓ (that's the division). And "they reduce memory usage compared to one head" ✗ — memory for <em>scores</em> is $h\cdot T^2$, which <em>grows</em> with $h$. Params stay flat; activations don't. Those are different budgets and the distractor conflates them.</p>
+    </div>
+  </details>
+
+  <details class="bg">
+    <summary>Background — the $O(T^2)$ wall, in numbers</summary>
+    <div class="body">
+      <p>Parameters are independent of $T$. Attention <em>activations</em> are not — they scale as $T^2$, and this is the single dominant practical constraint on context length.</p>
+      <table>
+        <tr><th class="mono">T</th><th class="mono">scores/head/seq</th><th class="mono">float32 memory (B=32, h=12)</th></tr>
+        <tr><td class="mono">512</td><td class="mono">262,144</td><td class="mono">403 MB</td></tr>
+        <tr><td class="mono">1,024</td><td class="mono">1,048,576</td><td class="mono">1.6 GB</td></tr>
+        <tr><td class="mono">4,096</td><td class="mono">16,777,216</td><td class="mono">25.8 GB</td></tr>
+        <tr><td class="mono">32,768</td><td class="mono">1,073,741,824</td><td class="mono">1,650 GB</td></tr>
+      </table>
+      <p>Doubling $T$ <strong>quadruples</strong> the memory. That table is why 2017-era models capped at 512 tokens, and why long-context work is almost entirely about not materialising the $T\times T$ matrix (FlashAttention tiles it; sparse/linear attention approximates it).</p>
+      <p>Note the exam's memory question is the same arithmetic with $h$ as the variable instead of $T$ — and doubling $h$ only <em>doubles</em> memory (linear), while doubling $T$ quadruples it (quadratic). <strong>Know which variable you're differentiating with respect to.</strong></p>
+    </div>
+  </details>
+
+  <h3>The activation ledger</h3>
+  <table>
+    <tr><th>Quantity</th><th>Formula</th><th>Reasoning</th></tr>
+    <tr><td>Scalar attention scores, one head, one seq</td><td class="mono">$T^2$</td><td>every query × every key</td></tr>
+    <tr><td>...all heads, whole batch</td><td class="mono">$B \times h \times T^2$</td><td>each head has its own full $A$</td></tr>
+    <tr><td>Non-zero scores after causal mask (per head, per seq)</td><td class="mono">$\dfrac{T(T+1)}{2}$</td><td>lower triangular <em>including</em> diagonal</td></tr>
+    <tr><td>Next-token targets, one seq, no BOS</td><td class="mono">$T-1$</td><td>can't predict token 1 from nothing</td></tr>
+    <tr><td>...full batch</td><td class="mono">$B(T-1)$</td><td></td></tr>
+    <tr><td>Memory for attention scores (float32)</td><td class="mono">$4 \times B \times h \times T^2$ bytes</td><td>float32 = 32 bits = 4 bytes</td></tr>
+  </table>
+
+  <div class="worked">
+    <span class="lbl">Worked example 8.1 — PYQ: counting scores</span>
+    <p><em>"$B=4$, context length $T=12$, heads $h=2$. How many scalar attention scores are computed in total across two heads and all sequences for one forward pass?"</em></p>
+    $$B \times h \times T \times T = 4 \times 2 \times 12 \times 12 = \boxed{1152}\;✓$$
+    <p><strong>Read the question's own words back:</strong> "across two heads" → multiply by $h$. "all sequences" → multiply by $B$. "scalar scores" → each is one entry of a $T\times T$ matrix. The question tells you its own formula.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 8.2 — PYQ: the memory question</span>
+    <p><em>"$T=1000$, scores stored as float32. Model A: $h=8$. Model B: $h=16$. Percentage increase in memory to store all attention scores?"</em></p>
+    <p>Memory $= 4 \cdot h \cdot T^2$ bytes. $T$ is identical in both. So:</p>
+    $$\frac{M_B - M_A}{M_A} = \frac{16 - 8}{8} = 1.0 = \boxed{100\%}\;✓$$
+    <p><strong>The $T=1000$, the float32, the "$1\text{ MB}=10^6$ bytes" are all decoration.</strong> A <em>ratio</em> question cancels every shared factor. If you computed $4(8)(10^6) = 32$ MB and $64$ MB and then took the ratio, you got the right answer the slow way — fine, but on a 120-minute paper the slow way is the expensive way.</p>
+    <p><em>(For completeness: Model A is 32 MB, Model B is 64 MB. Note this is per sequence — attention memory is genuinely enormous, which is the practical face of the $O(T^2)$ problem.)</em></p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 8.3 — PYQ: the GPT comprehension (3 sub-questions)</span>
+    <p><em>GPT-style decoder-only. $T=1024$, $B=32$, $d_{model}=768$, $h=8$, $d_v = d_{model}/h = 96$. Next-token prediction, teacher forcing, causal mask. <strong>The input sequence does not include a BOS token.</strong></em></p>
+
+    <h4>(a) Next-token prediction targets, full batch</h4>
+    <p>With no BOS, position 1 has nothing before it — so it can be an input but never a target. Positions $2\ldots T$ are targets:</p>
+    $$B \times (T-1) = 32 \times 1023 = \boxed{32{,}736}\;✓$$
+    <p><strong>That "does not include a BOS token" clause is the entire question.</strong> With a BOS you'd get $32\times1024 = 32768$ — which is <em>also</em> the answer to a different question on the same paper (the 32,768 in Worked example 8.1's table). The setter is testing whether you read the clause.</p>
+
+    <h4>(b) Non-zero attention scores per head, per sequence, after masking</h4>
+    <p>Causal mask ⟹ lower triangular including diagonal. Row $i$ keeps $i$ entries:</p>
+    $$\sum_{i=1}^{T} i = \frac{T(T+1)}{2} = \frac{1024 \times 1025}{2} = \boxed{524{,}800}\;✓$$
+    <p><strong>Why $+1$ and not $T(T-1)/2$?</strong> Because a token <em>may</em> attend to itself. The mask kills $j > i$, not $j \geq i$. Off-by-one here costs you 1024.</p>
+
+    <h4>(c) Parameters in $W_O$</h4>
+    <p>$W_O$ maps $n_hd_v = 8 \times 96 = 768$ back to $d_{model} = 768$:</p>
+    $$768 \times 768 = \boxed{589{,}824}\;✓$$
+    <p>Note $n_hd_v = d_{model}$ by construction — this is why $W_O$ is always square.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 8.4 — PYQ: the GPT parameter comprehension</span>
+    <p><em>Vocab 40,000; $d_{model}=768$; max length 512; 12 blocks; 12 heads; $d_{ff}=3072$; GELU.</em></p>
+    <table>
+      <tr><th>Asked</th><th>Work</th><th>Answer</th></tr>
+      <tr><td>Token embedding matrix</td><td class="mono">40000 × 768</td><td class="mono"><strong>30,720,000</strong></td></tr>
+      <tr><td>Positional embedding matrix</td><td class="mono">512 × 768 (learned)</td><td class="mono"><strong>393,216</strong></td></tr>
+      <tr><td>ONE complete head, Q+K+V</td><td class="mono">$d_k = 768/12 = 64$; 3 × (768×64)</td><td class="mono"><strong>147,456</strong></td></tr>
+      <tr><td>Output projection $W_O$</td><td class="mono">768 × 768</td><td class="mono"><strong>589,824</strong></td></tr>
+      <tr><td>Complete FFN, <strong>with biases</strong></td><td class="mono">768(3072)+3072 + 3072(768)+768</td><td class="mono"><strong>4,722,432</strong></td></tr>
+    </table>
+    <p><strong>On the FFN:</strong> without biases it's $2(768)(3072) = 4{,}718{,}592$ — and that's offered as a distractor. The biases add $3072 + 768 = 3840$. The question said "including both weight matrices and bias vectors", so $4{,}718{,}592 + 3{,}840 = 4{,}722{,}432$.</p>
+    <p><strong>Bias sizes are easy to get backwards.</strong> $b_1$ has size $d_{ff}$ (it's added <em>after</em> the expansion), $b_2$ has size $d_{model}$ (added after the projection back). One bias per <em>output</em> neuron of that layer, always.</p>
+    <p><strong>GELU is a red herring.</strong> Activation functions have zero parameters. So do ReLU, softmax, dropout, and masking.</p>
+  </div>
+
+  <h3>From scratch</h3>
+<pre><code>def transformer_ledger(d_model, n_h, d_ff, N, vocab, T_max,
+                       bias=False, learned_pe=False, decoder=False):
+    d_k = d_model // n_h
+    mha  = 4 * d_model * d_model + (4 * d_model if bias else 0)
+    ffn  = 2 * d_model * d_ff + ((d_ff + d_model) if bias else 0)
+    ln   = 2 * d_model
+    n_sub = 3 if decoder else 2                    # decoder: masked, cross, ffn
+    n_mha = 2 if decoder else 1                    # masked MHA + cross MHA
+    per_layer = n_mha * mha + ffn + n_sub * ln
+    return {
+        'per_layer':  per_layer,
+        'all_layers': N * per_layer,
+        'token_emb':  vocab * d_model,
+        'pos_emb':    T_max * d_model if learned_pe else 0,
+        'W_O':        d_model * d_model,
+        'one_head_QKV': 3 * d_model * d_k,         # "for ONE head"
+        'W_Q_one_head': d_model * d_k,             # "for a given head"
+    }
+
+# GA2's config -> encoder layer 49408, decoder layer 65920
+print(transformer_ledger(64, 4, 256, 2, 1000, 128)['per_layer'])                  # 49408
+print(transformer_ledger(64, 4, 256, 2, 1000, 128, decoder=True)['per_layer'])    # 65920
+
+# The PYQ GPT config
+g = transformer_ledger(768, 12, 3072, 12, 40000, 512, bias=True, learned_pe=True)
+print(g['token_emb'], g['pos_emb'], g['one_head_QKV'], g['W_O'])
+# 30720000 393216 147456 589824
+
+def activation_ledger(B, T, h, causal=False, bos=True, bytes_per=4):
+    return {
+        'scores':       B * h * T * T,
+        'nonzero':      T * (T + 1) // 2 if causal else T * T,   # per head, per seq
+        'targets':      B * (T if bos else T - 1),
+        'score_bytes':  bytes_per * B * h * T * T,
+    }
+
+print(activation_ledger(4, 12, 2)['scores'])                      # 1152
+a = activation_ledger(32, 1024, 8, causal=True, bos=False)
+print(a['targets'], a['nonzero'])                                 # 32736 524800</code></pre>
+
+  <div class="cheat">
+    <span class="lbl">Exam cheat code — Block 8</span>
+    <ul>
+      <li><strong>"for a given head" ⟹ $d_{model}\times d_k$. "the model" ⟹ $d_{model}\times d_{model}$.</strong> Circle that phrase before computing.</li>
+      <li><strong>ONE head, Q+K+V $= 3\,d_{model}d_k$.</strong> $W_O$ has no per-head version — always $d_{model}^2$.</li>
+      <li><strong>Scores $= B\cdot h\cdot T^2$.</strong> Masked non-zeros $= T(T+1)/2$ per head per sequence.</li>
+      <li><strong>Targets $= B(T-1)$ if no BOS, $BT$ if BOS.</strong> Hunt for that clause.</li>
+      <li><strong>float32 = 4 bytes.</strong> Memory $= 4\cdot B\cdot h\cdot T^2$ bytes; $1\text{ MB} = 10^6$ bytes in this course.</li>
+      <li><strong>Ratio questions: cancel first, compute never.</strong> Doubling $h$ doubles score memory: $+100\%$.</li>
+      <li><strong>FFN bias sizes: $b_1$ is $d_{ff}$, $b_2$ is $d_{model}$.</strong> One bias per output neuron.</li>
+      <li><strong>Zero-parameter list:</strong> residual, softmax, ReLU/GELU, dropout, masking, sinusoidal PE, $\mu$ and $\sigma$ in LN/BN.</li>
+      <li>$d_k = d_{model}/n_h$ — derive it, don't wait to be told. 768/12 = 64, 512/8 = 64, 768/8 = 96, 64/4 = 16.</li>
+    </ul>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 8.1 — the scope trap, both directions</span>
+    <p>A model has $d_{model}=1024$, $n_h=16$, $B=8$, $T=256$. Answer: (a) params in $W_K$ for a given head; (b) params in $W_K$ across all heads; (c) params in $W_O$; (d) total Q+K+V+O params for the layer; (e) scalar attention scores in one forward pass.</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p>$d_k = 1024/16 = 64$.</p>
+      <p>(a) $1024 \times 64 = \mathbf{65{,}536}$<br>
+      (b) $16 \times 65{,}536 = 1024 \times 1024 = \mathbf{1{,}048{,}576}$<br>
+      (c) $1024\times1024 = \mathbf{1{,}048{,}576}$ (no per-head version)<br>
+      (d) $4 \times 1024^2 = \mathbf{4{,}194{,}304}$<br>
+      (e) $B\cdot h\cdot T^2 = 8 \times 16 \times 65{,}536 = \mathbf{8{,}388{,}608}$</p>
+      <p><strong>Watch (a) and (e) share the number 65,536 for totally unrelated reasons</strong> ($1024\times64$ vs $256^2$). The papers love numeric coincidences as distractors. Always re-derive; never recognise.</p>
+    </div></details>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 8.2 — variation on the GPT comprehension</span>
+    <p>A decoder-only model: $T=512$, $B=16$, $d_{model}=512$, $h=8$, and the input <strong>does</strong> include a BOS token. Find (a) next-token targets for the batch; (b) non-zero attention scores per head per sequence after causal masking; (c) how many scores were <em>discarded</em> by the mask, across all heads and the whole batch.</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p>(a) BOS present ⟹ every one of the $T$ positions is a target for the position before it... careful. With a BOS prepended, the input is $[\text{BOS}, y_1,\dots,y_{T-1}]$ of length $T$, and the targets are $[y_1,\dots,y_T]$ — <strong>$T$ targets per sequence</strong>. So $16 \times 512 = \mathbf{8{,}192}$.</p>
+      <p>(b) $\frac{512 \times 513}{2} = \mathbf{131{,}328}$</p>
+      <p>(c) Per head per sequence, total scores $= 512^2 = 262{,}144$; kept $= 131{,}328$; discarded $= 130{,}816 = \frac{T(T-1)}{2}$ ✓ (the strict upper triangle).<br>
+      Across all: $16 \times 8 \times 130{,}816 = \mathbf{16{,}744{,}448}$.</p>
+      <p><strong>The insight in (c):</strong> causal masking throws away just under half the computation — $\frac{T(T-1)/2}{T^2} \to 50\%$ as $T$ grows. And yet a standard implementation <em>computes all of it anyway</em> and then masks. That waste is exactly what FlashAttention and block-sparse kernels exist to reclaim.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ============ BLOCK 9 ============ -->
+<section class="block" id="b9">
+  <div class="block-head"><span class="bnum">09</span><h2>BERT</h2><span class="btag">core · 40 min</span></div>
+
+  <h3>Motivation: the encoder that reads both ways</h3>
+  <p>GPT reads left to right. That's forced on it by its objective — if you're predicting the next token, you obviously can't see it. But for <em>understanding</em> a sentence (sentiment, entailment, NER), left-to-right is a self-imposed handicap. In <em>"the bank of the river"</em>, the word <span class="mono">bank</span> is disambiguated by <span class="mono">river</span>, which comes <strong>after</strong> it.</p>
+  <p><strong>So: drop the causal mask, use the encoder, look both ways.</strong> But now you have a problem — <em>what do you train it on?</em> Next-token prediction is trivial if you can see the next token.</p>
+  <p><strong>BERT's answer: Masked Language Modelling.</strong> Corrupt the input by hiding ~15% of tokens behind a <span class="mono">[Mask]</span> token, then predict the hidden ones from both sides. This is the "cloze test" from language pedagogy. The task is impossible to cheat at and forces genuine bidirectional understanding.</p>
+
+  <div class="callout"><strong>The one-line contrast you will be asked for, in some form, on every paper:</strong><br>
+  <strong>GPT = decoder-only + Causal Language Modelling (CLM) + unidirectional.</strong><br>
+  <strong>BERT = encoder-only + Masked Language Modelling (MLM) + bidirectional.</strong><br>
+  The keyed distractor swaps them. Read the option twice.</div>
+
+  <h3>BERT's input representation</h3>
+  <p>Each input token's embedding is the <strong>sum of three</strong> embeddings:</p>
+  $$\text{input} = \text{token embedding} + \text{segment embedding} + \text{position embedding}$$
+  <table>
+    <tr><th>Piece</th><th>Purpose</th><th>Size</th></tr>
+    <tr><td><span class="mono">[CLS]</span></td><td>First token, always. Its final representation is the sentence-level summary.</td><td class="mono">—</td></tr>
+    <tr><td><span class="mono">[SEP]</span></td><td>Separates sentence A from sentence B (and ends the input).</td><td class="mono">—</td></tr>
+    <tr><td>Segment embedding</td><td>$E_A$ or $E_B$ — tells the model which sentence a token belongs to.</td><td class="mono">$2\times d_{model}$</td></tr>
+    <tr><td>Position embedding</td><td><strong>Learned</strong>, not sinusoidal.</td><td class="mono">$T_{max}\times d_{model}$</td></tr>
+  </table>
+
+  <details class="bg">
+    <summary>Background — the two pre-training objectives, and why NSP was later dropped</summary>
+    <div class="body">
+      <p><strong>MLM:</strong> mask 15% of tokens. Of those, 80% become <span class="mono">[Mask]</span>, 10% become a random token, 10% are left unchanged. Why the 80/10/10 mess? Because <span class="mono">[Mask]</span> never appears at fine-tuning time — if the model only ever saw masks, it'd learn "only bother building good representations at <span class="mono">[Mask]</span> positions." The random/unchanged 20% forces it to build a good representation at <em>every</em> position, just in case. Elegant hack.</p>
+      <p><strong>NSP (Next Sentence Prediction):</strong> feed two sentences A and B; predict whether B actually followed A in the corpus (50% of the time it's a random sentence). Trains the <span class="mono">[CLS]</span> representation to capture inter-sentence relationships, which helps QA and entailment.</p>
+      <p><strong>The postscript:</strong> RoBERTa (2019) showed NSP contributes little or nothing, and dropping it while training longer on more data <em>improved</em> results. The likely reason: distinguishing a random sentence from the true next one is mostly <em>topic</em> detection, which is far too easy to be a useful learning signal. Most modern encoders skip NSP. Know this — but on this exam, answer per the original BERT paper.</p>
+    </div>
+  </details>
+
+  <h3>MLM loss — the mechanics</h3>
+  <p>Cross-entropy, <strong>summed over the masked positions only</strong>. Unmasked positions contribute nothing — there's no prediction to score there.</p>
+  $$L = -\sum_{t \in \mathcal{M}} \log P(y_t = w_t \mid \text{context})$$
+  <p>where $\mathcal{M}$ is the set of masked positions and $w_t$ the true word. Natural log unless told otherwise.</p>
+
+  <details class="bg">
+    <summary>Background — why cross-entropy is $-\log p$ of the true class, and nothing else</summary>
+    <div class="body">
+      <p>Cross-entropy between the true distribution $y$ and the predicted $\hat{y}$ is $-\sum_{c} y_c \log \hat{y}_c$. But $y$ is <strong>one-hot</strong> — the true word has $y_c = 1$, everything else $y_c = 0$. Every term in the sum except one is multiplied by zero. So:
+      $$L = -\log \hat{y}_{\text{true class}}$$
+      <strong>That's why you only ever read one number off the row.</strong> The other 9 columns are irrelevant to the loss (though not to the gradient — see Block 2's $\hat y - y$).</p>
+      <p>Sanity anchors: $-\log(1) = 0$ (perfect). $-\log(0.5) = 0.69$. $-\log(0.1) = 2.30$. $-\log(0) = \infty$ (which is why you never let a softmax output an exact zero).</p>
+    </div>
+  </details>
+
+  <div class="worked">
+    <span class="lbl">Worked example 9.1 — GA4: the MLM loss question</span>
+    <p><em>$\mathcal{V} = $ ([CLS], building, character, a, is, astronomy, science, experience, natural, [SEP]) — indices 0–9.<br>
+    Input: "Astronomy is a <span class="mono">[Mask]</span> building <span class="mono">[Mask]</span>", where "character" and "experience" were masked. Natural log.</em></p>
+
+    <h4>Step 1 — index the positions</h4>
+    <table>
+      <tr><th class="mono">row</th><th class="mono">token</th><th class="mono">masked?</th></tr>
+      <tr><td class="mono">0</td><td class="mono">Astronomy</td><td class="mono">no</td></tr>
+      <tr><td class="mono">1</td><td class="mono">is</td><td class="mono">no</td></tr>
+      <tr><td class="mono">2</td><td class="mono">a</td><td class="mono">no</td></tr>
+      <tr><td class="mono">3</td><td class="mono">[Mask] → character</td><td class="mono"><strong>YES</strong></td></tr>
+      <tr><td class="mono">4</td><td class="mono">building</td><td class="mono">no</td></tr>
+      <tr><td class="mono">5</td><td class="mono">[Mask] → experience</td><td class="mono"><strong>YES</strong></td></tr>
+    </table>
+    <p>The question says <span class="mono">[CLS]</span> and <span class="mono">[SEP]</span> were <em>not</em> used, so row 0 is "Astronomy", not <span class="mono">[CLS]</span>. Read that clause — it shifts every row index by one.</p>
+
+    <h4>Step 2 — pull the two probabilities</h4>
+    <p><strong>Row 3</strong> = $[0.10, 0.02, 0.14, 0.02, 0.01, 0.07, 0.06, 0.48, 0.07, 0.01]$. True word "character" is <strong>index 2</strong> ⟹ $p = 0.14$.</p>
+    <p><strong>Row 5</strong> = $[0.14, 0.13, 0.22, 0.08, 0.01, 0.03, 0.06, 0.23, 0.08, 0.03]$. True word "experience" is <strong>index 7</strong> ⟹ $p = 0.23$.</p>
+    <div class="callout">Note the model's <em>argmax</em> at row 3 is index 7 ("experience", 0.48) — it guessed wrong. Doesn't matter. <strong>Loss reads the true word's probability, not the model's favourite.</strong> Reaching for the biggest number in the row is the single most common error here.</div>
+
+    <h4>Step 3 — sum the losses</h4>
+    $$L = -\ln(0.14) - \ln(0.23) = 1.9661 + 1.4697 = \boxed{3.4358}\;✓$$
+    <p>(Key range 3.3–3.5 ✓. The alternative range 1.7–1.8 the grader also accepted is the <em>average</em> loss, $3.4358/2 = 1.72$ — they hedged on sum vs mean. <strong>Default to sum</strong>; the question said "total loss".)</p>
+  </div>
+
+  <h3>From scratch</h3>
+<pre><code>VOCAB = ['[CLS]','building','character','a','is','astronomy',
+         'science','experience','natural','[SEP]']
+
+def mlm_loss(Y_hat, true_tokens, masked_positions, reduce='sum'):
+    """Y_hat[t] = predicted distribution at position t.
+       true_tokens[t] = the actual word at position t (string).
+       masked_positions = list of t that were replaced by [Mask]."""
+    losses = []
+    for t in masked_positions:
+        idx = VOCAB.index(true_tokens[t])       # the TRUE word's column...
+        p   = Y_hat[t][idx]                     # ...not the argmax!
+        losses.append(-math.log(p))
+    return sum(losses) if reduce == 'sum' else sum(losses) / len(losses)
+
+Y = [[0.05,0.02,0.41,0.07,0.09,0.14,0.08,0.05,0.08,0.01],
+     [0.10,0.04,0.06,0.16,0.04,0.01,0.06,0.09,0.01,0.43],
+     [0.05,0.07,0.28,0.03,0.29,0.08,0.04,0.08,0.04,0.04],
+     [0.10,0.02,0.14,0.02,0.01,0.07,0.06,0.48,0.07,0.01],
+     [0.08,0.29,0.04,0.01,0.04,0.03,0.25,0.05,0.15,0.06],
+     [0.14,0.13,0.22,0.08,0.01,0.03,0.06,0.23,0.08,0.03]]
+
+sentence = ['astronomy','is','a','character','building','experience']
+print(round(mlm_loss(Y, sentence, [3, 5]), 4))          # 3.4358  <- GA4 answer
+print(round(mlm_loss(Y, sentence, [3, 5], 'mean'), 4))  # 1.7179  (the 'mean' variant)
+
+# Proof that the argmax is a red herring at position 3:
+print(VOCAB[Y[3].index(max(Y[3]))], 'vs true:', sentence[3])   # experience vs character</code></pre>
+
+  <h3>Using BERT downstream</h3>
+  <table>
+    <tr><th>Mode</th><th>What happens</th></tr>
+    <tr><td><strong>Feature extraction</strong></td><td>Freeze BERT. Take $h_{\text{[CLS]}}$, feed it to a separate classifier (SVM, logistic regression). BERT's weights don't move.</td></tr>
+    <tr><td><strong>Fine-tuning</strong></td><td>Add a classification head $W_y$ on top of $h_{\text{[CLS]}}$ and backprop through <em>everything</em>. Usually better.</td></tr>
+  </table>
+
+  <div class="callout"><strong>The <span class="mono">[CLS]</span> question, keyed on two papers.</strong> "Which vector goes to the classification head?" → <strong>the final hidden state of <span class="mono">[CLS]</span>.</strong> Not <span class="mono">[SEP]</span>, not average pooling, not a concatenation.<br><br>
+  <em>Why <span class="mono">[CLS]</span> and not any old token?</em> Because <span class="mono">[CLS]</span> has no word of its own to represent. It's a deliberately <strong>content-free slot</strong> whose only job — enforced by the NSP objective during pre-training — is to aggregate the whole sequence. Every other token's representation is dominated by <em>that token's own meaning</em>. <span class="mono">[CLS]</span> is the one position free to be a summary.</div>
+
+  <div class="cheat">
+    <span class="lbl">Exam cheat code — Block 9</span>
+    <ul>
+      <li><strong>BERT = encoder + MLM (+NSP) + bidirectional. GPT = decoder + CLM + unidirectional.</strong></li>
+      <li><strong>MLM loss $= -\sum_{\text{masked}} \ln p(\text{true word})$.</strong> Only masked positions. Only the true word's column. Sum, not mean.</li>
+      <li><strong>Classification uses $h_{\text{[CLS]}}$</strong> — feature-extraction or fine-tuning, same answer.</li>
+      <li><strong>NSP inputs:</strong> <span class="mono">[CLS]</span> at the start ✓, <span class="mono">[SEP]</span> between A and B ✓, segment embeddings $E_A/E_B$ ✓. "Position embeddings not required" ✗ — they're always required.</li>
+      <li><strong>Single-sentence fine-tuning: every token gets the same segment embedding ($E_A$).</strong> The layer isn't disabled; it's just constant.</li>
+      <li><strong>BERT's PE is learned</strong> ⟹ $T_{max}\times d_{model}$ params, not zero.</li>
+      <li><strong>15% masked; of those 80/10/10 = [Mask] / random / unchanged.</strong> Reason: <span class="mono">[Mask]</span> doesn't exist at fine-tuning time.</li>
+      <li>BERT-base ≈ 110M: $N=12$, $d_{model}=768$, $n_h=12$, $d_{ff}=3072$. These four numbers appear constantly — know them cold.</li>
+    </ul>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 9.1 — variation</span>
+    <p>Same vocabulary and matrix as Worked example 9.1, but now the input is "Astronomy is a character <span class="mono">[Mask]</span> experience" — only "building" (index 1) is masked, at row 4. Row 4 $= [0.08, 0.29, 0.04, 0.01, 0.04, 0.03, 0.25, 0.05, 0.15, 0.06]$. Total loss?</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p>One masked position, row 4, true word "building" = index 1 ⟹ $p = 0.29$.</p>
+      $$L = -\ln(0.29) = \boxed{1.2379}$$
+      <p>Here the model's argmax <em>is</em> index 1 (0.29 is the row's max), so it happened to guess right — but the loss is still 1.24, not 0. <strong>Being right isn't free; being <em>confident</em> and right is.</strong> To drive loss toward 0 the model needs $p \to 1$. This is why cross-entropy keeps producing gradient even on examples the model already classifies correctly — a point worth carrying into any ML interview.</p>
+    </div></details>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 9.2 — conceptual, the keyed MSQ</span>
+    <p>Which are true of CLM? (a) The model only attends to past and current tokens during training. (b) It's trained by predicting the next token. (c) It uses bidirectional context. (d) CLM is commonly used for encoder-only models.</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p><strong>(a) ✓ and (b) ✓. (c) ✗ and (d) ✗.</strong></p>
+      <p>(a) — "past <strong>and current</strong>" is the correct phrasing. The causal mask blocks $j > i$, not $j \geq i$; a token attends to itself. If you rejected (a) because of the word "current", re-read Block 3's mask definition.</p>
+      <p>(c) ✗ — bidirectional context is exactly what CLM forbids, and exactly what MLM enables. This is the definitional split.</p>
+      <p>(d) ✗ — CLM goes with <strong>decoder-only</strong> (GPT). Encoder-only (BERT) gets MLM. Pairing CLM with an encoder is incoherent: an encoder has no causal mask, so "predict the next token" would be trivially solvable by looking at it.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ============ BLOCK 10 ============ -->
+<section class="block" id="b10">
+  <div class="block-head"><span class="bnum">10</span><h2>Decoding &amp; search</h2><span class="btag">3–4 questions/paper · 50 min</span></div>
+
+  <h3>Motivation: the model gives you a distribution, not a sentence</h3>
+  <p>At every step the decoder hands you $P(y_t \mid y_{<t})$ — a $|V|$-length probability vector. It never tells you which word to <em>pick</em>. That choice is the <strong>decoding strategy</strong>, and it's a separate algorithm bolted on top of a trained model. Same model, different decoder, wildly different text.</p>
+  <p>Why is this hard? Because we want $\arg\max_{y}P(y_1,\dots,y_T)$ — the most probable <em>sequence</em> — and there are $|V|^T$ of them. For $|V|=40000$ and $T=20$ that is $10^{92}$. Exhaustive search is not slow; it is physically impossible. Everything below is an approximation to a problem we can never solve exactly.</p>
+
+  <h3>The five strategies</h3>
+  <table>
+    <tr><th>Strategy</th><th>Rule</th><th>Deterministic?</th><th>Beams at step $t$</th></tr>
+    <tr><td><strong>Greedy</strong></td><td>Take $\arg\max$ every step</td><td>Yes</td><td class="mono">1</td></tr>
+    <tr><td><strong>Beam (size $k$)</strong></td><td>Keep the $k$ best partial sequences</td><td>Yes</td><td class="mono">$k$</td></tr>
+    <tr><td><strong>Exhaustive</strong></td><td>Keep everything</td><td>Yes</td><td class="mono">$|V|^t$</td></tr>
+    <tr><td><strong>Top-$k$ sampling</strong></td><td>Keep top $k$, renormalise, <em>sample</em></td><td><strong>No</strong></td><td class="mono">1</td></tr>
+    <tr><td><strong>Top-$p$ / nucleus</strong></td><td>Keep smallest set with $\sum p > p$, renormalise, <em>sample</em></td><td><strong>No</strong></td><td class="mono">1</td></tr>
+  </table>
+
+  <div class="callout"><strong>The keyed MSQ: "which decoding strategies are inherently non-deterministic?"</strong> → <strong>Nucleus</strong> (and top-$k$, if offered). Greedy, beam, and exhaustive all take argmaxes — run them twice, get the same output. Only the <em>sampling</em> methods roll a die. <strong>"Top-$k$" and "beam size $k$" both restrict to $k$ candidates and are constantly confused: beam <em>keeps</em> all $k$ and continues them; top-$k$ <em>samples one</em> from among them and discards the rest.</strong></div>
+
+  <details class="bg">
+    <summary>Background — why beam search isn't optimal, and why nobody cares</summary>
+    <div class="body">
+      <p><strong>Beam search is a heuristic, not an algorithm that finds the best sequence.</strong> It can miss the true $\arg\max$ trivially: a sequence whose first token ranks 4th but whose continuation is overwhelmingly good gets pruned at step 1 and never recovers. Beam search has no way back.</p>
+      <p><strong>The length bias.</strong> $P(y_1,\dots,y_T) = \prod_t P(y_t\mid y_{<t})$ is a product of numbers below 1, so it <em>always</em> shrinks as $T$ grows. A 5-word sequence will beat a 20-word sequence on raw probability essentially every time. Left alone, beam search produces absurdly short output. The standard patch is length normalisation — score by $\frac{1}{T^\alpha}\log P$ instead of $P$ — which is a hack with a tuned $\alpha$, not a principle.</p>
+      <p><strong>The deeper joke:</strong> Holtzman et al. (2019) showed that the <em>actual</em> maximum-likelihood sequence is often terrible — degenerate, repetitive text ("I don't know. I don't know. I don't know."). Human language is not the most probable thing a language model can say; it has a characteristic amount of surprise in it. So beam search failing to find the global optimum is arguably a <em>feature</em>. This is the real argument for sampling: we're not approximating $\arg\max$ badly, we've decided $\arg\max$ was the wrong target.</p>
+      <p>For the exam: know that greedy is beam with $k=1$, and that beam with $k=|V|^T$ is exhaustive. The three strategies are one family with the beam width dialled from 1 to everything.</p>
+    </div>
+  </details>
+
+  <h3>Counting: greedy vs beam vs exhaustive</h3>
+  <p>This is asked numerically on two of three papers. Get the mental model right and it's mechanical.</p>
+
+  <table>
+    <tr><th></th><th>Beams at step 1</th><th>Beams at step 3</th><th>Decoder runs at step $t$</th></tr>
+    <tr><td>Greedy</td><td class="mono">1</td><td class="mono">1</td><td class="mono">1</td></tr>
+    <tr><td>Beam, size $k$</td><td class="mono">$k$</td><td class="mono">$k$</td><td class="mono">$k$</td></tr>
+    <tr><td>Exhaustive, $|V|$</td><td class="mono">$|V|$</td><td class="mono">$|V|^3$</td><td class="mono">$|V|^{t-1}$</td></tr>
+  </table>
+
+  <div class="callout"><strong>The one distinction that unlocks all of it: <em>beams after step $t$</em> vs <em>decoder runs at step $t$</em>.</strong><br>
+  You run the decoder <strong>once per surviving prefix</strong>. At step $t$ the surviving prefixes are the beams that <em>came out of step $t-1$</em>. So: <em>runs at step $t$</em> = <em>beams after step $t-1$</em>.<br>
+  Exhaustive: after step 1 there are $|V|$ beams ⟹ at step 2 you run the decoder $|V|$ times ⟹ after step 2 there are $|V|^2$ beams ⟹ at step 3 you run it $|V|^2$ times. Hence <strong>runs at step $t = |V|^{t-1}$</strong>, but <strong>beams at step $t = |V|^t$</strong>. Two different questions, one letter apart.</div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 10.1 — PYQ: three counting questions</span>
+
+    <h4>(a) "Vocab 10. Beams in greedy, beam(3), exhaustive at step 1 and step 3?"</h4>
+    <p>Step 1: Greedy <strong>1</strong>, Beam <strong>3</strong>, Exhaustive <strong>10</strong> ($=|V|^1$).<br>
+       Step 3: Greedy <strong>1</strong>, Beam <strong>3</strong>, Exhaustive <strong>1000</strong> ($=10^3$). ✓</p>
+    <p>Greedy and beam are <em>flat</em> in $t$ — that's their entire point. Only exhaustive explodes.</p>
+
+    <h4>(b) "6 tokens. In exhaustive search, how many times must we run the decoder at $t=4$?"</h4>
+    <p>Runs at step 4 = beams after step 3 = $6^3 = \boxed{216}$ ✓</p>
+    <p>The question hands you the rule: <em>"at $t=1$ we run the decoder once."</em> $6^{1-1}=6^0=1$ ✓ — the formula is consistent with their own worked case. Use that to check which exponent they mean.</p>
+
+    <h4>(c) "How many total sequences of exactly length 5 are possible?"</h4>
+    $$6^5 = \boxed{7776}$$
+    <p><em>Exactly</em> length 5 ⟹ $|V|^5$. Compare the next one.</p>
+
+    <h4>(d) "Given vocab $|V|$, how many sequences of <em>maximum</em> length 5?"</h4>
+    $$\boxed{\sum_{k=1}^{5}V^k}\;✓$$
+    <p><strong>"Maximum" means length 1, or 2, or 3, or 4, or 5</strong> — sum over all of them. $V^5$ alone is the "exactly" answer and is the offered distractor. And $\frac{V^5-1}{V-1} = \sum_{k=0}^{4}V^k$ is the same sum shifted by one (it includes the empty sequence $V^0=1$ and excludes $V^5$) — also offered, also wrong.</p>
+
+    <h4>(e) "Exhaustive at length $L$; increase to $L+1$. How many <em>additional</em> sequences?"</h4>
+    $$V^{L+1} - V^L = V^L(V-1) = \boxed{(V-1)\cdot V^L}\;✓$$
+    <p>Read "additional" as a difference, not a total. Every one of the $V^L$ existing sequences spawns $V$ children, of which... no — cleanest: new total minus old total.</p>
+  </div>
+
+  <details class="bg">
+    <summary>Background — the chain rule here is exact, not an approximation</summary>
+    <div class="body">
+      <p>$P(y_1,\dots,y_T) = \prod_{t=1}^{T}P(y_t\mid y_{<t})$ involves <strong>no independence assumption whatsoever</strong>. It's the definition of conditional probability applied $T-1$ times:</p>
+      $$P(A,B,C) = P(A)\,P(B\mid A)\,P(C\mid A,B)$$
+      <p>This matters because students often half-remember "Markov assumption" from n-gram models and think something is being approximated. Nothing is. The <em>n-gram</em> model approximates ($P(y_t\mid y_{<t}) \approx P(y_t \mid y_{t-1})$); the Transformer does not — it conditions on the entire prefix, which is exactly what the causal mask permits.</p>
+      <p><strong>This is the whole architectural argument for CLM.</strong> Factorising the joint distribution over sequences into next-token conditionals is <em>exact</em>, and each conditional is something a neural net can learn. That's why "predict the next word" is not a toy objective — it is a complete, lossless decomposition of the problem of modelling language.</p>
+      <p>Practical note: in code you'd sum $\log P$ rather than multiply $P$, because 20 factors below 1 underflow float32 fast. The exam's sequences are short enough that the product is fine.</p>
+    </div>
+  </details>
+
+  <h3>Sequence probability</h3>
+  <p>By the chain rule (exact, no assumption):</p>
+  $$P(y_1,\dots,y_T) = \prod_{t=1}^{T}P(y_t \mid y_{<t})$$
+  <p>Read one number off each row and multiply.</p>
+
+  <div class="worked">
+    <span class="lbl">Worked example 10.2 — GA4: sequence probability, and the trap twin</span>
+    <p><em>$\mathcal{V}$ = ([start], building, character, a, is, astronomy, science, experience, natural, [end]). Row 0 is the distribution given [Start]; subsequent rows are conditioned on the <strong>greedy</strong> path.</em></p>
+
+    <h4>(a) $P(\text{"Astronomy is a character building experience"})$</h4>
+    <table>
+      <tr><th class="mono">t</th><th class="mono">word</th><th class="mono">idx</th><th class="mono">row</th><th class="mono">p</th></tr>
+      <tr><td class="mono">1</td><td class="mono">astronomy</td><td class="mono">5</td><td class="mono">0</td><td class="mono">0.41</td></tr>
+      <tr><td class="mono">2</td><td class="mono">is</td><td class="mono">4</td><td class="mono">1</td><td class="mono">0.43</td></tr>
+      <tr><td class="mono">3</td><td class="mono">a</td><td class="mono">3</td><td class="mono">2</td><td class="mono">0.29</td></tr>
+      <tr><td class="mono">4</td><td class="mono">character</td><td class="mono">2</td><td class="mono">3</td><td class="mono">0.48</td></tr>
+      <tr><td class="mono">5</td><td class="mono">building</td><td class="mono">1</td><td class="mono">4</td><td class="mono">0.29</td></tr>
+      <tr><td class="mono">6</td><td class="mono">experience</td><td class="mono">7</td><td class="mono">5</td><td class="mono">0.23</td></tr>
+    </table>
+    $$P = 0.41 \times 0.43 \times 0.29 \times 0.48 \times 0.29 \times 0.23 = \boxed{0.0016}\;✓$$
+    <p><strong>Why does this one work?</strong> Because every word we picked <em>is</em> the greedy argmax of its row. Check: row 0's max is 0.41 (astronomy) ✓, row 1's is 0.43 (is) ✓, row 2's is 0.29 (a) ✓, row 3's is 0.48 (character) ✓... The sentence <em>is</em> the greedy path, so the rows the matrix gives us are exactly the rows we need.</p>
+
+    <h4>(b) $P(\text{"Astronomy is a natural science"})$ — the trap twin</h4>
+    <p><strong>Answer: −1, insufficient information.</strong></p>
+    <p>Steps 1–3 are fine ($0.41, 0.43, 0.29$). At step 4 we want "natural" (index 8), and row 3 gives $P(\text{natural}) = 0.07$. Fine so far.</p>
+    <p><strong>But then step 5 breaks.</strong> Row 4 is conditioned on the prefix "astronomy is a <strong>character</strong>" — because the matrix follows the <em>greedy</em> path, and greedy picked "character" at step 4. We need $P(\text{science} \mid \text{astronomy is a natural})$, which is a <em>different conditioning</em>. That row does not exist and cannot be derived. Only the model could produce it.</p>
+    <div class="callout"><strong>The rule that generalises both:</strong> a row of the matrix is only usable if the prefix you're building matches the prefix that row was conditioned on. <strong>The moment your sequence departs from the greedy path, every row after the departure is dead.</strong> Ask this before multiplying: <em>is my sentence the greedy sentence?</em> If yes, multiply. If no, the answer is −1 from the departure point onward.</div>
+  </div>
+
+  <h3>Top-$k$, top-$p$, and temperature</h3>
+
+  <h4>Top-$k$</h4>
+  <p>Keep the $k$ highest-probability tokens, <strong>zero the rest, renormalise so the survivors sum to 1</strong>, then sample.</p>
+  $$P_{\text{top-}k}(w) = \frac{p(w)}{\sum_{w' \in \text{Top-}k} p(w')}\quad\text{for } w \in \text{Top-}k$$
+
+  <div class="worked">
+    <span class="lbl">Worked example 10.3 — GA4: top-$k$ with $k=3$</span>
+    <p>Row 0 $= [0.05, 0.02, 0.14, 0.07, 0.09, 0.41, 0.08, 0.05, 0.08, 0.01]$.</p>
+    <p><strong>Top 3:</strong> $0.41$ (astronomy), $0.14$ (character), $0.09$ (is). Sum $= 0.64$.</p>
+    $$P(\text{astronomy}) = \frac{0.41}{0.64} = \boxed{0.6406}\;✓$$
+    <p><strong>The point:</strong> restricting the candidate set <em>raises</em> the probability of the survivors — 0.41 became 0.64. Top-$k$ makes the model more confident and less diverse by construction. That's the trade it exists to make.</p>
+    <p>Careful sorting: the 0.08s are ties for 4th; they're excluded. If $k$ had been 4, you'd have to decide a tie-break — the papers avoid this, but check for it.</p>
+  </div>
+
+  <h4>Top-$p$ (nucleus)</h4>
+  <p>Keep the <strong>smallest set of tokens whose cumulative probability exceeds $p$</strong>, renormalise, sample.</p>
+  <div class="callout"><strong>Top-$k$ vs top-$p$, the keyed MSQ.</strong> Top-$k$ keeps a <em>fixed number</em>; top-$p$ keeps a <em>variable number</em> depending on how peaked the distribution is. When the model is confident (one token at 0.9), top-$p$ keeps ~1 token; when it's uncertain (a flat tail), it keeps many. That adaptivity is the entire argument for nucleus over top-$k$ — a fixed $k$ is either too permissive on confident steps or too restrictive on uncertain ones.<br><br>
+  Keyed wrong: <em>"it always selects the top-$p$ tokens with equal probability"</em> — no, it renormalises and preserves the <em>relative</em> probabilities. And $p$ is a probability mass, not a count.</div>
+
+  <h4>Temperature</h4>
+  $$P(w) = \text{softmax}(u/\tau)_w = \frac{e^{u_w/\tau}}{\sum_{w'}e^{u_{w'}/\tau}}$$
+  <p>Applied to the <strong>logits</strong>, before the softmax.</p>
+  <ul>
+    <li><strong>$\tau \to 0$:</strong> differences get amplified without bound ⟹ one-hot ⟹ <strong>greedy</strong>.</li>
+    <li><strong>$\tau = 1$:</strong> the model's own distribution, untouched.</li>
+    <li><strong>$\tau \to \infty$:</strong> all logits crushed to 0 ⟹ <strong>uniform</strong> over the vocabulary.</li>
+  </ul>
+
+  <div class="worked">
+    <span class="lbl">Worked example 10.4 — PYQ: temperature scaling</span>
+    <p><em>Logits: the=2.0, sky=1.0, is=0.5, blue=−1.0. $T=0.5$. Find $P(\text{the})$.</em></p>
+    <p><strong>Step 1 — scale.</strong> Divide by $\tau=0.5$, i.e. <strong>multiply by 2</strong>:</p>
+    $$u/\tau = [4.0,\; 2.0,\; 1.0,\; -2.0]$$
+    <p><strong>Step 2 — exponentiate.</strong> $e^4 = 54.598$, $e^2 = 7.389$, $e^1 = 2.718$, $e^{-2} = 0.135$. Sum $= 64.841$.</p>
+    <p><strong>Step 3 —</strong> $P(\text{the}) = 54.598/64.841 = \boxed{0.84}$ ✓ (range 0.81–0.87)</p>
+    <div class="callout"><strong>Sanity check without the temperature:</strong> at $\tau=1$, $P(\text{the}) = e^2/(e^2+e^1+e^{0.5}+e^{-1}) = 7.389/12.11 = 0.61$. Dropping $\tau$ to 0.5 pushed it from 0.61 to 0.84 — <strong>lower temperature ⟹ sharper.</strong> If your answer moved the other way, you multiplied where you should have divided. That direction check takes three seconds and catches the only real error in this question.</div>
+  </div>
+
+  <h3>From scratch</h3>
+<pre><code>def temperature_softmax(logits, tau=1.0):
+    return softmax([u / tau for u in logits])
+
+def top_k_filter(probs, k):
+    """Zero all but the k largest, then renormalise."""
+    thresh = sorted(probs, reverse=True)[k-1]
+    kept = [p if p >= thresh else 0.0 for p in probs]
+    s = sum(kept)
+    return [p / s for p in kept]
+
+def top_p_filter(probs, p):
+    """Smallest set whose cumulative prob exceeds p, then renormalise."""
+    order = sorted(range(len(probs)), key=lambda i: probs[i], reverse=True)
+    kept, cum = set(), 0.0
+    for i in order:
+        kept.add(i); cum += probs[i]
+        if cum > p:
+            break                       # note: > p, and we INCLUDE the crossing token
+    out = [probs[i] if i in kept else 0.0 for i in range(len(probs))]
+    s = sum(out)
+    return [q / s for q in out]
+
+def sequence_prob(rows, path_indices):
+    """rows[t] is the distribution at step t+1; path_indices[t] the chosen token."""
+    p = 1.0
+    for t, idx in enumerate(path_indices):
+        p *= rows[t][idx]
+    return p
+
+row0 = [0.05,0.02,0.14,0.07,0.09,0.41,0.08,0.05,0.08,0.01]
+print(round(top_k_filter(row0, 3)[5], 4))              # 0.6406
+print(round(temperature_softmax([2.0,1.0,0.5,-1.0], 0.5)[0], 2))   # 0.84
+
+Y = [[0.05,0.02,0.14,0.07,0.09,0.41,0.08,0.05,0.08,0.01],
+     [0.10,0.04,0.06,0.16,0.43,0.01,0.06,0.09,0.01,0.04],
+     [0.05,0.07,0.28,0.29,0.03,0.08,0.04,0.08,0.04,0.04],
+     [0.10,0.02,0.48,0.02,0.01,0.07,0.06,0.14,0.07,0.01],
+     [0.08,0.29,0.04,0.01,0.04,0.03,0.25,0.05,0.15,0.06],
+     [0.14,0.22,0.13,0.08,0.01,0.03,0.06,0.23,0.08,0.03]]
+print(round(sequence_prob(Y, [5,4,3,2,1,7]), 4))       # 0.0016</code></pre>
+
+  <div class="cheat">
+    <span class="lbl">Exam cheat code — Block 10</span>
+    <ul>
+      <li><strong>Runs at step $t$ = beams after step $t-1$.</strong> Exhaustive: runs $=|V|^{t-1}$, beams $=|V|^{t}$.</li>
+      <li><strong>Greedy: 1 beam forever. Beam($k$): $k$ beams forever. Exhaustive: $|V|^t$.</strong></li>
+      <li><strong>"Exactly length $L$" $= V^L$. "Maximum length $L$" $= \sum_{k=1}^{L}V^k$.</strong> Different questions.</li>
+      <li><strong>$L\to L+1$ adds $(V-1)V^L$ sequences.</strong></li>
+      <li><strong>$P(\text{sequence}) = \prod_t P(y_t\mid y_{<t})$</strong> — <em>but only if your path is the greedy path</em>, otherwise −1.</li>
+      <li><strong>Top-$k$: keep $k$, renormalise ⟹ probabilities go UP.</strong> $0.41/0.64 = 0.64$.</li>
+      <li><strong>Top-$p$: variable-size set, cumulative $> p$.</strong> Adaptive; that's its whole advantage.</li>
+      <li><strong>Temperature divides the LOGITS. $\tau\downarrow$ ⟹ sharper ⟹ greedy. $\tau\uparrow$ ⟹ flatter ⟹ uniform.</strong></li>
+      <li><strong>Non-deterministic = sampling only (top-$k$, nucleus).</strong> Greedy/beam/exhaustive are deterministic.</li>
+      <li><strong>Increasing $k$ in top-$k$: more diversity, less coherence.</strong> The keyed answer, verbatim.</li>
+      <li><strong>Beam($2$) keeps both A and B. Top-2 keeps A and B as candidates, then samples one.</strong> The keyed distinction.</li>
+    </ul>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 10.1 — top-$p$</span>
+    <p>Distribution: $[0.40, 0.30, 0.20, 0.05, 0.05]$ over (A, B, C, D, E). Apply nucleus sampling with $p = 0.8$. Which tokens survive, and what's $P(\text{A})$ after renormalising?</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p>Sort descending (already sorted). Accumulate until we <em>exceed</em> 0.8:<br>
+      A: 0.40 — not > 0.8, keep going<br>
+      +B: 0.70 — not > 0.8, keep going<br>
+      +C: 0.90 — <strong>exceeds 0.8, stop.</strong> C is included.</p>
+      <p><strong>Nucleus = {A, B, C}</strong>, mass 0.90.</p>
+      $$P(\text{A}) = 0.40/0.90 = \boxed{0.444}$$
+      <p><strong>The subtlety:</strong> the token that <em>crosses</em> the threshold is included — that's what "smallest set whose cumulative probability <em>exceeds</em> $p$" means. If you excluded C you'd get {A,B} with mass 0.7, which is not > 0.8, contradicting the definition.</p>
+      <p>Note that with $p=0.8$ this happens to give the same set as $k=3$ — but that's a coincidence of this distribution. Make it $[0.85, 0.05, 0.04, 0.03, 0.03]$ and top-$p$(0.8) keeps <strong>one</strong> token while top-3 still keeps three. <em>That</em> is the adaptivity.</p>
+    </div></details>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 10.2 — the counting drill</span>
+    <p>Vocabulary size 8. (a) Beams after step 2 in exhaustive search? (b) Decoder runs at step 3 in exhaustive? (c) Total sequences of maximum length 3? (d) Additional sequences when moving from exactly-length-3 to exactly-length-4?</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p>(a) $8^2 = \mathbf{64}$<br>
+      (b) runs at step 3 = beams after step 2 = $8^2 = \mathbf{64}$<br>
+      (c) $8 + 64 + 512 = \mathbf{584}$<br>
+      (d) $8^4 - 8^3 = 4096 - 512 = \mathbf{3584} = (8-1)\cdot8^3$ ✓</p>
+      <p>Note (a) and (b) coincide — that's the "runs at $t$ = beams after $t-1$" rule made visible. If you got $8^3=512$ for (b), you counted beams <em>after</em> step 3 rather than runs <em>at</em> step 3.</p>
+    </div></details>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 10.3 — temperature, reversed</span>
+    <p>Logits $[2.0, 1.0, 0.5, -1.0]$ again, but now $T = 2.0$. Find $P(\text{the})$ and explain the direction of the change.</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p>$u/\tau = [1.0, 0.5, 0.25, -0.5]$. $e^{1}=2.718$, $e^{0.5}=1.649$, $e^{0.25}=1.284$, $e^{-0.5}=0.607$. Sum $=6.258$.</p>
+      $$P(\text{the}) = 2.718/6.258 = \boxed{0.434}$$
+      <p><strong>Direction:</strong> $0.84$ at $\tau=0.5$ → $0.61$ at $\tau=1$ → $0.43$ at $\tau=2$. Monotonically flatter as $\tau$ rises. The limit is $1/4 = 0.25$ (uniform over 4 tokens) as $\tau\to\infty$ — and 0.43 is on its way there.</p>
+      <p><strong>Build the mental picture:</strong> temperature is a dial from "argmax" (0) through "the model's honest opinion" (1) to "coin flip" (∞). Every value of $P(\text{the})$ must lie between $1.0$ and $0.25$. Any answer outside that band is arithmetically impossible — an instant check.</p>
+    </div></details>
+  </div>
+</section>
+
+<!-- ============ BLOCK 11 ============ -->
+<section class="block" id="b11">
+  <div class="block-head"><span class="bnum">11</span><h2>Conventions &amp; the final checklist</h2><span class="btag">read last · 20 min</span></div>
+
+  <h3>The row/column trap — this is real and it is on the paper</h3>
+  <p>The course uses <strong>two mutually transposed conventions</strong> in different questions, and does not warn you. If you memorise one and pattern-match, you will lose a whole comprehension block.</p>
+
+  <table>
+    <tr><th></th><th>Row-vector world (GA2)</th><th>Column-vector world (PYQ comprehension)</th></tr>
+    <tr><td>Input</td><td class="mono">$H \in \mathbb{R}^{T\times d_{model}}$ — tokens are <strong>rows</strong></td><td class="mono">$X \in \mathbb{R}^{d_{model}\times T}$ — tokens are <strong>columns</strong></td></tr>
+    <tr><td>Projection</td><td class="mono">$Q = HW_Q$, $W_Q: d_{model}\times d_k$</td><td class="mono">$Q = W_QX$, $W_Q: d_k \times d_{model}$</td></tr>
+    <tr><td>Attention</td><td class="mono">$\text{softmax}\!\big(QK^\top/\sqrt{d_k}\big)V$</td><td class="mono">$\text{softmax}\!\big(Q^\top K/\sqrt{d_k}\big)V^\top$</td></tr>
+    <tr><td>Head concat</td><td class="mono">horizontally, then $[\,\cdot\,]W_O$</td><td class="mono">vertically, then $W_O[\,\cdot\,]$</td></tr>
+  </table>
+
+  <div class="callout"><strong>How to tell instantly, without thinking:</strong> look at where $d_{model}$ sits. If the given matrix is $T\times d_{model}$ → row world. If it's $d_{model}\times T$ → column world. Then <strong>just follow the shapes</strong> — matrix multiplication is unforgiving, and there is usually only one way to multiply the given matrices that type-checks. <em>Let the shapes tell you the convention; never let your memory tell you the shapes.</em></div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 11.1 — the PYQ multi-head comprehension, decoded</span>
+    <p><em>$d_{model}=4$, sequence length 2, so $X = \begin{bmatrix}1&0\\0&2\\1&0\\0&2\end{bmatrix}$ is $4\times2$ — <strong>column world</strong>. Head 2 weights $W^2_Q=W^2_K=W^2_V = \begin{bmatrix}1&0&1&0\\1&1&2&1\end{bmatrix}$ ($2\times4$). Formula given: $\text{softmax}(Q^\top K/\sqrt{d_k})V^\top$.</em></p>
+
+    <p><strong>Project:</strong> $Q = W^2_QX$ — the only multiplication that type-checks ($2\times4$ times $4\times2$ = $2\times2$):</p>
+    $$Q = K = V = \begin{bmatrix}2&0\\3&4\end{bmatrix}$$
+    <p>(Row 1: $[1,0,1,0]$ against $X$'s columns $[1,0,1,0]$ and $[0,2,0,2]$ gives $[2, 0]$. Row 2: $[1,1,2,1]$ gives $[3,4]$.)</p>
+
+    <p><strong>Scores:</strong> $Q^\top K = \begin{bmatrix}2&3\\0&4\end{bmatrix}\begin{bmatrix}2&0\\3&4\end{bmatrix} = \begin{bmatrix}13&12\\12&16\end{bmatrix}$, divided by $\sqrt{2}$:</p>
+    $$\begin{bmatrix}9.19&8.49\\8.49&11.31\end{bmatrix}$$
+
+    <p><strong>Softmax — and here is the thing you must know.</strong> The answer key corresponds to softmax applied <strong>down the columns</strong>, not across the rows:</p>
+    <p>Column 1: $[9.19, 8.49]$, difference $0.707$, $e^{0.707}=2.028$ ⟹ $[0.670, 0.330]$.<br>
+       Column 2: $[8.49, 11.31]$, difference $-2.83$, $e^{-2.83}=0.059$ ⟹ $[0.056, 0.944]$.</p>
+    $$A = \begin{bmatrix}0.670&0.056\\0.330&0.944\end{bmatrix}$$
+
+    <p><strong>Output:</strong> $AV^\top = \begin{bmatrix}0.670&0.056\\0.330&0.944\end{bmatrix}\begin{bmatrix}2&3\\0&4\end{bmatrix} = \boxed{\begin{bmatrix}1.34&2.23\\0.66&4.77\end{bmatrix}}$ ✓ — matches the key exactly.</p>
+
+    <p><strong>Then:</strong> stack head 1's output on top of head 2's (vertically, giving $4\times2$) and left-multiply by $W_O = \text{diag}(0.5,0.5,1,1)$:</p>
+    $$W_O\begin{bmatrix}0&0\\6&12\\1.34&2.23\\0.66&4.77\end{bmatrix} = \begin{bmatrix}0&0\\3&6\\1.34&2.23\\0.66&4.77\end{bmatrix}\;✓$$
+  </div>
+
+  <div class="callout"><strong>Be honest about what happened there:</strong> a column-wise softmax means the attention weights <em>for a given query</em> do not sum to 1 — head 1's output row of $[6,12] = v_1 + v_2$ with weights $[1,1]$ is not a convex combination, which the standard formulation guarantees. So the setter's formula and key are non-standard. <strong>That does not help you in the exam.</strong> The practical rule: <em>compute the standard way first; if your answer isn't among the options, transpose the softmax axis and try again.</em> On MCQ this costs 60 seconds and it is always recoverable. The tell that you're in this situation: an option with a row of zeros, or values that are clearly not weighted averages of the $v_j$.</div>
+
+  <details class="bg">
+    <summary>Background — why two conventions exist at all, and how to never be confused again</summary>
+    <div class="body">
+      <p>This isn't the course being sloppy; it's two genuine traditions colliding.</p>
+      <p><strong>Mathematics and physics write vectors as columns.</strong> A linear map is $y = Ax$ — operator on the left, acted-on thing on the right. Composition reads right-to-left: $CBAx$. Every linear algebra textbook you've met does this.</p>
+      <p><strong>Deep learning frameworks write data as rows.</strong> A batch is stored as <span class="mono">(n_samples, n_features)</span> because that's how you'd store a CSV, and because iterating over the first axis should give you samples. So the natural expression is $Y = XW$ — data on the left, weights on the right. Composition reads left-to-right: $XW_1W_2$, which matches the order you'd write the layers.</p>
+      <p>The two are exact transposes: $(XW)^\top = W^\top X^\top$. Neither is wrong. Papers written by people from a maths background use columns; code written against PyTorch uses rows; lecture slides mix them depending on who made the slide.</p>
+      <p><strong>The permanent fix — three questions, in this order:</strong></p>
+      <ol>
+        <li><strong>Where is $d_{model}$?</strong> Find the given dimension in the given matrix's shape. If $X$ is $T\times d_{model}$ you're in row world; if $d_{model}\times T$, column world.</li>
+        <li><strong>Which product type-checks?</strong> Try both $XW$ and $WX$. Usually exactly one produces something with a $T$ axis and a $d_k$ axis. That one is right.</li>
+        <li><strong>Does the score matrix come out $T\times T$?</strong> It must. If your $QK$ product gives $d_k\times d_k$, you've transposed the wrong operand.</li>
+      </ol>
+      <p>Do those three and you literally never need to remember which world you're in. <strong>This is the general skill the shape questions are testing</strong> — not memorisation of one formula, but the discipline of letting dimensions constrain the algebra.</p>
+    </div>
+  </details>
+
+  <h3>The full trap inventory</h3>
+  <table>
+    <tr><th>Trap</th><th>The rule</th><th>Block</th></tr>
+    <tr><td>sin/cos by position, not dimension</td><td>Index $k$ even → sin. Always the <em>dimension</em>.</td><td class="mono">B6</td></tr>
+    <tr><td>Learned vs sinusoidal PE</td><td>GPT/BERT learn it ⟹ $T_{max}d_{model}$ params. Sinusoidal ⟹ 0.</td><td class="mono">B4, B6</td></tr>
+    <tr><td>"for a given head" vs "the model"</td><td>$d_{model}d_k$ vs $d_{model}^2$. $W_O$ never splits.</td><td class="mono">B8</td></tr>
+    <tr><td>Forgetting $W_O$</td><td>MHA $= 4d_{model}^2$, not $3d_{model}^2$.</td><td class="mono">B4</td></tr>
+    <tr><td>LN params × sequence length</td><td>$2d_{model}$. Shared across positions. Never × $T$.</td><td class="mono">B7</td></tr>
+    <tr><td>Sample variance ($N-1$)</td><td>Neural nets use population variance ($\div N$).</td><td class="mono">B7</td></tr>
+    <tr><td>BOS token present or not</td><td>Targets $= B(T-1)$ without, $BT$ with.</td><td class="mono">B8</td></tr>
+    <tr><td>$T(T-1)/2$ vs $T(T+1)/2$</td><td>Causal mask keeps the diagonal. $+1$.</td><td class="mono">B8</td></tr>
+    <tr><td>Loss reads the argmax</td><td>Loss reads the <em>true word's</em> probability.</td><td class="mono">B9</td></tr>
+    <tr><td>"Exactly" vs "maximum" length</td><td>$V^L$ vs $\sum_{k=1}^{L}V^k$.</td><td class="mono">B10</td></tr>
+    <tr><td>Beams vs decoder runs</td><td>Runs at $t$ = beams after $t-1$. One exponent apart.</td><td class="mono">B10</td></tr>
+    <tr><td>Temperature direction</td><td>$\tau\downarrow$ ⟹ sharper. Divide the logits.</td><td class="mono">B10</td></tr>
+    <tr><td>Off the greedy path</td><td>Rows are dead after the departure ⟹ −1.</td><td class="mono">B10</td></tr>
+    <tr><td>Degrees instead of radians</td><td>Check the calculator before question 1.</td><td class="mono">B6</td></tr>
+  </table>
+
+  <div class="cheat">
+    <span class="lbl">Exam cheat code — the last 60 seconds before you start</span>
+    <ul>
+      <li><strong>Calculator in radians.</strong> Do it now.</li>
+      <li><strong>No negative marking. Fill in every box.</strong> A guessed numeric is free expected value.</li>
+      <li><strong>Comprehension blocks are 3–5 questions off one setup.</strong> Find them first; they're the densest marks on the paper. Read the setup once, carefully, then harvest.</li>
+      <li><strong>Circle these words as you read:</strong> <em>bias</em> · <em>learned</em> · <em>sinusoidal</em> · <em>for a given head</em> · <em>BOS</em> · <em>exactly</em> · <em>maximum</em> · <em>total</em> · <em>at least</em> · <em>per head</em> · <em>across all</em>.</li>
+      <li><strong>Answers are ranges.</strong> Don't chase the 4th decimal. Chase the method.</li>
+      <li><strong>Ratio questions: cancel before you compute.</strong></li>
+      <li><strong>Symbolic before numeric.</strong> The $\gamma=2\sigma$ question collapses to $H\beta$; the gradient-sum question collapses to 0; the $\sum c_t$ question collapses to $\sum_j\alpha_j\sum(h_j)$. The paper rewards seeing it.</li>
+    </ul>
+  </div>
+
+  <h3>From scratch — a convention detector</h3>
+<pre><code>def shape(M):
+    return (len(M), len(M[0]))
+
+def detect_world(X, d_model):
+    """Which axis of X is d_model? That answers everything else."""
+    r, c = shape(X)
+    if r == d_model and c != d_model:
+        return 'column', {'X': f'{d_model} x T', 'proj': 'Q = W_Q @ X',
+                          'W_Q': f'd_k x {d_model}', 'concat': 'vertical, W_O on left'}
+    if c == d_model and r != d_model:
+        return 'row',    {'X': f'T x {d_model}', 'proj': 'Q = X @ W_Q',
+                          'W_Q': f'{d_model} x d_k', 'concat': 'horizontal, W_O on right'}
+    return 'ambiguous — T == d_model, fall back to type-checking the product', {}
+
+# GA2's world: H is 3 x 3 with d_model = 3 -> ambiguous! (this is why GA2 says
+# "note that the embeddings are ROW vectors" explicitly. When T == d_model the
+# shapes CANNOT disambiguate and the question must tell you. Read that sentence.)
+print(detect_world([[0.5,0.25,1.0],[0.1,0.25,0.0],[0.1,0.1,0.9]], 3)[0])
+
+# The PYQ comprehension: X is 4 x 2, d_model = 4
+world, rules = detect_world([[1,0],[0,2],[1,0],[0,2]], 4)
+print(world)                 # column
+for k, v in rules.items():
+    print(' ', k, '->', v)
+
+def scores_typecheck(Q_shape, K_shape):
+    """The score matrix MUST be T x T. Try both and see which survives."""
+    out = []
+    if Q_shape[1] == K_shape[0]:  out.append(('Q @ K',    (Q_shape[0], K_shape[1])))
+    if Q_shape[1] == K_shape[1]:  out.append(('Q @ K.T',  (Q_shape[0], K_shape[0])))
+    if Q_shape[0] == K_shape[0]:  out.append(('Q.T @ K',  (Q_shape[1], K_shape[1])))
+    return out
+
+print(scores_typecheck((2,2), (2,2)))   # T == d_k == 2 here, so all three "work"
+                                        # -> when the toy numbers are square, only the
+                                        #    STATED formula settles it. Read the formula.</code></pre>
+
+  <div class="prac">
+    <span class="lbl">Practice 11.1 — the shape drill (do this cold, 90 seconds)</span>
+    <p>$X\in\mathbb{R}^{T\times d_{model}}$, $W_Q\in\mathbb{R}^{d_{model}\times d_k}$. Give the shape of: (a) $Q$; (b) $QK^\top$; (c) $\text{softmax}(QK^\top/\sqrt{d_k})V$ with $V\in\mathbb{R}^{T\times d_k}$; (d) the output of a 6-layer encoder stack given $T=50$, $d_{model}=512$.</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p>(a) $(T\times d_{model})(d_{model}\times d_k) = \mathbf{T\times d_k}$<br>
+      (b) $(T\times d_k)(d_k\times T) = \mathbf{T\times T}$<br>
+      (c) $(T\times T)(T\times d_k) = \mathbf{T\times d_k}$<br>
+      (d) $\mathbf{50\times512}$ — <strong>one vector per token, sequence length preserved.</strong></p>
+      <p>(d) is keyed on a real paper, and the distractors are $1\times512$ ("a single context vector") and $6\times512$ ("one per layer"). <strong>Both are RNN-brain answers.</strong> An encoder layer maps $T\times d_{model}\to T\times d_{model}$ — it must, or the residual connection couldn't add. Stack six of them and you still have $T\times d_{model}$. The Transformer encoder never compresses to a single vector; that was the <em>bottleneck</em> of Block 5 that attention exists to destroy.</p>
+      <p>Also keyed: softmax in (b)→(c) is applied <strong>row-wise, not globally</strong>. And $QK^\top$ is "the raw affinity between every pair of tokens" ✓.</p>
+    </div></details>
+  </div>
+
+  <div class="prac">
+    <span class="lbl">Practice 11.2 — the convention drill</span>
+    <p>You're given $X\in\mathbb{R}^{4\times2}$ with the note "$d_{model}=4$, sequence length 2", and $W_Q\in\mathbb{R}^{2\times4}$. Which world are you in, what is $Q = ?$, and what shape is it?</p>
+    <details class="ans"><summary>Check your answer</summary><div class="body">
+      <p><strong>Column world.</strong> $d_{model}=4$ matches the number of <em>rows</em> of $X$ ⟹ features run down, tokens across.</p>
+      <p>$Q = W_QX$: $(2\times4)(4\times2) = \mathbf{2\times2}$, i.e. $d_k \times T$. Weights on the left.</p>
+      <p><strong>Note $XW_Q$ doesn't type-check</strong> ($4\times2$ times $2\times4$ = $4\times4$ — dimensionally legal but semantically nonsense: it has no $d_k$ axis and no $T$ axis). Only one product is meaningful. <em>The shapes disambiguate for you, every time.</em> That's why "follow the shapes" beats "remember the formula."</p>
+    </div></details>
+  </div>
+</section>
+
+<!--INSERT-->
+
+<footer>
+  <p><strong>The guide is now complete for Quiz 1 (Weeks 1&ndash;4).</strong> Blocks 00&ndash;11 cover every question type that appeared in the three previous-year papers, GA2 and GA4. Nothing on those papers falls outside this document.</p>
+  <p><strong>How to use it in two days.</strong> Day 1: read Blocks 01, 03, 04, 06, 07 &mdash; those are ~60% of the marks and they are all mechanical. Day 2: Blocks 08, 09, 10, then 05, then 11 last as a pre-exam pass. Blocks 02 and 11 are the ones to re-read in the final hour. Skip nothing in the <span class="mono">Exam cheat code</span> boxes.</p>
+  <p><strong>Provenance.</strong> Every number here was recomputed from scratch and cross-checked against an official answer key &mdash; GA2/GA4: <span class="mono">230656 &middot; 96000 &middot; 64000 &middot; &minus;1 &middot; 0 &middot; 0.41 &middot; 0.0016 &middot; 0.6406 &middot; 3.4358</span>; PYQ: <span class="mono">1.93 &middot; 0.35 &middot; 1.36 &middot; 2.03 &middot; &minus;0.63 &middot; 0.84 &middot; 1.0 &middot; 8 &middot; 8 &middot; 216 &middot; 1152 &middot; 100% &middot; 32768 &middot; 32736 &middot; 524800 &middot; 589824 &middot; 147456 &middot; 4722432 &middot; 393216 &middot; 30720000</span>. Where a key looked wrong, I said so and showed the working (Block 11).</p>
+  <p><strong>One known correction to your own work:</strong> your GA2 answer of <span class="mono">160000</span> for the input embedding layer was wrong &mdash; the key is <span class="mono">64000</span> = |V<sub>s</sub>| &times; d<sub>model</sub> = 1000 &times; 64. See Block 4.</p>
+  <p><strong>Next:</strong> tell me a block number and we&rsquo;ll go at it &mdash; I&rsquo;ll cross-question rather than re-explain. Then I&rsquo;ll hand you PYQ/GA questions with the numbers changed, unlabelled, and you tell me which machine each one is.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var blocks = [].slice.call(document.querySelectorAll('.block'));
+  var spine = document.getElementById('spine');
+  blocks.forEach(function(b){
+    var a = document.createElement('a');
+    a.href = '#' + b.id;
+    var t = b.querySelector('h2').textContent;
+    a.innerHTML = '<span>' + b.querySelector('.bnum').textContent + ' — ' + t + '</span>';
+    spine.appendChild(a);
+  });
+  var links = [].slice.call(spine.children);
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        links.forEach(function(l){ l.classList.remove('on'); });
+        var idx = blocks.indexOf(e.target);
+        if(links[idx]) links[idx].classList.add('on');
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  blocks.forEach(function(b){ io.observe(b); });
+})();
+</script>

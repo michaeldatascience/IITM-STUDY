@@ -1,0 +1,843 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive, source-grounded IITM LLM Week 5 study module on BPE, Word-Piece and Sentence-Piece tokenizers.">
+  <title>LLM Week 5 — Tokenizers | Interactive Study Module</title>
+  <style>
+    :root {
+      --paper: #f7f4ec;
+      --surface: #fffdf8;
+      --surface-2: #ede8dc;
+      --ink: #1d2927;
+      --muted: #64706d;
+      --line: #d7d0c2;
+      --teal: #0d7469;
+      --teal-soft: #dcefeb;
+      --amber: #b55d13;
+      --amber-soft: #f8e8d3;
+      --red: #a33d3d;
+      --red-soft: #f7e1df;
+      --green: #287453;
+      --green-soft: #dff0e7;
+      --blue: #345f91;
+      --shadow: 0 16px 40px rgba(36, 42, 37, .09);
+      --radius: 18px;
+    }
+    [data-theme="dark"] {
+      --paper: #111816;
+      --surface: #18211f;
+      --surface-2: #202c29;
+      --ink: #eef5f1;
+      --muted: #aab8b4;
+      --line: #33423e;
+      --teal: #65d2c2;
+      --teal-soft: #183c37;
+      --amber: #f2a35f;
+      --amber-soft: #402b1d;
+      --red: #ef8f8f;
+      --red-soft: #402525;
+      --green: #72c99c;
+      --green-soft: #1e392d;
+      --blue: #8bb8e8;
+      --shadow: 0 16px 40px rgba(0, 0, 0, .25);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.67;
+    }
+    button, input, textarea { font: inherit; }
+    button { cursor: pointer; }
+    a { color: var(--teal); }
+    code, .mono { font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace; }
+    code { padding: .12rem .35rem; border-radius: 6px; background: var(--surface-2); }
+    .topbar {
+      position: sticky;
+      z-index: 20;
+      top: 0;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      min-height: 56px;
+      padding: 9px 22px;
+      border-bottom: 1px solid var(--line);
+      background: color-mix(in srgb, var(--paper) 88%, transparent);
+      backdrop-filter: blur(16px);
+    }
+    .brand { font-weight: 800; letter-spacing: -.02em; white-space: nowrap; }
+    .progress-track { height: 7px; flex: 1; overflow: hidden; border-radius: 999px; background: var(--surface-2); }
+    .progress-fill { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--teal), var(--amber)); transition: width .2s ease; }
+    .icon-button, .button {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--ink);
+      background: var(--surface);
+      padding: .55rem .8rem;
+      font-weight: 700;
+    }
+    .button.primary { border-color: var(--teal); color: #fff; background: #0d7469; }
+    [data-theme="dark"] .button.primary { color: #10211d; background: var(--teal); }
+    .button:hover, .icon-button:hover { transform: translateY(-1px); box-shadow: 0 5px 15px rgba(0,0,0,.08); }
+    .layout { display: grid; grid-template-columns: 260px minmax(0, 900px); gap: 42px; max-width: 1260px; margin: 0 auto; padding: 34px 28px 100px; }
+    .sidebar { position: sticky; top: 86px; align-self: start; max-height: calc(100vh - 106px); overflow: auto; }
+    .eyebrow { color: var(--amber); font-size: .76rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+    .sidebar h2 { margin: 6px 0 18px; font-family: Georgia, serif; font-size: 1.32rem; }
+    .toc { display: grid; gap: 5px; }
+    .toc a { padding: 7px 10px; border-left: 2px solid var(--line); color: var(--muted); text-decoration: none; font-size: .91rem; }
+    .toc a:hover, .toc a.active { border-color: var(--teal); color: var(--ink); background: var(--teal-soft); }
+    .sidebar-note { margin-top: 22px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; color: var(--muted); background: var(--surface); font-size: .84rem; }
+    main { min-width: 0; }
+    section { scroll-margin-top: 80px; margin-bottom: 78px; }
+    .hero { padding: 44px; border: 1px solid var(--line); border-radius: 28px; background: radial-gradient(circle at 95% 5%, var(--amber-soft), transparent 36%), var(--surface); box-shadow: var(--shadow); }
+    h1, h2, h3 { line-height: 1.2; }
+    h1, h2 { font-family: Georgia, "Times New Roman", serif; letter-spacing: -.025em; }
+    h1 { max-width: 760px; margin: 10px 0 16px; font-size: clamp(2.35rem, 5vw, 4.4rem); }
+    h2 { margin: 0 0 16px; font-size: clamp(1.9rem, 4vw, 3rem); }
+    h3 { margin: 28px 0 10px; font-size: 1.23rem; }
+    p { margin: .72rem 0; }
+    .lede { max-width: 720px; color: var(--muted); font-size: 1.14rem; }
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; border-radius: 999px; color: var(--teal); background: var(--teal-soft); font-size: .78rem; font-weight: 800; }
+    .badge.exam { color: var(--amber); background: var(--amber-soft); }
+    .badge.source { color: var(--blue); background: color-mix(in srgb, var(--blue) 12%, var(--surface)); }
+    .callout { margin: 18px 0; padding: 16px 18px; border-left: 4px solid var(--teal); border-radius: 0 12px 12px 0; background: var(--teal-soft); }
+    .callout.warn { border-color: var(--amber); background: var(--amber-soft); }
+    .callout strong { display: block; margin-bottom: 3px; }
+    .grid-2, .grid-3 { display: grid; gap: 16px; }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .card { padding: 20px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: 0 7px 22px rgba(40,40,30,.04); }
+    .card h3 { margin-top: 0; }
+    .stat { font-family: Georgia, serif; font-size: 2rem; font-weight: 700; }
+    .muted { color: var(--muted); }
+    .section-head { margin-bottom: 24px; }
+    .section-number { color: var(--amber); font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+    .pipeline { display: flex; align-items: stretch; gap: 8px; margin: 22px 0; overflow-x: auto; padding-bottom: 8px; }
+    .pipe-step { min-width: 135px; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); text-align: center; font-size: .87rem; }
+    .pipe-step b { display: block; color: var(--teal); }
+    .arrow { align-self: center; color: var(--amber); font-weight: 900; }
+    .tokens { display: flex; flex-wrap: wrap; gap: 7px; min-height: 48px; align-content: start; margin: 14px 0; }
+    .token { padding: 6px 9px; border: 1px solid color-mix(in srgb, var(--teal) 42%, var(--line)); border-radius: 8px; color: var(--teal); background: var(--teal-soft); font-family: "Cascadia Code", Consolas, monospace; font-size: .9rem; }
+    .segmented { color: var(--amber); border-color: color-mix(in srgb, var(--amber) 45%, var(--line)); background: var(--amber-soft); }
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .tabs button[aria-selected="true"] { color: #fff; border-color: var(--teal); background: #0d7469; }
+    table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    th, td { padding: 9px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { color: var(--muted); font-size: .76rem; letter-spacing: .05em; text-transform: uppercase; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+    .formula { margin: 18px 0; padding: 20px; overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--surface-2); text-align: center; font-family: Georgia, serif; font-size: 1.23rem; }
+    .fraction { display: inline-grid; grid-template-rows: auto auto; vertical-align: middle; text-align: center; line-height: 1.3; }
+    .fraction span:first-child { padding: 0 8px 3px; border-bottom: 1px solid currentColor; }
+    .fraction span:last-child { padding: 3px 8px 0; }
+    .lab { margin: 24px 0; overflow: hidden; border: 1px solid color-mix(in srgb, var(--teal) 38%, var(--line)); border-radius: 20px; background: var(--surface); box-shadow: var(--shadow); }
+    .lab-head { display: flex; justify-content: space-between; align-items: start; gap: 14px; padding: 20px 22px; background: var(--teal-soft); }
+    .lab-head h3 { margin: 0; }
+    .lab-body { padding: 22px; }
+    .lab-controls { display: flex; flex-wrap: wrap; gap: 9px; margin: 16px 0; }
+    .merge-log { display: flex; flex-wrap: wrap; gap: 7px; min-height: 34px; }
+    .merge-pill { padding: 5px 8px; border-radius: 999px; color: var(--amber); background: var(--amber-soft); font: 700 .78rem "Cascadia Code", Consolas, monospace; }
+    details { margin: 13px 0; border: 1px solid var(--line); border-radius: 13px; background: var(--surface); }
+    summary { padding: 14px 16px; cursor: pointer; font-weight: 800; }
+    details > div { padding: 0 17px 17px; }
+    .solution { border-color: color-mix(in srgb, var(--green) 45%, var(--line)); }
+    .solution summary { color: var(--green); }
+    .quick-check { margin-top: 26px; padding: 22px; border: 1px dashed var(--amber); border-radius: var(--radius); background: color-mix(in srgb, var(--amber-soft) 58%, var(--surface)); }
+    .quick-check h3 { margin-top: 0; }
+    .choices { display: grid; gap: 8px; margin: 12px 0; }
+    .choice { width: 100%; padding: 11px 13px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: var(--surface); text-align: left; }
+    .choice:hover { border-color: var(--teal); }
+    .choice.correct { border-color: var(--green); background: var(--green-soft); }
+    .choice.incorrect { border-color: var(--red); background: var(--red-soft); }
+    .feedback { min-height: 26px; margin-top: 8px; font-weight: 700; }
+    .recall { width: 100%; min-height: 95px; resize: vertical; padding: 12px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: var(--surface); }
+    .candidate { padding: 14px; border: 1px solid var(--line); border-radius: 12px; color: var(--ink); background: var(--surface); text-align: left; }
+    .candidate:hover, .candidate.active { border-color: var(--teal); background: var(--teal-soft); }
+    .source-line { margin-top: 12px; color: var(--muted); font-size: .78rem; }
+    .cheat { border: 2px solid var(--ink); background: var(--surface); }
+    .cheat h3 { color: var(--teal); }
+    .must { display: inline; padding: 0 .18em; color: var(--ink); background: linear-gradient(transparent 54%, color-mix(in srgb, var(--amber) 38%, transparent) 54%); font-weight: 800; }
+    .test-question { margin: 16px 0; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+    .test-question legend { padding: 0 7px; font-weight: 800; }
+    .test-question label { display: block; margin: 8px 0; }
+    .result { display: none; margin-top: 20px; padding: 22px; border-radius: 16px; background: var(--teal-soft); }
+    .result.show { display: block; }
+    .score { font-family: Georgia, serif; font-size: 2.5rem; font-weight: 800; }
+    .wrong-list { margin: 10px 0; }
+    .source-map li { margin: 7px 0; }
+    footer { padding: 32px; border-top: 1px solid var(--line); color: var(--muted); text-align: center; }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; padding: 24px 16px 70px; }
+      .sidebar { position: static; max-height: none; }
+      .toc { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .hero { padding: 28px 22px; }
+      .grid-3 { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 650px) {
+      .topbar { padding: 8px 12px; }
+      .brand { font-size: .83rem; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .toc { grid-template-columns: 1fr; }
+      .lab-head { display: block; }
+      .pipeline { align-items: center; flex-direction: column; }
+      .pipe-step { width: 100%; }
+      .arrow { transform: rotate(90deg); }
+    }
+    @media print {
+      .topbar, .sidebar, .lab-controls, #themeToggle, #copyResult { display: none !important; }
+      .layout { display: block; max-width: none; padding: 0; }
+      body { background: #fff; color: #111; }
+      section { break-inside: avoid; }
+      details > div { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">IITM LLM · W05</div>
+    <div class="progress-track" aria-label="Reading progress"><div class="progress-fill" id="progressFill"></div></div>
+    <span id="progressText" class="muted" aria-live="polite">0%</span>
+    <button class="icon-button" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="eyebrow">Interactive study module</div>
+      <h2>Week 5: Tokenizers</h2>
+      <nav class="toc" aria-label="Module navigation">
+        <a href="#orientation">Start here</a>
+        <a href="#vocabulary">1 · Vocabulary problem</a>
+        <a href="#granularity">2 · Tokenization levels</a>
+        <a href="#pipeline">3 · Processing pipeline</a>
+        <a href="#bpe">4 · BPE</a>
+        <a href="#wordpiece">5 · Word-Piece</a>
+        <a href="#sentencepiece">6 · Sentence-Piece</a>
+        <a href="#comparison">Compare & remember</a>
+        <a href="#cheatsheet">Cheat sheet</a>
+        <a href="#test">Final test</a>
+        <a href="#sources">Source map</a>
+      </nav>
+      <div class="sidebar-note">
+        <b>Recommended method</b><br>
+        Predict before revealing. Run each lab manually. Write one sentence in every “answer me” box. Take the test only after the cheat sheet.
+      </div>
+    </aside>
+
+    <main>
+      <section id="orientation" class="hero study-section">
+        <div class="eyebrow">Introduction to Large Language Models · Week 5</div>
+        <h1>Tokenizers: from text to a model’s vocabulary</h1>
+        <p class="lede">A deep, incremental walkthrough of the official lecture sequence: tokenization challenges, Byte Pair Encoding, Word-Piece, and Sentence-Piece with a unigram language model.</p>
+        <div class="badges">
+          <span class="badge source">Official slides first</span>
+          <span class="badge exam">Appears in 4/4 supplied PYQs</span>
+          <span class="badge">2 live algorithm labs</span>
+          <span class="badge">13-question final test</span>
+        </div>
+        <div class="callout">
+          <strong>The one question that organizes this week</strong>
+          How do we learn a moderate-sized vocabulary that handles unknown words efficiently and remains as language agnostic as possible?
+        </div>
+        <h3>Course boundary</h3>
+        <p>This module stays with the nomenclature and algorithms in the Week 5 slides: normalization, pre-tokenization, the course’s <code>&lt;/w&gt;</code> convention, ordered BPE merges, the Word-Piece score, Sentence-Piece’s unigram model, EM, Viterbi decoding, and the Morfessor extension. Library APIs and tokenizer families absent from the slides are deliberately excluded.</p>
+        <details>
+          <summary>Why is Word-Piece given extra practice weight?</summary>
+          <div>Tokenization occurs in every supplied LLM PYQ. December 2024 contains a three-part Word-Piece set; April 2025 contains five consecutive Word-Piece questions; December 2025 tests whether the data is sufficient to calculate a Word-Piece merge. BPE remains essential because GA 5 and the BPE implementation assignment examine its mechanics directly.</div>
+        </details>
+      </section>
+
+      <section id="vocabulary" class="study-section">
+        <div class="section-head">
+          <div class="section-number">Concept 1</div>
+          <h2>Why building a vocabulary is difficult</h2>
+          <p class="lede">Language modelling assigns probabilities to a sequence of tokens. Before the model can learn those probabilities, the text must be split consistently and every token must map to an ID.</p>
+        </div>
+        <div class="pipeline" aria-label="Tokenizer and language model pipeline">
+          <div class="pipe-step"><b>Raw text</b>How are you?</div><div class="arrow">→</div>
+          <div class="pipe-step"><b>Tokenizer</b>{How, are, you}</div><div class="arrow">→</div>
+          <div class="pipe-step"><b>Token IDs</b>{1, 2, 3}</div><div class="arrow">→</div>
+          <div class="pipe-step"><b>Embeddings</b>vectors</div><div class="arrow">→</div>
+          <div class="pipe-step"><b>Language model</b>predictions</div>
+        </div>
+        <p>The vocabulary <b>V</b> is the codebook that connects strings to IDs. Special tokens such as <code>&lt;go&gt;</code>, <code>&lt;stop&gt;</code>, <code>&lt;mask&gt;</code>, <code>&lt;sep&gt;</code>, and <code>&lt;cls&gt;</code> may be included according to the architecture and downstream task.</p>
+        <div class="grid-2">
+          <article class="card"><h3>Vocabulary size</h3><p>A larger vocabulary requires a larger embedding matrix and more computation for softmax probabilities. Reducing 250K word types to 50K controls that cost, but creates the next problem: OOV words.</p></article>
+          <article class="card"><h3>Out-of-vocabulary (OOV)</h3><p>A finite word vocabulary cannot contain every future name, number, technical term, or novel word. A useful tokenizer must still represent a word it never saw during vocabulary construction.</p></article>
+          <article class="card"><h3>Misspellings and web text</h3><p>Web-scraped corpora contain typos. Treating every misspelling as a separate word token wastes vocabulary entries and learns brittle representations.</p></article>
+          <article class="card"><h3>Open vocabulary</h3><p>Names, numbers and productive word formation—especially in agglutinative languages—make the possible word vocabulary effectively unbounded.</p></article>
+        </div>
+        <div class="callout warn">
+          <strong>Important trade-off</strong>
+          Larger vocabulary → fewer tokens per sentence, but a larger embedding/output space. Smaller vocabulary → more reusable units, but longer sequences. The slides’ “wishlist” is a moderate vocabulary, efficient unknown-word handling, and language agnosticism.
+        </div>
+        <details class="solution">
+          <summary>Actual GA 5 Q1 — Which vocabulary-building challenges apply?</summary>
+          <div><p><b>Answer: A, B, C and D.</b></p><p>All four lecture challenges apply: deciding vocabulary size, handling unknown tokens, handling misspellings, and handling names/numbers. “English only” removes the no-whitespace issue, not these vocabulary problems.</p></div>
+        </details>
+        <details class="solution">
+          <summary>Actual December 2024 PYQ — Put the pipeline in order</summary>
+          <div><p><b>Answer:</b> tokenizer converts text to IDs → model processes IDs and predicts → tokenizer converts predicted IDs back to text when needed.</p><p>The tokenizer appears on both sides of the model: encoding before the model and decoding after it.</p></div>
+        </details>
+        <div class="quick-check" data-answer="b">
+          <h3>Answer me: what creates the OOV problem?</h3>
+          <div class="choices">
+            <button class="choice" data-value="a">The vocabulary contains characters.</button>
+            <button class="choice" data-value="b">A finite word vocabulary meets a word that was not stored in it.</button>
+            <button class="choice" data-value="c">The model uses embeddings.</button>
+          </div>
+          <div class="feedback" aria-live="polite"></div>
+          <label for="recall1"><b>In your own words:</b> Why can’t we simply store every possible word?</label>
+          <textarea class="recall" id="recall1" data-save="recall1" placeholder="Write one or two sentences before continuing…"></textarea>
+        </div>
+        <div class="source-line">Official slides pp. 2–5; GA 5 Q1; December 2024 Q11.</div>
+      </section>
+
+      <section id="granularity" class="study-section">
+        <div class="section-head"><div class="section-number">Concept 2</div><h2>Word, character, or subword?</h2><p class="lede">The unit we choose controls vocabulary size, sequence length, and what happens to unseen words.</p></div>
+        <div class="grid-3">
+          <article class="card"><div class="eyebrow">Word level</div><h3>Whole words</h3><p><b>Strength:</b> short sequences and interpretable units.</p><p><b>Failure:</b> huge vocabulary; <code>enjoy</code> and <code>enjoyed</code> become unrelated entries; unseen words become OOV.</p></article>
+          <article class="card"><div class="eyebrow">Character level</div><h3>Individual characters</h3><p><b>Strength:</b> small stable vocabulary and no ordinary unknown-word problem.</p><p><b>Failure:</b> very long sequences. The model must reconstruct useful chunks from many positions.</p></article>
+          <article class="card"><div class="eyebrow">Subword level</div><h3>Learned reusable pieces</h3><p><b>Strength:</b> frequent words/chunks remain intact; rare words split into known pieces. This is the course’s preferred middle ground for LLMs.</p></article>
+        </div>
+        <div class="lab">
+          <div class="lab-head"><div><div class="eyebrow">Lecture example</div><h3>Change the tokenization level</h3></div><span class="badge">Interactive</span></div>
+          <div class="lab-body">
+            <p class="mono">Hmm.. I know, I don't know</p>
+            <div class="tabs" id="tokenTabs">
+              <button class="button" data-mode="word" aria-selected="true">Word level</button>
+              <button class="button" data-mode="character" aria-selected="false">Character level</button>
+              <button class="button" data-mode="subword" aria-selected="false">Subword level</button>
+            </div>
+            <div class="tokens" id="tokenOutput"></div>
+            <p id="tokenExplanation" class="muted"></p>
+          </div>
+        </div>
+        <p>For the subword example, the frequent pattern <code>n't</code> is reusable: the model can learn representations for <code>do</code> and <code>n't</code> rather than storing every contracted form as a separate word.</p>
+        <details class="solution">
+          <summary>Actual GA 5 Q2 — Correct character-tokenization statements</summary>
+          <div><p><b>Answer: B, C and D.</b></p><ul><li>Softmax is easier because the character vocabulary is small.</li><li>Adding new words normally does not expand the set of characters.</li><li>Words can be decomposed into known characters, avoiding the ordinary OOV-word issue.</li><li>Statement A is false: a character vocabulary is much smaller than the vocabulary of all distinct Harry Potter words.</li></ul></div>
+        </details>
+        <details class="solution">
+          <summary>Actual GA 5 Q3 — Where is whitespace-based BPE pre-tokenization not feasible?</summary>
+          <div><p><b>Answer: Japanese.</b></p><p>The Japanese example does not provide whitespace word delimiters. The slides later mention a language-specific word segmenter such as Juman++ or Mecab before BPE, while motivating a language-agnostic alternative.</p></div>
+        </details>
+        <div class="quick-check" data-answer="c">
+          <h3>Answer me: why are subwords the middle ground?</h3>
+          <div class="choices">
+            <button class="choice" data-value="a">They always produce one token per word.</button>
+            <button class="choice" data-value="b">They use a larger vocabulary than word tokenization.</button>
+            <button class="choice" data-value="c">They reuse learned pieces for rare words while preserving frequent chunks.</button>
+          </div>
+          <div class="feedback" aria-live="polite"></div>
+          <label for="recall2"><b>Teach it back:</b> Compare the sequence-length cost of word and character tokenization.</label>
+          <textarea class="recall" id="recall2" data-save="recall2" placeholder="Word level… Character level…"></textarea>
+        </div>
+        <div class="source-line">Official slides pp. 6–10; GA 5 Q2–Q3.</div>
+      </section>
+
+      <section id="pipeline" class="study-section">
+        <div class="section-head"><div class="section-number">Concept 3</div><h2>Normalization, pre-tokenization, and post-processing</h2><p class="lede">Subword tokenization is one stage in a wider text-processing pipeline.</p></div>
+        <div class="pipeline">
+          <div class="pipe-step"><b>Input</b>Hmm.., I know I Don't know</div><div class="arrow">→</div>
+          <div class="pipe-step"><b>Normalization</b>case, accents, spaces, HTML</div><div class="arrow">→</div>
+          <div class="pipe-step"><b>Pre-tokenization</b>whitespace word split</div><div class="arrow">→</div>
+          <div class="pipe-step"><b>Subword tokenization</b>learned pieces</div><div class="arrow">→</div>
+          <div class="pipe-step"><b>Post-process</b>special tokens</div><div class="arrow">→</div>
+          <div class="pipe-step"><b>Model</b>token IDs</div>
+        </div>
+        <p><b>Normalization</b> makes superficially different text more consistent—for example, case treatment, accent removal, repeated-whitespace cleanup, and HTML handling. <b>Pre-tokenization</b> is the preliminary split before the subword algorithm. The slides explicitly note that whitespace splitting was traditionally called tokenization, but becomes pre-tokenization when followed by a subword algorithm.</p>
+        <p><b>Post-processing</b> can add architecture-required symbols. This separates general vocabulary learning from the exact input format expected by the model.</p>
+        <div class="callout warn"><strong>Do not mix stages in an exam answer</strong>Adding <code>[CLS]</code>/<code>[SEP]</code> is special-token processing; splitting into subword units is tokenizer work; positional information belongs to the model input representation. The August 2025 PYQ deliberately places all three in a preprocessing-oriented question.</div>
+        <details class="solution">
+          <summary>Actual August 2025 PYQ Q5 — Transformer preparation steps</summary>
+          <div><p><b>Correct: A, B and D.</b></p><ul><li>Add special tokens such as <code>[CLS]</code> and <code>[SEP]</code>.</li><li>Split tokens into subword units using the model-specific tokenizer.</li><li>Add positional information to token embeddings.</li><li>“Remove all punctuation” is not a universal required step.</li></ul></div>
+        </details>
+        <div class="quick-check" data-answer="a">
+          <h3>Answer me: when does whitespace splitting become “pre-tokenization”?</h3>
+          <div class="choices">
+            <button class="choice" data-value="a">When it precedes a subword tokenization algorithm.</button>
+            <button class="choice" data-value="b">Only when the language is Japanese.</button>
+            <button class="choice" data-value="c">After token IDs have entered the model.</button>
+          </div>
+          <div class="feedback" aria-live="polite"></div>
+          <label for="recall3"><b>Apply:</b> Give one normalization operation and explain what inconsistency it removes.</label>
+          <textarea class="recall" id="recall3" data-save="recall3"></textarea>
+        </div>
+        <div class="source-line">Official slides pp. 12–13 and p. 31; August 2025 Q5.</div>
+      </section>
+
+      <section id="bpe" class="study-section">
+        <div class="section-head"><div class="section-number">Concept 4</div><h2>Byte Pair Encoding (BPE)</h2><p class="lede">BPE learns a vocabulary bottom-up: begin with characters, repeatedly merge the most frequent adjacent pair, and preserve the merge order for inference.</p></div>
+        <h3>4.1 Represent the training corpus</h3>
+        <p>Build a dictionary of distinct words and their corpus frequencies. Append <code>&lt;/w&gt;</code> to identify a word boundary, then separate every word into its current symbols.</p>
+        <div class="formula">pair_count(α, β) = Σ <span class="mono">word_frequency × occurrences_of_pair_in_word</span></div>
+        <p>If a word has frequency 5 and contains <code>(t, h)</code> twice, that word contributes <b>5 × 2 = 10</b>. This is an actual BPE implementation-assignment check and a frequent source of wrong manual tables.</p>
+        <h3>4.2 Learn ordered merge rules</h3>
+        <ol>
+          <li>Count all adjacent pairs in the current word representations.</li>
+          <li>Select the pair with maximum weighted frequency.</li>
+          <li>Replace that pair everywhere with the concatenated symbol.</li>
+          <li>Add the new symbol to the vocabulary and record its merge rank.</li>
+          <li>Recompute pairs and repeat until the merge or vocabulary limit.</li>
+        </ol>
+        <div class="callout"><strong>Why rank matters</strong>A later merge may require a token created earlier. At inference, use the learned ranks—not an unordered set of legal merges. In the bonus assignment’s <code>newer</code> example, <code>(e,w)</code> at rank 3 is applied before <code>(n,e)</code> at rank 5.</div>
+
+        <div class="lab" id="bpeLab">
+          <div class="lab-head"><div><div class="eyebrow">GA 5 official data</div><h3>Run BPE one merge at a time</h3></div><span class="badge exam" id="bpeIteration">Before merge 1</span></div>
+          <div class="lab-body">
+            <p>Dictionary: <code>low:4</code>, <code>older:5</code>, <code>finest:6</code>, <code>lowest:7</code>, <code>loneliest:8</code>. The implementation preserves first occurrence to break a frequency tie, matching the supplied solution.</p>
+            <div class="lab-controls">
+              <button class="button primary" id="bpeNext">Apply next maximum-frequency merge</button>
+              <button class="button" id="bpeReset">Reset</button>
+            </div>
+            <div class="callout" id="bpeStatus"><strong>Initial state</strong>Base vocabulary: 12 unique symbols, including <code>&lt;/w&gt;</code>.</div>
+            <h3>Current word representations</h3>
+            <div class="table-wrap"><table><thead><tr><th>Word</th><th>Frequency</th><th>Current symbols</th></tr></thead><tbody id="bpeWords"></tbody></table></div>
+            <h3>Highest current pair counts</h3>
+            <div class="table-wrap"><table><thead><tr><th>Rank now</th><th>Pair</th><th>Weighted count</th></tr></thead><tbody id="bpePairs"></tbody></table></div>
+            <h3>Learned merge order</h3><div class="merge-log" id="bpeLog"><span class="muted">No merges yet.</span></div>
+          </div>
+        </div>
+
+        <h3>4.3 Walk through the supplied GA result</h3>
+        <p>At the start, <code>(e,s)</code>, <code>(s,t)</code>, and <code>(t,&lt;/w&gt;)</code> each have count 21. The official table encounters <code>(e,s)</code> first, so that tie-breaking convention selects it.</p>
+        <div class="grid-2">
+          <div class="card"><div class="stat">12 → 13</div><p>Initial vocabulary size is 12. One merge adds the new token <code>es</code>, making 13 vocabulary entries.</p></div>
+          <div class="card"><div class="stat">21</div><p>The first winning pair’s frequency. The counts of the two component tokens <code>e</code> and <code>s</code> are revised.</p></div>
+        </div>
+        <p>The first seven official merges are:</p>
+        <div class="tokens">
+          <span class="token">e+s→es</span><span class="token">es+t→est</span><span class="token">est+&lt;/w&gt;→est&lt;/w&gt;</span><span class="token">l+o→lo</span><span class="token">lo+w→low</span><span class="token">lo+n→lon</span><span class="token">lon+e→lone</span>
+        </div>
+        <p>Apply them in rank order to <code>f i n e s t &lt;/w&gt;</code>. The first three combine the suffix, while the <code>lo…</code> rules do not occur. Final result:</p>
+        <div class="tokens"><span class="token">f</span><span class="token">i</span><span class="token">n</span><span class="token segmented">est&lt;/w&gt;</span></div>
+        <details class="solution">
+          <summary>Actual GA 5 Q4 — Consolidated answers and reasoning</summary>
+          <div><ol><li>Initial vocabulary: <b>12</b> unique symbols.</li><li>Least frequent listed pair: <b>(w, &lt;/w&gt;)</b>, count 4.</li><li>First merge: <b>es</b>, because the official tie rule selects its first occurrence.</li><li>Winning frequency: <b>21</b>.</li><li>Component tokens whose counts are revised: <b>2</b> (<code>e</code> and <code>s</code>).</li><li>Vocabulary after one merge: <b>13</b>.</li><li><code>finest&lt;/w&gt;</code> after seven rules: <b>(f, i, n, est&lt;/w&gt;)</b>.</li></ol></div>
+        </details>
+        <details class="solution">
+          <summary>Actual BPE assignment checks — Pair multiplicity and merge order</summary>
+          <div><p><b>Multiplicity:</b> frequency 5 × two occurrences of <code>(t,h)</code> = contribution 10.</p><p><b>Rank:</b> an ordered mapping is required because inference must apply the same learned priority. For <code>newer</code>, rank 3 <code>(e,w)</code> beats rank 5 <code>(n,e)</code>, even though both are present.</p></div>
+        </details>
+        <div class="quick-check" data-answer="c">
+          <h3>Answer me: after merging <code>(i,n)→in</code>, what must change?</h3>
+          <div class="choices">
+            <button class="choice" data-value="a">Only the printed vocabulary size.</button>
+            <button class="choice" data-value="b">Nothing until inference.</button>
+            <button class="choice" data-value="c">Affected word representations, token counts, and adjacent-pair counts.</button>
+          </div>
+          <div class="feedback" aria-live="polite"></div>
+          <label for="recall4"><b>Teach it back:</b> Why is BPE described as greedy and deterministic?</label>
+          <textarea class="recall" id="recall4" data-save="recall4"></textarea>
+        </div>
+        <div class="source-line">Official slides pp. 11–32; GA 5 Q4; BPE implementation assignment Q1–Q7.</div>
+      </section>
+
+      <section id="wordpiece" class="study-section">
+        <div class="section-head"><div class="section-number">Concept 5</div><h2>Word-Piece: frequency relative to its parts</h2><p class="lede">BPE asks which pair occurs most. Word-Piece also asks whether that pair is unusually strong compared with how often its two tokens occur individually.</p></div>
+        <div class="formula">
+          score(α, β) =
+          <span class="fraction"><span>count(α, β)</span><span>count(α) × count(β)</span></span>
+        </div>
+        <p>The denominator penalizes tokens that occur widely in other contexts. A moderately frequent pair made from rare components can outrank a high-count pair whose components appear everywhere.</p>
+        <div class="grid-2">
+          <div class="card"><h3>BPE objective</h3><p class="formula">arg max count(α,β)</p><p>“Which adjacent pair is most popular?”</p></div>
+          <div class="card"><h3>Word-Piece objective</h3><p class="formula">arg max score(α,β)</p><p>“Which pair is strong relative to its marginals?”</p></div>
+        </div>
+        <div class="callout warn"><strong>Course notation changes with context</strong>The lecture introduces continuation subwords using <code>##</code> (a single <code>#</code> is drawn for illustration). The supplied GA/PYQ calculations instead explicitly ask you to append <code>&lt;/w&gt;</code>. In an exam, follow the convention in the question.</div>
+
+        <div class="lab">
+          <div class="lab-head"><div><div class="eyebrow">GA 5 official data</div><h3>Compare Word-Piece scores</h3></div><span class="badge">Interactive</span></div>
+          <div class="lab-body">
+            <p>The same initial dictionary is used. Sort by Word-Piece score—not pair count.</p>
+            <button class="button primary" id="wpReveal">Calculate and reveal the winner</button>
+            <div id="wpResult" style="display:none">
+              <div class="callout"><strong>Winner: (f, i)</strong><span class="mono">6 / (6 × 14) = 0.07142</span>, hence <span class="mono">100 × s₁ = 7.14</span>.</div>
+              <div class="table-wrap"><table><thead><tr><th>Pair</th><th>Pair count</th><th>Left count</th><th>Right count</th><th>Score</th></tr></thead><tbody id="wpTable"></tbody></table></div>
+            </div>
+          </div>
+        </div>
+
+        <h3>5.1 Actual GA 5 Word-Piece problem</h3>
+        <p>The pair <code>(e,s)</code> wins BPE with count 21, but Word-Piece chooses <code>(f,i)</code>. Why?</p>
+        <div class="grid-2">
+          <div class="card"><h3><code>(e,s)</code></h3><p><span class="fraction"><span>21</span><span>34 × 21</span></span> ≈ 0.0294</p><p class="muted"><code>e</code> occurs very widely, so the denominator is large.</p></div>
+          <div class="card"><h3><code>(f,i)</code></h3><p><span class="fraction"><span>6</span><span>6 × 14</span></span> ≈ 0.07142</p><p class="muted"><code>f</code> always leads into <code>i</code> in this corpus.</p></div>
+        </div>
+        <details class="solution"><summary>Actual GA 5 Q5 — Answer</summary><div><p>First merge: <b>fi</b>. First score <code>s₁ = 6/(6×14)=0.07142</code>, so <b>100s₁ = 7.14</b>.</p></div></details>
+
+        <h3>5.2 December 2024 PYQ — Full walkthrough</h3>
+        <p>Dictionary: <code>{"is":3, "noblest":1, "we":1}</code>, with <code>&lt;/w&gt;</code> appended.</p>
+        <ol>
+          <li>Unique initial symbols are <code>i,s,n,o,b,l,e,t,w,&lt;/w&gt;</code> → <b>10 tokens</b>.</li>
+          <li>For <code>(e,&lt;/w&gt;)</code>: pair count 1, <code>count(e)=2</code>, <code>count(&lt;/w&gt;)=5</code>. Score = <b>0.1</b>, the least among the listed candidates.</li>
+          <li>Pairs <code>(n,o)</code>, <code>(o,b)</code>, and <code>(b,l)</code> each score 1. Under the question’s first-occurrence tie rule, <code>(n,o)</code> wins → first merge <b>no</b>.</li>
+        </ol>
+        <div class="callout"><strong>Answers:</strong> initial vocabulary = <b>10</b>; least-score pair = <b>(e, &lt;/w&gt;)</b>; first merge = <b>no</b>.</div>
+
+        <h3>5.3 April 2025 PYQ — Full walkthrough</h3>
+        <p>Dictionary: <code>{"taught":2, "laughter":1, "drought":4, "tough":5}</code>, with <code>&lt;/w&gt;</code> appended.</p>
+        <div class="table-wrap"><table><thead><tr><th>Requested result</th><th>Calculation</th><th>Answer</th></tr></thead><tbody>
+          <tr><td>Initial vocabulary</td><td><code>t,a,u,g,h,l,e,r,d,o,&lt;/w&gt;</code></td><td><b>11</b></td></tr>
+          <tr><td>Least score</td><td><code>count(r,&lt;/w&gt;)=1</code>; denominator <code>5×12</code></td><td><b>(r,&lt;/w&gt;) = 1/60</b></td></tr>
+          <tr><td>First merge</td><td><code>score(l,a)=1/(1×3)</code></td><td><b>la</b></td></tr>
+          <tr><td>First winning score</td><td><code>1/3</code></td><td><b>0.33</b></td></tr>
+          <tr><td>Second merge</td><td><code>(e,r)</code> scores <code>1/(1×5)=0.2</code></td><td><b>er</b></td></tr>
+          <tr><td>Tokenize <code>later&lt;/w&gt;</code></td><td>Apply learned <code>la</code> and <code>er</code></td><td><b>la, t, er, &lt;/w&gt;</b></td></tr>
+        </tbody></table></div>
+
+        <h3>5.4 December 2025 PYQ — Information sufficiency</h3>
+        <p>Knowing only some complete-token or pair frequencies does not necessarily give <code>count(α)</code> and <code>count(β)</code> across the corpus. Since both marginals appear in the denominator, the winning merge may be impossible to determine.</p>
+        <div class="callout warn"><strong>Actual answer: insufficient information.</strong> Never manufacture marginal counts. First write the formula; then inventory exactly which numerator and denominator values are supplied.</div>
+
+        <div class="quick-check" data-answer="b">
+          <h3>Answer me: a pair has the highest raw count. Must Word-Piece merge it?</h3>
+          <div class="choices">
+            <button class="choice" data-value="a">Yes; Word-Piece and BPE always agree.</button>
+            <button class="choice" data-value="b">No; frequent component tokens can reduce its normalized score.</button>
+            <button class="choice" data-value="c">Yes, unless it contains <code>&lt;/w&gt;</code>.</button>
+          </div>
+          <div class="feedback" aria-live="polite"></div>
+          <label for="recall5"><b>Calculation discipline:</b> Before choosing a Word-Piece merge, list the three quantities required for every candidate.</label>
+          <textarea class="recall" id="recall5" data-save="recall5"></textarea>
+        </div>
+        <div class="source-line">Official slides pp. 33–38; GA 5 Q5; December 2024 Q16–Q18; April 2025 Q18–Q22; December 2025 Q3.</div>
+      </section>
+
+      <section id="sentencepiece" class="study-section">
+        <div class="section-head"><div class="section-number">Concept 6</div><h2>Sentence-Piece and the unigram language model</h2><p class="lede">Instead of committing only to a greedy merge history, score possible complete segmentations and choose the most probable one.</p></div>
+        <h3>6.1 From one merge path to many candidate segmentations</h3>
+        <p>With a vocabulary containing pieces such as <code>h</code>, <code>e</code>, <code>l</code>, <code>o</code>, <code>he</code>, <code>el</code>, <code>ll</code>, <code>lo</code>, and <code>hell</code>, <code>hello</code> can be segmented in several ways:</p>
+        <div class="tokens"><span class="token">he | ll | o</span><span class="token">h | el | lo</span><span class="token">he | l | lo</span><span class="token">hell | o</span></div>
+        <p>BPE’s ordered merges make its output greedy and deterministic for a learned rule set. Sentence-Piece’s unigram formulation treats the subword sequence as hidden and chooses the candidate with maximum likelihood.</p>
+        <div class="formula">
+          P(x) = ∏<sub>i=1…n</sub> P(x<sub>i</sub>) &nbsp;&nbsp; and &nbsp;&nbsp; x* = arg max<sub>x∈S(X)</sub> P(x)
+        </div>
+        <p>Here, <code>S(X)</code> is the set of possible segmentations of input sequence <code>X</code>. Unlike whitespace-dependent BPE pre-tokenization, <code>X</code> may be a sequence of characters or words without spaces, so this formulation can be applied to languages without word delimiters.</p>
+
+        <div class="lab">
+          <div class="lab-head"><div><div class="eyebrow">Official “knowing” example</div><h3>Choose the maximum-likelihood segmentation</h3></div><span class="badge">Interactive</span></div>
+          <div class="lab-body">
+            <p>Select each candidate to inspect its product. Probabilities are those used in the lecture example.</p>
+            <div class="grid-3" id="spCandidates">
+              <button class="candidate" data-expression="P(k)P(now)P(ing) = (3/16)(3/16)(7/16)" data-value="63/4096 ≈ 0.0154">k | now | ing</button>
+              <button class="candidate" data-expression="P(know)P(ing) = (3/16)(7/16)" data-value="21/256 = 336/4096 ≈ 0.0820">know | ing</button>
+              <button class="candidate" data-expression="P(knowing) = 3/16" data-value="3/16 = 768/4096 = 0.1875">knowing</button>
+            </div>
+            <div class="callout" id="spResult"><strong>Make a prediction</strong>Which product is largest?</div>
+          </div>
+        </div>
+        <p>In this particular example, the one-piece segmentation <code>knowing</code> wins. The slide notes that the unigram model favors the candidate with the least pieces here. Do not turn that observation into a universal rule: the actual rule is always <b>maximum product / maximum log-likelihood</b>.</p>
+
+        <h3>6.2 How the vocabulary is learned</h3>
+        <ol>
+          <li>Set the desired vocabulary size.</li>
+          <li>Construct a reasonably large seed vocabulary using BPE or an Extended Suffix Array.</li>
+          <li><b>E-step:</b> estimate a probability for each token from frequency counts.</li>
+          <li><b>M-step:</b> use Viterbi to segment the corpus into optimal, maximum-log-likelihood segments.</li>
+          <li>Recompute likelihoods and remove a fraction of low-likelihood pieces.</li>
+          <li>Repeat estimation, segmentation, and shrinking until the target vocabulary size.</li>
+        </ol>
+        <div class="callout"><strong>Roles to remember</strong><b>EM</b> learns with hidden segmentations. <b>Viterbi</b> efficiently finds the best segmentation instead of enumerating every candidate.</div>
+
+        <h3>6.3 Viterbi and the official <code>whereby</code> example</h3>
+        <p>Viterbi works left to right. At every character position, it compares legal pieces ending there, retains the best accumulated log-probability, and records a backpointer. Log probabilities turn products into sums.</p>
+        <div class="table-wrap"><table><thead><tr><th>Prefix</th><th>Important candidates</th><th>Best retained idea</th></tr></thead><tbody>
+          <tr><td><code>w</code></td><td><code>w = −4.29</code></td><td><code>w</code></td></tr>
+          <tr><td><code>wh</code></td><td><code>w+h = −7.63</code>; <code>wh = −5.99</code></td><td><code>wh</code></td></tr>
+          <tr><td><code>whe</code></td><td><code>wh+e = −8.69</code>; <code>w+he = −10.31</code></td><td><code>wh | e</code></td></tr>
+          <tr><td><code>where</code></td><td>multi-piece paths versus <code>where = −8.21</code></td><td><code>where</code></td></tr>
+          <tr><td><code>whereby</code></td><td>best prefix + <code>by</code></td><td><b><code>where | by</code></b></td></tr>
+        </tbody></table></div>
+        <p>Backtracking from the last position recovers the chosen pieces: <code>where, by</code>. The same procedure does not require spaces in the input.</p>
+
+        <h3>6.4 Morfessor: the extension named in the lecture</h3>
+        <p>The unigram model uses maximum likelihood estimation (MLE). Morfessor uses a maximum a posteriori (MAP) objective, allowing linguistically motivated prior knowledge and a small amount of annotated data. The slide’s <code>sesquipedalophobia</code> example illustrates why a linguistically preferred segmentation may differ from the one selected by likelihood alone.</p>
+
+        <div class="quick-check" data-answer="c">
+          <h3>Answer me: what does Viterbi return here?</h3>
+          <div class="choices">
+            <button class="choice" data-value="a">The most frequent adjacent pair.</button>
+            <button class="choice" data-value="b">Every possible segmentation.</button>
+            <button class="choice" data-value="c">The maximum-likelihood segmentation under the current token probabilities.</button>
+          </div>
+          <div class="feedback" aria-live="polite"></div>
+          <label for="recall6"><b>Teach it back:</b> Distinguish the job of EM from the job of Viterbi in one sentence each.</label>
+          <textarea class="recall" id="recall6" data-save="recall6"></textarea>
+        </div>
+        <div class="source-line">Official slides pp. 38–52. No direct Sentence-Piece calculation was found in the four supplied PYQ sets, so the practice remains lecture-derived.</div>
+      </section>
+
+      <section id="comparison" class="study-section">
+        <div class="section-head"><div class="section-number">Synthesis</div><h2>See the algorithms as three different objectives</h2></div>
+        <div class="table-wrap"><table><thead><tr><th>Method</th><th>Starts from</th><th>Chooses</th><th>Learning direction</th><th>Memory hook</th></tr></thead><tbody>
+          <tr><td><b>BPE</b></td><td>Character vocabulary</td><td>Maximum weighted adjacent-pair count</td><td>Merge upward</td><td>Most popular pair</td></tr>
+          <tr><td><b>Word-Piece</b></td><td>Character vocabulary in the lecture construction</td><td>Maximum normalized pair score</td><td>Merge upward</td><td>Strong relative association</td></tr>
+          <tr><td><b>Sentence-Piece unigram</b></td><td>Large seed vocabulary</td><td>Maximum-probability complete segmentation</td><td>Estimate, segment, prune downward</td><td>Best whole path</td></tr>
+        </tbody></table></div>
+        <h3>High-value traps from the supplied assessments</h3>
+        <div class="grid-2">
+          <div class="card"><h3>Weight pair occurrences</h3><p>A pair appearing twice in a word of frequency 5 contributes 10.</p></div>
+          <div class="card"><h3>Keep <code>&lt;/w&gt;</code></h3><p>It is a real symbol in the course calculations and changes vocabulary, token, and pair counts.</p></div>
+          <div class="card"><h3>Respect tie and rank rules</h3><p>Training ties follow the stated/first-occurrence convention. Inference uses the order learned.</p></div>
+          <div class="card"><h3>Do not substitute objectives</h3><p>BPE count is not Word-Piece score. Sentence-Piece compares whole paths, not one adjacent pair.</p></div>
+          <div class="card"><h3>Check information sufficiency</h3><p>Word-Piece needs pair count and both marginal token counts.</p></div>
+          <div class="card"><h3>Follow the question’s notation</h3><p>The lecture shows continuation <code>##</code>; assessments may explicitly require <code>&lt;/w&gt;</code>.</p></div>
+        </div>
+      </section>
+
+      <section id="cheatsheet" class="study-section card cheat">
+        <div class="section-head"><div class="section-number">One-page revision</div><h2>Week 5 cheat sheet</h2></div>
+        <h3>The motivation</h3>
+        <p>Word tokens: short sequences but huge/OOV-prone vocabulary. Character tokens: small/open vocabulary but long sequences. <span class="must">Subwords preserve frequent chunks and decompose rare words.</span></p>
+        <h3>Processing order</h3>
+        <p><b>Raw text → normalization → pre-tokenization → subword tokenization → post-processing/special tokens → IDs → model.</b></p>
+        <h3>BPE</h3>
+        <p><span class="must">Append <code>&lt;/w&gt;</code> when instructed.</span> Count adjacent pairs with word-frequency and within-word multiplicity. Merge the maximum-count pair. Add one vocabulary token per merge. Recompute. Store ordered merge ranks and replay them at inference.</p>
+        <h3>Word-Piece</h3>
+        <p><span class="must">score(α,β) = count(α,β) / [count(α)count(β)].</span> Merge the maximum score—not necessarily the maximum count. If a marginal is unavailable, the answer may be “insufficient information.”</p>
+        <h3>Sentence-Piece unigram</h3>
+        <p><span class="must">P(x)=∏P(xᵢ); choose x* with maximum probability/log-likelihood.</span> Start with a large seed vocabulary, estimate probabilities with EM, find best segmentations with Viterbi, prune low-likelihood pieces, repeat. Backpointers recover the final segmentation.</p>
+        <h3>Numbers worth recognizing from official problems</h3>
+        <ul>
+          <li>GA 5 BPE data: initial vocabulary <b>12</b>; first merge <b>es</b>; frequency <b>21</b>; vocabulary after merge <b>13</b>.</li>
+          <li>GA 5 Word-Piece: first merge <b>fi</b>; <b>100s₁ = 7.14</b>.</li>
+          <li>December 2024: initial vocabulary <b>10</b>; first Word-Piece merge <b>no</b>.</li>
+          <li>April 2025: initial vocabulary <b>11</b>; first merge <b>la</b>; score ≈ <b>0.33</b>; then <b>er</b>.</li>
+          <li>Lecture Viterbi example: <code>whereby → where | by</code>.</li>
+        </ul>
+      </section>
+
+      <section id="test" class="study-section">
+        <div class="section-head"><div class="section-number">Closed-book checkpoint</div><h2>Final test</h2><p class="lede">These are actual supplied assessment items or close variants that preserve their tested operation. Do not reopen the solutions until you submit.</p></div>
+        <form id="finalTest">
+          <fieldset class="test-question" data-q="1" data-answer="d"><legend>1. Which set captures the GA 5 vocabulary challenges?</legend><label><input type="radio" name="q1" value="a"> Only vocabulary size</label><label><input type="radio" name="q1" value="b"> Only unknown words and misspellings</label><label><input type="radio" name="q1" value="c"> Only names and numbers</label><label><input type="radio" name="q1" value="d"> Vocabulary size, unknowns, misspellings, names and numbers</label></fieldset>
+          <fieldset class="test-question" data-q="2" data-answer="c"><legend>2. Why does character tokenization avoid the ordinary OOV-word issue?</legend><label><input type="radio" name="q2" value="a"> It stores every word.</label><label><input type="radio" name="q2" value="b"> It removes rare words.</label><label><input type="radio" name="q2" value="c"> New words can be decomposed into known characters.</label></fieldset>
+          <fieldset class="test-question" data-q="3" data-answer="a"><legend>3. In GA 5, whitespace pre-tokenization before BPE is not feasible as stated for which example?</legend><label><input type="radio" name="q3" value="a"> Japanese</label><label><input type="radio" name="q3" value="b"> Turkish</label><label><input type="radio" name="q3" value="c"> German</label></fieldset>
+          <fieldset class="test-question" data-q="4" data-answer="b"><legend>4. A word has frequency 5 and contains pair (t,h) twice. Its contribution is:</legend><label><input type="radio" name="q4" value="a"> 5</label><label><input type="radio" name="q4" value="b"> 10</label><label><input type="radio" name="q4" value="c"> 2</label></fieldset>
+          <fieldset class="test-question" data-q="5" data-answer="c"><legend>5. For the GA 5 dictionary, the BPE initial vocabulary size is:</legend><label><input type="radio" name="q5" value="a"> 10</label><label><input type="radio" name="q5" value="b"> 11</label><label><input type="radio" name="q5" value="c"> 12</label><label><input type="radio" name="q5" value="d"> 13</label></fieldset>
+          <fieldset class="test-question" data-q="6" data-answer="a"><legend>6. For that dictionary, the first BPE merge under the supplied tie convention is:</legend><label><input type="radio" name="q6" value="a"> es</label><label><input type="radio" name="q6" value="b"> st</label><label><input type="radio" name="q6" value="c"> fi</label></fieldset>
+          <fieldset class="test-question" data-q="7" data-answer="b"><legend>7. After the seven supplied BPE merges, finest&lt;/w&gt; becomes:</legend><label><input type="radio" name="q7" value="a"> fin | est&lt;/w&gt;</label><label><input type="radio" name="q7" value="b"> f | i | n | est&lt;/w&gt;</label><label><input type="radio" name="q7" value="c"> finest | &lt;/w&gt;</label></fieldset>
+          <fieldset class="test-question" data-q="8" data-answer="c"><legend>8. Which quantity does Word-Piece maximize?</legend><label><input type="radio" name="q8" value="a"> count(α) + count(β)</label><label><input type="radio" name="q8" value="b"> count(α,β)</label><label><input type="radio" name="q8" value="c"> count(α,β) / [count(α)count(β)]</label></fieldset>
+          <fieldset class="test-question" data-q="9" data-answer="a"><legend>9. GA 5 Word-Piece first merges:</legend><label><input type="radio" name="q9" value="a"> fi</label><label><input type="radio" name="q9" value="b"> es</label><label><input type="radio" name="q9" value="c"> lo</label></fieldset>
+          <fieldset class="test-question" data-q="10" data-answer="b"><legend>10. December 2024 Word-Piece first merge for {is:3, noblest:1, we:1}:</legend><label><input type="radio" name="q10" value="a"> is</label><label><input type="radio" name="q10" value="b"> no</label><label><input type="radio" name="q10" value="c"> we</label></fieldset>
+          <fieldset class="test-question" data-q="11" data-answer="c"><legend>11. April 2025 first Word-Piece merge and score are:</legend><label><input type="radio" name="q11" value="a"> er, 0.20</label><label><input type="radio" name="q11" value="b"> ug, 0.083</label><label><input type="radio" name="q11" value="c"> la, about 0.33</label></fieldset>
+          <fieldset class="test-question" data-q="12" data-answer="b"><legend>12. A Word-Piece question gives pair counts but omits required marginal counts. Best response:</legend><label><input type="radio" name="q12" value="a"> Choose the largest pair count.</label><label><input type="radio" name="q12" value="b"> Insufficient information.</label><label><input type="radio" name="q12" value="c"> Choose the rarest pair.</label></fieldset>
+          <fieldset class="test-question" data-q="13" data-answer="c"><legend>13. Under the lecture unigram probabilities, the best knowing segmentation is:</legend><label><input type="radio" name="q13" value="a"> k | now | ing</label><label><input type="radio" name="q13" value="b"> know | ing</label><label><input type="radio" name="q13" value="c"> knowing</label></fieldset>
+          <div class="lab-controls"><button type="submit" class="button primary">Submit test</button><button type="reset" class="button" id="resetTest">Reset answers</button></div>
+        </form>
+        <div class="result" id="testResult" aria-live="polite">
+          <div class="score" id="testScore"></div>
+          <div id="testMessage"></div>
+          <div class="wrong-list" id="wrongList"></div>
+          <button class="button" id="copyResult">Copy study report for Codex</button>
+          <span id="copyStatus" class="muted"></span>
+        </div>
+      </section>
+
+      <section id="sources" class="study-section">
+        <div class="section-head"><div class="section-number">Provenance</div><h2>Source map</h2></div>
+        <ul class="source-map">
+          <li><code>LLM/Course Slides/Week 5 LLM - Tokenizers.pdf</code>: primary authority, pp. 2–52.</li>
+          <li><code>LLM/GA/LLM_GA_5_Solution.pdf</code>: official conceptual, BPE, and Word-Piece worked problems.</li>
+          <li><code>LLM/GA/BA 9.txt</code>: BPE construction, weighted multiplicity, merge ranks, and implementation checks.</li>
+          <li><code>LLM/PYQ/2024 December.pdf</code>: pipeline and Word-Piece Q16–Q18.</li>
+          <li><code>LLM/PYQ/2025 April.pdf</code>: Word-Piece Q18–Q22.</li>
+          <li><code>LLM/PYQ/2025 August.pdf</code>: transformer preprocessing Q5.</li>
+          <li><code>LLM/PYQ/2025 dec.pdf</code>: Word-Piece information-sufficiency Q3.</li>
+        </ul>
+        <div class="callout"><strong>Source policy</strong>The official PDF controls terminology, notation, algorithm order, and examples. The Markdown extraction is a search aid only. Assessment wording is selectively reproduced or lightly normalized for readability; solutions remain grounded in the supplied keys.</div>
+      </section>
+    </main>
+  </div>
+
+  <footer>LLM Week 5 interactive preview · Local study artifact · No external course content loaded</footer>
+
+  <script>
+    const $ = (selector, root = document) => root.querySelector(selector);
+    const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+
+    // Theme and reading progress
+    const root = document.documentElement;
+    const savedTheme = localStorage.getItem('llm-w5-theme');
+    if (savedTheme) root.dataset.theme = savedTheme;
+    $('#themeToggle').addEventListener('click', () => {
+      root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('llm-w5-theme', root.dataset.theme);
+    });
+    function updateProgress() {
+      const max = document.documentElement.scrollHeight - innerHeight;
+      const value = max > 0 ? Math.round((scrollY / max) * 100) : 0;
+      $('#progressFill').style.width = value + '%';
+      $('#progressText').textContent = value + '%';
+    }
+    addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+
+    const navLinks = $$('.toc a');
+    const observer = new IntersectionObserver(entries => {
+      entries.filter(e => e.isIntersecting).forEach(entry => {
+        navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + entry.target.id));
+      });
+    }, { rootMargin: '-20% 0px -65% 0px' });
+    $$('.study-section').forEach(section => observer.observe(section));
+
+    // Lecture granularity demo
+    const tokenModes = {
+      word: {
+        tokens: ['Hmm..', 'I', 'know,', 'I', "don't", 'know'],
+        text: 'Compact sequence, but variants and unseen words require separate vocabulary entries.'
+      },
+      character: {
+        tokens: [..."Hmm.. I know, I don't know"].map(c => c === ' ' ? '␠' : c),
+        text: 'Stable character vocabulary, but many more positions must be processed.'
+      },
+      subword: {
+        tokens: ['Hmm..', 'I', 'know,', 'I', 'do', "n't", 'know'],
+        text: "The frequent chunk n't is reused; this is the course’s middle-ground example."
+      }
+    };
+    function renderTokens(mode) {
+      $('#tokenOutput').innerHTML = tokenModes[mode].tokens.map(t => `<span class="token">${t}</span>`).join('');
+      $('#tokenExplanation').textContent = `${tokenModes[mode].tokens.length} tokens. ${tokenModes[mode].text}`;
+      $$('#tokenTabs button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.mode === mode)));
+    }
+    $('#tokenTabs').addEventListener('click', e => { if (e.target.dataset.mode) renderTokens(e.target.dataset.mode); });
+    renderTokens('word');
+
+    // Quick concept checks
+    $$('.quick-check').forEach(check => {
+      check.addEventListener('click', e => {
+        const button = e.target.closest('.choice');
+        if (!button) return;
+        const correct = button.dataset.value === check.dataset.answer;
+        $$('.choice', check).forEach(b => b.classList.remove('correct', 'incorrect'));
+        button.classList.add(correct ? 'correct' : 'incorrect');
+        $('.feedback', check).textContent = correct ? 'Correct — continue.' : 'Not yet. Re-read the explanation immediately above and try again.';
+      });
+    });
+
+    // Save reflection answers locally
+    $$('[data-save]').forEach(area => {
+      area.value = localStorage.getItem(area.dataset.save) || '';
+      area.addEventListener('input', () => localStorage.setItem(area.dataset.save, area.value));
+    });
+
+    // BPE lab using insertion-order tie breaking
+    const bpeSource = [
+      { word: 'low', freq: 4 }, { word: 'older', freq: 5 }, { word: 'finest', freq: 6 },
+      { word: 'lowest', freq: 7 }, { word: 'loneliest', freq: 8 }
+    ];
+    let bpeState;
+    let bpeMerges;
+    function resetBpe() {
+      bpeState = bpeSource.map(x => ({ ...x, symbols: [...x.word, '</w>'] }));
+      bpeMerges = [];
+      renderBpe();
+    }
+    function getPairStats(state) {
+      const stats = new Map();
+      state.forEach(entry => {
+        for (let i = 0; i < entry.symbols.length - 1; i++) {
+          const pair = `${entry.symbols[i]}\u0001${entry.symbols[i + 1]}`;
+          stats.set(pair, (stats.get(pair) || 0) + entry.freq);
+        }
+      });
+      return stats;
+    }
+    function rankedPairs(state) {
+      return [...getPairStats(state).entries()].map(([key, count], index) => ({ parts: key.split('\u0001'), count, index }))
+        .sort((a, b) => b.count - a.count || a.index - b.index);
+    }
+    function applyBpeMerge() {
+      const winner = rankedPairs(bpeState)[0];
+      if (!winner) return;
+      const [left, right] = winner.parts;
+      bpeState.forEach(entry => {
+        const next = [];
+        for (let i = 0; i < entry.symbols.length; i++) {
+          if (entry.symbols[i] === left && entry.symbols[i + 1] === right) { next.push(left + right); i++; }
+          else next.push(entry.symbols[i]);
+        }
+        entry.symbols = next;
+      });
+      bpeMerges.push({ left, right, count: winner.count });
+      renderBpe(winner);
+    }
+    function renderBpe(last) {
+      $('#bpeWords').innerHTML = bpeState.map(x => `<tr><td><code>${x.word}</code></td><td>${x.freq}</td><td class="mono">${x.symbols.join(' · ')}</td></tr>`).join('');
+      const pairs = rankedPairs(bpeState).slice(0, 10);
+      $('#bpePairs').innerHTML = pairs.map((p, i) => `<tr><td>${i + 1}</td><td><code>(${p.parts[0]}, ${p.parts[1]})</code></td><td><b>${p.count}</b></td></tr>`).join('');
+      $('#bpeLog').innerHTML = bpeMerges.length ? bpeMerges.map((m, i) => `<span class="merge-pill">${i + 1}. ${m.left}+${m.right}→${m.left + m.right}</span>`).join('') : '<span class="muted">No merges yet.</span>';
+      $('#bpeIteration').textContent = `After ${bpeMerges.length} merge${bpeMerges.length === 1 ? '' : 's'}`;
+      if (last) $('#bpeStatus').innerHTML = `<strong>Merged (${last.parts[0]}, ${last.parts[1]}) at weighted count ${last.count}</strong>Vocabulary size is now ${12 + bpeMerges.length}. All affected representations and pair counts were recomputed.`;
+      else $('#bpeStatus').innerHTML = '<strong>Initial state</strong>Base vocabulary: 12 unique symbols, including <code>&lt;/w&gt;</code>.';
+    }
+    $('#bpeNext').addEventListener('click', applyBpeMerge);
+    $('#bpeReset').addEventListener('click', resetBpe);
+    resetBpe();
+
+    // Word-Piece score table on initial GA data
+    function wordPieceRows() {
+      const state = bpeSource.map(x => ({ ...x, symbols: [...x.word, '</w>'] }));
+      const tokenCounts = new Map();
+      state.forEach(entry => entry.symbols.forEach(s => tokenCounts.set(s, (tokenCounts.get(s) || 0) + entry.freq)));
+      return [...getPairStats(state).entries()].map(([key, pairCount], index) => {
+        const [left, right] = key.split('\u0001');
+        return { left, right, pairCount, lc: tokenCounts.get(left), rc: tokenCounts.get(right), score: pairCount / (tokenCounts.get(left) * tokenCounts.get(right)), index };
+      }).sort((a, b) => b.score - a.score || a.index - b.index);
+    }
+    $('#wpReveal').addEventListener('click', () => {
+      const rows = wordPieceRows();
+      $('#wpTable').innerHTML = rows.slice(0, 12).map(r => `<tr><td><code>(${r.left}, ${r.right})</code></td><td>${r.pairCount}</td><td>${r.lc}</td><td>${r.rc}</td><td><b>${r.score.toFixed(5)}</b></td></tr>`).join('');
+      $('#wpResult').style.display = 'block';
+      $('#wpReveal').textContent = 'Scores calculated';
+    });
+
+    // Sentence-Piece candidate explorer
+    $('#spCandidates').addEventListener('click', e => {
+      const candidate = e.target.closest('.candidate');
+      if (!candidate) return;
+      $$('.candidate', $('#spCandidates')).forEach(c => c.classList.toggle('active', c === candidate));
+      const winner = candidate.textContent.trim() === 'knowing';
+      $('#spResult').innerHTML = `<strong>${candidate.textContent.trim()}</strong><span class="mono">${candidate.dataset.expression}</span><br>${candidate.dataset.value}${winner ? ' — largest, so this is x*.' : ''}`;
+    });
+
+    // Final assessment
+    let lastWrong = [];
+    $('#finalTest').addEventListener('submit', e => {
+      e.preventDefault();
+      const questions = $$('.test-question', e.currentTarget);
+      let score = 0;
+      lastWrong = [];
+      questions.forEach(q => {
+        const selected = $(`input[name="q${q.dataset.q}"]:checked`, q);
+        const correct = selected && selected.value === q.dataset.answer;
+        q.style.borderColor = correct ? 'var(--green)' : 'var(--red)';
+        if (correct) score++; else lastWrong.push(q.dataset.q);
+      });
+      const pct = Math.round(score / questions.length * 100);
+      $('#testScore').textContent = `${score}/${questions.length} · ${pct}%`;
+      $('#testMessage').textContent = pct >= 85 ? 'Strong retrieval. Rework only the missed concepts.' : pct >= 65 ? 'Developing well. Re-run the relevant lab before retesting.' : 'Return to the BPE and Word-Piece walkthroughs, then test again.';
+      $('#wrongList').innerHTML = lastWrong.length ? `<b>Review questions:</b> ${lastWrong.join(', ')}` : '<b>All correct.</b> Now explain the three objectives aloud without the cheat sheet.';
+      $('#testResult').classList.add('show');
+      $('#testResult').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+    $('#resetTest').addEventListener('click', () => {
+      $$('.test-question').forEach(q => q.style.borderColor = 'var(--line)');
+      $('#testResult').classList.remove('show');
+    });
+    $('#copyResult').addEventListener('click', async () => {
+      const reflections = $$('[data-save]').map((a, i) => `Concept ${i + 1}: ${a.value.trim() || '[not answered]'}`).join('\n');
+      const report = `LLM Week 5 interactive test\nScore: ${$('#testScore').textContent}\nQuestions to review: ${lastWrong.length ? lastWrong.join(', ') : 'none'}\n\nMy concept answers:\n${reflections}`;
+      try { await navigator.clipboard.writeText(report); $('#copyStatus').textContent = ' Copied — paste it into our chat.'; }
+      catch { $('#copyStatus').textContent = ' Copy unavailable; select the score and review list manually.'; }
+    });
+  </script>
+</body>
+</html>

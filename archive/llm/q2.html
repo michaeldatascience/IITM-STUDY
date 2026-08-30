@@ -1,0 +1,1673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LLM Quiz 2 — Complete PYQ Guide</title>
+<style>
+:root{
+  --bg:#0F1218; --panel:#171C26; --panel2:#1E2431; --line:#2A3242;
+  --ink:#E6EAF2; --muted:#96A1B8;
+  --amber:#F0B429; --mint:#5FD3A0; --coral:#FF7B72; --blue:#8AB4F8; --violet:#C29BFF;
+  --mono: ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:920px;margin:0 auto;padding:0 20px 100px}
+header{padding:44px 0 22px;border-bottom:1px solid var(--line);margin-bottom:26px}
+.eyebrow{font:600 11px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--amber)}
+h1{font:700 33px/1.15 Georgia,serif;margin:12px 0 8px}
+.sub{color:var(--muted);font-size:15px;max-width:62ch}
+.how{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--violet);
+  border-radius:10px;padding:15px 19px;margin:22px 0 30px}
+.how b{color:var(--violet)} .how ol{margin:8px 0 0;padding-left:20px;font-size:14.5px}
+h2{font:700 22px/1.25 Georgia,serif;margin:44px 0 6px;padding-bottom:9px;border-bottom:2px solid var(--amber)}
+h2 .cnt{font:600 11px var(--mono);color:var(--muted);letter-spacing:.08em;float:right;padding-top:9px}
+h3{font:600 16px Georgia,serif;color:var(--amber);margin:26px 0 8px}
+p{margin:0 0 12px} ul,ol{margin:0 0 12px;padding-left:21px} li{margin:0 0 5px}
+code{font:13.5px var(--mono);background:var(--panel2);padding:2px 6px;border-radius:4px;color:var(--blue)}
+pre{background:#0B0E13;border:1px solid var(--line);border-radius:8px;padding:12px 15px;
+  overflow-x:auto;font:13px/1.6 var(--mono);color:#CBD5E5;margin:11px 0}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+th{background:var(--panel2);text-align:left;padding:8px 10px;border:1px solid var(--line);
+  font:600 10.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+td{padding:7px 10px;border:1px solid var(--line);vertical-align:top}
+td.n{font-family:var(--mono);white-space:nowrap}
+.ans{color:var(--mint);font-weight:700} .bad{color:var(--coral);font-weight:700}
+.eq{font:14.5px/1.85 var(--mono);color:var(--blue);text-align:center;padding:10px 0;overflow-x:auto}
+.card{border:1px solid var(--line);border-radius:11px;margin:20px 0;background:var(--panel);overflow:hidden}
+.chead{display:flex;align-items:center;gap:11px;padding:12px 18px;background:var(--panel2);
+  border-bottom:1px solid var(--line);flex-wrap:wrap}
+.id{font:700 12px var(--mono);color:var(--amber)}
+.title{font-weight:600;flex:1;font-size:15px}
+.tag{font:600 9.5px var(--mono);letter-spacing:.07em;text-transform:uppercase;
+  padding:4px 8px;border-radius:12px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.hot{color:var(--coral);border-color:var(--coral)}
+.cbody{padding:16px 20px}
+.qtext{background:#0B0E13;border-left:3px solid var(--muted);border-radius:0 6px 6px 0;
+  padding:12px 15px;margin:0 0 14px;font-size:14.5px;color:#D6DDEA}
+.qtext p:last-child{margin-bottom:0}
+.dir{border-left:3px solid var(--violet);padding-left:14px;margin:14px 0 0;font-size:14.5px}
+.dir .lbl{font:700 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--violet);display:block;margin-bottom:6px}
+.dir ol{padding-left:19px;margin-bottom:0}
+details.sol{margin:16px 0 0;border-top:1px dashed var(--mint);padding-top:12px}
+details.sol>summary{cursor:pointer;list-style:none;font:600 12px var(--mono);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--mint);display:flex;align-items:center;gap:8px}
+details.sol>summary::-webkit-details-marker{display:none}
+details.sol>summary::before{content:"▸";transition:transform .15s}
+details.sol[open]>summary::before{transform:rotate(90deg)}
+.sol .inner{padding-top:14px;font-size:14.5px}
+.sol h4{font:600 11px var(--mono);letter-spacing:.11em;text-transform:uppercase;color:var(--amber);margin:18px 0 7px}
+.sol .inner>:first-child{margin-top:0}
+.warn{border-left:3px solid var(--coral);background:rgba(255,123,114,.06);padding:11px 15px;
+  border-radius:0 6px 6px 0;margin:13px 0;font-size:14px}
+.warn b{color:var(--coral)}
+/* FAQ */
+.faq{border:1px solid var(--line);border-radius:9px;margin:9px 0;background:var(--panel)}
+.faq>summary{cursor:pointer;list-style:none;padding:12px 16px;font-size:14.5px;display:flex;gap:11px;align-items:flex-start}
+.faq>summary::-webkit-details-marker{display:none}
+.faq>summary::before{content:"Q";font:700 10px var(--mono);color:var(--amber);
+  border:1px solid var(--amber);border-radius:4px;padding:2px 5px;flex-shrink:0;margin-top:2px}
+.faq[open]>summary{border-bottom:1px solid var(--line);background:var(--panel2)}
+.faq .fa{padding:13px 16px 14px 43px;font-size:14px}
+.faq .fa>:first-child{margin-top:0} .faq .fa>:last-child{margin-bottom:0}
+.faq .src{font:600 9.5px var(--mono);color:var(--muted);letter-spacing:.06em;margin-left:auto;flex-shrink:0;padding-top:3px}
+.faqgrp{font:600 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--violet);
+  margin:30px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+/* cheat */
+.cheat{background:#fff;color:#111;border-radius:12px;padding:32px 36px;margin-top:18px}
+.cheat h2{color:#111;border-color:#111;font-size:20px;margin:0 0 14px}
+.cheat h3{font:700 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;
+  color:#fff;background:#111;padding:4px 9px;border-radius:4px;display:inline-block;margin:18px 0 8px}
+.cheat table{font-size:12px} .cheat th{background:#EEF0F4;color:#333;border:1px solid #BBB;padding:4px 7px;font-size:9.5px}
+.cheat td{border:1px solid #CCC;padding:4px 7px}
+.cheat code{background:#EEF0F4;color:#000;font-size:11.5px}
+.cheat .eq{color:#000;font-size:13px;padding:5px 0}
+.cheat ul{font-size:12.5px;padding-left:18px} .cheat li{margin-bottom:3px}
+.cheat .k{color:#B00;font-weight:700}
+.cheat .cols{display:grid;grid-template-columns:1fr 1fr;gap:0 28px}
+.pbreak{border-top:2px dashed #999;margin:26px 0 18px;padding-top:18px;
+  font:600 10px var(--mono);letter-spacing:.13em;text-transform:uppercase;color:#888}
+@media print{ body{background:#fff} .wrap>*:not(.cheatwrap){display:none} .cheat{padding:0} .pbreak{page-break-before:always;border:0}}
+@media(max-width:640px){.cheat .cols{grid-template-columns:1fr} h1{font-size:26px} .cheat{padding:20px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Weeks 5 · 7 · 8 — 5 papers + GA5, GA7, GA8 · fully deduplicated</div>
+  <h1>Complete PYQ Guide</h1>
+  <p class="sub">24 drill cards covering every distinct question pattern, an exhaustive FAQ of every
+  conceptual question ever asked, and a two-page cheat sheet. All numbers verified by execution.</p>
+</header>
+
+<div class="how">
+  <b>How to use this</b>
+  <ol>
+    <li><b>Drill cards</b> — read the question and only the <b>Direction</b>. Solve on paper. Then unfold.</li>
+    <li><b>FAQ</b> — every theory MCQ/MSQ from all papers, with the reasoning. Read straight through;
+    each is ten seconds.</li>
+    <li><b>Cheat sheet</b> — <code>Ctrl+P</code> prints only those two pages.</li>
+    <li>Note the IDs you had to unfold and send them to me for fresh equivalents.</li>
+  </ol>
+</div>
+
+<h3>What repeats — mark distribution across 5 papers</h3>
+<table>
+  <tr><th>Cluster</th><th>Appears in</th><th>≈ marks</th><th>Cards</th></tr>
+  <tr><td><b>BPE comprehension block</b></td><td>All 5 + GA5</td><td class="n">14–17</td><td class="n">B1–B9</td></tr>
+  <tr><td>WordPiece score</td><td>3 papers + GA5</td><td class="n">2–7</td><td class="n">W1</td></tr>
+  <tr><td>Unigram / Viterbi</td><td>1 paper</td><td class="n">3</td><td class="n">U1</td></tr>
+  <tr><td>Sentinel tokens</td><td>4 papers + GA7</td><td class="n">3–4</td><td class="n">S1–S2</td></tr>
+  <tr><td>BART greedy loss</td><td>1 paper + GA7</td><td class="n">4</td><td class="n">D1</td></tr>
+  <tr><td>Decoding (top-k, determinism)</td><td>2 papers</td><td class="n">2–3</td><td class="n">D2</td></tr>
+  <tr><td>Prefix-LM mask count</td><td>2 papers</td><td class="n">3</td><td class="n">M1</td></tr>
+  <tr><td>Scaling laws</td><td>All 5 + GA8</td><td class="n">5–8</td><td class="n">L1–L3</td></tr>
+  <tr><td>Data pipeline / datasets</td><td>All 5 + GA8</td><td class="n">6–9</td><td class="n">P1–P2</td></tr>
+  <tr><td>Fine-tuning / transfer</td><td>4 papers + GA7</td><td class="n">6</td><td class="n">F1–F3</td></tr>
+  <tr><td>Parameter counts, LayerNorm, attention matrices</td><td>2 papers</td><td class="n">6–9</td><td class="n">N1–N3</td></tr>
+</table>
+
+
+<!-- ══════════ BPE ══════════ -->
+<h2>Byte Pair Encoding <span class="cnt">9 cards · highest yield</span></h2>
+<p style="color:var(--muted);font-size:14.5px">B1–B8 run on the <b>same corpus</b>, exactly as the exam
+does. Set it up once, answer everything.</p>
+<pre>wo = { "taught": 2,  "laughter": 1,  "drought": 4,  "tough": 5 }   Append &lt;/w&gt;   [Mar 2025 Q14–Q20]</pre>
+
+<div class="card">
+  <div class="chead"><span class="id">B1</span><span class="title">Initial vocabulary size</span>
+  <span class="tag">all 5 papers + GA5</span></div>
+  <div class="cbody">
+    <div class="qtext">How many tokens are there in the initial vocabulary?</div>
+    <div class="dir"><span class="lbl">Direction</span>
+    Collect every <b>distinct character</b> across all words — a repeated word contributes nothing extra.
+    Add one for <code>&lt;/w&gt;</code>. Word frequencies are irrelevant here.</div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <p><b>V₀ = the starting vocabulary, before any merge</b> — single characters plus the end-of-word
+      symbol. At this point every word is spelled out letter by letter.</p>
+      <div class="eq">|V<sub>k</sub>| = |V<sub>0</sub>| + k &nbsp;&nbsp;(one new token per merge, nothing ever deleted)</div>
+<pre>taught → t a u g h · laughter → +l e r · drought → +d o · tough → nothing new
+distinct chars = 10  +  &lt;/w&gt;  =  <span class="ans">11</span></pre>
+      <p><b>All corpora:</b> deeper/keener/sweeter → <b>10</b> · gentler/brighter/crisper → <b>13</b> ·
+      low/older/finest/lowest/loneliest → <b>12</b> · "the key to artificial…" sentence → <b>19</b>.</p>
+    </div></details>
+  </div>
+</div>
+
+<div class="card">
+  <div class="chead"><span class="id">B2</span><span class="title">Highest / lowest frequency pair</span>
+  <span class="tag hot">the only card needing a full tally</span></div>
+  <div class="cbody">
+    <div class="qtext">Which of the following pairs has the highest frequency before any merge?<br>
+    <code>('u','g') · ('a','u') · ('g','h') · ('h','t') · ('w','e') · None</code></div>
+    <div class="dir"><span class="lbl">Direction</span>
+    <ol>
+      <li>A word of <i>n</i> symbols gives <i>n−1</i> pairs — <b>including the one ending in <code>&lt;/w&gt;</code></b>.</li>
+      <li>Every pair contributes <b>the word's frequency</b>, not 1. Add the same pair across words.</li>
+      <li>It's an MCQ — <b>score only the options</b>, not all 25 pairs. That's the time-saver.</li>
+      <li>Check whether the max is tied before answering.</li>
+    </ol></div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <div class="eq">freq(a,b) = Σ<sub>words</sub> (count of word) × (times (a,b) is adjacent in it)</div>
+      <p><b>Word frequency is never compared to anything</b> — it only gets multiplied in when tallying a
+      pair. Words don't compete; pairs do.</p>
+<pre>('u','g'): 2 + 1 + 4 + 5 = <span class="ans">12</span>
+('g','h'): 2 + 1 + 4 + 5 = 12   ← tie
+('a','u'): 2 + 1         = 3
+('h','t'): 2 + 1 + 4     = 7
+('w','e'): no 'w' at all = 0</pre>
+      <p><b>Tie-break:</b> scan words in the order given, left to right. In
+      <code>t-a-u-g-h-t-&lt;/w&gt;</code> the pairs come as (t,a), (a,u), <b>(u,g)</b>, (g,h)… →
+      <b class="ans">('u','g')</b>.</p>
+      <div class="warn"><b>Ties are the norm.</b> Dec24: three pairs at 18. Aug25: two at 12. GA5: three
+      at 21. Never grab the first max you spot.</div>
+      <h4>Checksum to catch a dropped pair</h4>
+      <p>Total pair slots = Σ (word count × word length). For this corpus 2·6 + 1·8 + 4·7 + 5·5 = <b>73</b>.
+      If your tally doesn't sum to that, you missed one — usually the <code>&lt;/w&gt;</code> pair.</p>
+      <h4>Lowest-frequency variants</h4>
+      <p>deeper/keener/sweeter → <b>('p','e') = 5</b> · gentler/brighter/crisper → <b>('p','e') = 3</b> ·
+      low/older/finest/… → <b>('w','&lt;/w&gt;') = 4</b>.</p>
+    </div></details>
+  </div>
+</div>
+
+<div class="card">
+  <div class="chead"><span class="id">B3</span><span class="title">Frequency of the first merged pair</span>
+  <span class="tag">all papers</span></div>
+  <div class="cbody">
+    <div class="qtext">What is the frequency of the pair merged in the very first merge?</div>
+    <div class="dir"><span class="lbl">Direction</span>
+    Same tally as B2, but read the phrasing — it wants the <b>number</b>, not the identity. With a tie you
+    don't even need the tie-break, since tied pairs share the value.</div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <p><b class="ans">12</b> — both <code>('u','g')</code> and <code>('g','h')</code> hit 12.</p>
+      <table>
+        <tr><th>Corpus</th><th>Most frequent pair</th><th>Frequency</th></tr>
+        <tr><td>deeper5 keener6 sweeter7</td><td class="n ans">ee</td><td class="n ans">18</td></tr>
+        <tr><td>low4 older5 finest6 lowest7 loneliest8</td><td class="n ans">es</td><td class="n ans">21</td></tr>
+        <tr><td>gentler4 brighter5 crisper3</td><td class="n">er</td><td class="n ans">12</td></tr>
+        <tr><td>taught2 laughter1 drought4 tough5</td><td class="n ans">ug</td><td class="n ans">12</td></tr>
+      </table>
+      <p><b>deeper detail:</b> (e,e), (e,r), (r,<code>&lt;/w&gt;</code>) all hit 18; scanning
+      <code>d-e-e-p-e-r-&lt;/w&gt;</code>, (e,e) comes first → <b>ee</b>.</p>
+    </div></details>
+  </div>
+</div>
+
+<div class="card">
+  <div class="chead"><span class="id">B4</span><span class="title">Which pair is merged at merge k</span>
+  <span class="tag">Mar25 Q18</span></div>
+  <div class="cbody">
+    <div class="qtext">Which pair will be merged in the third merge? Enter as e.g. "abc".</div>
+    <div class="dir"><span class="lbl">Direction</span>
+    Run the loop three times. After each merge, <b>rebuild the pair table from the updated corpus</b> —
+    the merged symbol is now a single atom and can itself be half of the next pair. That is the whole
+    difficulty here.</div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <p>After merging <code>u</code>+<code>g</code> into <code>ug</code>, <code>ug</code> is a legal left
+      half of a new pair. Only-pair-characters thinking gets merge 2 wrong and everything after collapses.</p>
+<pre>merge 1: ('u','g') freq 12   [tie with ('g','h'); ug first]
+   t a ug h t &lt;/w&gt;  ·  l a ug h t e r &lt;/w&gt;  ·  d r o ug h t &lt;/w&gt;  ·  t o ug h &lt;/w&gt;
+
+merge 2: ('ug','h') freq 12   ← ug is now one symbol
+   t a ugh t &lt;/w&gt;   ·  l a ugh t e r &lt;/w&gt;   ·  d r o ugh t &lt;/w&gt;   ·  t o ugh &lt;/w&gt;
+
+merge 3: ('o','ugh') freq 9   [drought 4 + tough 5]   → <span class="ans">ough</span>
+merge 4: ('t','&lt;/w&gt;') freq 6                          → t&lt;/w&gt;</pre>
+    </div></details>
+  </div>
+</div>
+
+<div class="card">
+  <div class="chead"><span class="id">B5</span><span class="title">Minimum merges until a 3-letter token</span>
+  <span class="tag">Mar25 Q17</span></div>
+  <div class="cbody">
+    <div class="qtext">What is the minimum number of merges after which there is a token with exactly
+    3 English letters?</div>
+    <div class="dir"><span class="lbl">Direction</span>
+    Run merges and watch the <b>letter count</b> of each new token. <code>&lt;/w&gt;</code> is not an
+    English letter — <code>t&lt;/w&gt;</code> has one letter, not two.</div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+<pre>merge 1 → "ug"   2 letters
+merge 2 → "ugh"  <span class="ans">3 letters ✓</span>       Answer: <span class="ans">2</span></pre>
+      <p>Starting from 1-letter tokens, 3 letters needs at least 2 merges, and here the minimum is achieved.
+      If the merges had been disjoint (say <code>ab</code> then <code>cd</code>) you'd need a third to
+      combine them.</p>
+    </div></details>
+  </div>
+</div>
+
+<div class="card">
+  <div class="chead"><span class="id">B6</span><span class="title">Tokens with frequency revised — two variants</span>
+  <span class="tag hot">Mar25 Q19 · Dec24 Q7 · GA5 Q8</span></div>
+  <div class="cbody">
+    <div class="qtext"><b>(a)</b> How many tokens in the vocabulary will have their frequency
+    revised/reduced after the <b>first</b> merge?<br><br>
+    <b>(b)</b> Assume the process is stopped after <b>4 merges</b>. How many tokens from the initial
+    vocabulary will have their frequency revised/reduced <b>to 0</b>?</div>
+    <div class="dir"><span class="lbl">Direction</span>
+    Identical wording, different counting. For (a) think how many tokens make up <i>one</i> pair. For (b),
+    list your four merges and collect the <b>distinct symbols named in them that were in V₀</b> — merged
+    tokens like <code>ug</code> don't count, they were never in V₀.</div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <h4>(a) Always 2</h4>
+      <p>A merge consumes exactly one pair = two tokens. The answer is <b class="ans">2</b> every time,
+      on every corpus. (Dec 2024 asks it after merging <code>ee</code>, where literally only <code>e</code>
+      changes — the key is still 2.)</p>
+      <h4>(b) Count distinct V₀ symbols appearing in the merge list</h4>
+<pre>merges:  (u,g)  (ug,h)  (o,ugh)  (t,&lt;/w&gt;)
+symbols named:      u, g, ug, h, o, ugh, t, &lt;/w&gt;
+of these, in V₀:    u, g, h, o, t, &lt;/w&gt;        → <span class="ans">6</span></pre>
+      <div class="warn"><b>Don't verify this by counting characters that truly vanish.</b> Inspecting the
+      merged corpus, only <code>u, g, h, o</code> reach a genuine count of zero — <code>t</code> and
+      <code>&lt;/w&gt;</code> survive in <code>laughter</code> and <code>tough</code>. The official key is
+      <b>6</b>, so the exam applies the simple "symbols named in the merge list" rule. Use the exam's rule.</div>
+    </div></details>
+  </div>
+</div>
+
+<div class="card">
+  <div class="chead"><span class="id">B7</span><span class="title">Vocabulary size &amp; corpus token count</span>
+  <span class="tag">Dec24 Q8 · 2025T3 Q111–112 · GA5 Q9</span></div>
+  <div class="cbody">
+    <div class="qtext"><b>(a)</b> After the first merge, how many tokens in the updated vocabulary?<br>
+    <b>(b)</b> BPE starts with 100 unique characters and performs 10,000 merges — final vocabulary size?<br>
+    <b>(c)</b> Initial vocabulary 26, corpus has 1000 tokens. Merges fire 24, 18, 10, 8 times. How many
+    tokens in the corpus after all 4 merges?</div>
+    <div class="dir"><span class="lbl">Direction</span>
+    <b>No pair table needed for any of these.</b> Two counters move in opposite directions — one goes up
+    per <i>merge</i>, one goes down per <i>merge occurrence</i>. Decide which the question wants.</div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <div class="eq">|V<sub>k</sub>| = |V<sub>0</sub>| + k &nbsp;&nbsp;·&nbsp;&nbsp;
+      corpus tokens = initial − Σ (merge occurrences)</div>
+      <p>Each merge occurrence turns 2 tokens into 1, so corpus length drops by exactly the occurrence count.
+      Meanwhile the vocabulary gains one token per merge and <b>never</b> loses one — after <code>low</code>
+      fully merges into <code>low&lt;/w&gt;</code>, the characters <code>l</code>, <code>o</code>,
+      <code>w</code> are still members.</p>
+<pre>(a) 11 + 1 = <span class="ans">11</span> for deeper corpus (|V₀|=10) · <span class="ans">13</span> for low/older corpus (|V₀|=12)
+(b) 100 + 10000 = <span class="ans">10100</span>
+(c) 1000 − (24+18+10+8) = 1000 − 60 = <span class="ans">940</span></pre>
+      <div class="warn"><b>Recognise the bucket before writing anything.</b> Only "which pair is most/least
+      frequent" forces a full tally. Everything else here is arithmetic.</div>
+    </div></details>
+  </div>
+</div>
+
+<div class="card">
+  <div class="chead"><span class="id">B8</span><span class="title">Tokenize a new word from a merge list</span>
+  <span class="tag hot">4 papers + GA5</span></div>
+  <div class="cbody">
+    <div class="qtext">Assuming the algorithm was stopped after 4 merges, how will <code>trought&lt;/w&gt;</code>
+    be tokenized?<br>
+    <code>A. t, r, ough, t&lt;/w&gt; &nbsp; B. tr, o, ugh, t&lt;/w&gt; &nbsp; C. t, r, ou, gh, t&lt;/w&gt;
+    &nbsp; D. t, r, ough, t, &lt;/w&gt; &nbsp; E. tr, ough, t, &lt;/w&gt;</code></div>
+    <div class="dir"><span class="lbl">Direction</span>
+    <ol>
+      <li>First establish whether the merge list is <b>given</b> (a numbered table) or must be
+      <b>derived</b> from the corpus. Here it's derived — use B4.</li>
+      <li>Split the word into <b>raw characters</b>, always, no matter how much you recognise.</li>
+      <li>Walk <b>down the merge list in learned order</b>, one rule at a time: does that exact pair sit
+      adjacent right now? Merge or skip. Never longest-match.</li>
+    </ol></div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <div class="warn"><b>Two question formats — don't confuse them.</b><br>
+      • <b>Merge table printed</b> (Dec24 Q9, GA5 Q10) → just apply it.<br>
+      • <b>Only a corpus + "after k merges"</b> (Mar25 Q20) → run BPE k rounds yourself first, <i>then</i>
+      apply. The A/B/C/D/E lines are answer choices, never the merge list.</div>
+<pre>merges: (u,g)→ug, (ug,h)→ugh, (o,ugh)→ough, (t,&lt;/w&gt;)→t&lt;/w&gt;
+
+start        t  r  o  u  g  h  t  &lt;/w&gt;
+1. ug    →   t  r  o [ug] h  t  &lt;/w&gt;
+2. ugh   →   t  r  o [ugh]   t  &lt;/w&gt;
+3. ough  →   t  r [ough]     t  &lt;/w&gt;
+4. t&lt;/w&gt; →   t  r [ough]  [t&lt;/w&gt;]        <span class="ans">Option A — 4 tokens</span></pre>
+      <p>Merges 2 and 3 were only possible <b>because</b> the earlier merge fired first. <code>ough</code>
+      didn't exist as a pair until <code>ugh</code> was glued.</p>
+      <h4>The −1 variant</h4>
+      <p>Corpus <code>{simulation, suspicious, stringent}</code>, merges <code>io, us, si, sim</code>.
+      <code>stereotypical&lt;/w&gt;</code> contains <b><code>y</code></b>, absent from the training corpus
+      → not in the base alphabet → <b class="ans">−1</b>. <b>Always scan the base alphabet first.</b>
+      This is exactly why <b>byte-level BPE</b> exists — a 256-byte base makes −1 impossible.</p>
+      <p><b>Other instances:</b> <code>simultaneous&lt;/w&gt;</code> → <b>10</b> ·
+      <code>writer&lt;/w&gt;</code> with <code>er, er&lt;/w&gt;, ri</code> → <b>4</b> ·
+      <code>finest&lt;/w&gt;</code> with <code>es, est, est&lt;/w&gt;, lo, low, lon, lone</code> →
+      <b>[f, i, n, est&lt;/w&gt;] = 4</b>.</p>
+    </div></details>
+  </div>
+</div>
+
+<div class="card">
+  <div class="chead"><span class="id">B9</span><span class="title">BPE on a plain sentence corpus</span>
+  <span class="tag hot">2026 paper Q15–Q16</span></div>
+  <div class="cbody">
+    <div class="qtext">Corpus: <i>"the key to artificial intelligence has always been the representation"</i>.
+    Lowercase, append <code>&lt;/w&gt;</code>.<br>
+    <b>(a)</b> Size of the initial vocabulary?<br>
+    <b>(b)</b> Which of these pairs occurs with the highest frequency?
+    <code>('r','e') · ('w','a') · ('e','p') · ('e','n')</code><br>
+    <b>(c)</b> Total vocabulary size immediately after the first merge?</div>
+    <div class="dir"><span class="lbl">Direction</span>
+    For (b) note the phrasing — "<b>which of the following</b>". Score the four options and pick the best
+    <i>among them</i>; the global winner may not be listed. Watch that <code>the</code> appears twice, and
+    that a pair can repeat <b>inside</b> one word.</div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <h4>(a) |V₀|</h4>
+<pre>t h e k y o a r i f c l n g s w b p  = 18   +  &lt;/w&gt;  =  <span class="ans">19</span></pre>
+      <p>The second <code>the</code> adds nothing. <code>p</code> appears only once in the whole corpus
+      (in <code>representation</code>) — easy to miss.</p>
+      <h4>(b) Score the options</h4>
+<pre>('e','n') : intelligence 1 + been 1 + representation 1 = <span class="ans">3</span>  ← wins
+('r','e') : representation (twice inside one word)     = 2
+('w','a') : always                                     = 1
+('e','p') : representation                             = 1</pre>
+      <div class="warn"><b>The true global maximum is <code>('e','&lt;/w&gt;')</code>, also at 3 — but it
+      is not among the options.</b> This is exactly why you score the options rather than build the whole
+      table: the full tally costs five minutes and hands you an answer you can't select. Answer
+      <b class="ans">('e','n')</b>.<br><br>
+      <i>For completeness</i>, everything scoring ≥2: (t,h) 2 · (h,e) 2 · <b>(e,&lt;/w&gt;) 3</b> · (t,i) 2 ·
+      (a,l) 2 · (n,t) 2 · <b>(e,n) 3</b> · (s,&lt;/w&gt;) 2 · (n,&lt;/w&gt;) 2 · (r,e) 2.
+      Checksum: Σ (word length × count) = 60, and the tally sums to 60. ✓</div>
+      <h4>(c) After the first merge</h4>
+      <p>19 + 1 = <b class="ans">20</b>. No pair work needed — it doesn't matter which pair won.</p>
+    </div></details>
+  </div>
+</div>
+
+
+<!-- ══════════ WORDPIECE / UNIGRAM ══════════ -->
+<h2>WordPiece &amp; Unigram <span class="cnt">2 cards</span></h2>
+
+<div class="card">
+  <div class="chead"><span class="id">W1</span><span class="title">WordPiece score, first merge, and encoding</span>
+  <span class="tag">Aug25 Q18 · 2025T3 Q107–109, Q125 · GA5 Q11–12</span></div>
+  <div class="cbody">
+    <div class="qtext">Corpus <code>{gentler:4, brighter:5, crisper:3}</code>, <code>&lt;/w&gt;</code>
+    appended. Which pair is merged first under
+    <code>score = count(α,β) / (count(α)·count(β))</code>?<br>
+    <code>A. ('e','r') &nbsp; B. ('r','&lt;/w&gt;') &nbsp; C. ('b','r') &nbsp; D. ('r','i')</code></div>
+    <div class="dir"><span class="lbl">Direction</span>
+    <ol>
+      <li>You need <b>two</b> tallies: adjacent-pair counts (as in BPE) <i>and</i> how often each character
+      appears <b>anywhere</b>, both weighted by word frequency.</li>
+      <li>Score only the options.</li>
+      <li>If options tie, use the same first-occurrence tie-break as BPE.</li>
+    </ol></div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <h4>Why the denominator exists</h4>
+      <p>BPE merges pairs that are frequent <i>because their halves are individually frequent</i>.
+      WordPiece asks the sharper question: <b>does this pair co-occur more than chance predicts?</b>
+      Dividing by count(α)·count(β) penalises pairs built from very common characters.</p>
+<pre>character counts (weighted):
+r: 20   e: 16   &lt;/w&gt;: 12   g: 9   t: 9   i: 8   b: 5   h: 5   n: 4   l: 4   c,s,p: 3</pre>
+      <table>
+        <tr><th>pair</th><th>count(αβ)</th><th>denominator</th><th>score</th></tr>
+        <tr><td class="n">('e','r')</td><td class="n">12</td><td class="n">16 × 20 = 320</td><td class="n">0.0375</td></tr>
+        <tr><td class="n ans">('r','&lt;/w&gt;')</td><td class="n">12</td><td class="n">20 × 12 = 240</td><td class="n ans">0.0500</td></tr>
+        <tr><td class="n">('b','r')</td><td class="n">5</td><td class="n">5 × 20 = 100</td><td class="n">0.0500</td></tr>
+        <tr><td class="n">('r','i')</td><td class="n">8</td><td class="n">20 × 8 = 160</td><td class="n">0.0500</td></tr>
+      </table>
+      <p>Three-way tie at 0.05. First occurrence: <code>('r','&lt;/w&gt;')</code> is in <code>gentler</code>
+      (word 1) → <b class="ans">Option B</b>.</p>
+      <div class="warn"><b>('e','r') ties on raw count (12) and still loses.</b> BPE would have merged it —
+      it's the joint winner there. WordPiece rejects it because <code>e</code> is common (16). That
+      divergence is the entire point.<br><br>
+      Also: the true global winner here is <code>('s','p')</code> at 0.333 — <b>not an option</b>. Score
+      the options only.</div>
+      <h4>GA5 variant — compute the score value</h4>
+      <p>Corpus <code>{low:4, older:5, finest:6, lowest:7, loneliest:8}</code> → highest is <b class="ans">fi</b>:</p>
+<pre>count(fi)=6, count(f)=6, count(i)=6+8=14
+score = 6/(6×14) = 1/14 = 0.0714  →  100·s = <span class="ans">7.14</span></pre>
+      <p><code>(s,t)</code> has count 21 — over 3× higher — and still loses at 0.0476.</p>
+      <h4>2025T3 variant — play/prey corpus (no <code>&lt;/w&gt;</code>)</h4>
+<pre>{play:3, played:2, pray:1, prey:5, reply:4}   p:15 l:9 a:6 y:15 e:11 d:2 r:10
+
+('p','a'): "pa" never adjacent (play = p·l·a·y)  → <span class="ans">0</span>
+('p','l'): 9/(15×9)  = <span class="ans">0.0667</span>
+('l','a'): 5/(9×6)   = <span class="ans">0.0926</span>  ← first merge is <span class="ans">'la'</span>
+('r','e'): 9/(10×11) = 0.0818     ('l','y'): 4/(9×15) = 0.0296</pre>
+      <p>Again <code>(p,l)</code> has the higher raw count (9 vs 5) and loses — <code>p</code> is everywhere.</p>
+      <h4>Encoding — longest-match-first from the left</h4>
+      <p>First piece has no <code>##</code>; every later piece is looked up <b>with</b> <code>##</code>.
+      Take the longest match at each position and move on.</p>
+<pre>vocab ['play','##er','player','##s'], word "players"
+
+pos 0:  "players"? ✗   "player"? ✓  → take it
+pos 6:  "##s"? ✓       → take it
+<span class="ans">['player', '##s']</span>        <span class="bad">not ['play','##er','##s']</span></pre>
+    </div></details>
+  </div>
+</div>
+
+<div class="card">
+  <div class="chead"><span class="id">U1</span><span class="title">Unigram / Viterbi best segmentation</span>
+  <span class="tag">Aug25 Q7</span></div>
+  <div class="cbody">
+    <div class="qtext">Input <code>peanutbutter</code>. Log-probs: pea −1.0, nut −0.8, but −1.2, ter −0.7,
+    butter −1.0, peanut −0.5, t −2.0, er −1.5. Most probable tokenization?<br>
+    <code>A. [peanut,but,ter] &nbsp; B. [pea,nut,butter] &nbsp; C. [peanut,butter] &nbsp; D. [pea,nut,but,ter]</code></div>
+    <div class="dir"><span class="lbl">Direction</span>
+    Log-probabilities <b>add</b>. All four candidates are given, so just sum each and pick the
+    <b>least negative</b>. Build the DP table only if no options are offered.</div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <div class="eq">log P(s₁…s<sub>k</sub>) = Σ log p(s<sub>i</sub>) &nbsp;·&nbsp;
+      best[i] = max<sub>j&lt;i</sub> ( best[j] + log p(x[j:i]) )</div>
+      <p>Pieces are independent, so the objective decomposes into a plain sum — which is what makes
+      dynamic programming exact.</p>
+<pre>[peanut, butter]      −0.5 −1.0            = <span class="ans">−1.5  ← highest</span>
+[peanut, but, ter]    −0.5 −1.2 −0.7       = −2.4
+[pea, nut, butter]    −1.0 −0.8 −1.0       = −2.8
+[pea, nut, but, ter]  −1.0 −0.8 −1.2 −0.7  = −3.7          <span class="ans">Option C</span></pre>
+      <p><b>Where Unigram sits:</b> BPE and WordPiece are <b>greedy and constructive</b> — build up merges,
+      never undo. Unigram starts with a large candidate set and <b>prunes</b> pieces whose removal costs
+      least likelihood. <b>SentencePiece</b> is not a fourth algorithm — it's a framework wrapping BPE or
+      Unigram that reads raw text as a stream (no whitespace splitting, so it works for Japanese) and
+      encodes spaces as <code>▁</code> so detokenization is lossless.</p>
+    </div></details>
+  </div>
+</div>
+
+
+<!-- ══════════ SENTINELS ══════════ -->
+<h2>Sentinel tokens &amp; objectives <span class="cnt">2 cards</span></h2>
+
+<div class="card">
+  <div class="chead"><span class="id">S1</span><span class="title">Sentinel sequence — target vs input</span>
+  <span class="tag hot">Dec24 Q13 · Mar25 Q7 · 2025T3 Q122 · GA7 Q3</span></div>
+  <div class="cbody">
+    <div class="qtext">Strikeout words are dropped from the original sentence. Some papers ask for the
+    correct <b>target</b> sequence; others ask for the correct <b>input</b>. Options differ only in
+    (i) sentinel naming — <code>[a][b][c]</code> vs <code>[v][w][x]</code>, (ii) whether it ends with
+    <code>[z]</code>, (iii) span order.</div>
+    <div class="dir"><span class="lbl">Direction</span>
+    Read <b>which</b> is asked. Then apply one binary rule about the terminal <code>[z]</code>. Then check
+    the option list for a <b>naming twin</b> — these are multiple-select and both naming schemes are
+    usually correct.</div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <h4>The fill-in-the-blank worksheet analogy</h4>
+      <p>The <b>input</b> is the question paper: blanks numbered in place. The <b>target</b> is the answer
+      sheet: blank number, then what went in it, and nothing else. The answer sheet never repeats the
+      words that weren't blanked.</p>
+<pre>Original: The cat sat on the warm mat        drop: "cat sat" and "warm"
+
+INPUT :  The &lt;X&gt; on the &lt;Y&gt; mat            ← no terminal sentinel
+TARGET:  &lt;X&gt; cat sat &lt;Y&gt; warm &lt;Z&gt;          ← ends with terminal sentinel</pre>
+      <div class="eq"><b class="ans">TARGET ends with [z] · INPUT does not</b></div>
+      <p>Why? The input already has an end — the rest of the sentence follows it. The output doesn't; the
+      decoder needs a stop signal. Sentinel <b>naming is free</b>; only order and the terminal sentinel
+      are graded. One sentinel replaces a whole <b>span</b>, however many words.</p>
+      <h4>Dec 2024 (target) — correct: B and F</h4>
+      <p>Both <code>[v]…[y]…[z]</code> and <code>[a]…[d]…[z]</code>. Wrong: ending <code>[e]</code>,
+      no terminal, spans reordered, repeated sentinels.</p>
+      <h4>Mar 2025 (input) — correct: B and C</h4>
+      <p>The two options <b>lacking</b> the trailing sentinel.</p>
+      <h4>2025T3 Q122 (single-answer target)</h4>
+      <p>Corrupted <code>The quick &lt;X&gt; fox &lt;Y&gt; over the lazy dog</code> →
+      target <b class="ans">&lt;X&gt; brown &lt;Y&gt; jumps &lt;Z&gt;</b>. Not "brown jumps" (no sentinels),
+      not the full sentence (that's BART), not <code>brown &lt;X&gt; jumps &lt;Y&gt;</code> (sentinel after
+      the span).</p>
+      <div class="warn"><b>This is where marks leak.</b> MSQs with <b>two</b> correct options differing
+      only in sentinel letters. Picking the "natural-looking" one alone scores 1/2. Whenever an MSQ offers
+      cosmetic variants, check whether the variation is actually graded.</div>
+    </div></details>
+  </div>
+</div>
+
+<div class="card">
+  <div class="chead"><span class="id">S2</span><span class="title">Match the scenario to the model</span>
+  <span class="tag">2025T3 Q118 — 4 marks</span></div>
+  <div class="cbody">
+    <div class="qtext">Four pretraining scenarios:<br>
+    <b>A</b> — "The cat sat on the __", predict "mat" using both left and right context.<br>
+    <b>B</b> — "The cat sat", predict the next token "on".<br>
+    <b>C</b> — corrupted "The &lt;X&gt; sat on &lt;Y&gt; mat", generate "cat … the".<br>
+    <b>D</b> — "&lt;extra_id_0&gt; cat sat &lt;extra_id_1&gt; mat", generate
+    "&lt;extra_id_0&gt; The &lt;extra_id_1&gt; on the".<br>
+    Match each to BERT / GPT / BART / T5.</div>
+    <div class="dir"><span class="lbl">Direction</span>
+    A and B are easy — read what context each is allowed. For C vs D, look at the <b>output</b>: one
+    emits bare words, the other emits sentinel-prefixed fragments. That single feature separates them.</div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <p><b class="ans">A = BERT, B = GPT, C = BART, D = T5</b></p>
+      <table>
+        <tr><th>Sees</th><th>Objective</th><th>Model</th><th>Output shape</th></tr>
+        <tr><td>both sides</td><td>MLM</td><td class="n">BERT</td><td>the masked token</td></tr>
+        <tr><td>left only</td><td>CLM</td><td class="n">GPT</td><td>next token</td></tr>
+        <tr><td>bidir. encoder</td><td>denoising</td><td class="n">BART</td><td><b>full</b> sequence, no sentinels in output</td></tr>
+        <tr><td>bidir. encoder</td><td>span corruption</td><td class="n">T5</td><td><b>spans only</b>, sentinel-prefixed</td></tr>
+        <tr><td>prefix bidir.</td><td>Prefix-LM</td><td class="n">UniLM</td><td>continuation</td></tr>
+      </table>
+      <p><b>The diagnostic:</b> sentinel markers <i>in the output</i> ⇒ T5. Bare reconstructed words ⇒ BART.</p>
+      <p><b>BART decoder input</b> during pretraining = the <b>original uncorrupted text shifted right</b>
+      (teacher forcing). The corrupted text goes to the <i>encoder</i>, never the decoder.</p>
+    </div></details>
+  </div>
+</div>
+
+
+<!-- ══════════ MASK / LOSS / DECODING ══════════ -->
+<h2>Masks, loss &amp; decoding <span class="cnt">3 cards</span></h2>
+
+<div class="card">
+  <div class="chead"><span class="id">M1</span><span class="title">Prefix-LM mask — counting non-infinity entries</span>
+  <span class="tag hot">Dec24 Q14 · Mar25 Q13</span></div>
+  <div class="cbody">
+    <div class="qtext">Sequence length 32, first <b>2</b> tokens are the task-specific prefix. How many
+    non-infinity elements are in the attention mask?<br>
+    <i>(Another paper asks the same with length 64, prefix 3.)</i></div>
+    <div class="dir"><span class="lbl">Direction</span>
+    Build it, don't memorise it. Two regions: prefix tokens see <b>all</b> prefix tokens (bidirectional);
+    every token after the prefix sees <b>everything up to and including itself</b> (causal). Count each,
+    add. Sanity-check by setting prefix = 0 and prefix = T.</div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <div class="eq">count = p·p &nbsp;+&nbsp; Σ<sub>i=p+1</sub><sup>T</sup> i &nbsp;=&nbsp;
+      T(T+1)/2 &nbsp;+&nbsp; p(p−1)/2</div>
+      <p>Second form: <b>the plain causal count, plus the extra upper-triangle entries opened up inside the
+      prefix block.</b> Sanity: p=0 → T(T+1)/2, pure causal ✓ · p=T → T², fully bidirectional (BERT) ✓</p>
+<pre>T = 32, p = 2 :  528 + 1 = <span class="ans">529</span>   ← matches the Dec 2024 key
+T = 64, p = 3 : 2080 + 3 = <span class="ans">2083</span></pre>
+      <div class="warn"><b>The Mar 2025 key prints 2115, which follows from no consistent reading of the
+      mask.</b> I tested several alternative visibility rules — prefix rows seeing the full sequence,
+      suffix rows counted from the prefix boundary, and others — every one that yields 529 for (32,2) also
+      yields 2083 for (64,3). Since Dec 2024 independently confirms 529, the formula is sound and 2115
+      appears to be an error.<br><br>
+      <b>In the hall:</b> compute the formula. Know 2115 exists in one key so you aren't thrown.</div>
+      <h4>Related mask facts</h4>
+      <p>A causal mask sets scores to <b>−∞ before softmax</b>, so e<sup>−∞</sup> = 0. Attention weight on
+      a future token is exactly <b class="ans">0</b> — don't compute any exponentials. (2025T3 Q113 gives
+      raw scores 1.8, 0.5, 2.0, 1.2 for token 3 of 4; the answer for token 4 is just 0.)</p>
+      <p><b>Prefix-LM identification (2025T3 Q123):</b> A and B see each other; D sees A, B, C but not E →
+      bidirectional block then causal → <b class="ans">Prefix-LM</b>.</p>
+    </div></details>
+  </div>
+</div>
+
+<div class="card">
+  <div class="chead"><span class="id">D1</span><span class="title">BART greedy-decoding loss</span>
+  <span class="tag hot">Mar25 Q12 · GA7 Q1 — 4 marks</span></div>
+  <div class="cbody">
+    <div class="qtext">Vocabulary <code>V = ([start], deep, hot, is, learning, research, topic, very,
+    [end])</code>. Original sentence <i>"[start] deep learning is very hot research topic [end]"</i>,
+    corrupted <i>"[start] deep [mask] is [mask] very hot [mask] topic [end]"</i>. An 8×9 matrix Ŷ is given,
+    row 0 being the distribution after <code>[start]</code>. <b>What is the loss value?</b></div>
+    <div class="dir"><span class="lbl">Direction</span>
+    <ol>
+      <li>Number the vocabulary columns <b>in the order V is written</b>.</li>
+      <li>Write the <b>target</b> sequence — the original uncorrupted sentence, one token per row.</li>
+      <li>Read off the probability in each row's <b>gold token column</b>.</li>
+      <li>Negative natural logs. Then be very careful about the last operation — sum, or mean?</li>
+    </ol></div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <div class="eq">L = −(1/n) Σ<sub>t=1</sub><sup>n</sup> ln p(gold<sub>t</sub>)</div>
+      <p><b>where:</b> n = number of prediction steps (rows); ln = natural log; gold<sub>t</sub> = the token
+      the model was supposed to produce at step t.</p>
+      <div class="warn"><b>MEAN, not sum.</b> The single most expensive error in the syllabus — off by a
+      factor of n. In GA7 the sum was 7.62 and the answer was 1.09; a submission of 7.6 scored zero on a
+      4-mark question.</div>
+      <h4>GA7 — the clean instance, fully worked</h4>
+<pre>V = ([start], building, character, a, is, astronomy, science, experience, natural, [end])
+       0          1          2       3   4      5          6          7          8      9
+target: astronomy is a character building experience [end]
+
+step  target       col   p      −ln p
+ 0    astronomy     5    0.41   0.8916
+ 1    is            4    0.43   0.8440
+ 2    a             3    0.29   1.2379
+ 3    character     2    0.48   0.7340
+ 4    building      1    0.29   1.2379
+ 5    experience    7    0.23   1.4697
+ 6    [end]         9    0.30   1.2040
+
+sum  = 7.6189                    <span class="bad">← the wrong answer</span>
+mean = 7.6189 / 7 = <span class="ans">1.0884 → 1.09</span>   (accepted 0.9–1.1)</pre>
+      <p><b>Built-in check:</b> under greedy decoding on a trained model, each gold probability should also
+      be its <b>row maximum</b>. If your reconstructed sequence doesn't match the row maxima, you've
+      mis-indexed the columns — fix that before computing.</p>
+      <h4>Mar 2025 — same method, keyed range 1.90–2.0</h4>
+<pre>gold probs by row: 0.17, 0.18, 0.17, [0.], 0.17, 0.15, 0.05, 0.13
+                                       ↑ printed as "0." — a misprint; −ln 0 is undefined
+
+mean over the 7 usable values = 13.9638 / 7 = <span class="ans">1.9948</span>  ✓ inside 1.90–2.0</pre>
+      <p>Method confirmed identical across both papers. If a zero entry appears, exclude that step and
+      average the rest.</p>
+    </div></details>
+  </div>
+</div>
+
+<div class="card">
+  <div class="chead"><span class="id">D2</span><span class="title">Top-k sampling &amp; determinism</span>
+  <span class="tag">2026 Q17 · 2025T3 Q115</span></div>
+  <div class="cbody">
+    <div class="qtext"><b>1.</b> <code>P = {A:0.1, B:0.4, C:0.05, D:0.25, E:0.2}</code>, top-k with k = 2.
+    Re-normalized probability of selecting B? (2 dp)<br>
+    <b>2.</b> Which decoding methods give the same output every time for a given prompt?</div>
+    <div class="dir"><span class="lbl">Direction</span>
+    Keep the k highest, discard the rest entirely, divide each survivor by the <b>sum of the survivors
+    only</b>. For part 2, ask which methods draw a <b>random sample</b> at any point — and note temperature
+    reshapes a distribution but never removes randomness.</div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <div class="eq">P′(t) = P(t) / Σ<sub>t′ ∈ top-k</sub> P(t′)</div>
+<pre>keep: B = 0.40, D = 0.25       discard: E 0.20, A 0.10, C 0.05
+Z = 0.65        P′(B) = 0.40/0.65 = 0.6154  →  <span class="ans">0.62</span></pre>
+      <p>The discarded mass is <b>redistributed proportionally</b> among survivors, never just dropped.</p>
+      <table>
+        <tr><th>Method</th><th>Deterministic?</th><th>Why</th></tr>
+        <tr><td>Greedy (= beam width 1)</td><td class="n ans">Yes</td><td>argmax every step</td></tr>
+        <tr><td>Beam search, any width</td><td class="n ans">Yes</td><td>no sampling anywhere</td></tr>
+        <tr><td>Top-k, any k, any temperature</td><td class="n bad">No</td><td>samples from the truncated set</td></tr>
+        <tr><td>Top-p, any p, any temperature</td><td class="n bad">No</td><td>samples from the nucleus</td></tr>
+      </table>
+      <p>2025T3 Q115 answer: <b class="ans">both beam-search options</b> (width 5 and width 1).</p>
+      <p><b>Top-p for contrast:</b> nucleus = smallest set whose cumulative mass <b>meets or exceeds</b> p.
+      With p = 0.7: B 0.40 (cum 0.40), D 0.25 (cum 0.65), E 0.20 (cum 0.85 ≥ 0.7 → include).
+      Z = 0.85, P′(D) = 0.294.</p>
+    </div></details>
+  </div>
+</div>
+
+
+<!-- ══════════ TRANSFER ══════════ -->
+<h2>Fine-tuning &amp; transfer <span class="cnt">3 cards</span></h2>
+
+<div class="card">
+  <div class="chead"><span class="id">F1</span><span class="title">T5 fine-tuning — label mapping</span>
+  <span class="tag hot">Mar25 Q6 · GA7 Q6</span></div>
+  <div class="cbody">
+    <div class="qtext">Fine-tuning T5 (pretrained on C4) for sentiment classification. Positive = 2,
+    neutral = 1, negative = 0. Which modifications are necessary?<br>
+    <code>A. map 0→"negative", 1→"positive" &nbsp; B. map 0→"negative", 1→"neutral", 2→"positive"
+    &nbsp; C. map 0→"0", 1→"1", 2→"2" &nbsp; D. update T5's vocabulary &nbsp; E. add a linear layer on
+    the decoder</code></div>
+    <div class="dir"><span class="lbl">Direction</span>
+    Recall T5's single organising principle and ask what it forbids. Then check each mapping for whether it
+    <b>covers every class</b>. Expect more than one correct option.</div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <h4>T5's text-to-text contract</h4>
+      <p><b>Every task is "text in → text out."</b> Consequences:</p>
+      <ul>
+        <li><b>Never add a task-specific head.</b> A linear classification layer is always wrong.</li>
+        <li><b>Labels become strings</b> — but <i>which</i> strings is free.</li>
+        <li><b>No vocabulary update needed</b> — label strings tokenize with the existing vocabulary.</li>
+        <li>Regression too: STS-B similarity 3.8 is emitted as the literal string <code>"3.8"</code>.</li>
+      </ul>
+      <p>Answer: <b class="ans">B and C</b>. A is wrong because it maps only two of three classes —
+      class 2 is silently dropped.</p>
+      <div class="warn"><b>Two correct options again.</b> The GA7 version (two classes) has answers
+      <b>A and B</b> — <code>"negative"/"positive"</code> <i>and</i> <code>"0"/"1"</code>.</div>
+    </div></details>
+  </div>
+</div>
+
+<div class="card">
+  <div class="chead"><span class="id">F2</span><span class="title">Gradual unfreezing &amp; transfer routes</span>
+  <span class="tag">Mar25 Q8 · GA7 Q2</span></div>
+  <div class="cbody">
+    <div class="qtext"><b>1.</b> T5 base fine-tuned with gradual unfreezing over 12 phases. Which
+    statements about phases 1 and 2 are correct?<br>
+    <b>2.</b> 12 supervised datasets, <b>labels dropped</b>, used to train GPT with CLM. Which transfer
+    approaches are appropriate?</div>
+    <div class="dir"><span class="lbl">Direction</span>
+    For 1, settle three things: which <b>end</b> of the stack thaws first, <b>how many</b> layers per
+    phase, and whether it happens in encoder, decoder, or both. For 2, ask what the model actually learned
+    once the labels were thrown away.</div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <h4>1 — Gradual unfreezing</h4>
+      <p>Unfreeze from the <b>top down</b>, <b>one layer per phase</b>, in <b>encoder and decoder
+      simultaneously</b>.</p>
+<pre>phase 1: last layer of encoder AND last layer of decoder
+phase 2: second-last layer of encoder AND decoder</pre>
+      <p>Correct: <b class="ans">A and D</b>. Wrong: "decoder only", "encoder only", "first layer"
+      (bottom-up), and "last <b>two</b> layers in phase 2" — the <i>newly</i> unfrozen layer per phase is
+      exactly one, though previously unfrozen layers stay unfrozen.</p>
+      <h4>2 — Transfer after label-dropped CLM</h4>
+      <p><b class="ans">All three: zero-shot, few-shot, full fine-tuning.</b> Dropping labels means the
+      model saw the <b>input distribution</b> but never the <b>task mapping</b>, so the tasks are still
+      genuinely unlearned. The trap option — "none, the model already saw this data" — confuses seeing raw
+      text with learning the task.</p>
+    </div></details>
+  </div>
+</div>
+
+<div class="card">
+  <div class="chead"><span class="id">F3</span><span class="title">Multi-task mixing with a cap</span>
+  <span class="tag">Aug25 Q12 · 2026 Q6</span></div>
+  <div class="cbody">
+    <div class="qtext"><b>1.</b> Proportional mixing: <code>r_m = min(e_m, K) / Σ min(e_n, K)</code>.
+    Task A has 10,000 examples, Task B has 1,000,000. Largest K such that neither task exceeds 0.5?<br>
+    <b>2.</b> In temperature mixing, proportions are raised to 1/T. What happens as T → ∞?</div>
+    <div class="dir"><span class="lbl">Direction</span>
+    Try K equal to the smaller dataset size and see what both probabilities become. Then nudge K up by
+    exactly 1 and watch which task breaks — that confirms the boundary. For 2, ask what any positive
+    number raised to the power 0 equals.</div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <h4>Purpose of the cap</h4>
+      <p>Without one, a task with 100× more data gets sampled 100× more and dominates.
+      <code>min(e, K)</code> truncates every task at K.</p>
+<pre>K = 10,000:  min(10000,10000)=10000, min(1e6,10000)=10000
+             r = 10000/20000 = 0.5 each          <span class="ans">✓ exactly at the limit</span>
+K = 10,001:  r_B = 10001/20001 &gt; 0.5             <span class="bad">✗ breaks</span></pre>
+      <p>Answer: <b class="ans">K = 10,000</b>. <b>General result:</b> the cap that makes the distribution
+      uniform is exactly <b>the size of the smallest dataset</b>. Three tasks of 5k/50k/500k → K = 5,000
+      gives r = 1/3 each.</p>
+      <h4>2 — Temperature mixing, T → ∞</h4>
+      <p>1/T → 0, so every proportion → p⁰ = 1 — the distribution becomes
+      <b class="ans">uniform across tasks</b>, high-resource and low-resource sampled equally.</p>
+    </div></details>
+  </div>
+</div>
+
+
+<!-- ══════════ SCALING ══════════ -->
+<h2>Scaling laws <span class="cnt">3 cards</span></h2>
+
+<div class="card">
+  <div class="chead"><span class="id">L1</span><span class="title">Implications, compute split, token budget</span>
+  <span class="tag">all papers + GA7</span></div>
+  <div class="cbody">
+    <div class="qtext"><b>1.</b> Important implication of the scaling law?<br>
+    <b>2.</b> Given 4× more compute, best way to use it?<br>
+    <b>3.</b> Dataset has 66B tokens. To train 10⁶ steps seeing ≥5B tokens, which <code>B × T</code>?
+    <code>8×128 · 64×128 · 128×512 · 4×2048</code></div>
+    <div class="dir"><span class="lbl">Direction</span>
+    For 1 and 2 there's one governing sentence — find it and both fall out. For 3, write the identity
+    connecting steps, batch size and sequence length to total tokens, then reduce the requirement to a
+    single inequality.</div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <p><b>1.</b> <b class="ans">Both model size and dataset size must be increased appropriately,
+      together.</b> Always false: "training longer always helps", "larger models need less data",
+      "model size alone suffices".</p>
+      <p><b>2.</b> C ≈ 6ND, and optimal scaling grows N and D roughly equally ⇒ 4× compute means
+      <b class="ans">≈2× parameters and ≈2× data</b>.</p>
+      <div class="eq">tokens seen = steps × B × T &nbsp;⇒&nbsp; 10⁶ · (B·T) ≥ 5×10⁹ &nbsp;⇒&nbsp; B·T ≥ 5000</div>
+<pre>8 × 128   = 1024    <span class="bad">✗</span>       64 × 128  = 8192    <span class="ans">✓</span>
+128 × 512 = 65536   <span class="ans">✓</span>       4 × 2048  = 8192    <span class="ans">✓</span>     → <span class="ans">B, C, D</span></pre>
+      <p>The 66B figure is a distractor — it only confirms the dataset won't run out.</p>
+    </div></details>
+  </div>
+</div>
+
+<div class="card">
+  <div class="chead"><span class="id">L2</span><span class="title">Loss ratio after doubling N and D</span>
+  <span class="tag">Aug25 Q13 — 3 marks</span></div>
+  <div class="cbody">
+    <div class="qtext"><code>L(N,D) = A^(−α_N) + B^(−α_D)</code>, <code>A = N/N_c</code>,
+    <code>B = D/D_c</code>, N_c = 8.8×10¹³, D_c = 5.4×10¹³, α_N = 0.076, α_D = 0.095. Assume A = 2B.
+    Find <code>L(2N,2D) / L(N,D)</code> to 3 decimals.</div>
+    <div class="dir"><span class="lbl">Direction</span>
+    Don't substitute the big constants. Ask what happens to <b>each term separately</b> when its argument
+    doubles — a power of a doubled quantity factorises. Once you see the two constants that pop out,
+    you'll notice the ratio is trapped between them.</div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+<pre>L(2N,2D) = (2A)^(−α_N) + (2B)^(−α_D) = 2^(−α_N)·A^(−α_N) + 2^(−α_D)·B^(−α_D)</pre>
+      <div class="eq">ratio = λ · 2<sup>−0.076</sup> + (1−λ) · 2<sup>−0.095</sup> = λ·0.9487 + (1−λ)·0.9363</div>
+      <p>A <b>convex combination</b>, so the answer is pinned to <b>[0.936, 0.949]</b> whatever A and B are.
+      With A = 2B it evaluates to <b class="ans">0.942</b> (checked for B from 0.5 to 100 — moves only in
+      the fourth decimal). Keyed range 0.914–0.975.</p>
+      <div class="warn"><b>You never need N_c or D_c.</b> If you're plugging in 8.8×10¹³ you've taken the
+      long road and are likely to slip.</div>
+      <p><b>Generalisation:</b> scaling both by factor f gives a ratio inside
+      <b>[f<sup>−α_D</sup>, f<sup>−α_N</sup>]</b>. For f = 4 that's [0.877, 0.900] — the square of the
+      doubling interval.</p>
+    </div></details>
+  </div>
+</div>
+
+<div class="card">
+  <div class="chead"><span class="id">L3</span><span class="title">Identify the formula &amp; compute a loss</span>
+  <span class="tag">GA8 Q5–Q6 · 2025T3 Q119</span></div>
+  <div class="cbody">
+    <div class="qtext"><b>1.</b> Identify the correct scaling-law formula among four similar expressions.<br>
+    <b>2.</b> Train a model with 1 billion parameters on 1 billion tokens. Expected test loss? (3 dp)</div>
+    <div class="dir"><span class="lbl">Direction</span>
+    For 1, the four options differ in only two places — which exponent sits on the N term, and which is on
+    the outside. Check those two and ignore the rest. For 2, work the logs step by step keeping at least
+    2 significant digits, as the paper instructs.</div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <div class="eq">L(N,D) = [ (N<sub>c</sub>/N)<sup>α<sub>N</sub>/α<sub>D</sub></sup> + D<sub>c</sub>/D ]<sup>α<sub>D</sub></sup></div>
+      <p><b>Two checks in this order:</b> (i) the N term carries exponent <b>α_N/α_D</b> — flipped options
+      are wrong; (ii) the <b>outer</b> exponent is <b>α_D</b> — options using α_N are wrong.
+      → <b class="ans">Option A</b>.</p>
+      <p><b>where:</b> N = non-embedding parameters, D = dataset size in tokens, N_c = 8.8×10¹³,
+      D_c = 5.4×10¹³, α_N = 0.076, α_D = 0.095. L is the <b class="ans">test loss on the same distribution
+      as training</b> — not training loss, not out-of-distribution loss (2025T3 Q119).</p>
+<pre>N_c/N = 8.8e13/1e9 = 88000       α_N/α_D = 0.076/0.095 = 0.8
+
+(88000)^0.8 :  ln 88000  = 11.3852  × 0.8 = 9.1082  →  e^9.1082 = 9027.9
+D_c/D = 5.4e13/1e9 = 54000
+sum = 63027.9
+^0.095 :  ln 63027.9 = 11.0515  × 0.095 = 1.0499  →  e^1.0499 = <span class="ans">2.857</span></pre>
+      <p>Accepted 2.852–2.862.</p>
+    </div></details>
+  </div>
+</div>
+
+
+<!-- ══════════ DATA ══════════ -->
+<h2>Data pipeline &amp; datasets <span class="cnt">2 cards</span></h2>
+
+<div class="card">
+  <div class="chead"><span class="id">P1</span><span class="title">What gets filtered out</span>
+  <span class="tag hot">Dec24 Q18 · Mar25 Q10 · Aug25 Q9 · 2026 Q21</span></div>
+  <div class="cbody">
+    <div class="qtext">Which of the following will <b>NOT</b> pass through an ideal preprocessing / C4
+    pipeline as it is?<br>
+    <i>Examples across papers:</i> a hateful sentence about a nationality · a passage with someone's PAN
+    number and address · the same sentence repeated twice · a Spanish sentence in an English corpus · a
+    Python code snippet · "Lorem ipsum… Please enable JavaScript… Home" · a nav menu "Products Shipping
+    Contact FAQ" · clean news about tariffs, the Union Budget, ISRO or BCCI.</div>
+    <div class="dir"><span class="lbl">Direction</span>
+    Go example by example and name <b>which pipeline stage</b> catches it. If you can't name a stage, it
+    passes. Clean factual prose always passes. Watch the code example — C4 has a specific rule about lines
+    not ending in terminal punctuation.</div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <table>
+        <tr><th>Example</th><th>Filtered?</th><th>Stage</th></tr>
+        <tr><td>Hateful/threatening content about a group</td><td class="n ans">Yes</td><td>Toxicity heuristics (bad-word list)</td></tr>
+        <tr><td>PAN number, phone number, address</td><td class="n ans">Yes</td><td>PII removal</td></tr>
+        <tr><td>Same sentence repeated twice</td><td class="n ans">Yes</td><td>Deduplication</td></tr>
+        <tr><td>Spanish text in an English corpus</td><td class="n ans">Yes</td><td>Language identification</td></tr>
+        <tr><td>Python code snippet</td><td class="n ans">Yes</td><td>C4 drops lines not ending in terminal punctuation</td></tr>
+        <tr><td>Nav menu / "Please enable JavaScript"</td><td class="n ans">Yes</td><td>Boilerplate &amp; quality heuristics</td></tr>
+        <tr><td>"Lorem ipsum…"</td><td class="n ans">Yes</td><td>Placeholder text</td></tr>
+        <tr><td>Union Budget / WHO / tariffs / ISRO / BCCI</td><td class="n bad">No</td><td>clean factual prose — passes</td></tr>
+      </table>
+      <p><b>Which component removes bad words (Dec24 Q15):</b> <b class="ans">simple heuristics to detect
+      toxic content</b> — a cheap rule-based blocklist, which is why it isn't the ML quality classifier
+      option.</p>
+      <p><b>Survival arithmetic (2025T3 Q116):</b> percentages apply to <b>survivors</b>. 50% removed, then
+      24% of the remainder, then 12% of that: 0.50 × 0.76 × 0.88 = <b class="ans">0.3344 ≈ 33%</b>. Adding
+      50+24+12 = 86% is the intended wrong answer.</p>
+    </div></details>
+  </div>
+</div>
+
+<div class="card">
+  <div class="chead"><span class="id">P2</span><span class="title">Pipeline order, dataset sizes, model families</span>
+  <span class="tag">GA8 Q1–3, Q8–10 · 2025T3 Q114, Q117</span></div>
+  <div class="cbody">
+    <div class="qtext"><b>1.</b> Order the RefinedWeb pipeline: line-wise correction · document-wise
+    filtering · text extraction · language identification · repetition removal · URL filtering · exact
+    dedup · fuzzy dedup.<br>
+    <b>2.</b> Order BookCorpus, ROOTS, C4, WebText by decreasing size.<br>
+    <b>3.</b> How many of {BERT, GPT-1, GPT-2, T5, BART, GPT-3, GPT-4, LLaMA, LLaMA-2, Galactica} are
+    encoder-only / encoder-decoder / decoder-only?</div>
+    <div class="dir"><span class="lbl">Direction</span>
+    For 1, don't memorise a digit string — reason from one economic principle: <b>run the cheapest filter
+    that removes the most data first</b>, so expensive steps only see survivors. For 3, everything modern
+    and generative falls in one bucket.</div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <h4>1 — RefinedWeb order → 6 3 4 5 2 1 8 7</h4>
+      <table>
+        <tr><td class="n">6</td><td>URL filtering</td><td>free — blocklist lookup, content never read</td></tr>
+        <tr><td class="n">3</td><td>Text extraction</td><td>strip HTML; must precede any text analysis</td></tr>
+        <tr><td class="n">4</td><td>Language identification</td><td>cheap classifier, removes ~half</td></tr>
+        <tr><td class="n">5</td><td>Repetition removal</td><td>rule-based</td></tr>
+        <tr><td class="n">2</td><td>Document-wise filtering</td><td>whole-document heuristics</td></tr>
+        <tr><td class="n">1</td><td>Line-wise correction</td><td>finer granularity, so later</td></tr>
+        <tr><td class="n">8</td><td>Fuzzy deduplication</td><td>MinHash, expensive</td></tr>
+        <tr><td class="n">7</td><td>Exact deduplication</td><td>final pass</td></tr>
+      </table>
+      <div class="warn"><b>2025T3 Q117 keys a different order</b> over a different list —
+      <b class="ans">6 → 4 → 1 → 5 → 2 → 3</b> = URL filtering → exact dedup → fuzzy dedup → quality
+      filtering → toxicity (ML) → PII. Reason from the principle, not the digits: <b>URL/metadata →
+      extraction → language ID → cheap heuristics → deduplication → expensive ML → PII last</b>.</div>
+      <h4>2 — Dataset sizes → 2 3 4 1</h4>
+      <p><b class="ans">ROOTS &gt; C4 &gt; WebText &gt; BookCorpus.</b> <b>Multilingual (2025T3 Q114):</b>
+      Sangraha and CommonCrawl. DOLMA and BookCorpus are English. <b>Sangraha</b> contains multiple
+      <b>Indian</b> languages — not monolingual, not English-only, and it does include translated content.</p>
+      <h4>3 — Architecture counts → 1 / 2 / 7</h4>
+      <table>
+        <tr><th>Encoder-only (1)</th><th>Encoder-Decoder (2)</th><th>Decoder-only (7)</th></tr>
+        <tr><td class="n">BERT</td><td class="n">T5, BART</td>
+            <td class="n">GPT-1, GPT-2, GPT-3, GPT-4, LLaMA, LLaMA-2, Galactica</td></tr>
+      </table>
+    </div></details>
+  </div>
+</div>
+
+
+<!-- ══════════ NUMERIC ══════════ -->
+<h2>Parameter counts, LayerNorm, attention matrices <span class="cnt">3 cards</span></h2>
+
+<div class="card">
+  <div class="chead"><span class="id">N1</span><span class="title">LayerNorm computation &amp; norm parameters</span>
+  <span class="tag">2026 Q12 · 2025T3 Q127</span></div>
+  <div class="cbody">
+    <div class="qtext"><b>1.</b> Sample 2 of a table is <code>[1, 3, 5, 7]</code>. LayerNorm is applied
+    independently to each sample. What is the maximum value in the normalized output? (ignore γ, β; ε → 0)<br>
+    <b>2.</b> For a layer with 512 features, how many learnable parameters do BatchNorm and LayerNorm have?</div>
+    <div class="dir"><span class="lbl">Direction</span>
+    The phrase "applied independently to each sample" is the tell — normalise <b>across the four features
+    of that one row</b>, not down the column. Use the <b>population</b> variance (divide by H, not H−1).
+    For 2, ask what each normalization actually learns, and how many of each there are.</div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <div class="eq">μ = (1/H)Σx<sub>i</sub> &nbsp;·&nbsp; σ² = (1/H)Σ(x<sub>i</sub>−μ)²
+      &nbsp;·&nbsp; x̂<sub>i</sub> = (x<sub>i</sub>−μ)/√(σ²+ε)</div>
+      <p><b>where:</b> H = number of features (here 4). Variance uses <b>1/H</b>, population form.</p>
+<pre>x = [1, 3, 5, 7]
+μ  = 16/4 = 4
+σ² = ((−3)² + (−1)² + 1² + 3²)/4 = (9+1+1+9)/4 = 5
+σ  = √5 = 2.2361
+
+x̂ = [−1.3416, −0.4472, 0.4472, <span class="ans">1.3416</span>]
+max = (7−4)/2.2361 = <span class="ans">1.342</span>   (accepted 1.30–1.37)</pre>
+      <div class="warn"><b>Do not use column statistics.</b> That's BatchNorm and gives a different number.
+      LayerNorm = across <b>features, within one sample</b>. BatchNorm = across the <b>batch, within one
+      feature</b>.</div>
+      <h4>2 — Both have 2H</h4>
+      <p>Each learns a scale γ and a shift β, one per feature ⇒ <b>2H</b> either way.
+      512 features → <b class="ans">BatchNorm 1024, LayerNorm 1024</b>. The difference between them is
+      <i>what they average over</i>, not <i>how many parameters</i> they have.</p>
+    </div></details>
+  </div>
+</div>
+
+<div class="card">
+  <div class="chead"><span class="id">N2</span><span class="title">Parameter counting — embeddings, heads, sharing</span>
+  <span class="tag">2026 Q2, Q18 · 2025T3 Q110 · GA7 Q7</span></div>
+  <div class="cbody">
+    <div class="qtext"><b>1.</b> BERT-like model: d_model = 128, |V| = 5000, T_max = 64, 2 segment types.
+    Total parameters in the embedding layer?<br>
+    <b>2.</b> d_model = 512, h = 8 heads. Dimension of the concatenated output of the 8 heads, before
+    <code>W^O</code>?<br>
+    <b>3.</b> Model A: 12-layer encoder + 12-layer decoder, separate parameters, 220M total, halves equal.
+    Model C shares them (W_Enc = W_Dec). Total parameters of Model C?<br>
+    <b>4.</b> A decoder-only model with P parameters and an encoder-decoder with 2P have the same
+    computational cost. True or false?</div>
+    <div class="dir"><span class="lbl">Direction</span>
+    For 1, each embedding table is (number of distinct ids) × d — count the tables. For 2, work out d_k
+    first and notice what h × d_k comes back to. For 4, think about how many parameters a single token
+    actually passes through in each architecture.</div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <h4>1 — Embedding parameters</h4>
+<pre>Token    embeddings: 5000 × 128 = 640,000
+Position embeddings:   64 × 128 =   8,192
+Segment  embeddings:    2 × 128 =     256
+                                  ---------
+                                  <span class="ans">648,448</span></pre>
+      <p>One row per id, d columns. Same rule as the plain |V| × d input embedding — which is why "larger
+      vocabulary ⇒ bigger embedding matrix and heavier softmax" is always a correct MSQ option.</p>
+      <h4>2 — Multi-head concatenation</h4>
+<pre>d_k = d_v = d_model/h = 512/8 = 64
+each head output:  T × 64
+concat of 8 heads: T × (8 × 64) = <span class="ans">T × 512</span>   ← back to d_model, by design
+then × W^O (512 × 512) → T × 512</pre>
+      <p>Multi-head is (almost) free relative to single-head because it's <b>h heads of width d/h</b>,
+      not h heads of width d.</p>
+      <h4>3 — Parameter sharing</h4>
+      <p>220M split equally ⇒ 110M each. Sharing means one copy ⇒ <b class="ans">110M</b>.</p>
+      <h4>4 — Compute equivalence: TRUE</h4>
+      <p>In the encoder-decoder, the input sequence passes only through the P encoder parameters and the
+      output sequence only through the P decoder parameters — each token traverses ~P, not 2P. This is
+      T5's central argument that encoder-decoder is not "twice as expensive".</p>
+    </div></details>
+  </div>
+</div>
+
+<div class="card">
+  <div class="chead"><span class="id">N3</span><span class="title">Reading an attention matrix</span>
+  <span class="tag">2026 Q13–Q14</span></div>
+  <div class="cbody">
+    <div class="qtext">GPT model, input <code>[BOS] Data science needs clean data [EOS]</code>, context
+    length 7. A 7×7 attention matrix is given.<br>
+    <b>1.</b> Is the matrix valid for causal language modelling?<br>
+    <b>2.</b> At t = 5 (word "data"), what is the attention weight assigned to "science"?</div>
+    <div class="dir"><span class="lbl">Direction</span>
+    A valid causal attention matrix must satisfy <b>two</b> conditions — one about shape, one about
+    arithmetic. Check both; the shape one is obvious, the arithmetic one is where the trap is. For 2, index
+    the tokens from position 0 and just read the cell.</div>
+    <details class="sol"><summary>Answer &amp; theory</summary><div class="inner">
+      <h4>The two validity conditions</h4>
+      <ol>
+        <li><b>Zero strictly above the diagonal</b> — no token attends to the future.</li>
+        <li><b>Every row sums to exactly 1</b> — each row is a softmax output, a probability distribution.</li>
+      </ol>
+      <h4>1 — Answer: FALSE</h4>
+<pre>row 0: 1.0 ✓   row 1: 1.0 ✓   row 2: 1.0 ✓   row 3: 1.0 ✓
+row 4: 1.0 ✓   row 5: 0.05+0.15+0.2+0.2+0.2+0.1 = <span class="bad">0.9  ✗</span>   row 6: 1.0 ✓</pre>
+      <p>The lower-triangular shape is fine everywhere — the failure is <b>row 5 summing to 0.9</b>, so it
+      isn't a valid probability distribution. <b class="ans">Not valid.</b></p>
+      <div class="warn"><b>Check the row sums, not just the triangle.</b> The triangle condition is the one
+      everybody checks; the row-sum condition is the one the question is actually testing. A zero weight
+      <i>within</i> the allowed region (row 4, column 0) is perfectly legal — a token may simply choose to
+      ignore an earlier token.</div>
+      <h4>2 — Reading a cell</h4>
+<pre>positions:  0=[BOS]  1=Data  2=science  3=needs  4=clean  5=data  6=[EOS]
+row 5 = [0.05, 0.15, 0.2, 0.2, 0.2, 0.1, 0]
+column 2 = "science"  →  <span class="ans">0.2</span></pre>
+    </div></details>
+  </div>
+</div>
+
+
+<!-- ══════════════════ FAQ ══════════════════ -->
+<h2>FAQ — every conceptual question ever asked <span class="cnt">51 items · 5 papers + 3 GAs</span></h2>
+<p style="color:var(--muted);font-size:14.5px">Read straight through. Each is ten seconds. Anything you
+hesitate on, mark it.</p>
+
+<div class="faqgrp">Tokenization — motivation &amp; vocabulary</div>
+
+<details class="faq"><summary>Primary motivation for subword tokenization over word-level?<span class="src">Aug25 Q2</span></summary>
+<div class="fa"><p><b class="ans">It helps handle out-of-vocabulary words more effectively.</b></p>
+<p>Word-level has a hard OOV problem and an enormous |V|. Character-level has no OOV but sequences ~5×
+longer. Subword is the negotiated middle: frequent words stay whole, rare words decompose.
+<br><b>Wrong:</b> "increases vocabulary size exponentially" (it reduces it), "eliminates the need for a
+tokenizer" (it <i>is</i> a tokenizer), "prevents needing positional encoding" (unrelated).</p></div></details>
+
+<details class="faq"><summary>Major disadvantage of character-level tokenization?<span class="src">2026 Q19</span></summary>
+<div class="fa"><p><b class="ans">It produces much longer input sequences, which increases computational cost.</b></p>
+<p>Attention is O(T²), so ~5× longer sequences means ~25× attention cost.
+<br><b>Wrong:</b> "very large vocabulary" (it's the smallest, ~100), "cannot represent punctuation"
+(it represents everything), "fails to capture morphology" — tempting, but the model <i>can</i> learn
+morphology from characters; it just costs capacity. The primary, unavoidable cost is length.</p></div></details>
+
+<details class="faq"><summary>Select correct statements regarding character-level tokenization.<span class="src">GA5 Q2</span></summary>
+<div class="fa"><p><b class="ans">B, C, D</b> — softmax is easy (|V| ≈ 100) · the vocabulary doesn't expand
+when new text is added (the alphabet is closed) · no unknown-token problem.</p>
+<p><b>Wrong:</b> "|V| larger than word-level for a Harry Potter corpus" — ~100 characters versus thousands
+of words.</p></div></details>
+
+<details class="faq"><summary>Key challenges when building a vocabulary for NLP models?<span class="src">Aug25 Q10 · GA5 Q1</span></summary>
+<div class="fa"><p><b class="ans">A larger vocabulary means a bigger embedding matrix and heavier softmax</b> ·
+<b class="ans">difficulty handling OOV words</b>.</p>
+<p><b>Wrong:</b> "the size of each embedding vector increases with the number of OOV words" — vector width
+<i>d</i> is a fixed hyper-parameter, completely unrelated to OOV. "More entries always guarantee better
+generalization" — the word <i>always</i> makes it false.</p>
+<p>The GA5 list version answers <b>all four</b>: deciding vocabulary size, handling unknown tokens,
+misspelled words, names and numbers.</p></div></details>
+
+<details class="faq"><summary><i>Assertion:</i> a small vocabulary is desirable, it reduces the embedding matrix. <i>Reason:</i> decreasing vocabulary size increases the number of tokens in the input.<span class="src">Mar25 Q3</span></summary>
+<div class="fa"><p><b class="ans">Assertion is false, Reason is true.</b></p>
+<p>Evaluate them separately. <b>Reason true:</b> a smaller vocabulary means words break into more pieces,
+so sequences get longer. <b>Assertion false as a blanket claim:</b> a small vocabulary is not simply
+"desirable" — the longer sequences it causes cost O(T²) attention. It's a trade-off, not a free win, and
+the Reason is precisely what makes the Assertion false.</p></div></details>
+
+<details class="faq"><summary><i>Assertion:</i> each BPE merge adds exactly one new token. <i>Reason:</i> BPE reduces the size of the initial vocabulary by merging frequent tokens.<span class="src">Aug25 Q4</span></summary>
+<div class="fa"><p><b class="ans">Assertion is true, Reason is false.</b></p>
+<p>Each merge appends one concatenated symbol and <b>deletes nothing</b>, so |V| strictly <b>grows</b>:
+|V<sub>k</sub>| = |V₀| + k. BPE shrinks the <i>corpus token count</i>, never the vocabulary.</p></div></details>
+
+<details class="faq"><summary>Which represent the normalization step(s) in building a tokenizer?<span class="src">Dec24 Q11</span></summary>
+<div class="fa"><p><b class="ans">Removing accents from characters</b> · <b class="ans">converting upper case
+to lower case</b>.</p>
+<p>Normalization means <b>cleaning the raw string</b>, before any splitting. The tokenizer pipeline is:
+<b>normalization → pre-tokenization → model (BPE/WordPiece/Unigram) → post-processing</b>.</p>
+<p><b>Wrong:</b> assigning integers to tokens (vocabulary/ID step) · splitting by whitespace
+(pre-tokenization) · adding special tokens (post-processing).</p></div></details>
+
+<details class="faq"><summary>What is the order of the language modeling pipeline?<span class="src">Mar25 Q5</span></summary>
+<div class="fa"><p><b class="ans">The tokenizer handles text and returns IDs. The model handles these IDs and
+outputs a prediction. The tokenizer is then used again to convert predictions back to text.</b></p>
+<p>The tokenizer <b>bookends</b> the model — on the way in and on the way out. Options that put the model
+first, or that stop after the model's prediction, miss the decode step.</p></div></details>
+
+<details class="faq"><summary>For which language is BPE with whitespace pre-tokenization NOT feasible?<span class="src">GA5 Q3</span></summary>
+<div class="fa"><p><b class="ans">Japanese.</b></p>
+<p>Japanese has no whitespace word delimiters, so the pre-tokenization step BPE assumes simply doesn't
+exist. This is precisely the problem <b>SentencePiece</b> was built to solve — it consumes the raw stream
+and never assumes whitespace segmentation.</p></div></details>
+
+<details class="faq"><summary>How does SentencePiece handle whitespace?<span class="src">2025T3 Q126</span></summary>
+<div class="fa"><p><b class="ans">It treats whitespace as part of the text stream and encodes it, often using
+a symbol like ▁ (underscore).</b></p>
+<p>This is what makes detokenization <b>lossless</b> — you can reconstruct the original spacing exactly.
+<b>Wrong:</b> discarding whitespace (destroys information), a special [SPACE] token (that's a different
+design), keeping it only near punctuation.</p></div></details>
+
+<details class="faq"><summary>In SentencePiece, how are subword units selected?<span class="src">2026 Q20</span></summary>
+<div class="fa"><p><b class="ans">Based on a probabilistic model that maximizes the likelihood of the
+training data.</b></p>
+<p>That describes <b>Unigram</b>, which is SentencePiece's default. Note the last distractor — "iteratively
+merging the most frequent pair of adjacent characters" — is a correct description of <b>BPE</b>, and BPE
+<i>is</i> available inside SentencePiece, but the question asks about SentencePiece's characteristic
+selection method.</p></div></details>
+
+<div class="faqgrp">Pretraining objectives &amp; architectures</div>
+
+<details class="faq"><summary>What format of output does T5 generate during span-corruption pretraining?<span class="src">Aug25 Q6</span></summary>
+<div class="fa"><p><b class="ans">A concatenation of the masked spans in order, each preceded by the
+corresponding sentinel token.</b></p>
+<p><b>Wrong:</b> "a sentence with masked tokens filled in" — that's BART, which regenerates the whole
+sequence. The economy of span corruption is precisely that the target is short.</p></div></details>
+
+<details class="faq"><summary>Which models use a form of denoising objective for pre-training?<span class="src">Mar25 Q9</span></summary>
+<div class="fa"><p><b class="ans">BERT, BART, T5.</b></p>
+<p>Denoising = corrupt the input, reconstruct. BERT masks tokens (MLM <i>is</i> a denoising objective),
+BART corrupts and rebuilds the whole sequence, T5 corrupts spans and emits only the spans.</p>
+<p><b>GPT-3 is not</b> — causal language modelling predicts the next token from clean text; nothing is
+corrupted.</p></div></details>
+
+<details class="faq"><summary>Select correct input-output representations for pretraining objectives ("The quick brown fox jumps over the lazy dog").<span class="src">Aug25 Q11</span></summary>
+<div class="fa"><p><b class="ans">Span corruption</b> and <b class="ans">Prefix-LM</b> only.</p>
+<table>
+<tr><td>Span corruption: in <code>The &lt;X&gt; fox … &lt;Y&gt; dog</code>, out <code>&lt;X&gt; quick brown &lt;Y&gt; lazy &lt;Z&gt;</code></td><td class="n ans">✓</td><td>sentinels in place, spans in order, terminal &lt;Z&gt;</td></tr>
+<tr><td>CLM: in <code>…the lazy</code>, out <code>The quick … lazy dog</code></td><td class="n bad">✗</td><td>CLM predicts the <b>next token</b> (<code>dog</code>), not a copy of the whole sentence</td></tr>
+<tr><td>MLM: in <code>The [MASK] fox …</code>, out <code>quick brown</code></td><td class="n bad">✗</td><td>one <code>[MASK]</code> stands for <b>one</b> token, not a two-word span</td></tr>
+<tr><td>Prefix-LM: in <code>finish the sentence: … jumps</code>, out <code>over the lazy dog</code></td><td class="n ans">✓</td><td>bidirectional prefix, then generate the continuation</td></tr>
+</table></div></details>
+
+<details class="faq"><summary>Are T5's sentinel tokens part of the vocabulary?<span class="src">GA7 Q4</span></summary>
+<div class="fa"><p><b class="ans">True.</b></p>
+<p>They are real embedded tokens (<code>&lt;extra_id_0&gt;</code>, …) added at vocabulary construction.
+They <i>must</i> be — otherwise the decoder could never emit them, and the target sequence is built out
+of them.</p></div></details>
+
+<details class="faq"><summary>During BART's denoising pre-training, what is fed as input to the decoder?<span class="src">2025T3 Q124</span></summary>
+<div class="fa"><p><b class="ans">The original, uncorrupted text, shifted right by one token.</b></p>
+<p>Standard teacher forcing. The <b>corrupted</b> text goes to the <b>encoder</b>; the decoder is being
+taught to produce the clean sequence one token at a time given all previous clean tokens.</p>
+<p><b>Wrong:</b> "the corrupted text from the encoder" (that's the encoder's job), "a sequence of [MASK]
+tokens", "nothing but &lt;s&gt;" (that would be unconditional generation, not teacher forcing).</p></div></details>
+
+<details class="faq"><summary>An attention mask lets A and B see each other, and lets D see A, B, C but not E. Which objective?<span class="src">2025T3 Q123</span></summary>
+<div class="fa"><p><b class="ans">Prefix Language Modeling.</b></p>
+<p>A bidirectional block at the front, causal afterwards — that is exactly the Prefix-LM visibility rule.
+<b>CLM</b> would forbid A from seeing B. <b>MLM</b> would let D see E. <b>BART's denoising</b> is described
+by an architecture (bidirectional encoder + causal decoder), not by a single mask over one sequence.</p></div></details>
+
+<details class="faq"><summary>Why is standard GPT (decoder-only, causal masking) unsuitable for MLM?<span class="src">2026 Q4</span></summary>
+<div class="fa"><p><b class="ans">The causal mask prevents attending to future tokens, making it impossible to
+use right-side context to predict a masked token.</b></p>
+<p>MLM is <i>defined</i> by predicting from both sides. The objective and the mask are structurally
+incompatible. <b>Wrong:</b> model size, missing positional embeddings, activation-function differences —
+all irrelevant.</p></div></details>
+
+<details class="faq"><summary>In BERT's MLM, why are 10% of chosen tokens left unchanged?<span class="src">2026 Q3</span></summary>
+<div class="fa"><p><b class="ans">To mitigate the mismatch between pre-training (where [MASK] appears) and
+fine-tuning (where it does not), ensuring the model builds meaningful representations for non-masked
+words.</b></p>
+<p><code>[MASK]</code> never appears at fine-tuning time, so if the model only ever had to produce good
+representations at <code>[MASK]</code> positions, those representations wouldn't transfer. The separate
+10% <b>random replacement</b> forces the model not to blindly trust the observed token.</p></div></details>
+
+<details class="faq"><summary>Which components are found within a standard Transformer Encoder layer?<span class="src">2026 Q8</span></summary>
+<div class="fa"><p><b class="ans">Multi-head self-attention</b> · <b class="ans">position-wise feed-forward
+network</b>.</p>
+<p><b>Not</b> cross-attention (that's a decoder sub-layer, connecting to the encoder) and <b>not</b> masked
+multi-head self-attention (also decoder-only — the encoder is bidirectional by design).</p></div></details>
+
+<details class="faq"><summary>Where do Q, K, V come from in the decoder's cross-attention sub-layer?<span class="src">2025T3 Q128</span></summary>
+<div class="fa"><p><b class="ans">Q comes from the decoder's previous sub-layer; K and V come from the final
+hidden states of the encoder.</b></p>
+<p>Mnemonic: the decoder is the one <i>asking</i> (query); the encoder holds the <i>content being looked
+up</i> (key/value).</p></div></details>
+
+<details class="faq"><summary>Correct statements comparing RNNs and Transformers?<span class="src">2026 Q9</span></summary>
+<div class="fa"><p><b class="ans">Path length between any two positions is O(1) in Transformers vs O(T) in
+RNNs</b> · <b class="ans">Transformers allow far more parallelization during training</b> ·
+<b class="ans">attention uses Q, K, V derived from input embeddings</b>.</p>
+<p><b>Wrong:</b> "Transformers process tokens strictly sequentially during training like RNNs" — the whole
+point is that they don't; all positions are computed in parallel during training.</p></div></details>
+
+<details class="faq"><summary>Which model for sentiment classification: 10,000 reviews/min, memory-constrained, no generation needed?<span class="src">2025T3 Q120</span></summary>
+<div class="fa"><p><b class="ans">BERT — sentiment classification only requires understanding (encoding),
+not generation (decoding), making it faster and more memory-efficient without sacrificing accuracy.</b></p>
+<p>Carrying a decoder you never use is pure cost. The distractor "use BART's encoder only and discard the
+decoder" sounds clever but you'd just be reinventing a worse BERT.</p></div></details>
+
+<details class="faq"><summary>How many models from {BERT, GPT-1, GPT-2, T5, BART, GPT-3, GPT-4, LLaMA, LLaMA-2, Galactica} are encoder-only / encoder-decoder / decoder-only?<span class="src">GA8 Q1–3</span></summary>
+<div class="fa"><p><b class="ans">1 / 2 / 7.</b> Encoder-only: BERT. Encoder-decoder: T5, BART. Decoder-only:
+GPT-1, GPT-2, GPT-3, GPT-4, LLaMA, LLaMA-2, Galactica.</p>
+<p>Rule of thumb: everything modern and generative is decoder-only; encoder-decoder is essentially just T5
+and BART; encoder-only is essentially just BERT (plus RoBERTa, ALBERT, ELECTRA if listed).</p></div></details>
+
+<details class="faq"><summary>Which are correct about GPT-3 (175B)?<span class="src">Mar25 Q11</span></summary>
+<div class="fa"><p><b class="ans">It uses absolute positional encoding</b> · <b class="ans">it uses a
+composite dataset for pre-training</b>.</p>
+<p>"Composite" = a mixture of sources (Common Crawl, WebText2, Books1, Books2, Wikipedia) rather than one
+corpus. <b>Wrong:</b> "encoder-decoder only model" — GPT-3 is <b>decoder-only</b>.</p></div></details>
+
+<div class="faqgrp">T5, transfer learning &amp; fine-tuning</div>
+
+<details class="faq"><summary>Primary advantage of T5's text-to-text approach?<span class="src">Aug25 Q5</span></summary>
+<div class="fa"><p><b class="ans">It allows a single model and architecture to be applied to a wide variety
+of NLP tasks without modification.</b></p>
+<p><b>Wrong:</b> "reduces computational cost significantly" (it doesn't), "guarantees optimal performance
+without fine-tuning" (nothing guarantees that), "eliminates the need for pre-training data" (T5 is defined
+by its C4 pre-training).</p></div></details>
+
+<details class="faq"><summary>Fundamental difference between T5's pre-training objective (span corruption) and its supervised fine-tuning objectives?<span class="src">2025T3 Q121</span></summary>
+<div class="fa"><p><b class="ans">There is no fundamental difference — both are treated as "text-to-text"
+tasks, generating a target sequence given an input sequence.</b></p>
+<p>Same architecture, same decoder, same loss. That uniformity is precisely what lets one checkpoint serve
+every task. <b>Wrong:</b> "fine-tuning is CLM", "[MASK] vs [CLS]" (T5 uses neither), "fine-tuning freezes
+the encoder".</p></div></details>
+
+<details class="faq"><summary>How does T5 output a similarity score like 3.8 for STS-B?<span class="src">2026 Q5</span></summary>
+<div class="fa"><p><b class="ans">It generates the string "3.8" token-by-token using the decoder.</b></p>
+<p>Even <b>regression</b> is text generation under the text-to-text contract. <b>Wrong:</b> a regression
+head on the encoder (that's adding a head — forbidden), bucketing into class labels (loses precision and
+isn't what T5 does), "T5 cannot do regression".</p></div></details>
+
+<details class="faq"><summary>Which transfer approaches suit 12 datasets whose labels were dropped before CLM training?<span class="src">GA7 Q2</span></summary>
+<div class="fa"><p><b class="ans">Zero-shot, few-shot, and full fine-tuning — all three.</b></p>
+<p>Dropping the labels means the model saw the <b>input distribution</b> but never the <b>task mapping</b>.
+The tasks remain genuinely unlearned, so every transfer route stays available.</p>
+<p><b>Trap:</b> "none are appropriate, the model has already been trained on samples from all 12 datasets"
+— confuses <i>seeing raw text</i> with <i>learning the task</i>.</p></div></details>
+
+<details class="faq"><summary>Why might Zero-Shot Transfer be preferred over supervised fine-tuning?<span class="src">2026 Q11</span></summary>
+<div class="fa"><p><b class="ans">It handles tasks with no labelled data</b> · <b class="ans">it avoids storing
+a separate checkpoint per downstream task</b> · <b class="ans">it mimics the human ability to follow
+instructions without thousands of examples</b>.</p>
+<p><b>Wrong:</b> "it always achieves higher accuracy than a fine-tuned SOTA model" — <i>always</i> makes it
+false; a well-fine-tuned model typically wins on its specific task.</p></div></details>
+
+<details class="faq"><summary>Correct findings from the T5 paper on unsupervised pre-training objectives?<span class="src">2026 Q10</span></summary>
+<div class="fa"><p><b class="ans">The specific corruption rate had minimal effect</b> · <b class="ans">span
+length ≈ 3 performed slightly better than single tokens</b> · <b class="ans">replacing a corrupted span
+with a unique sentinel worked better than simply dropping the tokens</b>.</p>
+<p><b>Wrong:</b> "Deshuffling significantly outperformed span corruption" — deshuffling performed
+<i>worse</i>; span corruption was the winner, which is why T5 uses it.</p></div></details>
+
+<details class="faq"><summary>Gradual unfreezing on T5 base over 12 phases — which statements are correct?<span class="src">Mar25 Q8</span></summary>
+<div class="fa"><p><b class="ans">Phase 1: only the last layer of encoder AND decoder are unfrozen</b> ·
+<b class="ans">Phase 2: only the second-last layer of encoder AND decoder are unfrozen</b>.</p>
+<p>Top-down, one layer per phase, both stacks simultaneously. <b>Wrong:</b> decoder-only, encoder-only,
+"first layer" (bottom-up), and "the last <i>two</i> layers in phase 2" — the <i>newly</i> unfrozen layer
+per phase is exactly one, though previously unfrozen layers stay unfrozen.</p></div></details>
+
+<details class="faq"><summary>Temperature mixing: what happens as T → ∞?<span class="src">2026 Q6</span></summary>
+<div class="fa"><p><b class="ans">The sampling distribution approaches uniform — all tasks, large and small,
+sampled with nearly equal probability.</b></p>
+<p>Proportions are raised to 1/T. As T → ∞, 1/T → 0, and any positive number to the power 0 is 1 — so every
+task gets the same weight. Small T does the opposite: it sharpens toward the largest dataset.</p></div></details>
+
+<details class="faq"><summary>Decoder model with P parameters vs encoder-decoder with 2P — same computational cost?<span class="src">GA7 Q7</span></summary>
+<div class="fa"><p><b class="ans">True.</b></p>
+<p>In the encoder-decoder, the input sequence passes only through the P encoder parameters and the output
+sequence only through the P decoder parameters — each token traverses ~P, not 2P. This is T5's central
+argument that encoder-decoder is not "twice as expensive".</p></div></details>
+
+<div class="faqgrp">Scaling laws</div>
+
+<details class="faq"><summary>Important implication of the scaling law?<span class="src">Dec24 Q16 · Aug25 Q3</span></summary>
+<div class="fa"><p><b class="ans">Both the size of the model and that of the data have to be increased
+appropriately to improve test performance.</b></p>
+<p>Growing one alone hits a wall set by the other. Always false: "training longer always helps", "larger
+models require less data", "model size alone, irrespective of data".</p></div></details>
+
+<details class="faq"><summary>Given 4× more compute, what is the best way to use it?<span class="src">Aug25 Q8</span></summary>
+<div class="fa"><p><b class="ans">Increase model size by ≈2× and training data by ≈2×.</b></p>
+<p>Compute C ≈ 6ND, and optimal scaling grows N and D roughly equally, so a 4× budget splits as 2× and 2×.
+<b>Wrong:</b> 4× on either one alone, or doubling model size while halving data.</p></div></details>
+
+<details class="faq"><summary>Which loss does L(N, D) represent — training, in-distribution test, or out-of-distribution test?<span class="src">2025T3 Q119</span></summary>
+<div class="fa"><p><b class="ans">Test loss on the same distribution as training — option 2 only.</b></p>
+<p>The scaling law is fitted to held-out loss on the same data distribution. It says nothing about training
+loss (which can be driven lower by memorisation) and nothing about transfer to a different distribution.</p></div></details>
+
+<details class="faq"><summary>Identify the correct scaling-law formula.<span class="src">GA8 Q5</span></summary>
+<div class="fa"><p><b class="ans">L(N,D) = [ (N<sub>c</sub>/N)<sup>α<sub>N</sub>/α<sub>D</sub></sup> +
+D<sub>c</sub>/D ]<sup>α<sub>D</sub></sup></b></p>
+<p>Two checks, in this order: <b>(i)</b> the N term carries exponent <b>α_N/α_D</b> — options that flip it
+to α_D/α_N are wrong; <b>(ii)</b> the <b>outer</b> exponent is <b>α_D</b> — options using α_N are wrong.
+Nothing else distinguishes the four options.</p></div></details>
+
+<details class="faq"><summary>Which B × T are appropriate for 10⁶ steps seeing at least 5B tokens?<span class="src">GA7 Q5</span></summary>
+<div class="fa"><p><b class="ans">64×128, 128×512, and 4×2048.</b></p>
+<p>tokens seen = steps × B × T, so 10⁶ · (B·T) ≥ 5×10⁹ ⇒ <b>B·T ≥ 5000</b>. Only 8×128 = 1024 fails; the
+other three give 8192, 65536, 8192. The "66 billion tokens" figure is a distractor confirming the dataset
+won't run out.</p></div></details>
+
+<div class="faqgrp">Data pipeline &amp; datasets</div>
+
+<details class="faq"><summary>Which aspects of the pre-training dataset impact model performance?<span class="src">Dec24 Q12 · GA8 Q4 · 2026 Q7</span></summary>
+<div class="fa"><p><b class="ans">Quality, size, and diversity</b> — all three.</p>
+<p>The 2026 phrasing is "scale, diversity, and quality of the training data". <b>Wrong distractors there:</b>
+"model depth, parameters, learning rate" and "compute budget, optimizer, hardware" — those are model and
+training choices, not <i>dataset</i> properties.</p></div></details>
+
+<details class="faq"><summary>Which mechanisms are typically included in the pre-processing pipeline?<span class="src">2026 Q21 · GA8 Q7</span></summary>
+<div class="fa"><p><b class="ans">Deduplicating at line/paragraph/document level · filtering toxic content ·
+language identification · quality assessment to remove spam · PII detection and removal</b> — and in the
+GA8 list also <b class="ans">removing machine-translated content</b> and <b class="ans">placeholder text</b>.</p>
+<p><b>Not pipeline steps:</b> <b>BPE tokenization</b> (downstream of cleaning — you clean text, then tokenize)
+and <b>RLHF</b> (post-training alignment, nothing to do with corpus construction).</p></div></details>
+
+<details class="faq"><summary>Which component removes pages containing bad words?<span class="src">Dec24 Q15</span></summary>
+<div class="fa"><p><b class="ans">Simple heuristics to detect toxic contents.</b></p>
+<p>Bad-word removal is a cheap rule-based blocklist — that's why it isn't the <b>ML classifier for quality
+filtering</b> option, which handles subtler judgements about whether text is well-written and informative.
+Language identification and deduplication are unrelated stages.</p></div></details>
+
+<details class="faq"><summary>Most efficient sequence for: fuzzy dedup, toxicity (ML), PII removal (regex), exact dedup, quality filtering (rules), URL filtering?<span class="src">2025T3 Q117</span></summary>
+<div class="fa"><p><b class="ans">6 → 4 → 1 → 5 → 2 → 3</b> = URL filtering → exact dedup → fuzzy dedup →
+quality filtering → toxicity → PII.</p>
+<p><b>Principle:</b> cheapest and highest-yield first. URL filtering is free (a blocklist lookup, content
+never read). Exact dedup is a hash comparison, cheaper than MinHash fuzzy dedup. Rule-based quality
+filtering beats ML toxicity classification. PII scrubbing runs last, on survivors only.</p></div></details>
+
+<details class="faq"><summary>Correct order of the RefinedWeb pipeline?<span class="src">GA8 Q8</span></summary>
+<div class="fa"><p><b class="ans">63452187</b> = URL filtering → text extraction → language identification →
+repetition removal → document-wise filtering → line-wise correction → fuzzy dedup → exact dedup.</p>
+<div class="warn"><b>Note this keys fuzzy dedup <i>before</i> exact dedup, while 2025T3 Q117 keys the
+opposite over a different list.</b> Don't memorise digit strings. Memorise the principle: URL/metadata →
+extraction → language ID → cheap heuristics → deduplication → expensive ML → PII last.</div></div></details>
+
+<details class="faq"><summary>Arrange BookCorpus, ROOTS, C4, WebText in decreasing order of size.<span class="src">GA8 Q9</span></summary>
+<div class="fa"><p><b class="ans">2341</b> = ROOTS &gt; C4 &gt; WebText &gt; BookCorpus.</p>
+<p>ROOTS (the BLOOM multilingual corpus) is the largest; BookCorpus, an early book collection, is the
+smallest by a wide margin.</p></div></details>
+
+<details class="faq"><summary>Which are primarily multilingual datasets?<span class="src">2025T3 Q114</span></summary>
+<div class="fa"><p><b class="ans">Sangraha</b> and <b class="ans">CommonCrawl</b>.</p>
+<p>DOLMA and BookCorpus are English. CommonCrawl is a raw web scrape and therefore multilingual by default
+— language filtering is something you apply <i>to</i> it.</p></div></details>
+
+<details class="faq"><summary>Correct statements about the pretraining dataset "Sangraha"?<span class="src">GA8 Q10</span></summary>
+<div class="fa"><p><b class="ans">It has text from multiple Indian languages.</b></p>
+<p><b>Wrong:</b> "mono-lingual", "only English text", and "no translated content from any other source" —
+it does include translated content.</p></div></details>
+
+<details class="faq"><summary>Are repeating examples in pre-training datasets completely harmless?<span class="src">Mar25 Q4</span></summary>
+<div class="fa"><p><b class="ans">FALSE.</b></p>
+<p>Duplicates let repeated samples dominate gradient updates (encouraging memorisation) and cause
+<b>train–test leakage</b>, which corrupts evaluation.</p></div></details>
+
+<details class="faq"><summary>Why is deduplication important?<span class="src">2026 Q22</span></summary>
+<div class="fa"><p><b class="ans">It reduces overfitting risk by preventing repeated samples from dominating
+gradient updates</b> · <b class="ans">it avoids data leakage between training and evaluation sets, giving
+more reliable metrics</b>.</p>
+<p><b>Wrong:</b> "guarantees higher accuracy on <i>all</i> downstream tasks" (nothing guarantees that) ·
+"eliminates the need for dropout and weight decay" (different mechanisms, different problems).</p></div></details>
+
+<details class="faq"><summary>Which examples will NOT pass an ideal preprocessing pipeline?<span class="src">Dec24 Q18 · Aug25 Q9 · Mar25 Q10</span></summary>
+<div class="fa"><p><b class="ans">Filtered:</b> hate speech / threats · text containing PAN numbers, phone
+numbers, addresses · a sentence repeated twice · non-English text in an English corpus · code snippets ·
+"Lorem ipsum … Please enable JavaScript" · navigation menus ("Products Shipping Contact FAQ").</p>
+<p><b class="bad">Passes:</b> clean factual prose — ISRO's rocket recovery, the BCCI/ICC statement, the
+Union Budget, the WHO life-expectancy figure, economists on tariffs.</p>
+<p>The test is always: <b>can you name the stage that catches it?</b> If not, it passes.</p></div></details>
+
+<details class="faq"><summary>Which are design choices for building a large language model?<span class="src">Dec24 Q17</span></summary>
+<div class="fa"><p><b class="ans">Activation function in the feed-forward layer · training dataset ·
+positional encoding · attention mechanism</b> — all four.</p>
+<p>The question is testing breadth: architecture internals, data, and position handling are <i>all</i>
+design decisions, not just the obvious architectural ones.</p></div></details>
+
+<div class="faqgrp">Decoding &amp; normalization</div>
+
+<details class="faq"><summary>Which decoding method gives the same response every time for a given prompt?<span class="src">2025T3 Q115</span></summary>
+<div class="fa"><p><b class="ans">Beam Search with beam-size 5</b> and <b class="ans">Beam Search with
+beam-size 1</b>.</p>
+<p>Beam search (including width 1, which is greedy) does no sampling anywhere. <b>All</b> top-k and top-p
+options are non-deterministic regardless of k, p, or temperature — temperature reshapes the distribution
+but never removes the random draw.</p></div></details>
+
+<details class="faq"><summary>For a layer with 512 features, how many learnable parameters do BatchNorm and LayerNorm have?<span class="src">2025T3 Q127</span></summary>
+<div class="fa"><p><b class="ans">BatchNorm: 1024, LayerNorm: 1024.</b></p>
+<p>Each learns a scale γ and a shift β, one per feature ⇒ <b>2H</b> either way. The difference between them
+is <i>what they average over</i> (batch vs features), not how many parameters they have. Options that give
+them different counts are testing whether you've confused "what it normalises across" with "how many
+parameters it holds".</p></div></details>
+
+<details class="faq"><summary>What is the dimension of the concatenated output of h heads before W<sup>O</sup>?<span class="src">2026 Q2</span></summary>
+<div class="fa"><p><b class="ans">T × 512</b> (for d_model = 512, h = 8).</p>
+<p>d_k = d_model/h = 64 per head; concatenating 8 of them gives 8 × 64 = 512 — back to d_model <b>by
+design</b>. That's why multi-head attention is nearly free relative to single-head: <b>h heads of width
+d/h</b>, not h heads of width d. The distractor T × 4096 is what you'd get if each head were full width.</p></div></details>
+
+<details class="faq"><summary>Is a given attention matrix valid for causal language modelling?<span class="src">2026 Q13</span></summary>
+<div class="fa"><p>Check <b>two</b> conditions: <b class="ans">(i) zero strictly above the diagonal</b> and
+<b class="ans">(ii) every row sums to exactly 1</b>.</p>
+<p>In the exam's matrix the triangle is fine everywhere — the failure is <b>row 5 summing to 0.9</b>, so it
+isn't a valid probability distribution. Answer: <b class="ans">False</b>.</p>
+<p><b>Note:</b> a zero <i>inside</i> the allowed region (row 4, column 0) is perfectly legal — a token may
+simply ignore an earlier token. Check the row sums, not just the shape.</p></div></details>
+
+
+<!-- ══════════ CHEAT SHEET ══════════ -->
+<h2 class="cheatwrap" style="border:0">Final cheat sheet <span class="cnt">2 pages · Ctrl+P prints only this</span></h2>
+<div class="cheatwrap">
+<div class="cheat">
+  <h2>LLM Quiz 2 — Weeks 5 · 7 · 8 — Page 1 of 2</h2>
+  <div class="cols">
+  <div>
+  <h3>BPE — the loop</h3>
+  <ul>
+    <li>Append <code>&lt;/w&gt;</code>. <b>|V₀| = distinct characters + 1</b></li>
+    <li>n symbols → <b>n−1 pairs</b>, including the one ending in <code>&lt;/w&gt;</code></li>
+    <li>freq(a,b) = Σ (word count) × (times adjacent). <span class="k">Word freq is only multiplied in — words never compete, pairs do</span></li>
+    <li><span class="k">|V<sub>k</sub>| = |V₀| + k.</span> Nothing ever deleted</li>
+    <li>Corpus tokens <b>−1 per merge occurrence</b></li>
+    <li>Tie-break: <b>first occurrence</b>, scanning words in given order, L→R. <span class="k">Ties are the norm</span></li>
+    <li>Merged tokens are immediately candidates: (u,g)→ug, then <b>(ug,h)</b>→ugh</li>
+    <li>"Tokens with revised frequency after 1 merge" = <span class="k">2</span></li>
+    <li>"V₀ tokens reduced to 0 after k merges" = distinct V₀ symbols <span class="k">named in the merge list</span></li>
+    <li>MCQ pair questions: <span class="k">score only the options</span> — the global winner may not be listed</li>
+    <li>Checksum: Σ (word count × word length) = total pair slots</li>
+  </ul>
+
+  <h3>BPE — encoding a new word</h3>
+  <ul>
+    <li>Is the merge list <b>given</b> (numbered table) or must you <b>derive</b> it from the corpus?</li>
+    <li>Split into <b>raw characters</b>, always</li>
+    <li><span class="k">Replay merges IN LEARNED ORDER</span>. Not longest-match. Check every rule</li>
+    <li>Character missing from the base alphabet ⇒ <span class="k">−1</span></li>
+    <li>Byte-level BPE (256-byte base) ⇒ −1 impossible</li>
+  </ul>
+
+  <h3>Verified answers</h3>
+  <table>
+    <tr><th>Corpus</th><th>|V₀|</th><th>max pair</th><th>min</th></tr>
+    <tr><td>deeper5 keener6 sweeter7</td><td>10</td><td>ee = 18</td><td>(p,e)=5</td></tr>
+    <tr><td>taught2 laughter1 drought4 tough5</td><td>11</td><td>(u,g)=12</td><td>—</td></tr>
+    <tr><td>gentler4 brighter5 crisper3</td><td>13</td><td>er = 12</td><td>(p,e)=3</td></tr>
+    <tr><td>low4 older5 finest6 lowest7 loneliest8</td><td>12</td><td>es = 21</td><td>(w,&lt;/w&gt;)=4</td></tr>
+    <tr><td>"the key to artificial…" sentence</td><td>19</td><td>(e,n)=3*</td><td>—</td></tr>
+  </table>
+  <p style="font-size:11px;margin:2px 0">* among the given options; (e,&lt;/w&gt;) also = 3 but isn't offered</p>
+  <ul>
+    <li>taught-corpus merges: <b>ug, ugh, ough, t&lt;/w&gt;</b> · 3rd = <b>ough</b> · 2 merges to a 3-letter token · 4 merges consume <b>6</b> V₀ symbols</li>
+    <li><code>trought&lt;/w&gt;</code> → t, r, ough, t&lt;/w&gt; = <b>4</b></li>
+    <li><code>simultaneous&lt;/w&gt;</code> → <b>10</b> · <code>stereotypical&lt;/w&gt;</code> → <b>−1</b></li>
+    <li><code>writer&lt;/w&gt;</code> → <b>4</b> · <code>finest&lt;/w&gt;</code> → <b>4</b></li>
+    <li>100 chars + 10000 merges = <b>10100</b> · 1000 tokens − 60 occurrences = <b>940</b></li>
+  </ul>
+
+  <h3>WordPiece</h3>
+  <div class="eq">score(a,b) = count(ab) / (count(a)·count(b))</div>
+  <ul>
+    <li>count(a) = occurrences <b>anywhere</b>, weighted</li>
+    <li>Denominator penalises common characters ⇒ rare-character pairs win</li>
+    <li>gentler/brighter/crisper → <b>('r','&lt;/w&gt;')</b>, 3-way tie at 0.05</li>
+    <li>low/older/finest/… → <b>fi</b>, 100·s = <b>7.14</b></li>
+    <li>play/prey corpus → <b>la</b> (0.0926); (p,a) = <b>0</b>; (p,l) = <b>0.0667</b></li>
+    <li>Encode: <span class="k">longest-match-first from left</span>, first piece bare, later pieces <code>##</code></li>
+    <li>['play','##er','player','##s'] + "players" → <b>['player','##s']</b></li>
+  </ul>
+  </div>
+
+  <div>
+  <h3>Unigram / SentencePiece</h3>
+  <div class="eq">best[i] = max<sub>j&lt;i</sub> ( best[j] + log p(x[j:i]) )</div>
+  <ul>
+    <li>Log-probs <b>add</b>; pick <b>least negative</b>. Options given → just sum all four</li>
+    <li>peanutbutter → <b>[peanut, butter] = −1.5</b></li>
+    <li>SentencePiece = <span class="k">framework</span>; whitespace → <code>▁</code>; lossless; no pre-tokenization (Japanese)</li>
+    <li>"maximises likelihood of training data" = Unigram = SentencePiece default</li>
+    <li>BPE = frequency · WordPiece = co-occurrence over chance · Unigram = likelihood + pruning</li>
+  </ul>
+
+  <h3>Tokenization theory</h3>
+  <ul>
+    <li>Subword motivation = <span class="k">handles OOV effectively</span></li>
+    <li>Char-level disadvantage = <span class="k">longer sequences, O(T²)</span></li>
+    <li>BPE assertion/reason → <b>A true, R false</b> (|V| grows)</li>
+    <li>Small-vocab assertion/reason → <b>A false, R true</b></li>
+    <li>Normalization = <b>remove accents, lowercase</b></li>
+    <li>Tokenizer internals: <span class="k">normalization → pre-tokenization → model → post-processing</span></li>
+    <li>LM pipeline: <span class="k">tokenizer → IDs → model → prediction → tokenizer back to text</span></li>
+    <li>BPE + whitespace fails on <span class="k">Japanese</span></li>
+  </ul>
+
+  <h3>Sentinels — the binary rule</h3>
+  <div class="eq"><b>TARGET ends with [z] · INPUT does not</b></div>
+  <ul>
+    <li>INPUT: spans replaced in place by distinct sentinels</li>
+    <li>TARGET: sentinel + span, in original order, then <b>[z]</b></li>
+    <li>Naming free ⇒ <span class="k">expect 2 correct MSQ options</span></li>
+    <li>Sentinels <b>are</b> in the vocabulary — True</li>
+    <li>T5 target for "The quick &lt;X&gt; fox &lt;Y&gt; over…" = <b>&lt;X&gt; brown &lt;Y&gt; jumps &lt;Z&gt;</b></li>
+  </ul>
+
+  <h3>Objectives → models</h3>
+  <table>
+    <tr><th>Sees</th><th>Objective</th><th>Model</th><th>Output</th></tr>
+    <tr><td>both sides</td><td>MLM</td><td>BERT</td><td>masked token</td></tr>
+    <tr><td>left only</td><td>CLM</td><td>GPT</td><td>next token</td></tr>
+    <tr><td>bidir enc</td><td>denoising</td><td>BART</td><td><b>full</b> sequence</td></tr>
+    <tr><td>bidir enc</td><td>span corruption</td><td>T5</td><td><b>spans only</b></td></tr>
+    <tr><td>prefix bidir</td><td>Prefix-LM</td><td>UniLM</td><td>continuation</td></tr>
+  </table>
+  <ul>
+    <li>Denoising = <span class="k">BERT, BART, T5</span>. <b>Not GPT-3</b></li>
+    <li>BART decoder input = <span class="k">original text shifted right</span></li>
+    <li>Cross-attention: <span class="k">Q from decoder, K/V from encoder</span></li>
+    <li>Encoder layer = self-attn + FFN <b>only</b></li>
+    <li>Architectures: <b>1 / 2 / 7</b> (BERT · T5+BART · GPTs+LLaMAs+Galactica)</li>
+    <li>GPT-3: <span class="k">absolute positional encoding + composite dataset</span>, decoder-only</li>
+    <li>Sentiment classification, memory-tight ⇒ <span class="k">BERT</span></li>
+  </ul>
+
+  <h3>Masks</h3>
+  <div class="eq">Prefix-LM count = T(T+1)/2 + p(p−1)/2</div>
+  <ul>
+    <li>T=32, p=2 → <b>529</b> (matches Dec 2024 key)</li>
+    <li>T=64, p=3 → <b>2083</b>; <span class="k">Mar 2025 key prints 2115 — anomalous</span></li>
+    <li>p=0 → causal · p=T → T² (BERT)</li>
+    <li>Causal mask → −∞ <b>before</b> softmax → future weight = <span class="k">0</span></li>
+    <li>Valid CLM matrix: zero above diagonal <b>and</b> <span class="k">rows sum to 1</span></li>
+  </ul>
+  </div>
+  </div>
+
+  <div class="pbreak">Page 2 of 2</div>
+
+  <div class="cols">
+  <div>
+  <h3>BART loss — 4 marks</h3>
+  <div class="eq">L = −(1/n) Σ ln p(gold<sub>t</sub>)</div>
+  <ul>
+    <li><span class="k">MEAN, NOT SUM.</span> GA7: sum 7.62 → answer <b>1.09</b></li>
+    <li>Index columns in the order V is written</li>
+    <li>Target = the <b>original uncorrupted</b> sentence</li>
+    <li>Check: gold prob should equal the row max. If not, you mis-indexed</li>
+    <li>Zero entry (misprint) ⇒ drop that step, average the rest. Mar25 → <b>1.99</b></li>
+  </ul>
+
+  <h3>Decoding</h3>
+  <ul>
+    <li>Top-k: keep k, <span class="k">renormalise by survivors' sum</span>. k=2 on {B .4, D .25} → <b>0.62</b></li>
+    <li>Top-p: smallest set with cumulative <b>≥</b> p</li>
+    <li><b>Deterministic:</b> greedy, beam (any width)</li>
+    <li><b>Not:</b> top-k, top-p, any temperature</li>
+  </ul>
+
+  <h3>Scaling laws</h3>
+  <div class="eq">L = [ (N<sub>c</sub>/N)<sup>α<sub>N</sub>/α<sub>D</sub></sup> + D<sub>c</sub>/D ]<sup>α<sub>D</sub></sup></div>
+  <ul>
+    <li>Check <span class="k">α_N/α_D on the N term; outer exponent α_D</span></li>
+    <li>N_c=8.8e13, D_c=5.4e13, α_N=0.076, α_D=0.095</li>
+    <li>N=D=1e9 → <b>2.857</b> (2.852–2.862)</li>
+    <li>L = <span class="k">test loss, same distribution</span> only</li>
+    <li>L(2N,2D)/L(N,D) ∈ [0.936, 0.949] → <b>0.942</b>. <span class="k">Never plug in N_c, D_c</span></li>
+    <li>4× compute ⇒ <span class="k">2× params, 2× data</span> (C ≈ 6ND)</li>
+    <li>Implication: <span class="k">N and D grow together</span></li>
+    <li>Tokens = steps × B × T. 10⁶ steps, ≥5e9 ⇒ <span class="k">BT ≥ 5000</span></li>
+  </ul>
+
+  <h3>Fine-tuning / transfer</h3>
+  <ul>
+    <li>T5: everything text→text. <span class="k">Never add a head. Never update vocabulary</span></li>
+    <li>Labels as strings: words <b>and</b> digit-strings <span class="k">both correct</span></li>
+    <li>Cover <b>every</b> class (3 classes ⇒ include "neutral")</li>
+    <li>STS-B 3.8 → decoder generates the string "3.8"</li>
+    <li>Pretraining vs fine-tuning objective: <span class="k">no fundamental difference</span></li>
+    <li>Gradual unfreezing: top-down, <span class="k">one layer per phase, encoder AND decoder</span></li>
+    <li>Labels dropped + CLM ⇒ <span class="k">zero-shot, few-shot, full FT all valid</span></li>
+    <li>Mixing: uniform at <span class="k">K = smallest dataset</span> (10,000)</li>
+    <li>Temperature mixing, T→∞ ⇒ uniform</li>
+    <li>T5 findings: corruption rate ~irrelevant · span ≈3 best · sentinels beat dropping · deshuffling <b>loses</b></li>
+    <li>Decoder(P) vs EncDec(2P) compute — <b>same</b> (True)</li>
+  </ul>
+  </div>
+
+  <div>
+  <h3>Data pipeline</h3>
+  <p style="font-size:12px;margin:3px 0"><b>Principle:</b> cheapest, highest-yield filters first; expensive ML last; PII last.</p>
+  <ul>
+    <li>RefinedWeb: <span class="k">6 3 4 5 2 1 8 7</span></li>
+    <li>2025T3 list: <span class="k">6 4 1 5 2 3</span> (URL → exact → fuzzy → quality → toxicity → PII)</li>
+    <li>Bad words removed by <span class="k">simple toxicity heuristics</span>, not the ML classifier</li>
+    <li>Survival: <b>multiply survivors</b>. .5 × .76 × .88 = <b>33%</b></li>
+  </ul>
+  <p style="font-size:12px;margin:7px 0 2px"><b>Filtered:</b> toxicity · PII · duplicates · wrong language · code · Lorem ipsum · nav/JS boilerplate · machine-translated</p>
+  <p style="font-size:12px;margin:2px 0"><b>Kept:</b> clean factual prose (budget, WHO, tariffs, ISRO, BCCI)</p>
+  <p style="font-size:12px;margin:2px 0"><b>Not pipeline steps:</b> BPE tokenization · RLHF</p>
+  <ul>
+    <li>Sizes: <span class="k">ROOTS &gt; C4 &gt; WebText &gt; BookCorpus</span> = <code>2341</code></li>
+    <li>Multilingual: <span class="k">Sangraha, CommonCrawl</span>. English: DOLMA, BookCorpus</li>
+    <li>Sangraha = multiple <span class="k">Indian</span> languages, includes translated content</li>
+    <li>Repeated examples harmless? <span class="k">FALSE</span></li>
+    <li>Dedup: less memorisation + no train/test leakage. Does <b>not</b> replace dropout</li>
+    <li>Data aspects: <span class="k">quality, size, diversity</span></li>
+    <li>Design choices: <span class="k">activation, dataset, positional encoding, attention</span></li>
+  </ul>
+
+  <h3>Numeric odds &amp; ends</h3>
+  <ul>
+    <li>LayerNorm: across <b>features</b>, per sample, σ² uses <b>1/H</b>. [1,3,5,7] → μ=4, σ=√5, max <b>1.342</b></li>
+    <li>LN and BN both have <span class="k">2H</span> params (512 → 1024 each)</li>
+    <li>Embedding params = (#ids) × d, summed: 5000·128 + 64·128 + 2·128 = <b>648,448</b></li>
+    <li>d_model=512, h=8 ⇒ d_k=64, concat = <span class="k">T×512</span></li>
+    <li>Shared enc-dec: 220M → <b>110M</b></li>
+    <li>MLM 80/10/10: 10% unchanged fixes <span class="k">pretrain/finetune mismatch</span></li>
+    <li>Transformer path length <span class="k">O(1)</span> vs RNN O(T)</li>
+  </ul>
+
+  <h3>Last 60 seconds</h3>
+  <ul>
+    <li><span class="k">Loss = MEAN.</span></li>
+    <li><span class="k">Check the BPE tie every time.</span></li>
+    <li><span class="k">Target ends [z]; input does not.</span></li>
+    <li><span class="k">Replay merges in learned order.</span></li>
+    <li><span class="k">MSQ: look for the naming twin.</span></li>
+    <li><span class="k">Score only the options on pair questions.</span></li>
+    <li><span class="k">Percentages multiply.</span></li>
+    <li><span class="k">|V| grows, corpus shrinks.</span></li>
+    <li><span class="k">Attention matrix: check row sums, not just the triangle.</span></li>
+    <li>NAT insufficient info ⇒ <b>−1</b>. Keep ≥2 digits in intermediates.</li>
+  </ul>
+  </div>
+  </div>
+</div>
+</div>
+
+</div>
+</body>
+</html>
