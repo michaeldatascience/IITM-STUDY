@@ -16,7 +16,7 @@ Workspace: `E:\CODE\LLMDLCV`
 - [DLCV PYQs](<DLCV/PYQ>)
 - [Generated study previews](<Study Material Previews>)
 - [LLM GitHub publication working tree](<IITM-LLM>)
-- [Unified local study hub](<study-hub/index.html>)
+- [Unified published study hub](<study-hub/index.html>) - <https://michaeldatascience.github.io/IITM-STUDY/>
 - [Syllabus, concept map, and progress tracker](STUDY_MAP.md)
 
 ## Purpose
@@ -41,7 +41,7 @@ Use sources in this order whenever there is a disagreement:
 | `DLCV/` | 66 PDFs, 2 Markdown, 24 text/JSON, 3 HTML, 1 JPG, 3 PNG, 1 MP3, 1 MP4 | 3,132 PDF pages |
 | `Study Material Previews/` | 1 Markdown, 2 interactive HTML | Working/generated copies |
 | `IITM-LLM/` | 1 Markdown, 1 text, 10 HTML | GitHub publication repository |
-| `study-hub/` | 11 Markdown, 17 HTML, 1 text | Curated local publication unit and single-entry study interface |
+| `study-hub/` | 12 Markdown, 18 HTML, 1 text | Curated GitHub Pages publication unit and single-entry study interface |
 | **PDF total** | **90 PDFs / 3,801 pages** | All files opened successfully and yielded extractable text during the 2026-08-30 review |
 
 `tmp/` contains render/review intermediates and is deliberately excluded from the study-resource inventory.
@@ -194,18 +194,20 @@ Folder: `IITM-LLM/`
 
 The two published Week 5/7 HTML files are exact copies of their corresponding working-preview versions. The repository is for final notes and study artifacts only; it is not a general-purpose code project.
 
-## Unified local study hub
+## Unified published study hub
 
 Folder: `study-hub/`
 
 - `index.html` - single entry point for both courses, the creation sequence, reviewed archives, and progress visible through browser local storage.
 - `shared/volume-00-neural-foundations.md` - canonical source/reference version covering DLCV Weeks 3 and 7 plus the LLM Seq2Seq prerequisite bridge.
 - `shared/volume-00-neural-foundations-interactive.html` - interactive Volume 0 with timed resistance pulses, activation/RNN/BPTT/backprop/GRU labs, final test, and saved progress.
+- `shared/volume-01-transformer-foundations.md` - canonical source/reference version for LLM Weeks 1-2, with the shared Q/K/V, self-attention, masking, position, normalization, and parameter foundation reused by DLCV Weeks 8-9.
+- `shared/volume-01-transformer-foundations-interactive.html` - interactive Volume 1 with attention, causal-mask, parameter-count, sinusoidal-PE, normalization, routing, resistance, and final-test labs.
 - `llm/week-05-tokenizers-interactive.html` and `llm/week-07-bart-gpt2-t5-interactive.html` - approved canonical copies.
 - `archive/llm/` and `archive/dlcv/` - reviewed prior artifacts retained as references until incorporated into canonical volumes.
 - `docs/` - publication snapshots of this catalog and the study map.
 
-The hub is local only at present. It is structured as the future Git publication unit, but it has not been committed or pushed.
+The folder is the working tree for `michaeldatascience/IITM-STUDY`. Final artifacts are published through GitHub Pages at <https://michaeldatascience.github.io/IITM-STUDY/>. Browser scores and resistance counts remain device-local by design.
 
 # DLCV resources
 
@@ -329,3 +331,4 @@ When new material is added:
 
 - **2026-08-30:** Initial full catalog created after reviewing the updated official slides, lecture lists, personal Markdown/HTML notes, assignments, PYQs, generated previews, and the LLM publication repository.
 - **2026-08-30:** Added the unified `study-hub`, curated reviewed artifacts, and registered Shared Volume 0 as the first canonical cross-course module.
+- **2026-08-30:** Published the hub to `michaeldatascience/IITM-STUDY` and added Shared Volume 1 - Transformer Foundations as the second canonical cross-course module.
