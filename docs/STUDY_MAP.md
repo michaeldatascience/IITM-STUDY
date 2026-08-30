@@ -68,7 +68,7 @@ These are initial evidence-based tiers, not fabricated percentages. They will be
 | 5 | L5.1 Tokenization - Challenges; L5.2 Motivation for sub-word tokenization; L5.3 Byte Pair Encoding; L5.4 Word-Piece tokenizer; L5.5 Sentence-Piece Tokenizer | OOV/open vocabulary; subword trade-offs; BPE training and new-word encoding; WordPiece scoring and longest-match encoding; Unigram/Viterbi where used in course questions; SentencePiece; counting traps | A | **Interactive module exists**; master Quiz 2 note, two tokenizer interactives, official PDF, and Markdown preview available | Previously studied; mastery unassessed. GA5 solution and PYQs integrated into module. | Take the module's closed-book test; log errors by BPE counting, encoding, WordPiece, or Unigram. |
 | 6 | No video lectures; bonus assignments only | No standalone lecture concept block in the supplied official index | C | No official lecture PDF; no captured Week 6 assignment/solution identified | Previously inside Quiz 2 period, but no mastery record and no standalone content to mark complete | Verify whether any Week 6 bonus artifact is still to be supplied; otherwise treat as retrieval/buffer week. |
 | 7 | L7.1 Brief intro to BART; L7.2 GPT-2: Prompting the models; L7.3 Choices that affects the model performance; L7.4 Baseline Model; L7.5 Experiment with different architecture; L7.6 Experiment with unsupervised objectives; L7.7 Effect of size of pre-training dataset; L7.8 Fine tuning stratagies; L7.9 Multi-task learning; L7.10 Pushing the limits | BART denoising/seq2seq; GPT-2 prompting; architecture/objective/data-size experiments; baselines; fine-tuning strategies; multitask mixing; scaling; BERT/GPT/BART/T5/Prefix-LM comparison | A | **Interactive module exists**; official slides, master Quiz 2 note, GA7 solution, PYQs | Previously studied; mastery unassessed | Take the interactive test, then force explanation of each model by architecture, mask, objective, input/output, and task fit. |
-| 8 | L8.1 Big Picture - Road ahead; L8.2 Motivation for scaling the data size; L8.3 Data sourcing and cleaning; L8.4 Pre-processing Pipeline; L8.5 Pre-training datasets | Scaling data; sourcing; language/quality/toxicity filtering; deduplication; preprocessing order; survival arithmetic; dataset properties and named pretraining corpora | A | Official two-part slides + master Quiz 2 note + GA8 solution + PYQs | Previously studied; mastery unassessed | Build the canonical Week 8 module and test pipeline ordering, dataset identification, and filtering arithmetic. |
+| 8 | L8.1 Big Picture - Road ahead; L8.2 Motivation for scaling the data size; L8.3 Data sourcing and cleaning; L8.4 Pre-processing Pipeline; L8.5 Pre-training datasets | Scaling data; sourcing; language/quality/toxicity filtering; deduplication; preprocessing order; survival arithmetic; dataset properties and named pretraining corpora | A | **Interactive Week 8 module + dedicated Data Pipeline Playground exist**; official two-part slides, master Quiz 2 note, GA8 solution, and four PYQs integrated | Previously studied; mastery unassessed | Reproduce the 1B/1B scaling result, rebuild RefinedWeb from names, route C4 examples, and complete the embedded plus 25-item closed-book tests. |
 
 ## End-Term extension: Weeks 9–12
 
@@ -198,8 +198,8 @@ The local `study-hub/index.html` is the permanent entry point. Artifacts are gen
 2. **Complete:** Transformer Foundations - LLM Weeks 1–2, reused by DLCV Weeks 8–9.
 3. **Complete:** DLCV Quiz 1 Recovery - Weeks 1–4, with the shared Week 3 foundation linked and a dedicated CNN mechanics playground.
 4. **Complete:** Language Models and Decoding - LLM Weeks 3–4, with a dedicated Decoding & Objective Playground.
-5. **Next:** LLM Week 8 companion for the existing Week 7 module.
-6. Modern CNNs and Detection - DLCV Weeks 5–6.
+5. **Complete:** LLM Week 8 companion for the existing Week 7 module, with a dedicated Data Pipeline Playground.
+6. **Next:** Modern CNNs and Detection - DLCV Weeks 5–6.
 7. Sequence and Attention in Vision - DLCV Weeks 7–8.
 8. Efficient and Vision Transformers - LLM Weeks 11–12 plus DLCV Week 9.
 9. Generative Vision Models - DLCV Weeks 10–11.
@@ -208,7 +208,7 @@ The local `study-hub/index.html` is the permanent entry point. Artifacts are gen
 
 # Immediate next study checkpoint
 
-Open `../llm/volume-03-language-models-decoding-interactive.html`. Complete the entry diagnostic, study in order, and finish the embedded objective test. Then use `../llm/decoding-objective-playground.html` only after writing each search/sampling prediction, and finish the 25-item closed-book test.
+Open `../llm/week-08-data-scaling-pipelines-interactive.html`. Reproduce the scaling-law numeric before using its calculator, study the pipeline families in order, then use `../llm/data-pipeline-playground.html` to test ordering, filtering, survival arithmetic, dataset identity, and mixtures. Finish the 25-item closed-book test.
 
 No mastery has been inferred from the existence of old notes or from generating the new artifacts.
 
@@ -219,3 +219,4 @@ No mastery has been inferred from the existence of old notes or from generating 
 - **2026-08-30:** Locked the one-volume-at-a-time creation sequence, added the unified study hub, and marked Shared Volume 0 generated but not yet studied/tested.
 - **2026-08-30:** Generated Shared Volume 1 - Transformer Foundations from official LLM Weeks 1-2, GA1/GA2, four End-Term PYQs, and reviewed Quiz 1 notes; common mechanics are explicitly reused by DLCV Weeks 8-9.
 - **2026-08-30:** Completed DLCV Volume 2 for Weeks 1–4 and the CNN shape/parameter/receptive-field playground; learning status remains unassessed until the embedded tests are taken.
+- **2026-08-30:** Generated the LLM Week 8 Data Scaling and Pre-training Pipelines module from all 69 official slide pages, GA8, four supplied PYQs, and the personal Quiz 2 reference; added a dedicated scaling, RefinedWeb, filtering, survival, dataset, and mixture playground.
