@@ -41,7 +41,7 @@ Use sources in this order whenever there is a disagreement:
 | `DLCV/` | 66 PDFs, 2 Markdown, 24 text/JSON, 3 HTML, 1 JPG, 3 PNG, 1 MP3, 1 MP4 | 3,132 PDF pages |
 | `Study Material Previews/` | 1 Markdown, 2 interactive HTML | Working/generated copies |
 | `IITM-LLM/` | 1 Markdown, 1 text, 10 HTML | GitHub publication repository |
-| `study-hub/` | 12 Markdown, 18 HTML, 1 text | Curated GitHub Pages publication unit and single-entry study interface |
+| `study-hub/` | 14 Markdown, 22 HTML, 1 text | Curated GitHub Pages publication unit and single-entry study interface |
 | **PDF total** | **90 PDFs / 3,801 pages** | All files opened successfully and yielded extractable text during the 2026-08-30 review |
 
 `tmp/` contains render/review intermediates and is deliberately excluded from the study-resource inventory.
@@ -332,3 +332,5 @@ When new material is added:
 - **2026-08-30:** Initial full catalog created after reviewing the updated official slides, lecture lists, personal Markdown/HTML notes, assignments, PYQs, generated previews, and the LLM publication repository.
 - **2026-08-30:** Added the unified `study-hub`, curated reviewed artifacts, and registered Shared Volume 0 as the first canonical cross-course module.
 - **2026-08-30:** Published the hub to `michaeldatascience/IITM-STUDY` and added Shared Volume 1 - Transformer Foundations as the second canonical cross-course module.
+- **2026-08-30:** Added the source-grounded DLCV Quiz 1 Recovery Volume for Weeks 1–4 and the dedicated CNN Shape, Parameters, and Receptive Field Playground. The paired Markdown is a runtime source for the interactive HTML and is intentionally not linked from the hub.
+- **2026-08-30:** Added LLM Volume 3 for Weeks 3–4 and the Decoding & Objective Playground. The volume integrates the 143 official slide pages, GA3/GA4, four supplied PYQs, and personal Quiz 1 notes; the paired Markdown remains an unlinked runtime source.
