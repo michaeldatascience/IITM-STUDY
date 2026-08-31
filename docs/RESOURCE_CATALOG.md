@@ -1,7 +1,9 @@
 # IITM LLM + DLCV Resource Catalog
 
 Last verified: 2026-08-31
-Workspace: `E:\CODE\LLMDLCV`
+Original primary-PC workspace: `E:\CODE\LLMDLCV`
+
+> Portable-source note: this private repository intentionally excludes both `Course Slides` folders. Official lecture PDFs and media are stored in the user's private Dropbox archive and must be inspected from there when authoring. Final reviewed artifacts live in `michaeldatascience/IITM-STUDY`. Paths below that refer to excluded slides, working previews, or publication repositories describe the original workspace and may not exist inside this lightweight clone.
 
 ## Quick navigation
 
@@ -35,14 +37,13 @@ Use sources in this order whenever there is a disagreement:
 
 ## Inventory snapshot
 
-| Area | Current inventory | Notes |
-|---|---:|---|
-| `LLM/` | 24 PDFs, 24 Markdown, 7 text/JSON, 2 HTML | 669 PDF pages |
-| `DLCV/` | 66 PDFs, 2 Markdown, 24 text/JSON, 3 HTML, 1 JPG, 3 PNG, 1 MP3, 1 MP4 | 3,132 PDF pages |
-| `Study Material Previews/` | 1 Markdown, 2 interactive HTML | Working/generated copies |
-| `IITM-LLM/` | 1 Markdown, 1 text, 10 HTML | GitHub publication repository |
-| `study-hub/` | 15 Markdown, 24 HTML, 1 text | Curated GitHub Pages publication unit and single-entry study interface |
-| **PDF total** | **90 PDFs / 3,801 pages** | All files opened successfully and yielded extractable text during the 2026-08-30 review |
+| Area | Current original workspace | Portable private copy | Notes |
+|---|---:|---:|---|
+| `LLM/` | 62 files / 40.51 MB | 49 files / 11.66 MB | The 13 omitted files are official slides stored in Dropbox. |
+| `DLCV/` | 106 files / 474.31 MB | 38 files / 11.06 MB | The 68 omitted files are official slides and lecture media stored in Dropbox. |
+| `Study Material Previews/` | 3 files / 0.14 MB | Excluded | Superseded working copies; canonical artifacts are in `IITM-STUDY`. |
+| `IITM-LLM/` and `IITM-DLCV/` | Legacy local clones | Excluded | Historical repositories, not active publication targets. |
+| `study-hub/` | 53 files / 2.40 MB | Excluded | Separate public `IITM-STUDY` repository and single-entry study interface. |
 
 `tmp/` contains render/review intermediates and is deliberately excluded from the study-resource inventory.
 
@@ -160,8 +161,13 @@ Folder: `LLM/PYQ/`
 - `2025 April.pdf`
 - `2025 August.pdf`
 - `2025 dec.pdf`
+- `NEW 2025 MAY.pdf`
+- `NEW 2025 SEP.pdf`
+- `NEW 2025 SEP AN.pdf`
+- `NEW 2026 JAN AN.pdf`
+- `NEW 2026 JAN FN.pdf`
 
-These four papers are the current evidence base for pattern and weightage analysis. Preserve each paper's own notation when solving it, then reconcile against the corresponding official lecture notation.
+These nine papers are the current evidence base for pattern and weightage analysis. Preserve each paper's own notation when solving it, then reconcile against the corresponding official lecture notation. Filenames containing `AN` and `FN` are retained exactly as supplied.
 
 ## Generated and published LLM artifacts
 
@@ -203,22 +209,20 @@ Folder: `study-hub/`
 - `shared/volume-00-neural-foundations-interactive.html` - interactive Volume 0 with timed resistance pulses, activation/RNN/BPTT/backprop/GRU labs, final test, and saved progress.
 - `shared/volume-01-transformer-foundations.md` - canonical source/reference version for LLM Weeks 1-2, with the shared Q/K/V, self-attention, masking, position, normalization, and parameter foundation reused by DLCV Weeks 8-9.
 - `shared/volume-01-transformer-foundations-interactive.html` - interactive Volume 1 with attention, causal-mask, parameter-count, sinusoidal-PE, normalization, routing, resistance, and final-test labs.
-- `shared/volume-08-efficient-attention-vision-transformers.md` - paired runtime source for LLM Weeks 11–12 plus DLCV Week 9; intentionally not linked from the hub.
-- `shared/volume-08-efficient-attention-vision-transformers-interactive.html` - canonical Volume 8 covering attention cost/fast mechanisms, KV inference, relative position, ViT/Swin, DETR/Deformable DETR, and SAM.
-- `shared/efficient-attention-vit-playground.html` - dedicated practice for attention masks/pair counts, RoPE/ALiBi/RPE, MHA/GQA/MQA cache sizing, ViT/Swin patch grids, and DETR Hungarian matching.
 - `llm/week-05-tokenizers-interactive.html` and `llm/week-07-bart-gpt2-t5-interactive.html` - approved canonical copies.
 - `llm/week-08-data-scaling-pipelines.md` - paired runtime source for the Week 8 module; intentionally not linked from the hub.
 - `llm/week-08-data-scaling-pipelines-interactive.html` - canonical Week 8 module covering scaling laws, Common Crawl, cleaning pipelines, deduplication, named datasets, GA8, and repeated PYQ patterns.
 - `llm/data-pipeline-playground.html` - dedicated Week 8 visual practice for scaling, RefinedWeb ordering, survivor arithmetic, C4 filtering, dataset ordering, and mixture allocation.
-- `dlcv/volume-06-modern-cnns-detection.md` - paired runtime source for the DLCV Weeks 5–6 canonical volume; intentionally not linked from the hub.
-- `dlcv/volume-06-modern-cnns-detection-interactive.html` - canonical DLCV Weeks 5–6 module covering architecture evolution, efficient convolution, transfer learning, CNN visualization, two-/single-stage detection, evaluation, and semantic/instance/panoptic segmentation.
-- `dlcv/detection-metrics-playground.html` - dedicated visual practice for box IoU, NMS, pyramid anchors, foreground-only box regression, 11-point AP/mAP, and Dice versus IoU.
-- `dlcv/volume-07-sequence-attention-vision.md` - paired runtime source for the DLCV Weeks 7–8 canonical volume; intentionally not linked from the hub.
-- `dlcv/volume-07-sequence-attention-vision-interactive.html` - canonical DLCV Weeks 7–8 module covering RNN/BPTT, course-convention LSTM/GRU calculations, video understanding, alignment and attention, captioning, VQA/dialog, and the Transformer bridge.
-- `dlcv/visual-attention-playground.html` - dedicated visual practice reproducing PA8/GA8 spatial contexts, score-softmax-context numerics, caption-step attention, soft/hard mechanisms, and self-attention complexity.
-- `dlcv/volume-09-generative-vision-models.md` - paired runtime source for the DLCV Weeks 10–11 canonical volume; intentionally not linked from the hub.
-- `dlcv/volume-09-generative-vision-models-interactive.html` - canonical DLCV Weeks 10–11 module covering density estimation, GANs, VAEs and disentanglement, DDPMs, guidance, VQ-VAE, and latent diffusion.
-- `dlcv/generative-models-playground.html` - dedicated visual practice for GAN density equilibrium, VAE sampling/KL, cumulative diffusion signal, classifier-free guidance, and VQ-VAE code selection.
+- `dlcv/volume-06-modern-cnns-detection-interactive.html` and its paired Markdown - canonical DLCV Weeks 5-6 module.
+- `dlcv/detection-metrics-playground.html` - dedicated detection, IoU, NMS, anchor, and mAP practice.
+- `dlcv/volume-07-sequence-attention-vision-interactive.html` and its paired Markdown - canonical DLCV Weeks 7-8 module.
+- `dlcv/visual-attention-playground.html` - dedicated visual-attention practice.
+- `shared/volume-08-efficient-attention-vision-transformers-interactive.html` and its paired Markdown - shared LLM Weeks 11-12 and DLCV Week 9 module.
+- `shared/efficient-attention-vit-playground.html` - dedicated efficient-attention and ViT practice.
+- `dlcv/volume-09-generative-vision-models-interactive.html` and its paired Markdown - canonical DLCV Weeks 10-11 module.
+- `dlcv/generative-models-playground.html` - dedicated GAN, VAE, and diffusion practice.
+- `dlcv/volume-10-contrastive-vlms-interactive.html` and its paired Markdown - canonical DLCV Week 12 contrastive-learning and VLM module.
+- `dlcv/contrastive-vlm-playground.html` - dedicated metric-learning, SimCLR, CLIP, BLIP, and BLIP-2 practice.
 - `archive/llm/` and `archive/dlcv/` - reviewed prior artifacts retained as references until incorporated into canonical volumes.
 - `docs/` - publication snapshots of this catalog and the study map.
 
@@ -319,8 +323,11 @@ Folder: `DLCV/PYQ/`
 - `2025 April.pdf`
 - `2025 Aug.pdf`
 - `2025 Dec.pdf`
+- `NEW 2025 MAY.pdf`
+- `NEW 2025 SEP.pdf`
+- `NEW 2026 JAN.pdf`
 
-These four papers are the current pattern/weightage evidence base. Some PDFs are encrypted at the file level but opened and extracted successfully during review.
+These seven papers are the current pattern/weightage evidence base. Some PDFs are encrypted at the file level but opened and extracted successfully during review.
 
 # Known gaps and cautions
 
@@ -344,12 +351,10 @@ When new material is added:
 
 ## Change log
 
-- **2026-08-31:** Added the source-grounded DLCV Weeks 10–11 Generative Vision Models volume plus the Generative Models Playground. The volume integrates all 342 official slide pages, GA10/PA10, GA11/PA11, and seven supplied PYQs; its paired Markdown remains an unlinked runtime source, and missing-notebook outputs are explicitly marked unverified.
 - **2026-08-30:** Initial full catalog created after reviewing the updated official slides, lecture lists, personal Markdown/HTML notes, assignments, PYQs, generated previews, and the LLM publication repository.
 - **2026-08-30:** Added the unified `study-hub`, curated reviewed artifacts, and registered Shared Volume 0 as the first canonical cross-course module.
 - **2026-08-30:** Published the hub to `michaeldatascience/IITM-STUDY` and added Shared Volume 1 - Transformer Foundations as the second canonical cross-course module.
 - **2026-08-30:** Added the source-grounded DLCV Quiz 1 Recovery Volume for Weeks 1–4 and the dedicated CNN Shape, Parameters, and Receptive Field Playground. The paired Markdown is a runtime source for the interactive HTML and is intentionally not linked from the hub.
 - **2026-08-30:** Added LLM Volume 3 for Weeks 3–4 and the Decoding & Objective Playground. The volume integrates the 143 official slide pages, GA3/GA4, four supplied PYQs, and personal Quiz 1 notes; the paired Markdown remains an unlinked runtime source.
 - **2026-08-30:** Added the source-grounded LLM Week 8 Data Scaling and Pre-training Pipelines module plus the Data Pipeline Playground. The module integrates all 69 official Week 8 slide pages, GA8, four supplied PYQs, and the master Quiz 2 note; its paired Markdown remains an unlinked runtime source.
-- **2026-08-30:** Added the source-grounded DLCV Weeks 5–6 Modern CNNs, Detection, and Segmentation volume plus the Detection Metrics Playground. The volume integrates all 361 official slide pages, GA5/PA5, GA6/PA6, four supplied PYQs, and the personal Quiz 2 pack; its paired Markdown remains an unlinked runtime source.
-- **2026-08-30:** Added the source-grounded DLCV Weeks 7–8 Sequence Models and Attention in Vision volume plus the Visual Attention Playground. The volume integrates all 523 official slide pages, GA7/PA7, GA8/PA8, four supplied PYQs, and the personal Quiz 2 pack; its paired Markdown remains an unlinked runtime source.
+- **2026-08-31:** Added DLCV Volume 10 and the Contrastive and VLM Playground from all eleven supplied Week 12 decks, GA12/PA12, and the seven supplied PYQ files. The paired Markdown remains an unlinked runtime source.
