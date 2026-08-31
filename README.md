@@ -19,7 +19,7 @@ Open the study hub at <https://michaeldatascience.github.io/IITM-STUDY/>. This r
 
 Source PDFs, raw assignments, and PYQ collections remain outside this folder. Only reviewed study outputs belong here.
 
-Current canonical endpoint: **DLCV Volume 9 — Generative Vision Models** (DLCV Weeks 10–11), with its dedicated GAN/VAE/diffusion/guidance/VQ-VAE playground.
+Current canonical endpoint: **Complete LLM and DLCV End-Term Cheat Sheets**, following the three-paper End-Term Mock Exam Pack.
 
 ## Update rule
 

@@ -205,11 +205,11 @@ The local `study-hub/index.html` is the permanent entry point. Artifacts are gen
 9. **Complete:** Generative Vision Models - DLCV Weeks 10–11, with a dedicated Generative Models Playground.
 10. **Complete:** Contrastive Learning and VLMs - DLCV Week 12 with LLM pretraining/data bridges, plus a dedicated playground.
 11. **Complete:** End-Term Mock Exam Pack - 60 fresh questions across LLM, DLCV, and mixed papers, with persistent error-led retests.
-12. **Next:** Complete LLM and DLCV cheat sheets.
+12. **Complete:** Complete LLM and DLCV End-Term cheat sheets with week filters, formula walls, model signatures, and trap ledgers.
 
 # Immediate next study checkpoint
 
-Creation checkpoint: build the complete LLM and DLCV cheat sheets next. Learning progress remains user-reported. Do not infer completion or mastery from the currently open browser page; ask for the last completed closed-book checkpoint before changing study status.
+Creation sequence complete. The next checkpoint is user study evidence: scan one course cheat sheet, take its mock closed-book, and report the score and error queue. Do not infer completion or mastery from the currently open browser page.
 
 No mastery has been inferred from the existence of old notes or from generating the new artifacts.
 
@@ -224,3 +224,4 @@ No mastery has been inferred from the existence of old notes or from generating 
 - **2026-08-31:** Recorded completed Volumes 6 through 9 and their dedicated playgrounds; set DLCV Week 12 contrastive learning and VLMs as the next creation item.
 - **2026-08-31:** Completed DLCV Volume 10 and the Contrastive and VLM Playground after reviewing all eleven supplied Week 12 decks, GA12/PA12, and seven supplied PYQs; set the mixed End-Term pack as the next creation item.
 - **2026-08-31:** Completed the End-Term Mock Exam Pack with three 20-question papers, answer explanations, week diagnostics, saved drafts, and a persistent error-led retest queue; set the complete LLM and DLCV cheat sheets as the next creation item.
+- **2026-08-31:** Completed the LLM and DLCV End-Term cheat sheets with full Week 1-12 compression, print layouts, search, filters, source references, and final trap ledgers.

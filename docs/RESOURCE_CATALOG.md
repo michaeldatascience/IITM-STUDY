@@ -223,6 +223,8 @@ Folder: `study-hub/`
 - `dlcv/generative-models-playground.html` - dedicated GAN, VAE, and diffusion practice.
 - `dlcv/volume-10-contrastive-vlms-interactive.html` and its paired Markdown - canonical DLCV Week 12 contrastive-learning and VLM module.
 - `shared/end-term-mock-exams-interactive.html` and `shared/end-term-mock-exam-pack.md` - three cumulative 20-question papers for LLM, DLCV, and mixed End-Term practice, with saved drafts, answer explanations, week diagnostics, and error-led retests.
+- `llm/end-term-cheat-sheet.html` and its paired Markdown - complete LLM Weeks 1-12 revision surface with formula wall, week filters, model matrix, data-pipeline orders, long-context counts, and trap ledger.
+- `dlcv/end-term-cheat-sheet.html` and its paired Markdown - complete DLCV Weeks 1-12 revision surface covering image processing through VLMs, with formula wall, week filters, architecture signatures, and trap ledger.
 - `dlcv/contrastive-vlm-playground.html` - dedicated metric-learning, SimCLR, CLIP, BLIP, and BLIP-2 practice.
 - `archive/llm/` and `archive/dlcv/` - reviewed prior artifacts retained as references until incorporated into canonical volumes.
 - `docs/` - publication snapshots of this catalog and the study map.
@@ -360,3 +362,4 @@ When new material is added:
 - **2026-08-30:** Added the source-grounded LLM Week 8 Data Scaling and Pre-training Pipelines module plus the Data Pipeline Playground. The module integrates all 69 official Week 8 slide pages, GA8, four supplied PYQs, and the master Quiz 2 note; its paired Markdown remains an unlinked runtime source.
 - **2026-08-31:** Added DLCV Volume 10 and the Contrastive and VLM Playground from all eleven supplied Week 12 decks, GA12/PA12, and the seven supplied PYQ files. The paired Markdown remains an unlinked runtime source.
 - **2026-08-31:** Added the End-Term Mock Exam Pack after reviewing all supplied PYQ collections and GA/PA pattern evidence. The public pack uses newly written analogues rather than copied past-paper questions.
+- **2026-08-31:** Added complete LLM and DLCV End-Term cheat sheets, their shared print/search framework, and paired source-reference Markdown files.
