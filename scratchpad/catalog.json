@@ -11,6 +11,17 @@
     "parent": {"label": "Shared Volume 0", "path": "../shared/volume-00-neural-foundations-interactive.html"}
   },
   {
+    "id": "neural-network-foundations",
+    "title": "Neural Network Foundations Lab",
+    "kind": "Interactive lab",
+    "course": "Shared",
+    "added": "2026-09-05",
+    "description": "A notation-first lab for parameter shapes, feedforward computation, backpropagation, and complete numerical walkthroughs.",
+    "tags": ["neural network", "feedforward", "ffn", "backpropagation", "shapes", "parameters", "gradient", "chain rule", "week 3"],
+    "path": "neural-network-foundations-lab.html",
+    "parent": {"label": "Shared Volume 0", "path": "../shared/volume-00-neural-foundations-interactive.html"}
+  },
+  {
     "id": "tokenizer-simulator",
     "title": "Tokenizer Simulator",
     "kind": "Interactive lab",

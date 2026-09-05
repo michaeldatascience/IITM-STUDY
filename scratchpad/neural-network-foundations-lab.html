@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Course-aligned interactive neural-network foundations lab for notation, shapes, feedforward computation, and backpropagation.">
+  <title>Neural Network Foundations Lab | Concept Scratchpad</title>
+  <style>
+    :root{--paper:#f3f0e8;--surface:#fffefa;--surface2:#e9e5da;--ink:#202832;--muted:#66717c;--line:#d7d1c5;--violet:#5544a8;--violet2:#e7e3fa;--orange:#b45f16;--orange2:#f8e7d2;--green:#24734f;--green2:#dff1e7;--blue:#2d658c;--blue2:#ddecf5;--red:#a13d4a;--red2:#f6dfe2;--shadow:0 18px 50px rgba(34,31,52,.1);--r:18px}
+    [data-theme=dark]{--paper:#12151b;--surface:#1b2028;--surface2:#252b34;--ink:#f0f2f6;--muted:#abb2bd;--line:#38404c;--violet:#b9afff;--violet2:#302b57;--orange:#f0aa66;--orange2:#442e1f;--green:#78d1a5;--green2:#1c392c;--blue:#94c5e8;--blue2:#203849;--red:#f08d99;--red2:#40242a;--shadow:0 18px 50px rgba(0,0,0,.28)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:var(--paper);font:16px/1.62 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select{font:inherit}button{cursor:pointer}a{color:inherit}.top{position:sticky;z-index:20;top:0;display:flex;align-items:center;gap:10px;padding:10px 22px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(15px)}.spacer{flex:1}.btn{border:1px solid var(--line);border-radius:10px;padding:.55rem .8rem;color:var(--ink);background:var(--surface);font-weight:850;text-decoration:none}.btn.primary{border-color:#5544a8;color:#fff;background:#5544a8}.btn:hover{transform:translateY(-1px)}.wrap{max-width:1240px;margin:auto;padding:38px 24px 90px}.hero{padding:42px;border:1px solid var(--line);border-radius:28px;background:radial-gradient(circle at 92% 8%,var(--orange2),transparent 32%),radial-gradient(circle at 7% 100%,var(--violet2),transparent 33%),var(--surface);box-shadow:var(--shadow)}.eyebrow{color:var(--orange);font-size:.76rem;font-weight:950;letter-spacing:.12em;text-transform:uppercase}h1,h2{font-family:Georgia,"Times New Roman",serif;line-height:1.14;letter-spacing:-.025em}h1{max-width:900px;margin:.45rem 0;font-size:clamp(2.5rem,6vw,4.7rem)}h2{margin:0 0 15px;font-size:clamp(1.75rem,4vw,2.7rem)}h3{margin:0 0 7px}.lede{max-width:830px;color:var(--muted);font-size:1.12rem}.badges,.tabs,.controls,.preset-row,.step-controls{display:flex;flex-wrap:wrap;gap:8px}.badges{margin:19px 0}.badge{padding:5px 9px;border-radius:99px;color:var(--green);background:var(--green2);font-size:.76rem;font-weight:900}.badge.orange{color:var(--orange);background:var(--orange2)}.badge.violet{color:var(--violet);background:var(--violet2)}.callout{margin:18px 0;padding:16px 18px;border-left:4px solid var(--violet);border-radius:0 12px 12px 0;background:var(--violet2)}.callout.warn{border-color:var(--orange);background:var(--orange2)}
+    .tabs{position:sticky;z-index:12;top:65px;margin:25px 0 20px;padding:8px;border:1px solid var(--line);border-radius:14px;background:color-mix(in srgb,var(--paper) 94%,transparent);backdrop-filter:blur(12px)}.tab{border:1px solid transparent;border-radius:9px;padding:.55rem .75rem;color:var(--muted);background:transparent;font-weight:850}.tab.active{border-color:var(--violet);color:var(--violet);background:var(--violet2)}.layout{display:grid;grid-template-columns:285px minmax(0,1fr);gap:22px;align-items:start}.dictionary{position:sticky;top:130px;padding:19px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}.dictionary h2{font-size:1.5rem}.dictionary dl{margin:0}.dictionary dt{margin-top:11px;color:var(--violet);font-family:"Cascadia Code",Consolas,monospace;font-weight:950}.dictionary dd{margin:2px 0;color:var(--muted);font-size:.88rem}.dict-key{display:inline-block;min-width:42px;padding:2px 6px;border-radius:6px;background:var(--violet2);text-align:center}.panel{display:none}.panel.active{display:block}.section{margin-bottom:45px}.card{padding:20px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.card p:last-child{margin-bottom:0}.muted{color:var(--muted)}.formula{display:block;margin:12px 0;padding:13px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface2);font-family:"Cascadia Code",Consolas,monospace;text-align:center;overflow-wrap:anywhere}.term{color:var(--violet);font-family:"Cascadia Code",Consolas,monospace;font-weight:900}.definition-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.definition{padding:16px;border-left:3px solid var(--green);background:color-mix(in srgb,var(--green2) 55%,var(--surface));border-radius:0 12px 12px 0}.definition b{display:block}.definition span{color:var(--muted)}
+    .controls{align-items:end;margin:16px 0}.field{display:grid;gap:4px;min-width:115px;flex:1}.field label{color:var(--muted);font-size:.8rem;font-weight:850}.field input{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:9px;color:var(--ink);background:var(--surface)}.preset-row{margin:11px 0 19px}.small-btn{border:1px solid var(--line);border-radius:9px;padding:.42rem .65rem;color:var(--ink);background:var(--surface);font-size:.85rem;font-weight:800}.shape-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:17px 0}.stat{padding:14px;border:1px solid var(--line);border-radius:13px;background:var(--surface)}.stat b{display:block;font:800 1.5rem Georgia,serif}.stat span{color:var(--muted);font-size:.8rem}.network-wrap{overflow-x:auto;margin:17px 0;padding:20px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}.network{display:flex;min-width:800px;align-items:center;justify-content:space-between;gap:11px}.layer{width:145px;text-align:center}.layer-title{font-weight:950}.layer-shape{color:var(--violet);font-family:"Cascadia Code",Consolas,monospace;font-size:.82rem}.nodes{display:grid;place-items:center;gap:6px;min-height:190px;margin:10px 0}.node{display:grid;place-items:center;width:30px;height:30px;border:2px solid var(--green);border-radius:50%;background:var(--green2);font-size:.72rem;font-weight:900}.ellipsis{color:var(--muted);font-weight:950}.map{width:140px;text-align:center}.arrow{height:2px;margin:8px 0;background:var(--line);position:relative}.arrow:after{content:'›';position:absolute;right:-1px;top:-17px;color:var(--violet);font-size:1.7rem}.map code{display:block;color:var(--violet);font-size:.78rem}.map small{color:var(--muted)}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:15px;background:var(--surface)}table{width:100%;min-width:730px;border-collapse:collapse}th,td{padding:12px 13px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}th{color:var(--violet);background:var(--violet2);font-size:.8rem;text-transform:uppercase;letter-spacing:.035em}tr:last-child td{border-bottom:0}.inner{color:var(--red);font-weight:950}.guess{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:13px}.guess input{min-width:0;padding:10px;border:1px solid var(--line);border-radius:9px;color:var(--ink);background:var(--surface)}.feedback{min-height:1.5em;margin:8px 0 0;font-weight:850}.feedback.good{color:var(--green)}.feedback.bad{color:var(--red)}
+    .walkthrough-head{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:15px}.step-count{color:var(--muted);font-weight:850}.step-box{min-height:310px;padding:23px;border:1px solid var(--line);border-radius:18px;background:var(--surface)}.step-box h3{font:800 1.55rem Georgia,serif}.mathline{margin:14px 0;padding:14px;border-left:4px solid var(--blue);border-radius:0 12px 12px 0;background:var(--blue2);font-family:"Cascadia Code",Consolas,monospace;overflow-wrap:anywhere}.value-map{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.value{padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}.value b{color:var(--violet)}.step-controls{justify-content:space-between;margin-top:12px}.backward-flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:15px 0}.flow-item{padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface);font-weight:850}.flow-arrow{color:var(--red);font-size:1.4rem}.shape-law{padding:16px;border:1px solid var(--green);border-radius:13px;background:var(--green2);font-weight:850}
+    .question{margin:13px 0;padding:18px;border:1px solid var(--line);border-radius:15px;background:var(--surface)}.question label{display:block;margin-bottom:9px;font-weight:850}.question input,.question select{width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;color:var(--ink);background:var(--paper)}.explanation{display:none;margin:10px 0 0;color:var(--muted)}.question.correct{border-color:var(--green)}.question.incorrect{border-color:var(--red)}.question.checked .explanation{display:block}.score{margin-top:14px;padding:16px;border-radius:13px;background:var(--violet2);font-weight:900}.source-list li{margin:8px 0}footer{padding:30px;border-top:1px solid var(--line);color:var(--muted);text-align:center}
+    @media(max-width:930px){.layout{grid-template-columns:1fr}.dictionary{position:static}.dictionary dl{columns:2;column-gap:25px}.grid.three{grid-template-columns:1fr}.tabs{top:62px}.definition-list{grid-template-columns:1fr}}@media(max-width:650px){.top{padding:9px 11px}.top .optional{display:none}.wrap{padding:24px 14px 65px}.hero{padding:28px 21px}.tabs{top:59px;overflow-x:auto;flex-wrap:nowrap}.tab{white-space:nowrap}.grid,.value-map{grid-template-columns:1fr}.dictionary dl{columns:1}.shape-stats{grid-template-columns:1fr}.guess{grid-template-columns:1fr}.walkthrough-head{display:block}.step-box{min-height:390px}}
+  </style>
+</head>
+<body>
+  <header class="top"><a class="btn" href="index.html">← Scratchpad</a><a class="btn optional" href="../index.html">Study Hub</a><span class="badge optional">Shared foundation</span><div class="spacer"></div><button class="btn" id="theme" aria-label="Toggle color theme">◐</button></header>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Neural network foundations</div>
+      <h1>Symbols first. Shapes second. Numbers third.</h1>
+      <p class="lede">A feedforward neural network is repeated weighted evidence. Backpropagation is the same computation graph traversed in reverse with the chain rule. This lab keeps every symbol defined while you inspect both directions.</p>
+      <div class="badges"><span class="badge">DLCV Week 3</span><span class="badge violet">High foundation value</span><span class="badge orange">About 60-90 minutes</span></div>
+      <div class="callout"><b>Resistance rule:</b> when a shape is hidden, predict it before revealing it. A shape error is usually a definition error in disguise.</div>
+    </section>
+
+    <nav class="tabs" aria-label="Lab sections">
+      <button class="tab active" type="button" data-tab="terms">1. Terms</button>
+      <button class="tab" type="button" data-tab="shapes">2. Shape lab</button>
+      <button class="tab" type="button" data-tab="forward">3. Feedforward</button>
+      <button class="tab" type="button" data-tab="backprop">4. Backpropagation</button>
+      <button class="tab" type="button" data-tab="practice">5. Resistance test</button>
+    </nav>
+
+    <div class="layout">
+      <aside class="dictionary" aria-label="Persistent symbol dictionary">
+        <div class="eyebrow">Always visible</div><h2>Symbol dictionary</h2>
+        <dl>
+          <dt><span class="dict-key">x</span></dt><dd>Input vector. We also write a<sup>(1)</sup> = x.</dd>
+          <dt><span class="dict-key">y</span></dt><dd>Correct target supplied by the dataset.</dd>
+          <dt><span class="dict-key">l</span></dt><dd>Layer index. It tells us where a value lives.</dd>
+          <dt><span class="dict-key">n<sub>l</sub></span></dt><dd>Number of neurons in layer l.</dd>
+          <dt><span class="dict-key">W</span></dt><dd>Weight matrix. Its entries are learnable parameters.</dd>
+          <dt><span class="dict-key">b</span></dt><dd>Bias vector. One learnable shift per destination neuron.</dd>
+          <dt><span class="dict-key">z</span></dt><dd>Pre-activation: weighted sum plus bias, before f.</dd>
+          <dt><span class="dict-key">a</span></dt><dd>Activation: a = f(z), sent to the next layer.</dd>
+          <dt><span class="dict-key">f</span></dt><dd>Activation function such as ReLU, sigmoid, or identity.</dd>
+          <dt><span class="dict-key">h(x)</span></dt><dd>The network prediction in these slides. It is not an RNN hidden state here.</dd>
+          <dt><span class="dict-key">L</span></dt><dd>Loss: one scalar measuring prediction error.</dd>
+          <dt><span class="dict-key">θ</span></dt><dd>All learnable parameters together: θ = {W,b}.</dd>
+          <dt><span class="dict-key">δ</span></dt><dd>Error signal δ<sup>(l)</sup> = ∂L/∂z<sup>(l)</sup>.</dd>
+          <dt><span class="dict-key">∇</span></dt><dd>Gradient: collection of partial derivatives.</dd>
+          <dt><span class="dict-key">⊙</span></dt><dd>Element-wise multiplication.</dd>
+          <dt><span class="dict-key">η</span></dt><dd>Learning rate used by gradient descent.</dd>
+          <dt><span class="dict-key">B</span></dt><dd>Batch size. It changes computed tensors, not parameter count.</dd>
+        </dl>
+      </aside>
+
+      <div>
+        <section class="panel active" id="panel-terms">
+          <div class="section"><div class="eyebrow">Definitions remove noise</div><h2>What exactly is the network?</h2>
+            <div class="definition-list">
+              <div class="definition"><b>Feedforward neural network</b><span>A collection of neurons organized in layers and connected as a directed acyclic graph. Information flows only from input toward output.</span></div>
+              <div class="definition"><b>Neuron</b><span>A vector-to-scalar function. It receives several numbers and returns one number.</span></div>
+              <div class="definition"><b>Layer</b><span>A group of neurons evaluated together. Its width n<sub>l</sub> is the number of neurons in that layer.</span></div>
+              <div class="definition"><b>Depth</b><span>The number of layers excluding the input layer, using the official Week 3 convention.</span></div>
+              <div class="definition"><b>Parameter</b><span>A number learned from data. Here these are the entries of W and b.</span></div>
+              <div class="definition"><b>Hyperparameter</b><span>A design choice made outside training, such as layer width or learning rate.</span></div>
+              <div class="definition"><b>Pre-activation z</b><span>The affine evidence W a + b before the activation function acts.</span></div>
+              <div class="definition"><b>Activation a</b><span>The value f(z) exposed to the next layer. This is a computed value, not a parameter.</span></div>
+            </div>
+          </div>
+          <div class="section"><div class="eyebrow">Official forward notation</div><h2>Read the superscript as location</h2>
+            <p>The input is layer 1, so <span class="term">a<sup>(1)</sup> = x</span>. The matrix <span class="term">W<sup>(l)</sup></span> maps layer l to layer l+1:</p>
+            <span class="formula">z<sup>(l+1)</sup> = W<sup>(l)</sup>a<sup>(l)</sup> + b<sup>(l)</sup> &nbsp;&nbsp; and &nbsp;&nbsp; a<sup>(l+1)</sup> = f(z<sup>(l+1)</sup>)</span>
+            <p>The superscript is not an exponent. It identifies the layer. For matrix entries, this lab uses <span class="term">W<sup>(l)</sup>[j,i]</span>: column i is the source neuron in layer l, and row j is the destination neuron in layer l+1.</p>
+            <div class="callout"><b>The useful sentence:</b> each row of W belongs to one destination neuron; each column receives one source activation.</div>
+          </div>
+          <div class="section"><div class="eyebrow">Three different species</div><h2>Do not call every number a parameter</h2>
+            <div class="grid three">
+              <article class="card"><h3>Chosen by you</h3><p><span class="term">n<sub>1</sub>, n<sub>2</sub>, ...</span>, activation type, and learning rate. These are architecture or training hyperparameters.</p></article>
+              <article class="card"><h3>Learned from data</h3><p>The entries inside <span class="term">W</span> and <span class="term">b</span>. These are trainable parameters.</p></article>
+              <article class="card"><h3>Computed during a pass</h3><p><span class="term">z, a, h(x), L, δ</span>, and gradients. These depend on data and parameters but are not themselves model parameters.</p></article>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="panel-shapes">
+          <div class="section"><div class="eyebrow">Fixed topology, adjustable widths</div><h2>Neural Network Shape Flow Lab</h2>
+            <p>We fix two hidden layers so the mechanism stays visible. You choose five dimensions. The shapes of every weight, bias, pre-activation, and activation are then forced by matrix multiplication.</p>
+            <p class="muted">The official slides write one example as a column vector. To extend the same convention to a batch, this lab stacks B examples as columns: X ∈ R<sup>n₁×B</sup>.</p>
+            <div class="controls">
+              <div class="field"><label for="n1">n₁: input features</label><input id="n1" type="number" min="1" max="512" value="4"></div>
+              <div class="field"><label for="n2">n₂: hidden 1</label><input id="n2" type="number" min="1" max="512" value="3"></div>
+              <div class="field"><label for="n3">n₃: hidden 2</label><input id="n3" type="number" min="1" max="512" value="2"></div>
+              <div class="field"><label for="n4">n₄: outputs</label><input id="n4" type="number" min="1" max="128" value="2"></div>
+              <div class="field"><label for="batch">B: examples</label><input id="batch" type="number" min="1" max="128" value="1"></div>
+            </div>
+            <div class="preset-row"><button class="small-btn" type="button" data-preset="tiny">Tiny 2→3→2→1</button><button class="small-btn" type="button" data-preset="course">Shape drill 4→3→2→2</button><button class="small-btn" type="button" data-preset="batch">Batch 8→6→4→3</button></div>
+            <div class="shape-stats" aria-live="polite"><div class="stat"><b id="weightCount">0</b><span>weight parameters</span></div><div class="stat"><b id="biasCount">0</b><span>bias parameters</span></div><div class="stat"><b id="totalCount">0</b><span>total trainable parameters</span></div></div>
+            <div class="network-wrap"><div class="network" id="network" aria-label="Network shape diagram"></div></div>
+            <div class="table-wrap"><table><thead><tr><th>Map</th><th>Calculation</th><th>Weight shape</th><th>Bias shape</th><th>Output shape</th><th>Parameters</th></tr></thead><tbody id="shapeRows"></tbody></table></div>
+            <div class="callout" id="batchInsight"></div>
+          </div>
+          <div class="section"><div class="eyebrow">Prediction before reveal</div><h2>What is the shape of W<sup>(2)</sup>?</h2>
+            <p>W<sup>(2)</sup> maps hidden layer 1 to hidden layer 2. Enter a shape such as <span class="term">2x3</span>.</p>
+            <div class="guess"><input id="shapeGuess" autocomplete="off" placeholder="rows x columns"><button class="btn primary" id="checkShape" type="button">Check prediction</button></div><p class="feedback" id="shapeFeedback" aria-live="polite"></p>
+          </div>
+          <div class="section"><div class="eyebrow">Shape laws</div><h2>Rules worth retrieving</h2>
+            <div class="grid">
+              <article class="card"><h3>Destination by source</h3><span class="formula">W<sup>(l)</sup> ∈ R<sup>n<sub>l+1</sub> × n<sub>l</sub></sup></span><p>The destination width gives rows. The source width gives columns.</p></article>
+              <article class="card"><h3>One bias per destination</h3><span class="formula">b<sup>(l)</sup> ∈ R<sup>n<sub>l+1</sub></sup></span><p>The same bias vector is reused for every example in the batch.</p></article>
+              <article class="card"><h3>Activation preserves width</h3><span class="formula">z<sup>(l)</sup> and a<sup>(l)</sup> have the same shape</span><p>An element-wise activation changes values, not dimensions.</p></article>
+              <article class="card"><h3>Gradient mirrors its variable</h3><span class="formula">∇<sub>W</sub>L has the shape of W</span><p>You need one derivative for every learnable number.</p></article>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="panel-forward">
+          <div class="section"><div class="eyebrow">Definition</div><h2>Feedforward means evaluate left to right</h2>
+            <p>For one input, compute each layer only after the previous activation is known. Nothing travels backward and there are no cycles. A three-layer network, counting the input layer, has one hidden layer and two learned affine maps.</p>
+            <span class="formula">x = a<sup>(1)</sup> → z<sup>(2)</sup> → a<sup>(2)</sup> → z<sup>(3)</sup> → a<sup>(3)</sup> = h<sub>W,b</sub>(x) → L</span>
+            <div class="callout warn"><b>Why f matters:</b> without a nonlinear activation, stacked affine layers collapse into one affine map. Depth would add parameters but not a new class of decision shape.</div>
+          </div>
+          <div class="section"><div class="walkthrough-head"><div><div class="eyebrow">Complete numerical example</div><h2>One 2→2→1 pass</h2></div><span class="step-count" id="forwardCount"></span></div>
+            <div class="step-box" id="forwardStep" aria-live="polite"></div>
+            <div class="step-controls"><button class="btn" id="forwardPrev" type="button">← Previous</button><button class="btn primary" id="forwardNext" type="button">Next →</button></div>
+          </div>
+          <div class="section"><div class="eyebrow">Interpretation</div><h2>What the hidden layer actually did</h2>
+            <p>The two rows of W<sup>(1)</sup> define two different evidence collectors. On this input, the first produced z = 3 and survived ReLU. The second produced z = -1 and was suppressed to 0. W<sup>(2)</sup> then mixed those two hidden features into the prediction.</p>
+            <div class="shape-law">The network is not moving through mysterious letters. It repeatedly performs: collect evidence → add a threshold shift → apply a decision shape.</div>
+          </div>
+        </section>
+
+        <section class="panel" id="panel-backprop">
+          <div class="section"><div class="eyebrow">Definition</div><h2>Backpropagation is efficient differentiation</h2>
+            <p>Backpropagation computes the gradient of the loss with respect to every learnable parameter by applying the chain rule through the computation graph from right to left. It is not an optimizer. Gradient descent uses the gradients that backpropagation produces.</p>
+            <div class="backward-flow"><span class="flow-item">Loss L</span><span class="flow-arrow">←</span><span class="flow-item">output error δ<sup>(3)</sup></span><span class="flow-arrow">←</span><span class="flow-item">hidden error δ<sup>(2)</sup></span><span class="flow-arrow">←</span><span class="flow-item">parameter gradients</span></div>
+            <span class="formula">δ<sup>(l)</sup> = ∂L/∂z<sup>(l)</sup></span>
+            <p>Calling δ an <b>error signal</b> prevents a common confusion: δ is not the loss and not the prediction error alone. It is the derivative of the loss with respect to a layer's pre-activation.</p>
+          </div>
+          <div class="section"><div class="walkthrough-head"><div><div class="eyebrow">Same network, reverse direction</div><h2>Backpropagate every number</h2></div><span class="step-count" id="backCount"></span></div>
+            <div class="step-box" id="backStep" aria-live="polite"></div>
+            <div class="step-controls"><button class="btn" id="backPrev" type="button">← Previous</button><button class="btn primary" id="backNext" type="button">Next →</button></div>
+          </div>
+          <div class="section"><div class="eyebrow">Official vector form</div><h2>The reusable algorithm</h2>
+            <div class="grid">
+              <article class="card"><h3>Output layer</h3><span class="formula">δ<sup>(n<sub>l</sub>)</sup> = -(y-a<sup>(n<sub>l</sub>)</sup>) ⊙ f′(z<sup>(n<sub>l</sub>)</sup>)</span><p>For half-squared error. Start where the loss directly touches the prediction.</p></article>
+              <article class="card"><h3>Hidden layer</h3><span class="formula">δ<sup>(l)</sup> = ((W<sup>(l)</sup>)<sup>T</sup>δ<sup>(l+1)</sup>) ⊙ f′(z<sup>(l)</sup>)</span><p>Pull later error through transposed weights, then apply the local activation derivative.</p></article>
+              <article class="card"><h3>Weight gradient</h3><span class="formula">∇<sub>W<sup>(l)</sup></sub>L = δ<sup>(l+1)</sup>(a<sup>(l)</sup>)<sup>T</sup></span><p>An outer product pairs every destination error with every source activation.</p></article>
+              <article class="card"><h3>Bias gradient</h3><span class="formula">∇<sub>b<sup>(l)</sup></sub>L = δ<sup>(l+1)</sup></span><p>A bias enters its destination pre-activation with local derivative 1.</p></article>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" id="panel-practice">
+          <div class="section"><div class="eyebrow">Closed-book resistance</div><h2>Commit before checking</h2><p>These questions deliberately mix definition, shape, parameter count, and one-step backpropagation.</p>
+            <div class="question" data-answer="5500" data-kind="number"><label for="q1">1. Actual 2026 PYQ pattern: input 100 → hidden 50 → output 10. Ignore bias. How many weights?</label><input id="q1" inputmode="numeric"><p class="explanation">100×50 + 50×10 = 5,000 + 500 = 5,500.</p></div>
+            <div class="question" data-answer="3x4"><label for="q2">2. A layer receives 4 values and has 3 neurons. What is the weight shape under the course column-vector convention?</label><select id="q2"><option value="">Choose</option><option value="4x3">4×3</option><option value="3x4">3×4</option><option value="3">3</option></select><p class="explanation">Rows are destinations and columns are sources, so W is 3×4. The bias is length 3.</p></div>
+            <div class="question" data-answer="no"><label for="q3">3. If batch size changes from 1 to 32, does the number of trainable parameters change?</label><select id="q3"><option value="">Choose</option><option value="yes">Yes</option><option value="no">No</option></select><p class="explanation">No. The same W and b are reused for every example. Batch size changes activation tensors and computation.</p></div>
+            <div class="question" data-answer="same"><label for="q4">4. What shape must ∇<sub>W<sup>(1)</sup></sub>L have?</label><select id="q4"><option value="">Choose</option><option value="scalar">Always scalar</option><option value="same">The same shape as W¹</option><option value="input">The same shape as x</option></select><p class="explanation">Every weight needs one partial derivative, so the gradient matrix mirrors the weight matrix.</p></div>
+            <div class="question" data-answer="chain"><label for="q5">5. Backpropagation is best described as what?</label><select id="q5"><option value="">Choose</option><option value="optimizer">An optimizer like Adam</option><option value="regularizer">A way to prevent overfitting</option><option value="chain">Efficient gradient computation using the chain rule</option></select><p class="explanation">This is the exact conceptual distinction tested in a supplied 2026 paper.</p></div>
+            <div class="question" data-answer="1" data-kind="number"><label for="q6">6. In the numerical walkthrough, y-hat = 2.5, y = 1.5, and L = ½(y-hat-y)². What is δ³ for a linear output?</label><input id="q6" inputmode="decimal"><p class="explanation">δ³ = ∂L/∂z³ = y-hat-y = 1 because the identity activation has derivative 1.</p></div>
+            <button class="btn primary" id="checkTest" type="button">Check all answers</button><div class="score" id="score" aria-live="polite">No attempt checked yet.</div>
+          </div>
+          <div class="section"><div class="eyebrow">Compression</div><h2>Six-line cheat sheet</h2>
+            <ol><li>Define the symbol before manipulating it.</li><li>Forward: z<sup>(l+1)</sup> = W<sup>(l)</sup>a<sup>(l)</sup> + b<sup>(l)</sup>, then a<sup>(l+1)</sup> = f(z<sup>(l+1)</sup>).</li><li>Shape: W is destination × source; b has one value per destination.</li><li>Parameters are entries of W and b. Activations and gradients are computed values.</li><li>Backward: later error passes through W<sup>T</sup>, then through the local derivative f′.</li><li>A gradient has the same shape as the variable it differentiates.</li></ol>
+          </div>
+          <div class="section"><div class="eyebrow">Source map</div><h2>Course evidence used</h2>
+            <ul class="source-list"><li><b>DLCV Week 3, Part 2, pages 2-4:</b> feedforward-network definition, depth, vector-to-scalar neurons, function composition, and θ = {W,b}.</li><li><b>DLCV Week 3, Part 2, pages 13-35:</b> gradient descent, chain rule, official forward notation, δ error terms, vectorized backpropagation, and parameter updates.</li><li><b>DLCV January 2026 paper:</b> backpropagation definition and the 100→50→10 fully-connected parameter-count problem.</li><li><b>Shared Volume 0:</b> existing course bridge for neurons, activations, layer shapes, and the scalar worked example.</li></ul>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+  <footer>Concept Scratchpad · Neural Network Foundations Lab · Course-aligned reusable interaction</footer>
+  <script>
+    const root=document.documentElement,saved=localStorage.getItem('study-hub-theme');if(saved)root.dataset.theme=saved;
+    document.getElementById('theme').onclick=()=>{root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';localStorage.setItem('study-hub-theme',root.dataset.theme)};
+    const tabs=[...document.querySelectorAll('.tab')],panels=[...document.querySelectorAll('.panel')];
+    tabs.forEach(tab=>tab.onclick=()=>{tabs.forEach(t=>t.classList.toggle('active',t===tab));panels.forEach(p=>p.classList.toggle('active',p.id==='panel-'+tab.dataset.tab));window.scrollTo({top:document.querySelector('.tabs').offsetTop-70,behavior:'smooth'})});
+
+    const ids=['n1','n2','n3','n4','batch'],inputs=Object.fromEntries(ids.map(id=>[id,document.getElementById(id)]));
+    const fmt=n=>Number(n).toLocaleString('en-IN');
+    function dim(id){const max=id==='n4'?128:512,v=Math.max(1,Math.min(id==='batch'?128:max,Math.round(Number(inputs[id].value)||1)));inputs[id].value=v;return v}
+    function nodeStack(n,prefix){const labels=n<=6?[...Array(n)].map((_,i)=>i+1):[1,2,3,'…',n-1,n];return `<div class="nodes">${labels.map(v=>v==='…'?'<span class="ellipsis">⋮</span>':`<span class="node">${prefix}<sub>${v}</sub></span>`).join('')}</div>`}
+    function layerHTML(index,n,B,label){return `<div class="layer"><div class="layer-title">${label}</div><div class="layer-shape">a<sup>(${index})</sup>: ${n}×${B}</div>${nodeStack(n,index===1?'x':'a')}<small class="muted">n<sub>${index}</sub> = ${n}</small></div>`}
+    function mapHTML(index,src,dst){const p=dst*src+dst;return `<div class="map"><code>W<sup>(${index})</sup>: ${dst}×${src}</code><code>b<sup>(${index})</sup>: ${dst}</code><div class="arrow"></div><small>${fmt(p)} parameters</small></div>`}
+    function updateShapes(){const n1=dim('n1'),n2=dim('n2'),n3=dim('n3'),n4=dim('n4'),B=dim('batch'),ns=[n1,n2,n3,n4];let weights=0,biases=0;
+      for(let i=0;i<3;i++){weights+=ns[i]*ns[i+1];biases+=ns[i+1]}
+      document.getElementById('weightCount').textContent=fmt(weights);document.getElementById('biasCount').textContent=fmt(biases);document.getElementById('totalCount').textContent=fmt(weights+biases);
+      document.getElementById('network').innerHTML=layerHTML(1,n1,B,'Input')+mapHTML(1,n1,n2)+layerHTML(2,n2,B,'Hidden 1')+mapHTML(2,n2,n3)+layerHTML(3,n3,B,'Hidden 2')+mapHTML(3,n3,n4)+layerHTML(4,n4,B,'Output');
+      document.getElementById('shapeRows').innerHTML=ns.slice(0,3).map((src,i)=>{const dst=ns[i+1],l=i+1;return `<tr><td>Layer ${l} → ${l+1}</td><td>(<span class="inner">${dst}×${src}</span>)(<span class="inner">${src}×${B}</span>) + bias</td><td>${dst}×${src}</td><td>${dst}</td><td>z<sup>(${l+1})</sup>, a<sup>(${l+1})</sup>: ${dst}×${B}</td><td>${fmt(dst*src+dst)}</td></tr>`}).join('');
+      document.getElementById('batchInsight').innerHTML=`<b>Batch insight:</b> B = ${B} gives ${fmt(B*(n2+n3+n4))} non-input activation values for this pass. Total trainable parameters remain ${fmt(weights+biases)} because the same W and b are reused across all ${B} example${B===1?'':'s'}.`;
+      document.getElementById('shapeFeedback').textContent='';document.getElementById('shapeFeedback').className='feedback';
+    }
+    ids.forEach(id=>inputs[id].addEventListener('input',updateShapes));
+    const presets={tiny:[2,3,2,1,1],course:[4,3,2,2,1],batch:[8,6,4,3,5]};
+    document.querySelectorAll('[data-preset]').forEach(btn=>btn.onclick=()=>{ids.forEach((id,i)=>inputs[id].value=presets[btn.dataset.preset][i]);updateShapes()});
+    document.getElementById('checkShape').onclick=()=>{const expected=dim('n3')+'x'+dim('n2'),raw=document.getElementById('shapeGuess').value.toLowerCase().replace(/[×*\s]/g,'x').replace(/x+/g,'x'),out=document.getElementById('shapeFeedback');if(raw===expected){out.textContent=`Correct. W² has ${dim('n3')} destination rows and ${dim('n2')} source columns.`;out.className='feedback good'}else{out.textContent=`Not yet. W² maps n₂ = ${dim('n2')} sources to n₃ = ${dim('n3')} destinations, so its shape is ${expected}.`;out.className='feedback bad'}};
+    updateShapes();
+
+    const forwardSteps=[
+      {title:'Step 1: Name every supplied value',body:`<div class="value-map"><div class="value"><b>x</b> = [2, -1]<sup>T</sup><br><span class="muted">input, shape 2×1</span></div><div class="value"><b>W¹</b> = [[1,-1],[0.5,2]]<br><span class="muted">input-to-hidden weights, shape 2×2</span></div><div class="value"><b>b¹</b> = [0,0]<sup>T</sup><br><span class="muted">hidden biases, shape 2×1</span></div><div class="value"><b>f</b> = ReLU<br><span class="muted">hidden activation function</span></div><div class="value"><b>W²</b> = [0.5,-1]<br><span class="muted">hidden-to-output weights, shape 1×2</span></div><div class="value"><b>b²</b> = 1, <b>y</b> = 1.5<br><span class="muted">output bias and correct target</span></div></div>`},
+      {title:'Step 2: Compute hidden pre-activation z²',body:`<p><span class="term">z²</span> means weighted evidence before ReLU.</p><div class="mathline">z² = W¹x + b¹<br>= [[1,-1],[0.5,2]][2,-1]ᵀ + [0,0]ᵀ<br>= [1(2)+(-1)(-1), 0.5(2)+2(-1)]ᵀ<br>= [3,-1]ᵀ</div><p>Shape check: (2×2)(2×1) + (2×1) gives 2×1.</p>`},
+      {title:'Step 3: Apply the hidden activation',body:`<p><span class="term">a²</span> is what the hidden layer exposes to the output layer.</p><div class="mathline">a² = ReLU(z²) = ReLU([3,-1]ᵀ) = [3,0]ᵀ</div><p>The first hidden feature survives. The second is blocked because its evidence was negative.</p>`},
+      {title:'Step 4: Compute the prediction',body:`<p>The output uses the identity activation, so <span class="term">a³ = z³ = h(x)</span>.</p><div class="mathline">z³ = W²a² + b²<br>= [0.5,-1][3,0]ᵀ + 1<br>= 0.5(3) + (-1)(0) + 1 = 2.5</div><p>The network predicts 2.5. The target y is 1.5.</p>`},
+      {title:'Step 5: Compress wrongness into one scalar',body:`<p><span class="term">L</span> is the half-squared-error loss for this example.</p><div class="mathline">L = ½(h(x)-y)² = ½(2.5-1.5)² = 0.5</div><p>This single scalar is the starting point for backpropagation. Training asks how each entry of W and b contributed to it.</p>`}
+    ];
+    const backSteps=[
+      {title:'Step 1: Start where loss touches output',body:`<p>For L = ½(a³-y)² and identity output f(z)=z:</p><div class="mathline">δ³ = ∂L/∂z³ = (a³-y) × f′(z³)<br>= (2.5-1.5) × 1 = 1</div><p><span class="term">δ³</span> is the output pre-activation's responsibility signal.</p>`},
+      {title:'Step 2: Output parameter gradients',body:`<p>Each output weight pairs the destination error δ³ with its source activation a².</p><div class="mathline">∇W² L = δ³(a²)ᵀ = 1[3,0] = [3,0]<br>∇b² L = δ³ = 1</div><p>Shape check: ∇W² is 1×2, exactly the shape of W². ∇b² is scalar, exactly the shape of b².</p>`},
+      {title:'Step 3: Pull the error into the hidden layer',body:`<p>Transpose W² so the one output error can be distributed to two hidden neurons. Then apply the local ReLU derivative.</p><div class="mathline">δ² = (W²)ᵀδ³ ⊙ ReLU′(z²)<br>= [0.5,-1]ᵀ(1) ⊙ [1,0]ᵀ<br>= [0.5,0]ᵀ</div><p>The second route is blocked because z²₂ = -1 and ReLU′(-1)=0.</p>`},
+      {title:'Step 4: Input-to-hidden gradients',body:`<p>The outer product pairs two hidden error signals with two input values.</p><div class="mathline">∇W¹ L = δ²xᵀ<br>= [0.5,0]ᵀ[2,-1]<br>= [[1,-0.5],[0,0]]<br>∇b¹ L = δ² = [0.5,0]ᵀ</div><p>Again, every gradient has the same shape as its parameter.</p>`},
+      {title:'Step 5: Gradient descent uses the gradients',body:`<p>With learning rate η = 0.1, update each parameter by θ ← θ - η∇θL.</p><div class="mathline">W²: [0.5,-1] → [0.2,-1], b²: 1 → 0.9<br>W¹ first row: [1,-1] → [0.9,-0.95]<br>b¹: [0,0]ᵀ → [-0.05,0]ᵀ</div><p>The refreshed prediction is 1.44 and the loss becomes 0.0018. Backpropagation produced directions. Gradient descent took the step.</p>`}
+    ];
+    let fi=0,bi=0;
+    function renderStep(kind){const isF=kind==='forward',steps=isF?forwardSteps:backSteps,index=isF?fi:bi,box=document.getElementById(isF?'forwardStep':'backStep'),count=document.getElementById(isF?'forwardCount':'backCount');box.innerHTML=`<h3>${steps[index].title}</h3>${steps[index].body}`;count.textContent=`${index+1} of ${steps.length}`;document.getElementById(isF?'forwardPrev':'backPrev').disabled=index===0;document.getElementById(isF?'forwardNext':'backNext').textContent=index===steps.length-1?'Start again':'Next →'}
+    document.getElementById('forwardPrev').onclick=()=>{fi=Math.max(0,fi-1);renderStep('forward')};document.getElementById('forwardNext').onclick=()=>{fi=fi===forwardSteps.length-1?0:fi+1;renderStep('forward')};
+    document.getElementById('backPrev').onclick=()=>{bi=Math.max(0,bi-1);renderStep('back')};document.getElementById('backNext').onclick=()=>{bi=bi===backSteps.length-1?0:bi+1;renderStep('back')};renderStep('forward');renderStep('back');
+
+    document.getElementById('checkTest').onclick=()=>{let correct=0;const qs=[...document.querySelectorAll('.question[data-answer]')];qs.forEach(q=>{const el=q.querySelector('input,select'),expected=q.dataset.answer,raw=el.value.trim().toLowerCase().replace(/,/g,''),ok=q.dataset.kind==='number'?Math.abs(Number(raw)-Number(expected))<1e-9:raw===expected;q.classList.add('checked');q.classList.toggle('correct',ok);q.classList.toggle('incorrect',!ok);if(ok)correct++});const pct=Math.round(100*correct/qs.length);document.getElementById('score').textContent=`${correct}/${qs.length} correct (${pct}%). ${pct===100?'Good. Now explain each answer without the options.':'Rework every red item from its definition, not from the answer choice.'}`;const best=Math.max(pct,Number(localStorage.getItem('scratchpad-nn-foundations-best')||0));localStorage.setItem('scratchpad-nn-foundations-best',best)};
+  </script>
+</body>
+</html>

@@ -230,6 +230,7 @@ Folder: `study-hub/`
 - `scratchpad/catalog.json` - machine-readable artifact index that future sessions must search before creating a duplicate.
 - `scratchpad/activation-functions.html` - shared activation-function note covering definitions, derivatives, ranges, uses, traps, course boundary, and resistance checks.
 - `scratchpad/activation-functions-plot.html` - dedicated interactive function and derivative plot used by the activation-function note.
+- `scratchpad/neural-network-foundations-lab.html` - notation-first neural-network lab covering official feedforward conventions, governed tensor shapes, parameter counts, a full numerical forward/backward pass, and resistance testing.
 - `archive/llm/` and `archive/dlcv/` - reviewed prior artifacts retained as references until incorporated into canonical volumes.
 - `docs/` - publication snapshots of this catalog and the study map.
 
@@ -369,3 +370,4 @@ When new material is added:
 - **2026-08-31:** Added the End-Term Mock Exam Pack after reviewing all supplied PYQ collections and GA/PA pattern evidence. The public pack uses newly written analogues rather than copied past-paper questions.
 - **2026-08-31:** Added complete LLM and DLCV End-Term cheat sheets, their shared print/search framework, and paired source-reference Markdown files.
 - **2026-09-05:** Added the Concept Scratchpad registry, seeded it with existing dedicated interactives, and added the Activation Functions and Derivatives reusable quick concept.
+- **2026-09-05:** Added the Neural Network Foundations Lab using the official DLCV Week 3 feedforward and backpropagation notation plus supplied PYQ parameter-count and definition patterns.
