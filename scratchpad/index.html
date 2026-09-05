@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Reviewed quick concepts and reusable interactive artifacts for IITM LLM and DLCV study.">
+  <title>Concept Scratchpad | IITM Study Hub</title>
+  <style>
+    :root{--paper:#f3f0e8;--surface:#fffefa;--surface2:#e9e5da;--ink:#202832;--muted:#66717c;--line:#d7d1c5;--violet:#5544a8;--violet2:#e7e3fa;--orange:#b45f16;--orange2:#f8e7d2;--green:#24734f;--green2:#dff1e7;--blue:#2d658c;--blue2:#ddecf5;--shadow:0 18px 50px rgba(34,31,52,.1);--r:20px}
+    [data-theme=dark]{--paper:#12151b;--surface:#1b2028;--surface2:#252b34;--ink:#f0f2f6;--muted:#abb2bd;--line:#38404c;--violet:#b9afff;--violet2:#302b57;--orange:#f0aa66;--orange2:#442e1f;--green:#78d1a5;--green2:#1c392c;--blue:#94c5e8;--blue2:#203849;--shadow:0 18px 50px rgba(0,0,0,.28)}
+    *{box-sizing:border-box}body{margin:0;color:var(--ink);background:var(--paper);font:16px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}a{color:inherit}.top{position:sticky;z-index:10;top:0;display:flex;align-items:center;gap:12px;padding:10px 24px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--paper) 91%,transparent);backdrop-filter:blur(15px)}.brand{font-weight:950}.spacer{flex:1}.btn{border:1px solid var(--line);border-radius:10px;padding:.58rem .85rem;color:var(--ink);background:var(--surface);font:inherit;font-weight:850;text-decoration:none;cursor:pointer}.btn.active{border-color:var(--violet);color:var(--violet);background:var(--violet2)}.wrap{max-width:1180px;margin:auto;padding:38px 24px 90px}.hero{padding:42px;border:1px solid var(--line);border-radius:28px;background:radial-gradient(circle at 90% 10%,var(--orange2),transparent 32%),radial-gradient(circle at 8% 100%,var(--violet2),transparent 34%),var(--surface);box-shadow:var(--shadow)}.eyebrow{color:var(--orange);font-size:.77rem;font-weight:950;letter-spacing:.12em;text-transform:uppercase}h1,h2{font-family:Georgia,"Times New Roman",serif;letter-spacing:-.025em;line-height:1.15}h1{margin:.5rem 0;font-size:clamp(2.5rem,6vw,4.6rem)}h2{margin:0;font-size:clamp(1.8rem,4vw,2.7rem)}.lede{max-width:760px;color:var(--muted);font-size:1.1rem}.callout{margin-top:22px;padding:15px 17px;border-left:4px solid var(--violet);border-radius:0 12px 12px 0;background:var(--violet2)}.section{margin-top:54px}.head{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:18px}.head p{max-width:620px;margin:0;color:var(--muted)}.controls{display:grid;grid-template-columns:1fr auto auto;gap:10px;margin:22px 0}.search,select{min-width:0;padding:11px 12px;border:1px solid var(--line);border-radius:11px;color:var(--ink);background:var(--surface);font:inherit}.count{align-self:center;color:var(--muted);font-size:.9rem;font-weight:800}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}.card{display:flex;flex-direction:column;min-height:260px;padding:21px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);box-shadow:0 8px 25px rgba(30,30,45,.04)}.card.featured{border-color:color-mix(in srgb,var(--violet) 55%,var(--line));box-shadow:var(--shadow)}.badges,.tags{display:flex;flex-wrap:wrap;gap:7px}.badge,.tag{padding:4px 8px;border-radius:99px;font-size:.73rem;font-weight:900}.badge{color:var(--violet);background:var(--violet2)}.badge.LLM{color:var(--blue);background:var(--blue2)}.badge.DLCV{color:var(--orange);background:var(--orange2)}.badge.Shared{color:var(--green);background:var(--green2)}.tag{color:var(--muted);background:var(--surface2)}h3{margin:15px 0 5px;font-size:1.14rem}.card p{color:var(--muted)}.meta{margin-top:auto;padding-top:12px;border-top:1px solid var(--line)}.open{color:var(--violet);font-weight:900;text-decoration:none}.parent{display:block;margin-top:8px;color:var(--muted);font-size:.82rem;text-decoration:none}.open:hover,.parent:hover{text-decoration:underline}.empty{grid-column:1/-1;padding:32px;border:1px dashed var(--line);border-radius:16px;color:var(--muted);text-align:center}footer{padding:30px;border-top:1px solid var(--line);color:var(--muted);text-align:center}
+    @media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.head{display:block}}@media(max-width:620px){.top{padding:9px 12px}.wrap{padding:24px 14px 65px}.hero{padding:28px 21px}.grid{grid-template-columns:1fr}.controls{grid-template-columns:1fr}.count{justify-self:start}.brand{display:none}}
+  </style>
+</head>
+<body>
+  <header class="top"><a class="btn" href="../index.html">← Hub</a><div class="brand">Concept Scratchpad</div><span class="badge Shared">Reusable</span><div class="spacer"></div><button class="btn" id="theme" aria-label="Toggle color theme">◐</button></header>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Durable study memory</div>
+      <h1>Concept Scratchpad</h1>
+      <p class="lede">Small reviewed explanations and focused interactions that are useful beyond one chat. Use this page when a mechanism needs a quick refresher or hands-on practice.</p>
+      <div class="callout"><b>Reuse rule:</b> search here before building another explanation or interaction. If an entry already covers the idea, improve or reuse it.</div>
+    </section>
+    <section class="section">
+      <div class="head"><div><div class="eyebrow">Artifact registry</div><h2>Find a concept or tool</h2></div><p>This library is separate from the course sequence. Parent links take you back to the complete canonical volume.</p></div>
+      <div class="controls"><input class="search" id="search" type="search" placeholder="Search softplus, IoU, beam search, CLIP..." aria-label="Search artifacts"><select id="course" aria-label="Filter by course"><option>All courses</option><option>Shared</option><option>LLM</option><option>DLCV</option></select><select id="kind" aria-label="Filter by artifact type"><option>All types</option><option>Quick concept</option><option>Interactive lab</option></select></div>
+      <div class="count" id="count">Loading registry...</div>
+      <div class="grid" id="grid" aria-live="polite"></div>
+    </section>
+  </main>
+  <footer>Reviewed quick concepts and reusable interactions for IITM LLM + DLCV</footer>
+  <script>
+    const root=document.documentElement,theme=document.getElementById('theme');
+    const saved=localStorage.getItem('study-hub-theme');if(saved)root.dataset.theme=saved;
+    theme.onclick=()=>{root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';localStorage.setItem('study-hub-theme',root.dataset.theme)};
+    const grid=document.getElementById('grid'),search=document.getElementById('search'),course=document.getElementById('course'),kind=document.getElementById('kind'),count=document.getElementById('count');let items=[];
+    const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    function render(){const q=search.value.trim().toLowerCase(),c=course.value,k=kind.value;const shown=items.filter(x=>{const hay=[x.title,x.description,x.course,x.kind,...x.tags].join(' ').toLowerCase();return(!q||hay.includes(q))&&(c==='All courses'||x.course===c)&&(k==='All types'||x.kind===k)});count.textContent=`${shown.length} of ${items.length} artifacts`;grid.innerHTML=shown.map((x,i)=>`<article class="card ${i===0&&x.id==='activation-functions'?'featured':''}"><div class="badges"><span class="badge ${esc(x.course)}">${esc(x.course)}</span><span class="badge">${esc(x.kind)}</span></div><h3>${esc(x.title)}</h3><p>${esc(x.description)}</p><div class="tags">${x.tags.slice(0,5).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div><div class="meta"><a class="open" href="${esc(x.path)}">Open artifact →</a>${x.parent?`<a class="parent" href="${esc(x.parent.path)}">Canonical parent: ${esc(x.parent.label)}</a>`:''}</div></article>`).join('')||'<div class="empty">No matching artifact. Try a broader term or clear the filters.</div>'}
+    [search,course,kind].forEach(el=>el.addEventListener(el===search?'input':'change',render));
+    fetch('catalog.json').then(r=>{if(!r.ok)throw new Error('Registry unavailable');return r.json()}).then(data=>{items=data;render()}).catch(()=>{count.textContent='Registry could not be loaded';grid.innerHTML='<div class="empty">Open this page through GitHub Pages or a local web server so the artifact registry can load.</div>'});
+  </script>
+</body>
+</html>

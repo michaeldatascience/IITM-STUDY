@@ -1,0 +1,123 @@
+[
+  {
+    "id": "activation-functions",
+    "title": "Activation Functions and Derivatives",
+    "kind": "Quick concept",
+    "course": "Shared",
+    "added": "2026-09-05",
+    "description": "A compact course-bound reference for sigmoid, tanh, ReLU, Leaky ReLU, Softplus, and Softmax, with derivative intuition and an interactive plot.",
+    "tags": ["activation", "derivative", "backpropagation", "sigmoid", "softmax", "tanh", "relu", "leaky relu", "softplus"],
+    "path": "activation-functions.html",
+    "parent": {"label": "Shared Volume 0", "path": "../shared/volume-00-neural-foundations-interactive.html"}
+  },
+  {
+    "id": "tokenizer-simulator",
+    "title": "Tokenizer Simulator",
+    "kind": "Interactive lab",
+    "course": "LLM",
+    "added": "2026-08-30",
+    "description": "Manipulate BPE, WordPiece, and Unigram-style tokenization behavior.",
+    "tags": ["week 5", "tokenization", "bpe", "wordpiece", "unigram"],
+    "path": "../archive/llm/tokenizer_simulator.html",
+    "parent": {"label": "LLM Week 5", "path": "../llm/week-05-tokenizers-interactive.html"}
+  },
+  {
+    "id": "convolution-playground",
+    "title": "Convolution Playground",
+    "kind": "Interactive lab",
+    "course": "DLCV",
+    "added": "2026-08-30",
+    "description": "Change image values and kernels, then inspect each spatial calculation and output.",
+    "tags": ["week 1", "convolution", "kernel", "filter", "feature map"],
+    "path": "../archive/dlcv/convulation-playground.html",
+    "parent": {"label": "DLCV Volume 2", "path": "../dlcv/volume-02-quiz-1-recovery-interactive.html"}
+  },
+  {
+    "id": "decoding-objective",
+    "title": "Decoding and Objective Playground",
+    "kind": "Interactive lab",
+    "course": "LLM",
+    "added": "2026-08-30",
+    "description": "Explore beam search, temperature, top-k, top-p, conditioning paths, and MLM loss reductions.",
+    "tags": ["weeks 3 4", "beam search", "temperature", "top-k", "top-p", "mlm"],
+    "path": "../llm/decoding-objective-playground.html",
+    "parent": {"label": "LLM Volume 3", "path": "../llm/volume-03-language-models-decoding-interactive.html"}
+  },
+  {
+    "id": "data-pipeline",
+    "title": "Data Pipeline Playground",
+    "kind": "Interactive lab",
+    "course": "LLM",
+    "added": "2026-08-30",
+    "description": "Reconstruct RefinedWeb, compound survival rates, route C4 defects, and allocate source mixtures.",
+    "tags": ["week 8", "scaling law", "common crawl", "c4", "refinedweb", "deduplication"],
+    "path": "../llm/data-pipeline-playground.html",
+    "parent": {"label": "LLM Week 8", "path": "../llm/week-08-data-scaling-pipelines-interactive.html"}
+  },
+  {
+    "id": "cnn-mechanics",
+    "title": "CNN Shape, Parameters, and Receptive Field",
+    "kind": "Interactive lab",
+    "course": "DLCV",
+    "added": "2026-08-30",
+    "description": "Build CNN stacks and trace output shape, parameters, MACs, stride, and receptive field.",
+    "tags": ["weeks 3 4", "cnn", "shape", "parameters", "macs", "receptive field"],
+    "path": "../dlcv/cnn-shape-parameters-receptive-field-playground.html",
+    "parent": {"label": "DLCV Volume 2", "path": "../dlcv/volume-02-quiz-1-recovery-interactive.html"}
+  },
+  {
+    "id": "detection-metrics",
+    "title": "Detection Metrics Playground",
+    "kind": "Interactive lab",
+    "course": "DLCV",
+    "added": "2026-08-30",
+    "description": "Practice IoU, NMS, anchors, foreground gating, 11-point AP, mAP, Dice, and IoU.",
+    "tags": ["week 6", "detection", "iou", "nms", "anchors", "ap", "map", "dice"],
+    "path": "../dlcv/detection-metrics-playground.html",
+    "parent": {"label": "DLCV Volume 6", "path": "../dlcv/volume-06-modern-cnns-detection-interactive.html"}
+  },
+  {
+    "id": "visual-attention",
+    "title": "Visual Attention Playground",
+    "kind": "Interactive lab",
+    "course": "DLCV",
+    "added": "2026-08-31",
+    "description": "Alter spatial attention scores and temperature, compare soft and hard attention, and inspect interaction cost.",
+    "tags": ["week 8", "attention", "captioning", "soft attention", "hard attention", "vqa"],
+    "path": "../dlcv/visual-attention-playground.html",
+    "parent": {"label": "DLCV Volume 7", "path": "../dlcv/volume-07-sequence-attention-vision-interactive.html"}
+  },
+  {
+    "id": "efficient-attention-vit",
+    "title": "Efficient Attention and ViT Playground",
+    "kind": "Interactive lab",
+    "course": "Shared",
+    "added": "2026-08-31",
+    "description": "Explore sparse attention, position methods, KV caches, ViT and Swin grids, and DETR matching.",
+    "tags": ["efficient attention", "vit", "swin", "detr", "rope", "alibi", "kv cache"],
+    "path": "../shared/efficient-attention-vit-playground.html",
+    "parent": {"label": "Shared Volume 8", "path": "../shared/volume-08-efficient-attention-vision-transformers-interactive.html"}
+  },
+  {
+    "id": "generative-models",
+    "title": "Generative Models Playground",
+    "kind": "Interactive lab",
+    "course": "DLCV",
+    "added": "2026-08-31",
+    "description": "Manipulate the central mechanisms behind GANs, VAEs, and diffusion models.",
+    "tags": ["weeks 10 11", "gan", "vae", "elbo", "diffusion", "ddpm", "guidance"],
+    "path": "../dlcv/generative-models-playground.html",
+    "parent": {"label": "DLCV Volume 9", "path": "../dlcv/volume-09-generative-vision-models-interactive.html"}
+  },
+  {
+    "id": "contrastive-vlm",
+    "title": "Contrastive and VLM Playground",
+    "kind": "Interactive lab",
+    "course": "DLCV",
+    "added": "2026-08-31",
+    "description": "Practice metric learning, SimCLR, CLIP matrices, BLIP structure, and BLIP-2 masks.",
+    "tags": ["week 12", "contrastive", "simclr", "clip", "blip", "blip-2", "vlm"],
+    "path": "../dlcv/contrastive-vlm-playground.html",
+    "parent": {"label": "DLCV Volume 10", "path": "../dlcv/volume-10-contrastive-vlms-interactive.html"}
+  }
+]

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Course-bound activation functions and derivatives reference for IITM LLM and DLCV.">
+  <title>Activation Functions and Derivatives | Concept Scratchpad</title>
+  <style>
+    :root{--paper:#f3f0e8;--surface:#fffefa;--surface2:#e9e5da;--ink:#202832;--muted:#66717c;--line:#d7d1c5;--violet:#5544a8;--violet2:#e7e3fa;--orange:#b45f16;--orange2:#f8e7d2;--green:#24734f;--green2:#dff1e7;--red:#a13d4a;--red2:#f6dfe2;--shadow:0 18px 50px rgba(34,31,52,.1)}
+    [data-theme=dark]{--paper:#12151b;--surface:#1b2028;--surface2:#252b34;--ink:#f0f2f6;--muted:#abb2bd;--line:#38404c;--violet:#b9afff;--violet2:#302b57;--orange:#f0aa66;--orange2:#442e1f;--green:#78d1a5;--green2:#1c392c;--red:#f08d99;--red2:#40242a;--shadow:0 18px 50px rgba(0,0,0,.28)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:var(--paper);font:16px/1.65 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}a{color:inherit}.top{position:sticky;z-index:10;top:0;display:flex;align-items:center;gap:10px;padding:10px 22px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--paper) 91%,transparent);backdrop-filter:blur(15px)}.spacer{flex:1}.btn{border:1px solid var(--line);border-radius:10px;padding:.55rem .8rem;color:var(--ink);background:var(--surface);font:inherit;font-weight:850;text-decoration:none;cursor:pointer}.wrap{max-width:1060px;margin:auto;padding:40px 24px 90px}.hero{padding:42px;border:1px solid var(--line);border-radius:27px;background:radial-gradient(circle at 90% 10%,var(--orange2),transparent 34%),var(--surface);box-shadow:var(--shadow)}.eyebrow{color:var(--orange);font-size:.77rem;font-weight:950;letter-spacing:.12em;text-transform:uppercase}h1,h2{font-family:Georgia,"Times New Roman",serif;line-height:1.15;letter-spacing:-.025em}h1{margin:.45rem 0;font-size:clamp(2.4rem,6vw,4.5rem)}h2{margin:0 0 15px;font-size:clamp(1.75rem,4vw,2.65rem)}h3{margin:0 0 5px}.lede{max-width:780px;color:var(--muted);font-size:1.1rem}.badges{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}.badge{padding:5px 9px;border-radius:99px;color:var(--green);background:var(--green2);font-size:.76rem;font-weight:900}.section{margin-top:54px}.callout{margin:18px 0;padding:16px 18px;border-left:4px solid var(--violet);border-radius:0 12px 12px 0;background:var(--violet2)}.formula{display:block;margin:10px 0;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface2);font-family:"Cascadia Code",Consolas,monospace;text-align:center}.plot{width:100%;height:660px;border:1px solid var(--line);border-radius:18px;background:#fff}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:16px;background:var(--surface)}table{width:100%;min-width:790px;border-collapse:collapse}th,td{padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}th{color:var(--violet);background:var(--violet2);font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}tr:last-child td{border-bottom:0}.fn{font-weight:950}.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.card{padding:20px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}.card p:last-child{margin-bottom:0}.trap{border-color:color-mix(in srgb,var(--red) 40%,var(--line));background:color-mix(in srgb,var(--red2) 50%,var(--surface))}details{margin:12px 0;border:1px solid var(--line);border-radius:14px;background:var(--surface)}summary{padding:15px 17px;cursor:pointer;font-weight:900}details>div{padding:0 18px 18px}.answers{color:var(--muted)}footer{padding:30px;border-top:1px solid var(--line);color:var(--muted);text-align:center}
+    @media(max-width:700px){.top{padding:9px 11px}.top .label{display:none}.wrap{padding:25px 14px 65px}.hero{padding:28px 21px}.grid{grid-template-columns:1fr}.plot{height:720px}}
+  </style>
+</head>
+<body>
+  <header class="top"><a class="btn" href="index.html">← Scratchpad</a><a class="btn label" href="../index.html">Study Hub</a><div class="spacer"></div><button class="btn" id="theme" aria-label="Toggle color theme">◐</button></header>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Quick concept · Shared foundation</div>
+      <h1>Activation Functions and Derivatives</h1>
+      <p class="lede">An activation function decides how strongly a neuron passes its pre-activation forward. Its derivative decides how strongly learning pressure passes backward.</p>
+      <div class="badges"><span class="badge">DLCV Quiz 1</span><span class="badge">Backpropagation</span><span class="badge">Interactive plot</span></div>
+      <div class="callout"><b>Resistance first:</b> before scrolling, predict Softplus at <i>x</i> = 0 and its derivative. Then explain why Softplus can be viewed as a smooth ReLU.</div>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">The central idea</div><h2>Why take the derivative?</h2>
+      <p>A neuron first computes a pre-activation <i>z</i>, then outputs <i>a</i> = f(<i>z</i>). During backpropagation, the chain rule multiplies the incoming learning signal by f′(<i>z</i>):</p>
+      <span class="formula">∂L/∂z = ∂L/∂a × f′(z)</span>
+      <p>Think of f′(<i>z</i>) as a <b>gradient valve</b>. Near zero, it blocks learning at that neuron. Near one, it passes most of the signal. Very large repeated factors can amplify the signal. This is why the forward shape and derivative shape both matter.</p>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">Manipulate the mechanism</div><h2>Function and derivative plot</h2>
+      <p class="muted">Choose a function and move <i>x</i>. The solid curve is f(<i>x</i>); the second curve shows the local slope f′(<i>x</i>). Softmax is demonstrated separately because it acts on a vector, not one scalar in isolation.</p>
+      <iframe class="plot" src="activation-functions-plot.html" title="Interactive activation function and derivative plot" loading="lazy"></iframe>
+      <p><a class="btn" href="activation-functions-plot.html">Open plot by itself</a></p>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">Exam-ready reference</div><h2>The functions in one table</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Function</th><th>Definition</th><th>Derivative</th><th>Range</th><th>Intuition and typical use</th></tr></thead>
+        <tbody>
+          <tr><td class="fn">Sigmoid</td><td>σ(x) = 1/(1 + e<sup>−x</sup>)</td><td>σ(x)(1 − σ(x))</td><td>(0, 1)</td><td>A soft binary gate. Common for binary probabilities and LSTM/GRU gates. Saturates at both ends, so its derivative approaches 0.</td></tr>
+          <tr><td class="fn">tanh</td><td>tanh(x) = (e<sup>x</sup> − e<sup>−x</sup>)/(e<sup>x</sup> + e<sup>−x</sup>)</td><td>1 − tanh²(x)</td><td>(−1, 1)</td><td>A zero-centred squashing function. Common for recurrent candidate states. It still saturates for large |x|.</td></tr>
+          <tr><td class="fn">ReLU</td><td>max(0, x)</td><td>0 for x &lt; 0; 1 for x &gt; 0</td><td>[0, ∞)</td><td>A hard one-sided gate. Fast and non-saturating on the positive side. A unit can die if it stays negative. The derivative at 0 is assigned by convention.</td></tr>
+          <tr><td class="fn">Leaky ReLU</td><td>max(αx, x)</td><td>α for x &lt; 0; 1 for x &gt; 0</td><td>(−∞, ∞) when α &gt; 0</td><td>Keeps a small negative-side slope, commonly α = 0.01 in the course exercise, so negative units can still receive learning pressure.</td></tr>
+          <tr><td class="fn">Softplus</td><td>ln(1 + e<sup>x</sup>)</td><td>σ(x)</td><td>(0, ∞)</td><td>A smooth approximation to ReLU. It never has an exactly zero derivative at finite x, but it is more expensive and less sparse than ReLU.</td></tr>
+          <tr><td class="fn">Softmax</td><td>p<sub>i</sub> = e<sup>zᵢ</sup>/Σ<sub>k</sub>e<sup>zₖ</sup></td><td>∂p<sub>i</sub>/∂z<sub>j</sub> = p<sub>i</sub>(δ<sub>ij</sub> − p<sub>j</sub>)</td><td>Each p<sub>i</sub> ∈ (0,1), and Σp<sub>i</sub> = 1</td><td>Turns a vector of logits into a categorical distribution. Used for multiclass outputs and attention weights. Increasing one logit affects every probability.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="section">
+      <div class="grid">
+        <article class="card"><h3>Softplus at zero</h3><span class="formula">softplus(0) = ln 2 ≈ 0.693</span><span class="formula">softplus′(0) = σ(0) = 0.5</span><p>This is a recurring course-style derivative calculation. The function value and derivative value are different numbers.</p></article>
+        <article class="card"><h3>Softmax is not sigmoid</h3><p>Sigmoid treats each logit as an independent binary gate. Softmax makes the outputs compete because their probabilities must sum to 1. Its derivative is therefore a Jacobian matrix with cross-effects.</p></article>
+        <article class="card"><h3>ReLU versus Leaky ReLU</h3><p>For x = −3, ReLU outputs 0 and sends gradient 0. With α = 0.01, Leaky ReLU outputs −0.03 and sends 1% of the incoming gradient.</p></article>
+        <article class="card trap"><h3>Common traps</h3><p>Do not claim that ReLU is differentiable at 0. Do not give Softplus the range [0,∞), because it approaches 0 but never reaches it. Do not differentiate Softmax as if each output were independent.</p></article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">Course boundary</div><h2>What belongs here?</h2>
+      <p>The DLCV Quiz 1 activation exercise explicitly includes Linear and Indicator along with Leaky ReLU and Softplus. Linear has constant derivative 1. Indicator is discontinuous at its threshold and has zero derivative away from it, so it is unsuitable for ordinary gradient-based hidden-layer learning.</p>
+      <p>Later LLM material also names GELU, ELU, Swish, SwiGLU, and GeGLU. Those belong with the corresponding architecture or feed-forward-block lesson. They are not silently folded into this foundation note.</p>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">Resistance check</div><h2>Answer before revealing</h2>
+      <details><summary>1. A ReLU unit receives x = −4. What are its output and local derivative?</summary><div class="answers">Output 0; local derivative 0. The incoming gradient is blocked at this unit.</div></details>
+      <details><summary>2. With Leaky ReLU α = 0.01 and x = −4, what changes?</summary><div class="answers">Output −0.04; local derivative 0.01. A small learning signal can still pass backward.</div></details>
+      <details><summary>3. Why is the maximum sigmoid derivative 0.25?</summary><div class="answers">σ′ = σ(1 − σ). This product is largest when σ = 0.5, which occurs at x = 0, giving 0.5 × 0.5 = 0.25.</div></details>
+      <details><summary>4. Softmax probabilities are [0.7, 0.2, 0.1]. What is ∂p₁/∂z₁?</summary><div class="answers">p₁(1 − p₁) = 0.7 × 0.3 = 0.21. For a different logit, such as z₂, the derivative would be −p₁p₂ = −0.14.</div></details>
+      <details><summary>5. Which function is smooth, has range (0,∞), and has sigmoid as its derivative?</summary><div class="answers">Softplus: ln(1 + eˣ).</div></details>
+    </section>
+  </main>
+  <footer>Concept Scratchpad · Activation functions · Reviewed reusable note</footer>
+  <script>const root=document.documentElement,saved=localStorage.getItem('study-hub-theme');if(saved)root.dataset.theme=saved;document.getElementById('theme').onclick=()=>{root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';localStorage.setItem('study-hub-theme',root.dataset.theme)};</script>
+</body>
+</html>

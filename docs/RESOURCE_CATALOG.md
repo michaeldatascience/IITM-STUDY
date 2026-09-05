@@ -1,6 +1,6 @@
 # IITM LLM + DLCV Resource Catalog
 
-Last verified: 2026-08-31
+Last verified: 2026-09-05
 Original primary-PC workspace: `E:\CODE\LLMDLCV`
 
 > Portable-source note: this private repository intentionally excludes both `Course Slides` folders. Official lecture PDFs and media are stored in the user's private Dropbox archive and must be inspected from there when authoring. Final reviewed artifacts live in `michaeldatascience/IITM-STUDY`. Paths below that refer to excluded slides, working previews, or publication repositories describe the original workspace and may not exist inside this lightweight clone.
@@ -226,6 +226,10 @@ Folder: `study-hub/`
 - `llm/end-term-cheat-sheet.html` and its paired Markdown - complete LLM Weeks 1-12 revision surface with formula wall, week filters, model matrix, data-pipeline orders, long-context counts, and trap ledger.
 - `dlcv/end-term-cheat-sheet.html` and its paired Markdown - complete DLCV Weeks 1-12 revision surface covering image processing through VLMs, with formula wall, week filters, architecture signatures, and trap ledger.
 - `dlcv/contrastive-vlm-playground.html` - dedicated metric-learning, SimCLR, CLIP, BLIP, and BLIP-2 practice.
+- `scratchpad/index.html` - searchable public registry for small reviewed concept notes and reusable interactive labs.
+- `scratchpad/catalog.json` - machine-readable artifact index that future sessions must search before creating a duplicate.
+- `scratchpad/activation-functions.html` - shared activation-function note covering definitions, derivatives, ranges, uses, traps, course boundary, and resistance checks.
+- `scratchpad/activation-functions-plot.html` - dedicated interactive function and derivative plot used by the activation-function note.
 - `archive/llm/` and `archive/dlcv/` - reviewed prior artifacts retained as references until incorporated into canonical volumes.
 - `docs/` - publication snapshots of this catalog and the study map.
 
@@ -351,6 +355,7 @@ When new material is added:
 3. Note missing images, external dependencies, duplicate content, incomplete extraction, or absent keys.
 4. Update the relevant week in `STUDY_MAP.md`.
 5. Do not publish raw source collections to GitHub; publish only reviewed final notes and artifacts.
+6. Search `study-hub/scratchpad/catalog.json` before creating a new quick concept or interactive lab. Register new reusable artifacts and link their canonical parent when one exists.
 
 ## Change log
 
@@ -363,3 +368,4 @@ When new material is added:
 - **2026-08-31:** Added DLCV Volume 10 and the Contrastive and VLM Playground from all eleven supplied Week 12 decks, GA12/PA12, and the seven supplied PYQ files. The paired Markdown remains an unlinked runtime source.
 - **2026-08-31:** Added the End-Term Mock Exam Pack after reviewing all supplied PYQ collections and GA/PA pattern evidence. The public pack uses newly written analogues rather than copied past-paper questions.
 - **2026-08-31:** Added complete LLM and DLCV End-Term cheat sheets, their shared print/search framework, and paired source-reference Markdown files.
+- **2026-09-05:** Added the Concept Scratchpad registry, seeded it with existing dedicated interactives, and added the Activation Functions and Derivatives reusable quick concept.
