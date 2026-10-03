@@ -122,13 +122,23 @@ const app=document.getElementById("app");
 const fmt=s=>`${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
 const CASES_CUR=()=>TESTS[TEST].cases;
+const SEED_RESULTS={ t1:{date:"2 Oct 2026",pct:89,correct:49,total:55,timeUsed:"118:30",byLO:{1:{c:5,n:5},2:{c:5,n:5},3:{c:2,n:4},4:{c:4,n:5},5:{c:6,n:6},6:{c:5,n:6},7:{c:6,n:6},8:{c:4,n:4},9:{c:6,n:7},10:{c:6,n:7}},missed:[13,15,19,33,40,45]} };
+function loadResult(t){ try{ const s=localStorage.getItem("fsa-result-"+t); if(s) return JSON.parse(s); }catch(e){} return SEED_RESULTS[t]||null; }
+function saveResult(t,r){ try{ localStorage.setItem("fsa-result-"+t, JSON.stringify(r)); }catch(e){} }
+function resultCard(t){ const r=loadResult(t); if(!r) return '<p class="muted">No attempts yet.</p>';
+  const los=Object.keys(r.byLO).sort((a,b)=>a-b);
+  return `<details><summary>Last attempt, ${r.date}: <strong>${r.pct}%</strong> (${r.correct} of ${r.total}, ${r.timeUsed})</summary>
+   <div class="tablewrap"><table class="lo-table"><thead><tr><th>LO</th><th>Score</th><th></th></tr></thead><tbody>
+   ${los.map(lo=>`<tr><td>${lo}. ${LO[lo]}</td><td>${r.byLO[lo].c}/${r.byLO[lo].n}</td><td><div class="bar-mini"><i style="width:${100*r.byLO[lo].c/r.byLO[lo].n}%"></i></div></td></tr>`).join("")}
+   </tbody></table></div><p class="muted" style="font-size:.9rem">Missed: ${r.missed.length?r.missed.map(n=>"Q"+n).join(", "):"none"}</p></details>`; }
 
 function render(){ if(state.screen==="start") renderStart(); else if(state.screen==="exam") renderExam(); else if(state.screen==="review") renderReview(); else renderResults(); window.scrollTo({top:0}); }
 
 function renderStart(){
   const cards=Object.keys(TESTS).map(t=>{ const saved=loadSaved(t); const n=TESTS[t].cases.flatMap(c=>c.questions).length;
     return `<div class="q"><h2>${TESTS[t].name}</h2><p class="muted">${TESTS[t].cases.length} cases, ${n} questions. ${TESTS[t].note}</p>
-    <p><button class="btn" onclick="startExam('${t}')">${saved?"Resume "+TESTS[t].name:"Start "+TESTS[t].name}</button> ${saved?`<button class="btn secondary" onclick="resetTest('${t}')">Start over</button>`:''}</p></div>`; }).join("");
+    ${resultCard(t)}
+    <p style="margin-top:12px"><button class="btn" onclick="startExam('${t}')">${saved?"Resume "+TESTS[t].name:"Start "+TESTS[t].name}</button> ${saved?`<button class="btn secondary" onclick="resetTest('${t}')">Start over</button>`:''}</p></div>`; }).join("");
   app.innerHTML=`<div class="wrap"><div class="start">
   <h1>FSA Credential Level II<br>Full mock exams</h1>
   <ul>
@@ -155,6 +165,7 @@ function renderExam(){
     <div class="tabs">${CASES.map((cc,i)=>`<button class="tab ${i===state.caseIdx?'active':''}" onclick="goCase(${i})">Case ${i+1}</button>`).join("")}</div>
     <div class="muted" style="font-size:.9rem">${Object.values(state.answers).filter(a=>a.length).length} of ${ALLQ.length} answered</div>
     <div class="timer ${state.remaining<300?'low':''}" id="timer">${fmt(state.remaining)}</div>
+    <button class="tab" onclick="exitExam()" title="End this exam and return to the test menu">End exam</button>
   </div></div>
   <div class="wrap"><div class="grid">
     <div class="case"><h2>${c.title}</h2><div class="built">${c.built}</div>${c.body.replace(/<table>/g,'<div class="tablewrap"><table>').replace(/<\/table>/g,'</table></div>')}</div>
@@ -194,12 +205,17 @@ function renderReview(){
   <h2>Ready to submit?</h2>
   <p class="muted">${un.length?`${un.length} unanswered.`:"All questions answered."} ${inc.length?`${inc.length} multi-select question${inc.length>1?'s have':' has'} the wrong number of selections.`:""} Flagged questions are underlined in gold. Tap any number to jump back.</p>
   <div class="dots">${ALLQ.map(q=>`<button class="navdot ${answered(q)?'done':''} ${state.flags[q.id]?'flag':''}" onclick="goQ('${q.id}')">${qNumber(q.id)}</button>`).join("")}</div>
-  <button class="btn" onclick="submit()">Submit exam</button> <button class="btn secondary" onclick="state.screen='exam';render()">Back to questions</button>
+  <button class="btn" onclick="submit()">Submit exam</button> <button class="btn secondary" onclick="state.screen='exam';render()">Back to questions</button> <button class="btn secondary" onclick="exitExam()">End exam</button>
   </div></div>`;
 }
 
 function grade(q){ const a=[...(state.answers[q.id]||[])].sort().join(); return a===[...q.answer].sort().join(); }
-function submit(){ if(state.timer){clearInterval(state.timer);state.timer=null;} state.screen="results"; try{localStorage.removeItem("fsa-mock-1");}catch(e){} render(); }
+function exitExam(){ if(!confirm("End "+TESTS[TEST].name+" now? Your current answers will be scored and saved as your last attempt, and you'll return to the test menu.")) return; submit(true); }
+function submit(goHome){ if(state.timer){clearInterval(state.timer);state.timer=null;} try{localStorage.removeItem(skey());}catch(e){}
+  const correct=ALLQ.filter(grade).length; const byLO={}; ALLQ.forEach(q=>{ byLO[q.lo]=byLO[q.lo]||{c:0,n:0}; byLO[q.lo].n++; if(grade(q)) byLO[q.lo].c++; });
+  const missed=ALLQ.map((q,i)=>grade(q)?null:i+1).filter(x=>x);
+  saveResult(TEST,{date:new Date().toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}),pct:Math.round(100*correct/ALLQ.length),correct,total:ALLQ.length,timeUsed:fmt(TIME_LIMIT-Math.max(0,state.remaining)),byLO,missed});
+  state.screen=goHome===true?"start":"results"; render(); }
 
 function renderResults(){
   const correct=ALLQ.filter(grade).length; const pct=Math.round(100*correct/ALLQ.length);
