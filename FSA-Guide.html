@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FSA Level II — Last-minute study sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3F1EC; --panel:#FFFFFF; --ink:#1B2430; --ink2:#566170; --line:#DAD6CB;
+  --accent:#0B5C6B; --accent-soft:#DCEDEF; --warn:#9A5B00; --warn-soft:#FBEBCF; --ok:#1F6B45; --ok-soft:#DFF1E6; --bad:#A83A2A; --bad-soft:#F6E1DC;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#12171D; --panel:#1B232C; --ink:#E8ECF0; --ink2:#A4AFBB; --line:#323E4B;
+  --accent:#62BACB; --accent-soft:#17353C; --warn:#E7B45F; --warn-soft:#3A2E14; --ok:#6CCB93; --ok-soft:#1A3526; --bad:#F0907C; --bad-soft:#3E211B; }}
+:root[data-theme="dark"]{
+  --bg:#12171D; --panel:#1B232C; --ink:#E8ECF0; --ink2:#A4AFBB; --line:#323E4B;
+  --accent:#62BACB; --accent-soft:#17353C; --warn:#E7B45F; --warn-soft:#3A2E14; --ok:#6CCB93; --ok-soft:#1A3526; --bad:#F0907C; --bad-soft:#3E211B; }
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 64px);height:100%;-webkit-text-size-adjust:100%}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:16px;line-height:1.5;min-height:100%}
+h1,h2,h3{font-family:"IBM Plex Serif",Georgia,serif;font-weight:600;line-height:1.2;margin:0}
+h1{font-size:1.9rem} h2{font-size:1.45rem;margin-bottom:6px} h3{font-size:1.08rem}
+p{margin:0 0 10px} ul{margin:4px 0 10px;padding-left:20px} li{margin-bottom:4px}
+button{font:inherit;cursor:pointer;color:inherit}
+a{color:var(--accent)}
+.wrap{max-width:1040px;margin:0 auto;padding:0 16px}
+header.top{padding:22px 0 10px}
+.sub{color:var(--ink2);margin-top:4px;max-width:70ch}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 12px;font-size:.92rem}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:focus-visible,.chip:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+#q{flex:1 1 260px;min-width:0;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit}
+nav.sticky{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);border-bottom:1px solid var(--line);padding:8px 0}
+nav .row{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;padding-bottom:2px}
+.chip{flex:none;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 13px;font-size:.9rem;text-decoration:none;color:var(--ink);white-space:nowrap}
+.chip:hover,.chip.on{background:var(--accent-soft);border-color:var(--accent)}
+section{padding:26px 0 6px}
+.lead{color:var(--ink2);margin-bottom:12px;max-width:75ch}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:820px){.grid2,.grid3{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.card h3{margin-bottom:6px}
+.kicker{font-size:.76rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);font-weight:600}
+.badge{display:inline-block;font-size:.76rem;font-weight:600;background:var(--accent-soft);color:var(--accent);border-radius:6px;padding:2px 8px;margin-right:4px}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.callout{border-left:4px solid var(--warn);background:var(--warn-soft);border-radius:0 8px 8px 0;padding:10px 14px;margin:10px 0}
+.callout.good{border-color:var(--ok);background:var(--ok-soft)}
+.callout.info{border-color:var(--accent);background:var(--accent-soft)}
+.callout b.t{display:block;margin-bottom:2px}
+details.card{padding:0}
+details.card>summary{list-style:none;cursor:pointer;padding:14px 18px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+details.card>summary::-webkit-details-marker{display:none}
+details.card>summary::before{content:"▸";color:var(--accent);font-size:1rem;flex:none}
+details.card[open]>summary::before{content:"▾"}
+details.card .body{padding:0 18px 16px;border-top:1px solid var(--line)}
+details.card .body h4{margin:14px 0 4px;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+details.card .body h4.w{color:var(--warn)}
+.stack>*+*{margin-top:12px}
+table{border-collapse:collapse;width:100%;font-size:.93rem}
+th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+th{background:var(--accent-soft);font-weight:600}
+.tw{overflow-x:auto;background:var(--panel);border-radius:10px}
+.bar{height:10px;border-radius:5px;background:var(--line);overflow:hidden;min-width:90px}
+.bar i{display:block;height:100%;background:var(--accent)}
+.bar i.lo{background:var(--bad)} .bar i.mid{background:var(--warn)}
+.mono{font-variant-numeric:tabular-nums}
+.pill{display:inline-block;border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-size:.82rem;color:var(--ink2);margin:0 4px 4px 0}
+label{display:block;font-size:.85rem;color:var(--ink2);margin-bottom:3px}
+input[type=number],select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:10px 0}
+.out{background:var(--accent-soft);border-radius:8px;padding:10px 12px;margin-top:8px;min-height:3em}
+.hide{display:none!important}
+.flash{min-height:260px;display:flex;flex-direction:column;gap:12px}
+.flash .qtext{font-family:"IBM Plex Serif",Georgia,serif;font-size:1.25rem;line-height:1.35}
+.flash .hint,.flash .ans{border-radius:8px;padding:10px 12px}
+.flash .hint{background:var(--warn-soft)} .flash .ans{background:var(--ok-soft)}
+.prog{display:flex;gap:3px;flex-wrap:wrap;margin:10px 0}
+.prog i{width:14px;height:14px;border-radius:3px;background:var(--line);display:block;cursor:pointer}
+.prog i.known{background:var(--ok)} .prog i.review{background:var(--bad)} .prog i.cur{outline:2px solid var(--ink);outline-offset:1px}
+.small{font-size:.86rem;color:var(--ink2)}
+footer{padding:30px 0 50px;color:var(--ink2);font-size:.88rem}
+@media (prefers-reduced-motion:no-preference){.btn,.chip{transition:background .12s,border-color .12s}}
+@media print{
+  nav.sticky,#tools,#drill,.noprint,#q,header .row{display:none!important}
+  body{background:#fff;color:#000;font-size:11pt}
+  .card,.callout,.tw{break-inside:avoid;border-color:#999}
+  details.card .body{display:block}
+  section{padding-top:14px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div class="kicker">FSA Credential Level II</div>
+  <h1>Last-minute study sheet</h1>
+  <p class="sub">Everything here comes from the Level II study guide (section numbers in brackets). Where something comes from the exam provider rather than the guide, it is labelled. Search, drill the flashcards, or print the reference pages.</p>
+  <div class="row noprint" style="margin-top:10px">
+    <input id="q" type="search" placeholder="Search this sheet (e.g. turnover, skew, Customer Privacy)" aria-label="Search">
+    <button class="btn" id="openAll">Expand all</button>
+    <button class="btn" id="printBtn">Print reference</button>
+    <button class="btn" id="themeBtn">Theme</button>
+  </div>
+</header>
+</div>
+<nav class="sticky" aria-label="Sections"><div class="wrap"><div class="row" id="navrow">
+  <a class="chip" href="#examday">Exam day</a><a class="chip" href="#priority">Priorities</a><a class="chip" href="#chapters">Chapter sheets</a><a class="chip" href="#issues">26 issues</a><a class="chip" href="#factors">Five factors</a><a class="chip" href="#traps">Traps</a><a class="chip" href="#tools">Tools</a><a class="chip" href="#drill">Drill</a>
+</div></div></nav>
+
+<main class="wrap">
+
+<section id="examday" data-s="exam day format two hours 13 cases 55 questions 47 scored multiple answer all or nothing calculator time">
+  <h2>Exam day</h2>
+  <p class="lead">Format, scoring and a repeatable routine for every case.</p>
+  <div class="grid2">
+    <div class="card stack">
+      <h3>What the exam is</h3>
+      <ul>
+        <li><b>2 hours, 13 mini cases, 55 multiple-choice questions, 47 scored</b> <span class="pill">exam provider's published format, not in the guide</span></li>
+        <li>Each case has <b>3 to 6 questions</b>; the guide suggests <b>8 to 11 minutes per case</b>. Split screen: case on the left, questions on the right. A calculator and scratch pad are provided.</li>
+        <li>Two question types: <b>single answer</b> (at least four options) and <b>multiple answer</b> (stem says "Choose two/three"; 4 to 6 options). <span class="pill">Candidate Handbook</span></li>
+        <li><b>Multiple answer is all-or-nothing:</b> miss one correct option, or add one wrong option, and the question scores zero. <span class="pill">Handbook: no credit unless all correct answers are selected</span></li>
+        <li>I could not confirm the handbook's rule for blank or wrong answers. Check it before you sit.</li>
+      </ul>
+    </div>
+    <div class="card stack">
+      <h3>What is and isn't tested</h3>
+      <ul>
+        <li>Everything needed to answer is <b>in the case</b>. You are not expected to recall industry facts or valuation formulas, or do complex calculations. <b>Simple normalization arithmetic is expected.</b> [Preparing for the Exam]</li>
+        <li>Blue call-out boxes and the Glossary are for conceptual learning and are <b>not testable material</b>. Candidates are not expected to recall specific formulas (e.g. DCF, ROIC, EVA, terminal value).</li>
+        <li>Of the guide's exercises, only <b>Test Your Understanding</b> reflects the exam's style and rigor.</li>
+        <li>The Learning Objective verbs <b>Evaluate / Compare / Differentiate / Assess / Translate / Associate</b> tell you how deeply each topic is tested.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card stack" style="margin-top:14px">
+    <h3>The 6-step routine for every case (about 8 minutes)</h3>
+    <ol style="margin:4px 0 0;padding-left:22px">
+      <li><b>Skim the narrative (60 to 90 seconds).</b> Underline what makes the companies <i>differ</i>: revenue streams, inputs, location, regulation, management decisions, any announced change.</li>
+      <li><b>Glance at the table.</b> Note which metrics are already percentages, which are absolute, and which are activity metrics (units, facilities, hectares, revenue).</li>
+      <li><b>Read the question stem fully.</b> Look for "most", "best supported", "least useful", "not", "both", and whether higher or lower is good.</li>
+      <li><b>Answer from the case, not from memory.</b> Every correct option has a sentence or a number in the case behind it. If you cannot point to one, it is a distractor.</li>
+      <li><b>Multiple answer: judge each option on its own.</b> Do not hunt for a "matching pair". Count exactly the number asked.</li>
+      <li><b>Flag and move.</b> A suggested split: about 104 minutes for the first pass and 16 for flagged items.</li>
+    </ol>
+    <div class="callout"><b class="t">Pace check</b>
+      <div class="fgrid" style="max-width:420px"><div><label for="pm">Minutes used</label><input id="pm" type="number" min="0" step="1" placeholder="e.g. 45"></div><div><label for="pc">Cases finished</label><input id="pc" type="number" min="0" max="13" step="1" placeholder="e.g. 5"></div></div>
+      <div id="pout" class="small">Enter both to see your pace against 9.2 minutes per case.</div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <h3>How each Learning Objective shows up</h3>
+    <div class="tw"><table>
+      <thead><tr><th>LO</th><th>Typical stem</th><th>One-line method</th></tr></thead>
+      <tbody>
+      <tr><td>1</td><td>"How should the topics change given the company's revenue streams or inputs?"</td><td>Significant stream outside the industry: add that Standard. Stream absent: omit topics. Atypical input: topics get more or less relevant.</td></tr>
+      <tr><td>2</td><td>"Which external factor is a risk to A but not B?"</td><td>Name the component the case actually describes: business, economic, regulatory, location. If the case shows no difference, it is not the answer.</td></tr>
+      <tr><td>3</td><td>"Which issue category does this metric capture?" / "Which two issues are interrelated?"</td><td>Ask what is measured, who is affected, and by what mechanism. Use the neighbour pairs in the 26 issues table.</td></tr>
+      <tr><td>4</td><td>"Which N of the five factors…?"</td><td>Tick only factors with evidence in the case. The guide itself sets factors aside.</td></tr>
+      <tr><td>5</td><td>"What should X be normalized by?" / "After normalizing, who improved?"</td><td>Denominator = what drives the numerator. Percentages are already normalized. Compute both years.</td></tr>
+      <tr><td>6</td><td>"Assuming normal distribution… higher than what % of peers?" / "How is it distributed?"</td><td>z = (value − mean) ÷ SD. Check whether high is good. Mean above median = positive skew.</td></tr>
+      <tr><td>7</td><td>"What evidence supports this conclusion?" / "What can you conclude?"</td><td>Add context: location, regulation, market position, management decision. Missing data is not good performance.</td></tr>
+      <tr><td>8</td><td>"Risk or opportunity?" / "Acute or progressive?" / "Likelihood?"</td><td>Higher = better → opportunity. Single event → acute. Recurring or operating cost → progressive. Exposure = potential; fines already paid = actual.</td></tr>
+      <tr><td>9</td><td>"Which channels does this affect?" / "Link metric to channel."</td><td>Five channels only: revenues, expenses, assets, liabilities, cost of capital. Margin, turnover, NWC, EVA are not channels.</td></tr>
+      <tr><td>10</td><td>"How should this be reflected in a DCF?" / "What does it signal in ROIC?" / "Which scenario type?"</td><td>Cash flows, discount rate, or growth. Margin → consumer advantage; turnover → production advantage. Target → normative; set of futures → exploratory.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<section id="priority" data-s="priority results learning objective five factors weak spots plan">
+  <h2>Where to spend the time</h2>
+  <p class="lead">From Sumaiya's Tests 1 to 3 (13 questions per LO at most). Tests 1 to 3 had answer options that made the right choice easier to spot, so these scores are somewhat flattering. Test 4 to 6 scores are not included.</p>
+  <div class="card"><div class="tw"><table id="prio"><thead><tr><th>LO</th><th>Topic</th><th class="mono">Score</th><th>Bar</th><th>Priority</th></tr></thead><tbody></tbody></table></div></div>
+  <div class="callout good" style="margin-top:12px"><b class="t">Suggested order for the remaining time</b>
+    1) <b>Five factors (LO4)</b>: the five test questions, the cocoa example, 10 minutes of the drill.
+    2) <b>Issue neighbours (LO3)</b>: the pair list in the Traps section.
+    3) <b>Channels vs tools (LO9)</b>: the "not a channel" list.
+    4) <b>SD and skew (LO6)</b>: do three z-scores in the calculator.
+    5) Light skim of the rest. Sleep is worth more than a fourth read of Chapter 9.
+  </div>
+</section>
+
+<section id="chapters" data-s="chapter sheets">
+  <h2>Chapter sheets</h2>
+  <p class="lead">Compact notes per chapter. "Know cold" is what to recall, "Method" is how to answer, "Watch out" is where marks are lost.</p>
+  <div id="chlist" class="stack"></div>
+</section>
+
+<section id="issues" data-s="26 issues taxonomy dimensions environment social capital human capital business model leadership governance">
+  <h2>The 26 general issues</h2>
+  <p class="lead">Five dimensions. The marks are lost on neighbours, so each row says what it is <i>not</i>. [§2.1]</p>
+  <div class="row noprint" id="dimchips" style="margin-bottom:10px"></div>
+  <div class="tw"><table id="issuetbl"><thead><tr><th>Dimension</th><th>Issue</th><th>It is about…</th><th>Not to be confused with…</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<section id="factors" data-s="five factors direct financial legal regulatory industry norms stakeholder innovation">
+  <h2>The five factors</h2>
+  <p class="lead">Ask the test question for each factor. Tick it only if the case gives evidence. [§3.1, §3.2]</p>
+  <div id="fgrid" class="grid3"></div>
+  <div class="callout info"><b class="t">The guide's own worked example: child labor in cocoa (Processed Foods) [§3.2]</b>
+    <b>Direct financial:</b> set aside, because sourcing-program spending was about 1% of revenue, relatively immaterial. <b>Legal:</b> set aside, because companies source rather than farm and enforcement is limited, so they are not subject to those laws. <b>Industry norms:</b> applies (public targets, initiatives, transparency). <b>Stakeholder:</b> applies (lawsuits, certifications, reputation). <b>Innovation:</b> "monitor"; more downside than upside.
+  </div>
+  <div class="callout"><b class="t">Rule for "which N of the five" questions</b>Count the factors the case evidences. If the stem asks for three, three should have clear support. Do not choose a factor because it is "usually" relevant to the industry.</div>
+</section>
+
+<section id="traps" data-s="traps mistakes common errors distractors">
+  <h2>Where the exam fools you</h2>
+  <p class="lead">Wrong options are built from these errors. Recognise the pattern and the option loses its pull.</p>
+  <div id="traplist" class="grid2"></div>
+</section>
+
+<section id="tools" data-s="tools calculator z score percentile normalize skew channel mapper dcf">
+  <h2>Tools</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Z-score and percentile</h3>
+      <p class="small">Assumes normal distribution, as the stem will say.</p>
+      <div class="fgrid"><div><label for="zv">Company value</label><input id="zv" type="number" step="any"></div><div><label for="zm">Mean</label><input id="zm" type="number" step="any"></div><div><label for="zs">Std deviation</label><input id="zs" type="number" step="any"></div></div>
+      <label for="zp">Which direction is better?</label>
+      <select id="zp"><option value="lower">Lower is better (emissions, water, fines)</option><option value="higher">Higher is better (renewable %, certified %)</option></select>
+      <div class="out" id="zout">Enter a value, mean and standard deviation.</div>
+    </div>
+    <div class="card">
+      <h3>Normalize and compare two years</h3>
+      <div class="fgrid"><div><label for="n1">Y1 numerator</label><input id="n1" type="number" step="any"></div><div><label for="d1">Y1 denominator</label><input id="d1" type="number" step="any"></div><div><label for="n2">Y2 numerator</label><input id="n2" type="number" step="any"></div><div><label for="d2">Y2 denominator</label><input id="d2" type="number" step="any"></div></div>
+      <label for="np">Which direction is better?</label>
+      <select id="np"><option value="lower">Lower is better</option><option value="higher">Higher is better</option></select>
+      <div class="out" id="nout">Enter both years to see the ratio and its change.</div>
+    </div>
+    <div class="card">
+      <h3>Skew check</h3>
+      <div class="fgrid"><div><label for="km">Mean</label><input id="km" type="number" step="any"></div><div><label for="kd">Median</label><input id="kd" type="number" step="any"></div></div>
+      <div class="out" id="kout">Enter the mean and the median.</div>
+    </div>
+    <div class="card">
+      <h3>Normal distribution anchors</h3>
+      <div class="tw"><table class="mono"><thead><tr><th>Position</th><th>Below it</th><th>Above it</th></tr></thead><tbody>
+        <tr><td>+2 SD</td><td>97.5%</td><td>2.5%</td></tr><tr><td>+1 SD</td><td>84% (83.9)</td><td>16%</td></tr><tr><td>Mean</td><td>50%</td><td>50%</td></tr><tr><td>−1 SD</td><td>16%</td><td>84%</td></tr><tr><td>−2 SD</td><td>2.5%</td><td>97.5%</td></tr></tbody></table></div>
+      <p class="small" style="margin-top:8px">Bands: 34.1% each side from the mean to ±1 SD, then 13.6% to ±2 SD, then 2.1% beyond. Within ±1 SD = 68.2%. [§5.2]</p>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <h3>Channel and DCF mapper</h3>
+    <p class="small">Type a keyword (fine, brand, lease, risk, growth, margin…).</p>
+    <input id="mapq" type="search" placeholder="Filter effects" aria-label="Filter effects" style="width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit;margin-bottom:8px">
+    <div class="tw"><table id="maptbl"><thead><tr><th>Effect in the case</th><th>Channel</th><th>DCF input</th></tr></thead><tbody></tbody></table></div>
+  </div>
+</section>
+
+<section id="drill" data-s="drill flashcards questions hints">
+  <h2>Drill</h2>
+  <p class="lead">Core question, optional hint, then the answer. Mark each card so the review pile shows what is still weak. Progress is saved in this browser.</p>
+  <div class="card">
+    <div class="row noprint" style="margin-bottom:10px">
+      <select id="dfilter" style="max-width:220px" aria-label="Deck"></select>
+      <button class="btn" id="dshuffle">Shuffle</button>
+      <button class="btn" id="dreset">Reset marks</button>
+      <span class="small" id="dstat"></span>
+    </div>
+    <div class="prog" id="dprog" aria-label="Deck progress"></div>
+    <div class="flash" id="flash"></div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn" id="dprev">← Previous</button>
+      <button class="btn" id="dhint">Hint</button>
+      <button class="btn primary" id="dshow">Show answer</button>
+      <button class="btn" id="dnext">Next →</button>
+      <span style="flex:1"></span>
+      <button class="btn" id="dgot">Got it</button>
+      <button class="btn" id="drev">Review again</button>
+    </div>
+    <p class="small" style="margin-top:8px">Keys: space = show answer, H = hint, ← → = move, K = got it, R = review.</p>
+  </div>
+</section>
+
+<footer>
+  Built from the FSA Level II study guide. Exam format figures (2 hours, 13 cases, 55 questions, 47 scored) and the all-or-nothing rule for multiple-answer questions come from the exam provider, not the guide. Check the Candidate Handbook for anything else about test-day rules.
+</footer>
+</main>
+
+<script>
+const PRIO=[
+ {lo:4,t:"Evaluate how an issue affects a company using the five factors",c:10,n:13},
+ {lo:3,t:"Differentiate issues, impacts, and interrelated impacts",c:13,n:16},
+ {lo:9,t:"Connect a SASB metric to its channel(s) of financial impact",c:19,n:22},
+ {lo:6,t:"Dispersion of industry performance (SD, skew, outliers)",c:12,n:14},
+ {lo:7,t:"Compare peers in light of context and management decisions",c:13,n:15},
+ {lo:2,t:"External operating context and topic relevance",c:14,n:16},
+ {lo:10,t:"Translate metrics to valuation adjustments (DCF, ROIC, scenarios)",c:15,n:17},
+ {lo:8,t:"Associate metrics with type of financial impact",c:16,n:18},
+ {lo:5,t:"Normalizing sustainability information",c:20,n:21},
+ {lo:1,t:"Internal operating factors and topic relevance",c:13,n:13}
+];
+const CHAPTERS=[
+{n:1,title:"Fit the Standard to the company",lo:"LO1, LO2",sec:"Ch 1",
+ know:[
+  "<b>Two internal factors</b> decide which topics fit this company: <b>major revenue streams</b> and <b>main inputs for value creation</b>. [§1.2.1]",
+  "<b>Four external components:</b> <b>business climate</b> (competitive forces, pricing power, peer behavior, technology, competition for resources, expectations of non-investor stakeholders); <b>economic climate</b> (taxes, inflation, interest rates, commodity prices, by region); <b>regulatory climate</b> (regulation present or absent, pending regulation, cost of compliance, <i>enforceability and severity of penalties</i>); <b>operating location(s)</b> (physical location: natural-resource constraints and physical climate exposure). [§1.2.2]",
+  "<b>Governance, strategy and risk management</b> are the interface between internal operations and the external environment. [§1.3]"],
+ method:[
+  "Significant revenue stream outside the industry: <b>add that industry's Standard</b> (integrated oil and gas: Exploration &amp; Production + Midstream + Refining &amp; Marketing; hotel casinos: Casinos &amp; Gaming + Hotels &amp; Lodging).",
+  "A revenue stream a company lacks: <b>omit</b> the topics that depend on it (a transmission-only utility need not report generation topics). [§1.2.1.1]",
+  "Atypical input: topics become <b>more or less relevant</b> (a firm relying on people where automation is the norm; a company that outsources manufacturing does not control factory conditions, so supplier management matters more). [§1.2.1.2]",
+  "External-factor questions: name the component the <b>case describes as different</b> between the two companies."],
+ watch:[
+  "<b>Operating location is physical</b> (water stress, flood, wildfire, resource access). <b>Regulatory climate is legal</b> (rules, enforcement, penalties).",
+  "If the case gives no detail on a component, it is not the answer. The official answer keys say so in those words.",
+  "Disclosure does not decide relevance. A company not reporting a topic does not make the topic irrelevant."],
+ ask:["What are the company's primary sources of revenue?","Does it rely on inputs atypical for its industry?","Does it have a history of penalties for non-compliance?","Does its location cause differentiated exposure to physical climate risk?"]},
+{n:2,title:"The universe of issues",lo:"LO3",sec:"Ch 2",
+ know:[
+  "<b>5 dimensions, 26 issues:</b> Environment (6), Social Capital (7), Human Capital (3), Business Model &amp; Innovation (5), Leadership &amp; Governance (5). See the issues table.",
+  "<b>Environment:</b> use of nonrenewable natural resources as inputs, or harmful releases. <b>Social Capital:</b> contributions to society in return for license to operate. <b>Human Capital:</b> employees as key assets. <b>Business Model &amp; Innovation:</b> integrating ESG into value creation. <b>Leadership &amp; Governance:</b> issues inherent to the business model that may conflict with stakeholders or society.",
+  "<b>Interrelated impacts [§2.2]:</b> performance on one issue affects another. Example in the guide: in industries facing GHG caps, emissions performance influences operating costs, compliance costs and legal fees.",
+  "The same issue looks different by industry (the guide's \"look at the industry level\" boxes): Customer Privacy in Consumer Finance vs Advertising; Selling Practices in Alcoholic Beverages vs Media."],
+ method:[
+  "For a metric, ask: <b>what is measured, who is affected, and by what mechanism?</b> (data use vs data protection; injuries vs wages; own workforce vs supplier workforce; weather exposure vs transition risk).",
+  "For \"which two issues are interrelated\": pick the two the <b>case evidences</b> and that feed each other (e.g. emissions and air quality for a utility burning fuel)."],
+ watch:["Neighbouring categories are the standard distractors. Learn the pairs in <b>Where the exam fools you</b>.","Practice Case 8: materials management for a solar manufacturer = <b>Waste &amp; Hazardous Materials Management</b> and <b>Product Design &amp; Lifecycle Management</b>."],
+ ask:[]},
+{n:3,title:"The five factors",lo:"LO4",sec:"Ch 3",
+ know:[
+  "<b>1 Direct financial impacts and risk:</b> is the impact captured by existing line items in the financial statements?",
+  "<b>2 Legal, regulatory and policy drivers:</b> is the industry heavily regulated? how likely is new or emerging regulation? Topics with a history of regulation stand out (consumer health and safety such as nutrition, product, vehicle and airline safety; emissions; corruption and bribery).",
+  "<b>3 Industry norms, best practices, competitive drivers:</b> what do peers actively manage that is <i>not</i> regulated? what do companies commonly report?",
+  "<b>4 Stakeholder concerns and social trends:</b> are social trends shifting consumer demand? NGO monitoring? can practices harm customers or employees? do supply-chain issues attract attention?",
+  "<b>5 Opportunities for innovation:</b> emerging or best-in-class technology; R&amp;D that could be disruptive; cost-effective now, or when?"],
+ method:[
+  "Run the five test questions in order and <b>tick only what the case evidences</b>.",
+  "Beyond \"how does it hit financials\", the factors also evaluate <b>company context</b>, support <b>dialogue between management and investors</b>, and compare peers' strategies. [§3.3]"],
+ watch:[
+  "The guide's cocoa example sets <b>direct financial</b> (about 1% of revenue) and <b>legal</b> (sourcing, limited enforcement) aside, applies norms and stakeholder, and says innovation \"should be monitored\".",
+  "Do not pick factor 1 for an immaterial cost. Do not pick factor 2 unless regulation actually applies to the company. Do not pick factor 5 without a technology or product advantage in the case.",
+  "Airline example [§3.1]: CORSIA offsets and disclosure = regulatory driver."],
+ ask:["Is the financial impact captured by existing line items?","Is the industry heavily regulated; is new regulation likely?","Do peers manage this issue though it is not regulated?","Are social trends shifting demand?","Is there R&amp;D or technology that could create advantage?"]},
+{n:4,title:"Normalizing data",lo:"LO5",sec:"Ch 4",
+ know:[
+  "<b>Three questions before normalizing:</b> (1) already a percentage or ratio? then no. (2) are absolute values useful alone (a regulatory cap to compare against, or 0 is the ideal)? then maybe not. (3) does the range vary widely? then normalizing usually helps. [§4.1]",
+  "<b>Activity metrics</b> (employees, facilities, units produced, hectares, total landfill gas generated, hospital bed-days) work best for efficiency and productivity. <b>Financial metrics</b> (revenue, earnings) work best for economic efficiency, profitability and cash-flow implications. [§4.2]",
+  "<b>Comparisons:</b> against past performance, peers, and benchmarks or targets. [§4.3]",
+  "Percent change of a ratio: (32.3% − 41.2%) ÷ 41.2% = −21.6%. That is a relative change, not 8.9 percentage points."],
+ method:[
+  "<b>Choose the denominator that drives the numerator.</b> Restaurants' energy: number of company-owned restaurants (kitchen equipment), not employees. Telecom energy: data transmitted. Alcoholic beverages: hectoliters sold. Internet media: data processing capacity.",
+  "Over time, compare <b>ratios</b>, not totals: a company can grow in size and improve per unit.",
+  "<b>Acute, low-frequency events</b> (recalls, spills, nuclear units rated unacceptable): fewer is better regardless of size. A user may still normalize to see financial impact. [§4.1]",
+  "Compute Y1 and Y2 ratios for <b>both</b> companies before choosing an answer. Different denominators can give different answers."],
+ watch:[
+  "Normalization is <b>not prescriptive</b>; the best metric answers the question being asked.",
+  "A metric with no direct link to the numerator is a distractor (processing facilities for field fertilizer; fleet miles for water).",
+  "Lowest total is not most efficient. Scale is the reason you normalize."],
+ ask:["Is the data already normalized?","Are absolute values useful on their own?","Does performance vary so widely that a common scale helps?"]},
+{n:5,title:"Dispersion and distribution",lo:"LO6",sec:"Ch 5",
+ know:[
+  "<b>Central tendency:</b> mean, median, mode. <b>Variability:</b> standard deviation, mean absolute deviation (average distance from the mean), min and max (range). [§5.1]",
+  "<b>Normal distribution:</b> 34.1% from the mean to ±1 SD; 13.6% from ±1 to ±2 SD; 2.1% beyond ±2 SD. Within ±1 SD = 68.2%. Cumulative: +1 SD → 84% below; +2 SD → 97.5% below; −1 SD → 16%; −2 SD → 2.5%. [§5.2]",
+  "<b>z = (company value − mean) ÷ SD.</b> Low SD = companies perform similarly; high SD = wide spread.",
+  "<b>Skew:</b> longer right tail = <b>positive</b> (mean above median); longer left tail = <b>negative</b> (mean below median). Causes: company size and operations, regulatory caps and floors, natural floors (cannot be negative) and ceilings (cannot exceed 100%). [§5.3.2]",
+  "<b>Outliers:</b> investigate company-specific context (location, one-off events); do not just discard them. [§5.3.1]",
+  "<b>Comparability problems:</b> lack of coverage and lack of standardization. Data aggregators differ in metrics, scope and weightings. [§5.4]"],
+ method:[
+  "Only apply the percentages when the stem says <b>assume normal distribution</b>.",
+  "Decide first whether <b>high is good or bad</b> for the metric, then read the percentage as \"better than\" or \"worse than\".",
+  "Wide spread of raw data suggests normalizing; if a driver (size) skews it, normalize by that driver to restore normality."],
+ watch:[
+  "z = 1.92 is \"between 1 and 2 SD\", not \"more than 2\".",
+  "\"Higher than X% of peers\" is a cumulative <b>below</b> figure. 68.2% is the <b>within ±1 SD</b> share, not a one-sided percentile.",
+  "Skew label reversal is a favourite distractor: mean &lt; median is <b>negative</b> skew."],
+ ask:["How wide is the spread?","Can I assume normality, or is the data skewed?","Is the company an outlier, and why?"]},
+{n:6,title:"Context for interpreting performance",lo:"LO7",sec:"Ch 6",
+ know:[
+  "Context changes what a number means: <b>operating location</b> (water-stressed region vs not), <b>regulatory climate</b> (the guide's hardware example: European law requires higher recycling than US law), <b>business climate</b> (a dominant company in a concentrated market carries more competitive-behavior risk), and <b>management decisions</b>. [§6.1, §6.2]",
+  "The guide's examples: a lower fine is not better performance if the company dominates a concentrated market; a drop in a compliance percentage can come from a product launch whose certification is still pending; a sudden energy improvement needs normalized confirmation. [§6.1.1.1, §6.2, §4.3.1]",
+  "<b>Without context, no analysis is complete.</b>"],
+ method:[
+  "Ask: one-time circumstance or long-term management decision? Does the company's market position, location or regulatory regime differ from its peer's?",
+  "For \"can you conclude X is better?\": usually the best answer says what extra context is needed, or states the conclusion the data and context together support.",
+  "For comparisons across regimes, compare like with like (same regulation) and normalize for scale."],
+ watch:[
+  "Zero fines or no data is not proof of low risk.",
+  "A better raw number can still be worse risk (dominant market position, lenient enforcement, no audit coverage).",
+  "A \"progressive\" change in a ratio over years reflects management; a one-year jump may be circumstance."],
+ ask:["Is the change due to one-time events or management decisions?","Does the location create differentiated exposure?","Are the companies under the same rules?"]},
+{n:7,title:"Characterizing financial impacts",lo:"LO8",sec:"Ch 7",
+ know:[
+  "<b>Risk or opportunity:</b> if higher values mean improved economic performance (revenue, sales, engagement) the metric measures an <b>opportunity</b>; if higher values mean threats (recalls, turnover, energy consumed) it measures a <b>risk</b>. Context can flip it (fuel cells: very low recyclable % under tightening regulation is a risk). [§7.1]",
+  "<b>Likelihood:</b> actual (already happening, 100%) vs potential (low or high likelihood). <b>Timing:</b> near-term (occurring now or can occur any time, usually under one year) vs medium to long term (over one year, or known trends). <b>Magnitude:</b> low vs high. [§7.2.1]",
+  "<b>Acute:</b> one-time, high magnitude, low likelihood, direct and immediate (a spill, a major recall). <b>Progressive:</b> gradual, high likelihood, low to high magnitude, an operating cost of doing business. [§7.2.2]",
+  "<b>Rules of thumb:</b> operating-efficiency metrics (energy, water, waste) = actual, lower magnitude. Compliance and frequency of adverse events and risk governance = inform likelihood. Mega-trends and systemic risk = long term. Past adverse events (fines, recalls) = near term and may signal future risk. High magnitude: going concern, stranded assets, major recall, physical climate impacts."],
+ method:[
+  "Single incident or small number of incidents? Currently affected? Ongoing cost or revenue opportunity? Threatens going concern?",
+  "<b>Exposure or practice metrics</b> (share of reserves in risky countries, flood-zone share, a description of controls) → <b>potential</b>. <b>Fines, settlements, losses already recorded</b> → <b>actual</b>, lagging.",
+  "A time series of events informs likelihood: yearly small spills = high likelihood, progressive; one big spill after clean years = acute, low likelihood."],
+ watch:["Do not call a one-off large event \"progressive\" because it took months to clean up.","Do not call small recurring costs \"acute\" because they are annoying.","Descriptions of risk management mainly inform <b>likelihood</b>; magnitude is read from the performance data."],
+ ask:["Does the issue affect everyday operations?","Does it affect demand?","Does it cause major unplanned losses or capex?","Does it threaten the business as a going concern?"]},
+{n:8,title:"Channels of financial impact",lo:"LO9 and LO10",sec:"Ch 8",
+ know:[
+  "<b>Five channels:</b> revenues, expenses, assets, liabilities, cost of capital. One issue can touch several. [§8.2]",
+  "<b>Revenues:</b> price premiums, sales volume, market capture or new markets, productivity. <b>Expenses:</b> operating efficiency, scarcity or supply disruption of inputs, litigation history, operating disruptions (people, physical climate). <b>Assets:</b> impairment of the ability to generate cash flows, shorter useful life; intangibles (brand, IP, reputation); capex is an investment. <b>Liabilities:</b> fines, penalties, non-compliance, legal disputes (often contingent); unearned revenue if an incident stops delivery. <b>Cost of capital:</b> the company's risk profile in investors' and lenders' eyes. [§8.2.1]",
+  "<b>DCF inputs:</b> projected <b>cash flows</b> (from revenues, expenses, assets, liabilities), <b>discount rate</b> (cost of capital, nearly always), <b>growth rate</b> (position to capture new or expanding markets; terminal value is often 50 to 75% or more of value). [§8.2.3]",
+  "<b>Cost of debt:</b> sustainability-linked debt ties the borrower's own material performance to its interest cost; green bonds fund specific projects. Higher disclosure quality can lower perceived risk. [§8.2.2]"],
+ method:[
+  "Ask: who is affected and how does cash move? Lost sales = revenue. Fine paid = expense. Pending claim = liability. Brand damage = intangible asset (and revenue). Greater perceived risk = discount rate.",
+  "<b>Decoupled rate structure:</b> lower consumption does not reduce revenue; a non-decoupled utility's revenue is tied to volume. Reducing peak demand lowers the cost of supply.",
+  "Growth rate is a DCF input, not one of the five channels."],
+ watch:[
+  "<b>Not channels:</b> turnover ratio, operating margin, NOPAT, invested capital, net working capital, EVA / economic profit, growth rate.",
+  "Cost already incurred = expense; potential future obligation = liability.",
+  "Supply disruptions are unpredictable in timing, so the guide factors risk-management disclosure into the <b>discount rate</b>."],
+ ask:["Does it change sales or prices?","Does it change operating costs?","Does it impair or create assets?","Does it create fines or legal exposure?","Does it change how risky the company looks?"]},
+{n:9,title:"Valuation tools",lo:"LO10",sec:"Ch 9",
+ know:[
+  "<b>ROIC = (NOPAT ÷ sales) × (sales ÷ invested capital)</b>: operating margin × invested-capital turnover. Competitive advantage needs <b>ROIC above cost of capital and above peers</b>. [§9.1.1]",
+  "<b>Consumer advantage</b>: customers habitually use the product or face high switching costs. Signalled by ROIC improving through <b>operating margin</b>. <b>Production advantage</b>: spends less to deliver, through advantageous access to inputs or proprietary technology. Signalled by improvement through <b>turnover ratio</b>.",
+  "<b>EVA = (ROIC − WACC) × invested capital</b>; positive EVA = value created. Invested capital = NWC + PP&amp;E + intangible assets. [§9.1.2] (formulas are not testable; the logic is)",
+  "<b>Scenario types:</b> <b>exploratory</b> = a set of possible futures, test options within them (sea level rise by 2050). <b>Normative</b> = plan for a specific target (net zero by a given year). Often three scenarios: best, base, worst; the <b>base case</b> is the critical step. [§9.2.2]",
+  "<b>Scenario steps (TCFD-based):</b> 1 identify risks and opportunities; 2 define scenarios; 3 evaluate business impacts; 4 assess actual outcomes against modeled scenarios and adjust. Scenarios are not all-inclusive forecasts. [§9.2.1]"],
+ method:[
+  "Water or input access, lower cost per unit → <b>production</b> advantage. Certified or preferred products earning higher margins → <b>consumer</b> advantage.",
+  "Stem names a target (\"cut to X by Year 5\") → normative. Stem tests actions across possible futures → exploratory."],
+ watch:[
+  "\"Lowest total water\" is not production advantage. Advantage needs access or cost per unit.",
+  "Operating margin supports consumer advantage; do not swap the two.",
+  "These formulas live in blue boxes: not required to memorise."],
+ ask:["Does ROIC exceed cost of capital and peers?","Through margin or turnover?","Exploratory or normative?"]}
+];
+const ISSUES=[
+ ["Environment","GHG Emissions","Scope 1 emissions that contribute to global warming, direct from stationary or mobile sources.","Energy Management (energy as an input); Air Quality (pollutants that harm health, e.g. NOx, SOx)."],
+ ["Environment","Air Quality","Airborne pollutants that harm health of people and other living things, from stationary, mobile or industrial sources.","GHG Emissions (warming gases)."],
+ ["Environment","Energy Management","Environmental impacts of energy consumption as a key input (total energy, % grid, % renewable).","GHG Emissions (emissions as a by-product)."],
+ ["Environment","Water & Wastewater Management","Water as an input and discharge: withdrawn, % fresh, % in High or Extremely High Baseline Water Stress regions; for utilities, mains replacement and non-revenue water.","Ecological Impacts; Waste."],
+ ["Environment","Waste & Hazardous Materials Management","Hazardous and non-hazardous waste from operations: treatment, handling, storage, disposal.","Ecological Impacts (effects on ecosystems); Product Design (take-back design)."],
+ ["Environment","Ecological Impacts","Productivity of the natural environment: modifying water, soil, air as an input or by-product creates operating risks and costs (forestry, project siting and permits, spills into the environment).","Waste; Physical Impacts of Climate Change (company's own impact vs exposure to climate)."],
+ ["Social Capital","Human Rights & Community Relations","Relationships with local communities, human rights and Indigenous peoples; community support for permits and leases; treatment of clinical-trial participants.","Customer Welfare; Labor Practices (own employees)."],
+ ["Social Capital","Customer Privacy","How customer data is collected, shared and used; transparency; secondary use; behavioral advertising.","Data Security (protection from external threats)."],
+ ["Social Capital","Data Security","How a company protects data from external threats such as malware and hacking; breaches.","Customer Privacy (how data is used)."],
+ ["Social Capital","Access & Affordability","Broad and equitable access to universal-need services: health care, financial services, utilities, education, telecom; prices in a crisis.","Customer Welfare."],
+ ["Social Capital","Product Quality & Safety","Products and services with unintended consequences that harm customers' health or safety; recalls, malfunctions.","Customer Welfare (qualities inherent to design and delivery)."],
+ ["Social Capital","Customer Welfare","Benefits a person derives from consuming a good or service, and negative social externalities: food and beverages, controlled substances; restaurants' healthier menus; the official key also cites food safety risk from restaurants.","Product Quality & Safety (malfunctions of manufactured products); Selling Practices."],
+ ["Social Capital","Selling Practices & Product Labeling","Transparency, accuracy and comprehensibility of marketing, advertising and labeling (alcohol advertising reaching minors; media sponsorship identification).","Customer Welfare; Business Ethics."],
+ ["Human Capital","Labor Practices","Upholding legal and normative labor standards: wages and compensation, collective bargaining, strikes and lockouts, turnover.","Employee Health & Safety; Engagement, Diversity & Inclusion."],
+ ["Human Capital","Employee Health & Safety","A workplace free of injuries, fatalities and illness: injury and fatality rates, safety management, training.","Labor Practices; Critical Incident Risk Management (high-magnitude operational accidents)."],
+ ["Human Capital","Employee Engagement, Diversity & Inclusion","Workforce engagement and representation across employee groups, linked to performance, especially where innovation matters.","Labor Practices."],
+ ["Business Model & Innovation","Product Design & Lifecycle Management","Products with packaging or externalities; demand for more sustainable products; evolving regulation; revenue from recyclable or efficient products; end-of-life recovery.","Materials Sourcing (inputs); Waste."],
+ ["Business Model & Innovation","Business Model Resilience","Adapting the business model to environmental and social transitions (e.g. low-carbon economy); capex strategy and stranded assets; can threaten going concern.","Physical Impacts of Climate Change (assets exposed to weather)."],
+ ["Business Model & Innovation","Supply Chain Management","Environmental and social risks in suppliers: audits, certification, non-conformance and corrective action rates.","Materials Sourcing & Efficiency (availability and price of key resources)."],
+ ["Business Model & Innovation","Materials Sourcing & Efficiency","Resilience of materials supply to climate and other external factors that affect availability and pricing of key resources (critical materials); recycled and renewable inputs.","Supply Chain Management (suppliers' practices)."],
+ ["Business Model & Innovation","Physical Impacts of Climate Change","Direct exposure of owned or controlled assets to climate hazards: flood, fire, extreme weather; insurance PML; property portfolios; mortgage collateral.","Business Model Resilience (transition risk)."],
+ ["Leadership & Governance","Business Ethics","Fraud, corruption, bribery, facilitation payments, fiduciary duties; anti-money-laundering at casinos.","Competitive Behavior; Selling Practices."],
+ ["Leadership & Governance","Competitive Behavior","Anti-competitive behavior that reduces market competition; monopoly power; patent and IP practices.","Business Ethics; Management of the Legal & Regulatory Environment."],
+ ["Leadership & Governance","Management of the Legal & Regulatory Environment","Engaging with regulators where corporate and public interest may conflict; reliance on favorable regulation, subsidies, lobbying.","Competitive Behavior; compliance costs."],
+ ["Leadership & Governance","Critical Incident Risk Management","Operational safety hazards that can cause high-magnitude accidents (air freight accidents, dangerous operations).","Systemic Risk Management; Employee Health & Safety."],
+ ["Leadership & Governance","Systemic Risk Management","Contribution to or management of large-scale weakening or collapse of financial, natural-resource or technological systems (G-SIB score, power grid failure).","Critical Incident Risk Management (one facility's accident)."]
+];
+const DIMS=["Environment","Social Capital","Human Capital","Business Model & Innovation","Leadership & Governance"];
+const FACTORS=[
+ {n:1,t:"Direct financial impacts and risk",q:"Is the impact captured by existing line items in the financial statements?",ex:"Fines, settlements, energy costs, litigation provisions. Needs a material cost in the case."},
+ {n:2,t:"Legal, regulatory, and policy drivers",q:"Is the industry heavily regulated? How likely is new or emerging regulation to apply to this company?",ex:"Emissions limits, product-safety rules, CORSIA, labeling mandates. Regulation must apply."},
+ {n:3,t:"Industry norms, best practices, and competitive drivers",q:"What do peers manage or report on this issue even though it is not regulated?",ex:"Public sourcing targets, disclosure by competitors. Needs peer-practice evidence."},
+ {n:4,t:"Stakeholder concerns and social trends",q:"Are social trends shifting demand? Is there NGO pressure, or risk of harm to customers or employees?",ex:"Consumer demand for healthier products, lawsuits, certifications, reputation."},
+ {n:5,t:"Opportunities for innovation",q:"Is there technology or R&D that could give competitive advantage, and is it cost-effective?",ex:"New products, recyclable design, new process technology. Needs the advantage in the case."}
+];
+const TRAPS=[
+ ["Absolute vs normalized","A smaller total looks efficient. Totals reflect scale.","Normalize first. Lowest total is not most efficient."],
+ ["Wrong denominator","An activity metric with no physical link to the numerator (facilities for field inputs, fleet miles for water).","Pick what drives the numerator."],
+ ["Normalizing a percentage","Dividing a ratio again to \"adjust\" it.","Percentages and ratios are already normalized."],
+ ["Realized vs potential","Calling an exposure metric (reserves in risky countries, flood-zone share) an actual impact, or fines a potential one.","Fines and settlements already paid = actual, lagging. Exposure and described controls = potential."],
+ ["Acute vs progressive","Calling a one-off event \"gradual\", or recurring small costs \"acute\".","One incident = acute. Recurring or operating costs = progressive."],
+ ["Channel vs tool","Offering turnover ratio, margin, NWC, invested capital, economic profit, growth rate as channels.","Only revenues, expenses, assets, liabilities, cost of capital."],
+ ["Expense vs liability","Fine already paid filed as a liability.","Incurred = expense; pending claim or future obligation = liability."],
+ ["Customer Privacy vs Data Security","Both about data.","Privacy = how data is collected and used. Security = protection from external threats."],
+ ["Labor Practices vs Employee H&S","Both Human Capital.","Wages, turnover, strikes = labor. Injuries, fatalities, safety = H&S."],
+ ["Product Quality & Safety vs Customer Welfare vs Selling Practices","All three are about customers.","Malfunction or hazard = quality & safety. Benefits and externalities of consumption (nutrition) = welfare. Accuracy of labels and ads = selling practices."],
+ ["Supply Chain vs Materials Sourcing","Both about inputs.","Supplier conduct and audits = supply chain. Availability and price of key resources = materials sourcing."],
+ ["Business Model Resilience vs Physical Impacts","Both climate-related.","Adapting to a low-carbon transition = resilience. Own assets hit by floods or fires = physical."],
+ ["Critical Incident vs Systemic Risk","Both about catastrophes.","A facility or operation's accident = critical incident. Collapse of a system society relies on = systemic."],
+ ["Operating location vs regulatory climate","Same region appears in both.","Physical conditions = location. Rules and enforcement = regulatory."],
+ ["Five factors by habit","Ticking factors typical for the industry.","Tick only what this case evidences. The guide's cocoa example sets two aside."],
+ ["Mean, median and skew","Reversing positive and negative skew.","Mean above median = positive (right tail). Mean below median = negative."],
+ ["SD percentages","Using 68.2% as a one-sided percentile, or rounding 1.92 SD to 2.","Cumulative below +1 SD = 84%; +2 SD = 97.5%. 1.92 is between 1 and 2."],
+ ["Missing data","Treating no disclosure, zero fines or a flat metric as strong performance.","Absence is not performance; add context (market power, enforcement, audit coverage)."],
+ ["Decoupled revenue","Assuming lower consumption always cuts revenue.","Decoupled: revenue not tied to volume. Non-decoupled: revenue falls. Peak-demand cuts lower supply costs."],
+ ["Multiple answer","Looking for two options that \"go together\", or picking three when two are asked.","Test each option alone against the case; select exactly the number requested."]
+];
+const MAP=[
+ ["Fine or settlement already paid","Expenses","Cash flow (expense projections)"],
+ ["Pending lawsuit, contingent claim, provision for future claims","Liabilities","Cash flow; may raise discount rate if it signals risk"],
+ ["Closures, lost sales, customers leaving after a scandal","Revenues","Revenue projections"],
+ ["Price premium from certified or sustainable products","Revenues","Revenue projections"],
+ ["Gain in market share or access to new markets","Revenues","Growth projections"],
+ ["Lower energy, water or waste cost","Expenses","Cash flow (lower expense projections)"],
+ ["Carbon tax, credits, monitoring, abatement operating cost","Expenses","Cash flow"],
+ ["Capital spending on abatement or recycling equipment","Assets (capex)","Cash flow (capex)"],
+ ["Impairment of land, plant or facilities; shorter useful life","Assets (tangible)","Cash flow; asset values"],
+ ["Brand, reputation or IP value","Assets (intangible)","Revenue and asset value"],
+ ["R&amp;D for sustainable products","Expenses now, assets later","Lower near-term cash flow; possibly higher growth"],
+ ["Greater perceived risk, volatile performance, weak risk management","Cost of capital","Higher discount rate"],
+ ["Sustainability-linked loan margin step-up","Cost of capital (cost of debt)","Discount rate"],
+ ["Position to capture an expanding market","Not a channel","Higher growth projections (terminal value)"],
+ ["Supply disruption or price volatility of critical materials","Expenses; risk","Cash flow; risk shows in discount rate"],
+ ["Lower consumption, decoupled utility","Revenue neutral; expenses fall at peak","Neutral revenue, lower expenses"],
+ ["Lower consumption, non-decoupled utility","Revenues fall","Lower revenue projections"],
+ ["Operating margin, turnover ratio, NWC, invested capital, EVA, economic profit","Not channels","Valuation tools and variables (ROIC, EVA)"]
+];
+const CARDS=[
+ [1,"Name the two internal operating factors.","What the company sells; what it uses.","<b>Major revenue streams</b> and <b>main inputs for value creation</b>."],
+ [1,"Name the four components of external operating context.","B-E-R-L.","<b>Business climate, economic climate, regulatory climate, operating location(s).</b>"],
+ [1,"Taxes, inflation, interest rates, commodity prices: which component?","Macro conditions by region.","<b>Economic climate.</b>"],
+ [1,"Pricing power, peer behavior, technology, competition for resources, NGO or customer expectations: which component?","Competitive forces.","<b>Business climate.</b>"],
+ [1,"Enforcement, severity of penalties, pending rules, cost of compliance: which component?","The legal environment.","<b>Regulatory climate.</b>"],
+ [1,"Water stress or flood or wildfire exposure of where a company operates: which component?","Physical.","<b>Operating location(s).</b>"],
+ [1,"A chemicals company earns 35% of revenue from consumer cleaning products. What does the user do?","Think integrated oil and gas.","<b>Reference an additional industry Standard</b> for the significant revenue stream outside the industry."],
+ [1,"A utility earns all revenue from transmission and operates no generation. What happens to generation topics?","Revenue stream test again.","They likely <b>do not apply</b> and can be omitted."],
+ [1,"What role do governance, strategy and risk management play?","Between inside and outside.","They are the <b>critical interface between internal operations and the external environment</b>."],
+ [2,"How many dimensions and issues in the SASB taxonomy, and how many issues in each dimension?","6, 7, 3, 5, 5.","<b>5 dimensions, 26 issues:</b> Environment 6, Social Capital 7, Human Capital 3, Business Model &amp; Innovation 5, Leadership &amp; Governance 5."],
+ [2,"Customer Privacy vs Data Security?","Use versus protect.","Privacy = how customer data is <b>collected, shared and used</b>. Security = how it is <b>protected from external threats</b>."],
+ [2,"Labor Practices vs Employee Health & Safety?","Wages versus injuries.","Labor Practices = wages, collective bargaining, strikes, turnover. H&amp;S = injuries, fatalities, illness, safe workplace."],
+ [2,"Product Quality & Safety vs Customer Welfare?","Malfunction versus consumption.","Quality &amp; Safety = malfunctions and hazards of products and services. Welfare = benefits and negative externalities of consuming the product (nutrition, controlled substances)."],
+ [2,"Supply Chain Management vs Materials Sourcing & Efficiency?","Suppliers' practices versus availability and price.","Supply chain = environmental and social risks in suppliers. Materials sourcing = availability and pricing of key resources."],
+ [2,"Business Model Resilience vs Physical Impacts of Climate Change?","Transition versus exposure.","Resilience = adapting to transitions such as decarbonization. Physical = assets directly exposed to flood, fire, extreme weather."],
+ [2,"Critical Incident Risk Management vs Systemic Risk Management?","One operation versus a whole system.","Critical incident = operational hazards causing high-magnitude accidents. Systemic = large-scale weakening or collapse of financial, resource or technological systems."],
+ [2,"GHG Emissions vs Energy Management vs Air Quality?","Warming, input, health.","GHG = Scope 1 emissions that warm. Energy = energy consumption as a key input. Air Quality = airborne pollutants that harm health."],
+ [2,"What is an interrelated impact? Give the guide's example.","Where one issue's performance drives another.","Performance on one issue affects another, e.g. in industries with GHG caps, <b>emissions performance influences operating and compliance costs and legal fees</b>."],
+ [3,"List the five factors.","1 to 5.","Direct financial impacts and risk; Legal, regulatory and policy drivers; Industry norms, best practices and competitive drivers; Stakeholder concerns and social trends; Opportunities for innovation."],
+ [3,"Test question for factor 1?","Where does the cost show?","<b>Is the impact captured by existing line items in the financial statements?</b>"],
+ [3,"Test question for factor 2?","Is there a rule?","<b>Is the industry heavily regulated; how likely is new or emerging regulation?</b>"],
+ [3,"Test question for factor 3?","Peers.","<b>What do peers actively manage or report that is not regulated?</b>"],
+ [3,"Test question for factor 4?","Non-investor stakeholders.","<b>Are social trends shifting demand, is there NGO pressure, can practices harm customers or employees?</b>"],
+ [3,"Test question for factor 5?","New technology.","<b>Is there emerging technology or R&amp;D that could give competitive advantage, and is it cost-effective?</b>"],
+ [3,"In the guide's cocoa example, which factors are set aside?","Two of them.","<b>Direct financial</b> (about 1% of revenue, immaterial) and <b>legal</b> (companies source, not farm; limited enforcement). Norms and stakeholder apply; innovation is \"monitor\"."],
+ [3,"A \"which three of the five factors\" question. What is the rule?","Evidence.","Choose the factors the <b>case evidences</b>, exactly the number asked, not the ones typical for the industry."],
+ [4,"The three questions before normalizing?","Percentage? Absolute useful? Range?","(1) Is it already a percentage or ratio? (2) Are absolute values useful alone (a cap, or zero is ideal)? (3) Does the range vary widely?"],
+ [4,"Activity metric or financial metric as denominator?","Efficiency versus economics.","Activity metrics: efficiency and productivity (output, units, facilities). Financial metrics: economic efficiency, profitability, cash-flow implications."],
+ [4,"How do you choose the denominator?","The driver.","Pick the one that <b>drives the numerator</b> (restaurants' energy: company-owned restaurants, not employees)."],
+ [4,"Recalls, spills, units rated unacceptable: do you need to normalize?","Acute and rare.","<b>Fewer is better regardless of size.</b> A user may still normalize to understand financial impact."],
+ [4,"Energy was 41.2% grid in Y1 and 32.3% in Y2. What is the change?","Relative, not points.","<b>−21.6%</b>, i.e. (32.3 − 41.2) ÷ 41.2. In percentage points it is −8.9."],
+ [5,"Normal distribution bands?","34.1, 13.6, 2.1.","34.1% from mean to ±1 SD; 13.6% from ±1 to ±2 SD; 2.1% beyond ±2 SD. Within ±1 SD = 68.2%."],
+ [5,"A company is +1 SD above the mean. What percent of peers are below it? At +2 SD?","Add up from the left.","<b>84% (83.9)</b> at +1 SD; <b>97.5%</b> at +2 SD. At −1 SD, 16%; at −2 SD, 2.5%."],
+ [5,"z-score formula?","Distance in SDs.","<b>(company value − mean) ÷ standard deviation.</b> Then decide whether high is good or bad."],
+ [5,"Mean above median: which skew?","Right tail.","<b>Positive skew</b> (longer right tail). Mean below median = negative skew."],
+ [5,"What can cause skew in ESG data?","Three sources.","Company size and operations (correlation with revenue or output), regulatory caps and floors, and natural floors or ceilings (cannot be negative, cannot exceed 100%)."],
+ [5,"How do you treat an outlier?","Don't just delete it.","<b>Investigate company-specific context</b> (location, one-off events, strategy)."],
+ [5,"What inhibits comparability of ESG data?","Two things.","<b>Lack of coverage</b> and <b>lack of standardization</b> (aggregators differ in metrics, scope and weightings)."],
+ [5,"What is mean absolute deviation?","Average distance.","The <b>average distance between each data value and the mean</b>; a wide MAD signals a spread that may benefit from normalization."],
+ [6,"Two companies' recycling rates differ, but one operates under stricter law. What can you conclude?","Context.","Not that the higher rate is better management; <b>compare like with like</b> (same regulation), normalize for scale, and look at management programs."],
+ [6,"Company B has no fines and dominates a two-player market. Is it better on competitive behavior?","Look at the market.","Not necessarily: <b>market structure carries significant anti-competitive risk</b>; examine each company's risk management practices."],
+ [6,"A compliance percentage fell because a new product line was uncertified. How do you read it?","Decision, not decay.","As the result of a <b>management decision and timing</b>, likely to reverse, not necessarily weaker chemical management."],
+ [6,"Does a missing disclosure mean good performance?","No.","<b>No.</b> Absence of data is not performance, and relevance does not depend on whether a company discloses."],
+ [7,"How do you tell a risk metric from an opportunity metric?","Direction of higher values.","<b>Higher values = improved economic performance → opportunity.</b> Higher values = threats → risk. Context can flip it."],
+ [7,"Name the three characteristics of a financial impact.","L, T, M.","<b>Likelihood, timing, magnitude.</b>"],
+ [7,"Acute vs progressive?","One-time vs gradual.","Acute: one-time, high magnitude, low likelihood, direct and immediate. Progressive: gradual, high likelihood, low to high magnitude, an operating cost of doing business."],
+ [7,"Are fines already paid actual or potential?","Lagging.","<b>Actual</b>, near-term, and they may signal future risk."],
+ [7,"What kind of metric indicates likelihood of future impacts?","Exposure and practice.","Exposure metrics and <b>descriptions of risk-management practices</b>, plus time series of past events."],
+ [7,"Operating-efficiency metrics (energy, water, waste): likelihood and magnitude?","Rule of thumb.","Nearly always <b>actual</b> impacts of <b>lower magnitude</b>."],
+ [7,"What kind of issue can threaten a business as a going concern?","High magnitude.","Stranded assets, physical impacts of climate change, major unmanaged incidents (high-magnitude impacts)."],
+ [8,"List the five channels of financial impact.","R-E-A-L-C.","<b>Revenues, expenses, assets, liabilities, cost of capital.</b>"],
+ [8,"Name things that look like channels but are not.","Valuation variables and tools.","<b>Turnover ratio, operating margin, NOPAT, invested capital, NWC, EVA / economic profit, growth rate.</b>"],
+ [8,"Fine already paid or a pending claim: which channel?","Incurred versus future.","Paid = <b>expense</b>. Pending claim or contingent obligation = <b>liability</b>."],
+ [8,"A scandal reduces customer demand and brand value. Which channels?","Two.","<b>Revenues</b> (demand) and <b>assets</b> (intangible brand value)."],
+ [8,"What changes cost of capital, and where does it show in a DCF?","Risk.","The company's risk profile in investors' and lenders' eyes; it shows in the <b>discount rate</b>."],
+ [8,"What does the growth rate reflect?","Markets.","Position to capture <b>new and expanding markets</b>; terminal value can be 50 to 75% or more of value."],
+ [8,"A decoupled utility cuts customers' peak consumption. Effect on revenue and expenses?","Decoupled.","Revenue is <b>not directly reduced</b>; expenses fall because supply cost is highest at peak demand."],
+ [8,"A non-decoupled utility's customers use less electricity. Effect on revenue?","Volume.","<b>Revenue falls</b>, because revenue is tied to quantity sold."],
+ [8,"Sustainability-linked debt vs green bond?","Performance versus project.","Sustainability-linked: ties the borrower's own material performance to its cost of debt. Green bond: funds specific projects."],
+ [8,"R&D for sustainable products: which channels?","Now versus later.","<b>Expenses</b> now; as an investment it <b>adds to assets</b> later (guide's Containers &amp; Packaging example)."],
+ [9,"ROIC formula and what must hold for competitive advantage?","Two ratios.","ROIC = (NOPAT ÷ sales) × (sales ÷ invested capital). Needs <b>ROIC above cost of capital and above peers</b>."],
+ [9,"Improvement through operating margin signals which advantage?","Customers.","<b>Consumer advantage.</b>"],
+ [9,"Improvement through turnover ratio signals which advantage?","Capital efficiency.","<b>Production advantage.</b>"],
+ [9,"What is a production advantage?","Spend less.","Spending less to deliver goods or services, through <b>advantageous access to inputs</b> or proprietary technology."],
+ [9,"What is a consumer advantage?","Habit and switching.","Customers <b>habitually use</b> the product or face <b>high costs of switching</b>."],
+ [9,"EVA in one line?","Above the cost of capital.","<b>(ROIC − WACC) × invested capital</b>: profit above the return capital providers require; positive = value created."],
+ [9,"Exploratory vs normative scenarios?","Futures versus target.","Exploratory: set of possible future states, test options (sea level rise). Normative: plan toward a specific target (net zero by a year)."],
+ [9,"Typical scenario set and the critical step?","Three cases.","Best, base and worst; <b>defining the base case</b> is often the most critical step."],
+ [9,"Four steps of scenario analysis (TCFD-based)?","Identify, define, evaluate, assess.","1 identify risks and opportunities; 2 define scenarios (scope, timeline, parameters); 3 evaluate business impacts; 4 compare actual outcomes with modeled scenarios and adjust."]
+];
+const CH_NAMES={1:"Ch 1 Context",2:"Ch 2 Issues",3:"Ch 3 Five factors",4:"Ch 4 Normalizing",5:"Ch 5 Dispersion",6:"Ch 6 Context for peers",7:"Ch 7 Impacts",8:"Ch 8 Channels and DCF",9:"Ch 9 Valuation"};
+
+</script>
+<script>
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const esc=s=>s.replace(/&(?!amp;|lt;|gt;)/g,"&amp;");
+
+/* priorities */
+(function(){
+  const tb=$("#prio tbody");
+  tb.innerHTML=PRIO.map(p=>{const pc=Math.round(100*p.c/p.n);const tier=pc<80?["Top","lo"]:pc<88?["High","mid"]:pc<95?["Medium",""]:["Light",""];
+    return `<tr><td>${p.lo}</td><td>${p.t}</td><td class="mono">${p.c}/${p.n} (${pc}%)</td><td><div class="bar"><i class="${tier[1]}" style="width:${pc}%"></i></div></td><td><span class="badge ${tier[0]==='Top'?'warn':''}">${tier[0]}</span></td></tr>`}).join("");
+})();
+
+/* chapters */
+(function(){
+  const L=$("#chlist");
+  L.innerHTML=CHAPTERS.map(c=>{
+    const lst=a=>a&&a.length?`<ul>${a.map(x=>`<li>${x}</li>`).join("")}</ul>`:"";
+    const txt=(c.title+" "+c.know.join(" ")+c.method.join(" ")+c.watch.join(" ")+c.ask.join(" ")).replace(/<[^>]+>/g," ").toLowerCase();
+    return `<details class="card" data-s="${txt.replace(/"/g,"'")}" id="ch${c.n}"><summary><span class="badge">${c.sec}</span><h3>${c.title}</h3><span class="small">${c.lo}</span></summary><div class="body">
+      <h4>Know cold</h4>${lst(c.know)}
+      <h4>Method</h4>${lst(c.method)}
+      <h4 class="w">Watch out</h4>${lst(c.watch)}
+      ${c.ask.length?`<h4>The guide's own questions for analysis</h4>${lst(c.ask)}`:""}
+    </div></details>`}).join("");
+})();
+
+/* issues */
+let dimFilter="All";
+function renderIssues(){
+  const chips=$("#dimchips");
+  chips.innerHTML=["All",...DIMS].map(d=>`<button class="chip ${d===dimFilter?'on':''}" data-d="${d}">${d}</button>`).join("");
+  $$("button",chips).forEach(b=>b.onclick=()=>{dimFilter=b.dataset.d;renderIssues();applySearch()});
+  $("#issuetbl tbody").innerHTML=ISSUES.filter(r=>dimFilter==="All"||r[0]===dimFilter).map(r=>`<tr data-s="${(r.join(' ')).toLowerCase().replace(/"/g,"'")}"><td>${r[0]}</td><td><b>${esc(r[1])}</b></td><td>${esc(r[2])}</td><td>${esc(r[3])}</td></tr>`).join("");
+}
+renderIssues();
+
+/* factors */
+$("#fgrid").innerHTML=FACTORS.map(f=>`<div class="card" data-s="${(f.t+' '+f.q+' '+f.ex).toLowerCase().replace(/"/g,"'")}"><div class="kicker">Factor ${f.n}</div><h3>${f.t}</h3><p style="margin-top:6px"><b>Ask:</b> ${f.q}</p><p class="small">${f.ex}</p></div>`).join("");
+
+/* traps */
+$("#traplist").innerHTML=TRAPS.map(t=>`<div class="card" data-s="${(t[0]+' '+t[1]+' '+t[2]).toLowerCase().replace(/"/g,"'")}"><h3>${t[0]}</h3><p class="small" style="margin-top:4px"><b>The pull:</b> ${t[1]}</p><p style="margin:0"><b>Do this:</b> ${t[2]}</p></div>`).join("");
+
+/* mapper */
+function renderMap(){
+  const q=($("#mapq").value||"").toLowerCase();
+  $("#maptbl tbody").innerHTML=MAP.filter(r=>!q||r.join(" ").toLowerCase().includes(q)).map(r=>`<tr><td>${r[0]}</td><td><b>${r[1]}</b></td><td>${r[2]}</td></tr>`).join("")||`<tr><td colspan="3" class="small">No match.</td></tr>`;
+}
+$("#mapq").addEventListener("input",renderMap); renderMap();
+
+/* search across sheet */
+["examday","priority"].forEach(id=>{const s=document.getElementById(id); s.dataset.s=(s.dataset.s+" "+s.textContent).toLowerCase().replace(/\s+/g," ")});
+function applySearch(){
+  const q=$("#q").value.trim().toLowerCase();
+  $$("[data-s]").forEach(el=>{
+    if(!q){el.classList.remove("hide"); return;}
+    el.classList.toggle("hide",!el.dataset.s.includes(q));
+  });
+  $$("details.card").forEach(d=>{ if(q && !d.classList.contains("hide")) d.open=true; });
+  $$("section").forEach(s=>{
+    if(!q){s.classList.remove("hide");return;}
+    const hasSelf=(s.dataset.s||"").includes(q);
+    const kids=$$("[data-s]",s).filter(e=>e!==s);
+    const anyKid=kids.some(e=>!e.classList.contains("hide"));
+    s.classList.toggle("hide",!(hasSelf||anyKid));
+    if(hasSelf) kids.forEach(e=>e.classList.remove("hide"));
+  });
+}
+$("#q").addEventListener("input",applySearch);
+
+/* buttons */
+let allOpen=false;
+$("#openAll").onclick=()=>{allOpen=!allOpen;$$("details.card").forEach(d=>d.open=allOpen);$("#openAll").textContent=allOpen?"Collapse all":"Expand all"};
+let restore=null;
+function pre(){restore=$$("details.card").map(d=>d.open);$$("details.card").forEach(d=>d.open=true)}
+function post(){if(restore){$$("details.card").forEach((d,i)=>d.open=restore[i]);restore=null}}
+window.addEventListener("beforeprint",pre); window.addEventListener("afterprint",post);
+$("#printBtn").onclick=()=>{try{window.print()}catch(e){}};
+let theme=store.get("fsa-cheat-theme",null);
+function applyTheme(){ if(theme) document.documentElement.setAttribute("data-theme",theme); else document.documentElement.removeAttribute("data-theme"); }
+applyTheme();
+$("#themeBtn").onclick=()=>{theme=theme==="dark"?"light":(theme==="light"?null:"dark");store.set("fsa-cheat-theme",theme);applyTheme();$("#themeBtn").textContent="Theme: "+(theme||"auto")};
+$("#themeBtn").textContent="Theme: "+(theme||"auto");
+
+/* nav highlight */
+(function(){
+  if(!("IntersectionObserver" in window)) return;
+  const links=$$("#navrow a"); const secs=links.map(a=>$(a.getAttribute("href")));
+  const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle("on",l.getAttribute("href")==="#"+e.target.id))}})},{rootMargin:"-30% 0px -60% 0px"});
+  secs.forEach(s=>s&&obs.observe(s));
+})();
+
+/* pace */
+function pace(){
+  const m=parseFloat($("#pm").value), c=parseFloat($("#pc").value);
+  const o=$("#pout");
+  if(isNaN(m)||isNaN(c)){o.textContent="Enter both to see your pace against 9.2 minutes per case.";return}
+  const target=120/13, expected=target*c, diff=expected-m, left=13-c;
+  const per=left>0?((120-m)/left):0;
+  o.innerHTML=`Target pace ${target.toFixed(1)} min per case. After ${c} case${c===1?"":"s"} you should be at about ${expected.toFixed(0)} min; you are at ${m}, so you are <b>${Math.abs(diff).toFixed(0)} min ${diff>=0?"ahead":"behind"}</b>. ${left>0?`Remaining: ${(120-m).toFixed(0)} min for ${left} case${left===1?"":"s"} = <b>${per.toFixed(1)} min each</b>.`:"All cases done: use the rest for flagged items."}`;
+}
+$("#pm").addEventListener("input",pace); $("#pc").addEventListener("input",pace);
+
+/* calculators */
+function erf(x){const s=x<0?-1:1;x=Math.abs(x);const a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;const t=1/(1+p*x);const y=1-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x);return s*y}
+const cdf=z=>0.5*(1+erf(z/Math.SQRT2));
+function zcalc(){
+  const v=parseFloat($("#zv").value),m=parseFloat($("#zm").value),s=parseFloat($("#zs").value),pol=$("#zp").value;const o=$("#zout");
+  if([v,m,s].some(isNaN)||s<=0){o.textContent="Enter a value, mean and a positive standard deviation.";return}
+  const z=(v-m)/s, az=Math.abs(z), dir=z>=0?"above":"below";
+  let band; const near=[1,2,3].find(k=>Math.abs(az-k)<0.005);
+  if(near)band=`exactly ${near} SD ${dir} the mean`; else if(az<1)band=`within 1 SD of the mean (${dir})`; else if(az<2)band=`between 1 and 2 SD ${dir} the mean`; else if(az<3)band=`between 2 and 3 SD ${dir} the mean`; else band=`more than 3 SD ${dir} the mean`;
+  const below=cdf(z)*100, above=100-below;
+  const nearest=[0,1,2,3].reduce((a,b)=>Math.abs(b-az)<Math.abs(a-az)?b:a); const guideBelow=[50,84.1,97.5,99.9][nearest]; const gb=z>=0?guideBelow:100-guideBelow;
+  const better=(pol==="lower")?(z<0):(z>0);
+  const share=pol==="lower"?(z<0?above:below):(z>0?below:above);
+  o.innerHTML=`<b>z = ${z.toFixed(2)}</b>: ${band}.<br>Percent of peers below this value: <b>${below.toFixed(1)}%</b>; above: <b>${above.toFixed(1)}%</b>. Closest guide anchor: about <b>${gb.toFixed(1)}%</b> below.<br>${Math.abs(z)<0.05?"At the mean: performance is average.":`This company performs <b>${better?"better":"worse"}</b> than about <b>${share.toFixed(0)}%</b> of peers (${pol==="lower"?"lower":"higher"} is better).`}`;
+}
+["zv","zm","zs"].forEach(i=>$("#"+i).addEventListener("input",zcalc)); $("#zp").addEventListener("change",zcalc);
+function ncalc(){
+  const [n1,d1,n2,d2]=["n1","d1","n2","d2"].map(i=>parseFloat($("#"+i).value)),pol=$("#np").value,o=$("#nout");
+  if([n1,d1,n2,d2].some(x=>isNaN(x))||d1===0||d2===0){o.textContent="Enter both years to see the ratio and its change.";return}
+  const r1=n1/d1,r2=n2/d2,ch=(r2-r1)/r1*100,abs=(n2-n1)/n1*100;
+  const better=pol==="lower"?(r2<r1):(r2>r1);
+  const f=x=>Math.abs(x)>=100?x.toFixed(0):(Math.abs(x)>=1?x.toFixed(2):x.toPrecision(3));
+  o.innerHTML=`Y1 ratio <b>${f(r1)}</b>, Y2 ratio <b>${f(r2)}</b>. Normalized change <b>${ch>=0?"+":""}${ch.toFixed(1)}%</b> (the raw numerator changed ${abs>=0?"+":""}${abs.toFixed(1)}%). That is <b>${Math.abs(ch)<0.05?"unchanged":(better?"an improvement":"a deterioration")}</b> (${pol==="lower"?"lower":"higher"} is better).`;
+}
+["n1","d1","n2","d2"].forEach(i=>$("#"+i).addEventListener("input",ncalc)); $("#np").addEventListener("change",ncalc);
+function kcalc(){
+  const m=parseFloat($("#km").value),d=parseFloat($("#kd").value),o=$("#kout");
+  if(isNaN(m)||isNaN(d)){o.textContent="Enter the mean and the median.";return}
+  if(Math.abs(m-d)<1e-9)o.innerHTML="Mean equals median: <b>symmetrical</b>, consistent with a normal distribution.";
+  else if(m>d)o.innerHTML="Mean above median: <b>positively skewed</b> (longer right tail; a few high values pull the mean up).";
+  else o.innerHTML="Mean below median: <b>negatively skewed</b> (longer left tail; a few low values pull the mean down).";
+}
+["km","kd"].forEach(i=>$("#"+i).addEventListener("input",kcalc));
+
+/* drill */
+const DS=store.get("fsa-cheat-drill",{marks:{},order:null});
+let deck=[],idx=0,hintOn=false,ansOn=false,filter="all";
+const ids=CARDS.map((c,i)=>i);
+function buildFilter(){
+  const sel=$("#dfilter");
+  sel.innerHTML=`<option value="all">All cards (${CARDS.length})</option><option value="review">Review pile</option><option value="unseen">Unmarked</option>`+Object.keys(CH_NAMES).map(k=>`<option value="c${k}">${CH_NAMES[k]}</option>`).join("");
+  sel.onchange=()=>{filter=sel.value;makeDeck();render()};
+}
+function makeDeck(){
+  let base=(DS.order&&DS.order.length===CARDS.length)?DS.order:ids.slice();
+  deck=base.filter(i=>{
+    const m=DS.marks[i];
+    if(filter==="all")return true; if(filter==="review")return m==="review"; if(filter==="unseen")return !m;
+    return CARDS[i][0]===parseInt(filter.slice(1),10);
+  });
+  if(idx>=deck.length)idx=0;
+}
+function save(){store.set("fsa-cheat-drill",DS)}
+function render(){
+  const f=$("#flash"); const st=$("#dstat");
+  const known=Object.values(DS.marks).filter(v=>v==="known").length, rev=Object.values(DS.marks).filter(v=>v==="review").length;
+  st.textContent=`${known} known, ${rev} to review, ${CARDS.length-known-rev} unmarked`;
+  $("#dprog").innerHTML=deck.map((i,k)=>`<i class="${DS.marks[i]||''} ${k===idx?'cur':''}" data-k="${k}" title="${CARDS[i][1].replace(/"/g,"'")}"></i>`).join("");
+  $$("#dprog i").forEach(e=>e.onclick=()=>{idx=parseInt(e.dataset.k,10);hintOn=false;ansOn=false;render()});
+  if(!deck.length){f.innerHTML=`<div class="qtext">No cards in this deck.</div><div class="small">Pick another deck, or reset marks.</div>`;return}
+  const c=CARDS[deck[idx]];
+  f.innerHTML=`<div class="kicker">${CH_NAMES[c[0]]} · card ${idx+1} of ${deck.length}${DS.marks[deck[idx]]?` · marked ${DS.marks[deck[idx]]}`:""}</div><div class="qtext">${c[1]}</div>${hintOn?`<div class="hint"><b>Hint:</b> ${c[2]}</div>`:""}${ansOn?`<div class="ans">${c[3]}</div>`:""}`;
+  $("#dshow").textContent=ansOn?"Hide answer":"Show answer";
+}
+function move(d){if(!deck.length)return;idx=(idx+d+deck.length)%deck.length;hintOn=false;ansOn=false;render()}
+function mark(v){if(!deck.length)return;DS.marks[deck[idx]]=v;save();if(filter==="review"||filter==="unseen"){const keep=idx;makeDeck();idx=Math.min(keep,Math.max(0,deck.length-1))}else{idx=(idx+1)%Math.max(1,deck.length)}hintOn=false;ansOn=false;render()}
+$("#dprev").onclick=()=>move(-1); $("#dnext").onclick=()=>move(1);
+$("#dhint").onclick=()=>{hintOn=!hintOn;render()}; $("#dshow").onclick=()=>{ansOn=!ansOn;render()};
+$("#dgot").onclick=()=>mark("known"); $("#drev").onclick=()=>mark("review");
+$("#dshuffle").onclick=()=>{const a=ids.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}DS.order=a;save();idx=0;makeDeck();render()};
+$("#dreset").onclick=()=>{if(confirm("Clear all marks?")){DS.marks={};save();makeDeck();render()}};
+document.addEventListener("keydown",e=>{
+  const t=e.target.tagName; if(t==="INPUT"||t==="SELECT"||t==="TEXTAREA")return;
+  const sec=$("#drill").getBoundingClientRect(); if(sec.bottom<0||sec.top>window.innerHeight)return;
+  if(e.key==="ArrowRight")move(1); else if(e.key==="ArrowLeft")move(-1); else if(e.key===" "){e.preventDefault();ansOn=!ansOn;render()} else if(e.key==="h"||e.key==="H"){hintOn=!hintOn;render()} else if(e.key==="k"||e.key==="K")mark("known"); else if(e.key==="r"||e.key==="R")mark("review");
+});
+buildFilter(); makeDeck(); render();
+
+</script>
+</body>
+</html>
